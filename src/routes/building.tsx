@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import QRCode from "qrcode";
+
 import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
@@ -327,6 +327,7 @@ function PrintReport({ data }: { data: Data }) {
     const shareUrl = `${window.location.origin}/building?address=${encodeURIComponent(data.address)}`;
     let qrDataUrl = "";
     try {
+      const QRCode = (await import("qrcode")).default;
       qrDataUrl = await QRCode.toDataURL(shareUrl, { margin: 1, width: 240, color: { dark: "#14213d", light: "#ffffff" } });
     } catch {}
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(data.address)}</title>
