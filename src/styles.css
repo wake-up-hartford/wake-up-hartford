@@ -36,7 +36,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Unbounded", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
