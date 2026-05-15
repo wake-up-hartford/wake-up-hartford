@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import QRCode from "qrcode";
 import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
@@ -23,11 +24,15 @@ function HomePage() {
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
-    if (address && !active) {
-      setActive(address);
-      setQuery(address);
+    if (active) return;
+    const fromUrl = new URLSearchParams(window.location.search).get("address");
+    const seed = fromUrl || address;
+    if (seed) {
+      setActive(seed);
+      setQuery(seed);
+      if (fromUrl) save(seed);
     }
-  }, [address, active]);
+  }, [address, active, save]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -318,7 +323,12 @@ function PrintReport({ data }: { data: Data }) {
   const us = data.building.utilityShutoffs;
   const c311 = data.building.complaints311;
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    const shareUrl = `${window.location.origin}/building?address=${encodeURIComponent(data.address)}`;
+    let qrDataUrl = "";
+    try {
+      qrDataUrl = await QRCode.toDataURL(shareUrl, { margin: 1, width: 240, color: { dark: "#14213d", light: "#ffffff" } });
+    } catch {}
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(data.address)}</title>
 <style>
   @page { size: letter; margin: 0.6in; }
@@ -341,10 +351,20 @@ function PrintReport({ data }: { data: Data }) {
   .meta { font-family: Arial, sans-serif; font-size: 11px; color:#555; }
   footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #d6cfc1; font-family: Arial, sans-serif; font-size: 10px; color:#555; display:flex; justify-content:space-between; }
   .plain { background:#f5efe2; border-radius:6px; padding:8px 10px; font-family: Arial, sans-serif; font-size: 11px; margin-top: 8px; }
+  .header { display:flex; gap: 16px; align-items: flex-start; justify-content: space-between; }
+  .header .titles { flex: 1; min-width: 0; }
+  .qr { text-align:center; font-family: Arial, sans-serif; font-size: 9px; color:#555; line-height:1.3; }
+  .qr img { display:block; width: 96px; height: 96px; }
+  .qr .label { margin-top: 4px; max-width: 96px; word-break: break-all; }
 </style></head><body>
-  <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
-  <h1>${escapeHtml(data.address)}</h1>
-  <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+  <div class="header">
+    <div class="titles">
+      <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
+      <h1>${escapeHtml(data.address)}</h1>
+      <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+    </div>
+    ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code to view this report online"><div>Scan to view<br>or share</div></div>` : ""}
+  </div>
 
   <h2>Report Card</h2>
   <div class="grid">
@@ -375,7 +395,7 @@ function PrintReport({ data }: { data: Data }) {
     ${c311.recent.map(c => `<tr><td>${escapeHtml(c.date)}</td><td>${escapeHtml(c.type)}</td></tr>`).join("")}
   </tbody></table>
 
-  <footer><span>Wake Up Wednesday · NAACP Greater Hartford</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
+  <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
   <script>window.onload = () => { window.print(); };</script>
 </body></html>`;
     const w = window.open("", "_blank");
