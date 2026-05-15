@@ -3,9 +3,9 @@ import { Home, Building2, Trees, HeartHandshake } from "lucide-react";
 import { ReactNode } from "react";
 
 const NAV = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/building", label: "Building", icon: Building2 },
-  { to: "/neighborhood", label: "Area", icon: Trees },
+  { to: "/", label: "Start", icon: Home },
+  { to: "/neighborhood", label: "Neighborhood", icon: Trees },
+  { to: "/building", label: "Home", icon: Building2 },
   { to: "/life", label: "Life", icon: HeartHandshake },
 ] as const;
 
