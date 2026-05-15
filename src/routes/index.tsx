@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   return (
     <AppShell>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Wake Up Wednesday</p>
+      
       <h1 className="font-display text-3xl leading-tight">
         <span className="text-primary">See It.</span>{" "}
         <span className="text-gold">Name It.</span>{" "}
