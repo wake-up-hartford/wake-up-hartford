@@ -15,10 +15,12 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   return (
     <AppShell>
-      <SectionHeader
-        eyebrow="Wake Up Wednesday"
-        title="See It. Name It. Fix It."
-      />
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Wake Up Wednesday</p>
+      <h1 className="font-display text-3xl leading-tight">
+        <span className="text-primary">See It.</span>{" "}
+        <span className="text-gold">Name It.</span>{" "}
+        <span className="text-accent">Fix It.</span>
+      </h1>
       <p className="-mt-3 mb-3 font-display text-xl leading-snug text-foreground/90">
         Knowledge is where change begins.
       </p>
