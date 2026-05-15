@@ -41,7 +41,7 @@ function HomePage() {
           icon={Building2}
           title="Your Home"
           body="Look up any Hartford address. Code issues, evictions, utilities."
-          tone="green"
+          tone="purple"
         />
         <DashLink
           to="/life"
