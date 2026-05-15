@@ -24,11 +24,15 @@ function HomePage() {
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
-    if (address && !active) {
-      setActive(address);
-      setQuery(address);
+    if (active) return;
+    const fromUrl = new URLSearchParams(window.location.search).get("address");
+    const seed = fromUrl || address;
+    if (seed) {
+      setActive(seed);
+      setQuery(seed);
+      if (fromUrl) save(seed);
     }
-  }, [address, active]);
+  }, [address, active, save]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
