@@ -85,23 +85,35 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.03 260);
-  --foreground: oklch(0.96 0.01 80);
-  --card: oklch(0.24 0.04 260);
-  --card-foreground: oklch(0.96 0.01 80);
-  --popover: oklch(0.24 0.04 260);
-  --popover-foreground: oklch(0.96 0.01 80);
-  --primary: oklch(0.78 0.14 75);
-  --primary-foreground: oklch(0.18 0.03 260);
-  --secondary: oklch(0.3 0.04 260);
-  --secondary-foreground: oklch(0.96 0.01 80);
-  --muted: oklch(0.28 0.03 260);
-  --muted-foreground: oklch(0.7 0.02 80);
-  --accent: oklch(0.32 0.06 50);
-  --accent-foreground: oklch(0.96 0.01 80);
+  /* Deep midnight-purple, drawn from the logo's "WEDNESDAY" */
+  --background: oklch(0.17 0.06 295);
+  --foreground: oklch(0.97 0.01 85);
+  --card: oklch(0.22 0.07 295);
+  --card-foreground: oklch(0.97 0.01 85);
+  --popover: oklch(0.22 0.07 295);
+  --popover-foreground: oklch(0.97 0.01 85);
+  /* Brand purple stays vivid on dark */
+  --primary: oklch(0.62 0.22 300);
+  --primary-foreground: oklch(0.985 0.012 85);
+  --secondary: oklch(0.27 0.07 295);
+  --secondary-foreground: oklch(0.97 0.01 85);
+  --muted: oklch(0.26 0.06 295);
+  --muted-foreground: oklch(0.78 0.04 85);
+  /* Sky blue accent — pops on dark */
+  --accent: oklch(0.78 0.14 230);
+  --accent-foreground: oklch(0.17 0.06 295);
+  /* Brand orange — for the gold token */
+  --gold: oklch(0.78 0.18 60);
+  --gold-foreground: oklch(0.17 0.06 295);
+  --success: oklch(0.72 0.16 155);
+  --success-foreground: oklch(0.17 0.06 295);
+  --warning: oklch(0.78 0.17 70);
+  --warning-foreground: oklch(0.17 0.06 295);
+  --destructive: oklch(0.68 0.22 25);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.78 0.14 75);
+  --ring: oklch(0.62 0.22 300);
 }
 
 @layer base {
