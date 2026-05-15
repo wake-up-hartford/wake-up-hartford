@@ -16,13 +16,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <div className="mx-auto flex max-w-xl items-center justify-between px-5 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
-              <span className="font-display text-lg leading-none">W</span>
-            </span>
-            <span className="leading-tight">
-              <span className="block font-display text-base">Wake Up Wednesday</span>
-              <span className="block text-[11px] uppercase tracking-wider text-muted-foreground">NAACP Greater Hartford</span>
+          <Link to="/" className="flex items-center gap-3">
+            <img src={wuwLogo} alt="Wake Up Wednesday" className="h-10 w-auto" />
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground leading-tight hidden sm:block">
+              NAACP Greater<br />Hartford
             </span>
           </Link>
         </div>
