@@ -395,7 +395,7 @@ function PrintReport({ data }: { data: Data }) {
     ${c311.recent.map(c => `<tr><td>${escapeHtml(c.date)}</td><td>${escapeHtml(c.type)}</td></tr>`).join("")}
   </tbody></table>
 
-  <footer><span>Wake Up Wednesday · NAACP Greater Hartford</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
+  <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
   <script>window.onload = () => { window.print(); };</script>
 </body></html>`;
     const w = window.open("", "_blank");
