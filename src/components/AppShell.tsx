@@ -1,6 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Building2, Trees, HeartHandshake } from "lucide-react";
 import { ReactNode } from "react";
+import wuwLogo from "@/assets/wuw-logo.png";
 
 const NAV = [
   { to: "/", label: "Start", icon: Home },
