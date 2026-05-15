@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Calendar, Building2, Trees, HeartHandshake } from "lucide-react";
-import { AppShell, Card, SectionHeader } from "@/components/AppShell";
+import { AppShell, Card } from "@/components/AppShell";
 
 export const Route = createFileRoute("/")({
   head: () => ({
