@@ -92,10 +92,11 @@ function HomePage() {
           </Card>
 
           <Tabs defaultValue="card" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="card" className="py-2 text-xs font-semibold">Report Card</TabsTrigger>
-              <TabsTrigger value="story" className="py-2 text-xs font-semibold">Detailed</TabsTrigger>
-              <TabsTrigger value="share" className="py-2 text-xs font-semibold">Share</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
+              <TabsTrigger value="card" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
+              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
+              <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
+              <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
             </TabsList>
 
             <TabsContent value="card" className="mt-4">
@@ -106,6 +107,9 @@ function HomePage() {
             </TabsContent>
             <TabsContent value="share" className="mt-4">
               <ShareSlideshow data={data} />
+            </TabsContent>
+            <TabsContent value="print" className="mt-4">
+              <PrintReport data={data} />
             </TabsContent>
           </Tabs>
 
