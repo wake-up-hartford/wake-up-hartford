@@ -351,10 +351,20 @@ function PrintReport({ data }: { data: Data }) {
   .meta { font-family: Arial, sans-serif; font-size: 11px; color:#555; }
   footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #d6cfc1; font-family: Arial, sans-serif; font-size: 10px; color:#555; display:flex; justify-content:space-between; }
   .plain { background:#f5efe2; border-radius:6px; padding:8px 10px; font-family: Arial, sans-serif; font-size: 11px; margin-top: 8px; }
+  .header { display:flex; gap: 16px; align-items: flex-start; justify-content: space-between; }
+  .header .titles { flex: 1; min-width: 0; }
+  .qr { text-align:center; font-family: Arial, sans-serif; font-size: 9px; color:#555; line-height:1.3; }
+  .qr img { display:block; width: 96px; height: 96px; }
+  .qr .label { margin-top: 4px; max-width: 96px; word-break: break-all; }
 </style></head><body>
-  <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
-  <h1>${escapeHtml(data.address)}</h1>
-  <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+  <div class="header">
+    <div class="titles">
+      <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
+      <h1>${escapeHtml(data.address)}</h1>
+      <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+    </div>
+    ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code to view this report online"><div>Scan to view<br>or share</div></div>` : ""}
+  </div>
 
   <h2>Report Card</h2>
   <div class="grid">
