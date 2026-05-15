@@ -32,19 +32,21 @@ function HomePage() {
           icon={Trees}
           title="Your Neighborhood"
           body="A report card for your block — air, schools, safety, access."
-          accent
+          tone="gold"
         />
         <DashLink
           to="/building"
           icon={Building2}
           title="Your Home"
           body="Look up any Hartford address. Code issues, evictions, utilities."
+          tone="green"
         />
         <DashLink
           to="/life"
           icon={HeartHandshake}
           title="Your Life"
           body="Resources for stability, health, and safety."
+          tone="rose"
           badge="Coming soon"
         />
       </div>
@@ -55,22 +57,31 @@ function HomePage() {
   );
 }
 
+type Tone = "gold" | "green" | "rose";
+
+const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; title: string; shadow: string }> = {
+  gold:  { border: "border-l-gold",        iconBg: "bg-gold/20",        iconText: "text-gold-foreground",        title: "text-gold",        shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--gold)_55%,transparent)]" },
+  green: { border: "border-l-success",     iconBg: "bg-success/15",     iconText: "text-success",                title: "text-success",     shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--success)_50%,transparent)]" },
+  rose:  { border: "border-l-destructive", iconBg: "bg-destructive/15", iconText: "text-destructive",            title: "text-destructive", shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--destructive)_45%,transparent)]" },
+};
+
 function DashLink({
-  to, icon: Icon, title, body, accent, badge,
+  to, icon: Icon, title, body, tone, badge,
 }: {
   to: "/building" | "/neighborhood" | "/life";
   icon: React.ComponentType<{ className?: string }>;
-  title: string; body: string; accent?: boolean; badge?: string;
+  title: string; body: string; tone: Tone; badge?: string;
 }) {
+  const t = TONES[tone];
   return (
     <Link to={to} className="block">
-      <Card className={`flex items-center gap-4 transition active:scale-[0.99] ${accent ? "border-l-4 border-l-gold" : ""}`}>
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-secondary text-primary">
-          <Icon className="h-6 w-6" />
+      <Card className={`flex items-center gap-4 border-l-4 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
+        <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-xl ${t.iconBg} ${t.iconText}`}>
+          <Icon className="h-8 w-8" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-display text-lg leading-tight">{title}</h3>
+            <h3 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h3>
             {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
           </div>
           <p className="text-sm text-muted-foreground">{body}</p>
