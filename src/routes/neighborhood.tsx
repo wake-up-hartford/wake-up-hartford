@@ -31,8 +31,8 @@ function NeighborhoodPage() {
       />
 
       <div className="mb-5 grid grid-cols-3 gap-2.5">
-        <Stat icon={DollarSign} label="Median income" value={data.neighborhood.medianIncome} />
-        <Stat icon={HomeIcon} label="Homeowners" value={data.neighborhood.homeownership} />
+        <Stat icon={DollarSign} label="Median income" value={data.area.medianIncome} />
+        <Stat icon={HomeIcon} label="Homeowners" value={data.area.homeownership} />
         <Stat icon={TrendingUp} label="Rent burden" value="58%" small />
       </div>
 
@@ -40,7 +40,7 @@ function NeighborhoodPage() {
         <h2 className="mb-1 font-display text-xl">Neighborhood report card</h2>
         <p className="mb-4 text-sm text-muted-foreground">Six categories that shape daily life on your block.</p>
         <ul className="divide-y divide-border">
-          {data.neighborhood.reportCard.map((c) => (
+          {data.area.reportCard.map((c) => (
             <li key={c.category} className="flex items-start justify-between gap-3 py-3.5">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
