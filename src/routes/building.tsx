@@ -312,6 +312,118 @@ function ShareSlideshow({ data }: { data: Data }) {
   );
 }
 
+function PrintReport({ data }: { data: Data }) {
+  const cv = data.building.codeViolations;
+  const ev = data.building.evictions;
+  const us = data.building.utilityShutoffs;
+  const c311 = data.building.complaints311;
+
+  const handlePrint = () => {
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(data.address)}</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  * { box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: #14213d; margin: 0; line-height: 1.45; }
+  .eyebrow { font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #b8860b; margin: 0 0 6px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 18px 0 8px; border-bottom: 1px solid #d6cfc1; padding-bottom: 4px; }
+  .sub { font-family: Arial, sans-serif; font-size: 12px; color: #555; margin: 0 0 14px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .card { border: 1px solid #d6cfc1; border-radius: 8px; padding: 10px 12px; }
+  .card .label { font-family: Arial, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #555; }
+  .card .num { font-size: 28px; font-weight: bold; margin: 4px 0 2px; }
+  .card .note { font-family: Arial, sans-serif; font-size: 11px; color: #555; }
+  .pill { display: inline-block; font-family: Arial, sans-serif; font-size: 9px; padding: 2px 7px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: bold; }
+  .good { background:#e6f4ea; color:#1e6b3a; } .watch{ background:#fff4d6; color:#7a5a00; } .concern{ background:#fde2e1; color:#a11d1d; }
+  table { width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12px; margin-top: 6px; }
+  th, td { text-align:left; padding: 6px 4px; border-bottom: 1px solid #ece7da; }
+  th { color:#555; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .meta { font-family: Arial, sans-serif; font-size: 11px; color:#555; }
+  footer { margin-top: 24px; padding-top: 10px; border-top: 1px solid #d6cfc1; font-family: Arial, sans-serif; font-size: 10px; color:#555; display:flex; justify-content:space-between; }
+  .plain { background:#f5efe2; border-radius:6px; padding:8px 10px; font-family: Arial, sans-serif; font-size: 11px; margin-top: 8px; }
+</style></head><body>
+  <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
+  <h1>${escapeHtml(data.address)}</h1>
+  <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+
+  <h2>Report Card</h2>
+  <div class="grid">
+    <div class="card"><span class="pill ${cv.open > 2 ? "concern" : cv.open > 0 ? "watch" : "good"}">Code violations</span><div class="num">${cv.open}</div><div class="note">${cv.closed12mo} closed in last year</div></div>
+    <div class="card"><span class="pill concern">Evictions filed</span><div class="num">${ev.filings12mo}</div><div class="note">${escapeHtml(ev.rate)} of units</div></div>
+    <div class="card"><span class="pill ${us.count12mo > 0 ? "watch" : "good"}">Utility shutoffs</span><div class="num">${us.count12mo}</div><div class="note">last 12 months</div></div>
+    <div class="card"><span class="pill watch">311 complaints</span><div class="num">${c311.count12mo}</div><div class="note">${escapeHtml(c311.topCategory)}</div></div>
+  </div>
+
+  <h2>Code violations</h2>
+  <p class="meta">From Hartford Housing Code Enforcement. ${cv.open} open, ${cv.closed12mo} closed in the last year.</p>
+  <table><thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead><tbody>
+    ${cv.recent.map(v => `<tr><td>${escapeHtml(v.date)}</td><td>${escapeHtml(v.description)}</td><td>${escapeHtml(v.status)}</td></tr>`).join("")}
+  </tbody></table>
+  <div class="plain">Open violations mean the city has asked your landlord to fix something. Call <strong>311</strong> if a problem hasn't been fixed.</div>
+
+  <h2>Evictions filed</h2>
+  <p class="meta">${escapeHtml(ev.rate)} of units · ${ev.filings12mo} filings in the last 12 months. ${escapeHtml(ev.note)}</p>
+  <div class="plain">If you receive a notice to quit, you have rights. Free legal help: <strong>(860) 541-5000</strong>.</div>
+
+  <h2>Utility shutoffs</h2>
+  <p class="meta">${escapeHtml(us.note)}</p>
+  <div class="plain">Cold months (Nov–Apr) have shutoff protections if you qualify. Dial <strong>211</strong> for help.</div>
+
+  <h2>311 complaints nearby</h2>
+  <p class="meta">Most reported: ${escapeHtml(c311.topCategory)} · ${c311.count12mo} total in last 12 months.</p>
+  <table><thead><tr><th>Date</th><th>Type</th></tr></thead><tbody>
+    ${c311.recent.map(c => `<tr><td>${escapeHtml(c.date)}</td><td>${escapeHtml(c.type)}</td></tr>`).join("")}
+  </tbody></table>
+
+  <footer><span>Wake Up Wednesday · NAACP Greater Hartford</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
+  <script>window.onload = () => { window.print(); };</script>
+</body></html>`;
+    const w = window.open("", "_blank");
+    if (!w) { alert("Please allow pop-ups to print this report."); return; }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <div className="flex items-start gap-3">
+          <Printer className="mt-0.5 h-5 w-5 text-primary" />
+          <div className="flex-1">
+            <h2 className="font-display text-xl leading-tight">Printable PDF report</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              A one-page summary with the report card on top and details below — perfect for handing to a neighbor, landlord, or city council member.
+            </p>
+          </div>
+        </div>
+        <Button onClick={handlePrint} className="mt-4 w-full" size="lg">
+          <Printer className="h-4 w-4" /> Open print preview
+        </Button>
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          In the print dialog, choose <strong>Save as PDF</strong> to download a copy.
+        </p>
+      </Card>
+
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
+        <h3 className="mt-2 font-display text-lg">{data.address}</h3>
+        <p className="text-xs text-muted-foreground">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Code violations</div><div className="font-display text-2xl">{cv.open}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Evictions</div><div className="font-display text-2xl">{ev.filings12mo}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Shutoffs</div><div className="font-display text-2xl">{us.count12mo}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">311 complaints</div><div className="font-display text-2xl">{c311.count12mo}</div></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function escapeHtml(s: string) {
+  return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
+}
+
 function TakeAction() {
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
