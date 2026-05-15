@@ -9,8 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
+import { Route as LifeRouteImport } from './routes/life'
+import { Route as BuildingRouteImport } from './routes/building'
 import { Route as IndexRouteImport } from './routes/index'
 
+const NeighborhoodRoute = NeighborhoodRouteImport.update({
+  id: '/neighborhood',
+  path: '/neighborhood',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifeRoute = LifeRouteImport.update({
+  id: '/life',
+  path: '/life',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildingRoute = BuildingRouteImport.update({
+  id: '/building',
+  path: '/building',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +37,61 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/building': typeof BuildingRoute
+  '/life': typeof LifeRoute
+  '/neighborhood': typeof NeighborhoodRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/building': typeof BuildingRoute
+  '/life': typeof LifeRoute
+  '/neighborhood': typeof NeighborhoodRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/building': typeof BuildingRoute
+  '/life': typeof LifeRoute
+  '/neighborhood': typeof NeighborhoodRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/building' | '/life' | '/neighborhood'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/building' | '/life' | '/neighborhood'
+  id: '__root__' | '/' | '/building' | '/life' | '/neighborhood'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BuildingRoute: typeof BuildingRoute
+  LifeRoute: typeof LifeRoute
+  NeighborhoodRoute: typeof NeighborhoodRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/neighborhood': {
+      id: '/neighborhood'
+      path: '/neighborhood'
+      fullPath: '/neighborhood'
+      preLoaderRoute: typeof NeighborhoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/life': {
+      id: '/life'
+      path: '/life'
+      fullPath: '/life'
+      preLoaderRoute: typeof LifeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/building': {
+      id: '/building'
+      path: '/building'
+      fullPath: '/building'
+      preLoaderRoute: typeof BuildingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +104,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BuildingRoute: BuildingRoute,
+  LifeRoute: LifeRoute,
+  NeighborhoodRoute: NeighborhoodRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
