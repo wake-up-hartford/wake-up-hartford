@@ -59,12 +59,12 @@ function HomePage() {
   );
 }
 
-type Tone = "gold" | "green" | "rose";
+type Tone = "gold" | "purple" | "blue";
 
 const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; title: string; shadow: string }> = {
-  gold:  { border: "border-l-gold",        iconBg: "bg-gold/20",        iconText: "text-gold-foreground",        title: "text-gold",        shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--gold)_55%,transparent)]" },
-  green: { border: "border-l-success",     iconBg: "bg-success/15",     iconText: "text-success",                title: "text-success",     shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--success)_50%,transparent)]" },
-  rose:  { border: "border-l-destructive", iconBg: "bg-destructive/15", iconText: "text-destructive",            title: "text-destructive", shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--destructive)_45%,transparent)]" },
+  gold:   { border: "border-l-gold",    iconBg: "bg-gold/20",    iconText: "text-gold-foreground", title: "text-gold",    shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--gold)_55%,transparent)]" },
+  purple: { border: "border-l-primary", iconBg: "bg-primary/15", iconText: "text-primary",         title: "text-primary", shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_55%,transparent)]" },
+  blue:   { border: "border-l-accent",  iconBg: "bg-accent/15",  iconText: "text-accent",          title: "text-accent",  shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--accent)_55%,transparent)]" },
 };
 
 function DashLink({
