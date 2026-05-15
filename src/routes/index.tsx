@@ -48,7 +48,7 @@ function HomePage() {
           icon={HeartHandshake}
           title="Your Life"
           body="Resources for stability, health, and safety."
-          tone="rose"
+          tone="blue"
           badge="Coming soon"
         />
       </div>
