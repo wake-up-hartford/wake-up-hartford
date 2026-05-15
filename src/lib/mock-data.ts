@@ -15,7 +15,7 @@ export type AddressLookup = {
     utilityShutoffs: { count12mo: number; note: string };
     complaints311: { count12mo: number; topCategory: string; recent: { date: string; type: string }[] };
   };
-  neighborhood: {
+  area: {
     reportCard: { category: string; grade: string; severity: Severity; note: string }[];
     medianIncome: string;
     rentBurden: string;
@@ -53,7 +53,7 @@ const SAMPLES: Record<string, AddressLookup> = {
         ],
       },
     },
-    neighborhood: {
+    area: {
       reportCard: [
         { category: "Air quality", grade: "C", severity: "watch", note: "Above-average asthma ER visits." },
         { category: "Walkability", grade: "B", severity: "good", note: "Most errands within a 10-min walk." },
