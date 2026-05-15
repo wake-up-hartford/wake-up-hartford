@@ -1,0 +1,86 @@
+import { Link, useLocation } from "@tanstack/react-router";
+import { Home, Building2, Trees, HeartHandshake } from "lucide-react";
+import { ReactNode } from "react";
+
+const NAV = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/building", label: "Building", icon: Building2 },
+  { to: "/neighborhood", label: "Area", icon: Trees },
+  { to: "/life", label: "Life", icon: HeartHandshake },
+] as const;
+
+export function AppShell({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  return (
+    <div className="min-h-screen bg-background bg-grain">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+        <div className="mx-auto flex max-w-xl items-center justify-between px-5 py-3">
+          <Link to="/" className="flex items-center gap-2">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground">
+              <span className="font-display text-lg leading-none">W</span>
+            </span>
+            <span className="leading-tight">
+              <span className="block font-display text-base">Wake Up Wednesday</span>
+              <span className="block text-[11px] uppercase tracking-wider text-muted-foreground">NAACP Greater Hartford</span>
+            </span>
+          </Link>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-xl px-5 pb-28 pt-6">{children}</main>
+
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
+        <ul className="mx-auto grid max-w-xl grid-cols-4">
+          {NAV.map(({ to, label, icon: Icon }) => {
+            const active = pathname === to;
+            return (
+              <li key={to}>
+                <Link
+                  to={to}
+                  className={`flex flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors ${
+                    active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 ${active ? "stroke-[2.4]" : ""}`} />
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </div>
+  );
+}
+
+export function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
+  return (
+    <div className="mb-6">
+      {eyebrow && (
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>
+      )}
+      <h1 className="font-display text-3xl leading-tight text-foreground">{title}</h1>
+      {subtitle && <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{subtitle}</p>}
+    </div>
+  );
+}
+
+export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl border border-border bg-card p-5 shadow-soft ${className}`}>{children}</div>
+  );
+}
+
+export function SeverityPill({ severity, children }: { severity: "good" | "watch" | "concern"; children: ReactNode }) {
+  const styles = {
+    good: "bg-success/15 text-success border-success/25",
+    watch: "bg-warning/20 text-warning-foreground border-warning/40",
+    concern: "bg-destructive/12 text-destructive border-destructive/30",
+  }[severity];
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${styles}`}>
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+      {children}
+    </span>
+  );
+}

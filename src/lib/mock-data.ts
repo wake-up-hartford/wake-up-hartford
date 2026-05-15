@@ -1,0 +1,81 @@
+// Realistic mock Hartford data. Replace with Google Sheets API later.
+
+export type Severity = "good" | "watch" | "concern";
+
+export type AddressLookup = {
+  address: string;
+  neighborhood: string;
+  censusTract: string;
+  yearBuilt: number;
+  units: number;
+  landlord: string;
+  building: {
+    codeViolations: { open: number; closed12mo: number; recent: { date: string; description: string; status: "Open" | "Closed" }[] };
+    evictions: { filings12mo: number; rate: string; note: string };
+    utilityShutoffs: { count12mo: number; note: string };
+    complaints311: { count12mo: number; topCategory: string; recent: { date: string; type: string }[] };
+  };
+  area: {
+    reportCard: { category: string; grade: string; severity: Severity; note: string }[];
+    medianIncome: string;
+    rentBurden: string;
+    homeownership: string;
+  };
+};
+
+const SAMPLES: Record<string, AddressLookup> = {
+  default: {
+    address: "247 Garden Street, Hartford, CT 06112",
+    neighborhood: "Upper Albany",
+    censusTract: "5024.00",
+    yearBuilt: 1928,
+    units: 12,
+    landlord: "Garden Street Holdings LLC",
+    building: {
+      codeViolations: {
+        open: 3,
+        closed12mo: 7,
+        recent: [
+          { date: "Mar 14, 2025", description: "Peeling lead paint — common stairwell", status: "Open" },
+          { date: "Feb 02, 2025", description: "Inadequate heat — Unit 4", status: "Closed" },
+          { date: "Jan 18, 2025", description: "Broken smoke detector — hallway", status: "Open" },
+        ],
+      },
+      evictions: { filings12mo: 4, rate: "33%", note: "Higher than the Hartford average of 18%." },
+      utilityShutoffs: { count12mo: 2, note: "Eversource reported 2 shutoffs at this address last year." },
+      complaints311: {
+        count12mo: 9,
+        topCategory: "Trash & illegal dumping",
+        recent: [
+          { date: "Apr 02, 2025", type: "Bulk trash pickup" },
+          { date: "Mar 21, 2025", type: "Rodent sighting" },
+          { date: "Feb 12, 2025", type: "Streetlight out" },
+        ],
+      },
+    },
+    area: {
+      reportCard: [
+        { category: "Air quality", grade: "C", severity: "watch", note: "Above-average asthma ER visits." },
+        { category: "Walkability", grade: "B", severity: "good", note: "Most errands within a 10-min walk." },
+        { category: "Green space", grade: "C", severity: "watch", note: "Keney Park is nearby; few smaller parks." },
+        { category: "School quality", grade: "C-", severity: "concern", note: "Elementary scores below state average." },
+        { category: "Public safety", grade: "C", severity: "watch", note: "Property crime above city median." },
+        { category: "Grocery access", grade: "D", severity: "concern", note: "No full-service grocer within 1 mile." },
+      ],
+      medianIncome: "$32,400",
+      rentBurden: "58% of renters pay more than 30% of income on rent",
+      homeownership: "24%",
+    },
+  },
+};
+
+export function lookupAddress(_query: string): AddressLookup {
+  return SAMPLES.default;
+}
+
+export const RESOURCES = [
+  { title: "Rental assistance", body: "UniteCT and Hartford emergency rental help.", phone: "211" },
+  { title: "Eviction defense", body: "Free legal help if you've received a notice.", phone: "(860) 541-5000" },
+  { title: "Heat & utility help", body: "CEAP winter heating assistance — apply Sep–May.", phone: "211" },
+  { title: "Lead paint testing", body: "Free home inspection for kids under 6.", phone: "(860) 757-4760" },
+];
