@@ -53,24 +53,24 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.04 260);
 
-  /* Deep navy — trust, civic */
-  --primary: oklch(0.32 0.08 260);
+  /* Brand purple — civic, bold (from "WEDNESDAY") */
+  --primary: oklch(0.36 0.19 300);
   --primary-foreground: oklch(0.985 0.012 85);
 
-  /* Warm sand */
-  --secondary: oklch(0.94 0.025 75);
-  --secondary-foreground: oklch(0.32 0.08 260);
+  /* Soft warm sand */
+  --secondary: oklch(0.94 0.03 70);
+  --secondary-foreground: oklch(0.36 0.19 300);
 
   --muted: oklch(0.95 0.015 80);
-  --muted-foreground: oklch(0.48 0.03 260);
+  --muted-foreground: oklch(0.48 0.05 290);
 
-  /* Warm terracotta accent */
-  --accent: oklch(0.92 0.04 50);
-  --accent-foreground: oklch(0.32 0.08 260);
+  /* Sky blue accent (from "UP" arrow) */
+  --accent: oklch(0.74 0.13 230);
+  --accent-foreground: oklch(0.985 0.012 85);
 
-  /* NAACP-inspired gold */
-  --gold: oklch(0.78 0.14 75);
-  --gold-foreground: oklch(0.22 0.04 260);
+  /* Brand orange (from "Wake") — replaces gold token */
+  --gold: oklch(0.76 0.17 60);
+  --gold-foreground: oklch(0.22 0.04 290);
 
   --success: oklch(0.62 0.12 155);
   --success-foreground: oklch(0.985 0 0);
@@ -81,7 +81,7 @@
 
   --border: oklch(0.9 0.02 80);
   --input: oklch(0.9 0.02 80);
-  --ring: oklch(0.32 0.08 260);
+  --ring: oklch(0.36 0.19 300);
 }
 
 .dark {
