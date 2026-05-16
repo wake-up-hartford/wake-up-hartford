@@ -34,6 +34,7 @@ const DEFAULT_TRACT: Tract = {
 function NeighborhoodPage() {
   const { save } = useStoredAddress();
   const [tract, setTract] = useState<Tract>(DEFAULT_TRACT);
+  const [showLookup, setShowLookup] = useState(false);
 
   const fetchIndicators = useServerFn(getTractIndicators);
   const { data, isLoading, isError } = useQuery({
@@ -45,6 +46,7 @@ function NeighborhoodPage() {
   const handleResolved = (t: Tract) => {
     setTract(t);
     save(t.address);
+    setShowLookup(false);
   };
 
   const indicators = data?.indicators ?? [];
@@ -56,12 +58,16 @@ function NeighborhoodPage() {
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Start
         </Link>
-        <a href="#census-lookup" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <button
+          type="button"
+          onClick={() => setShowLookup((v) => !v)}
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
           <Search className="h-4 w-4" /> Look Up Additional Address
-        </a>
+        </button>
       </div>
 
-      <CensusTractLookup onResolved={handleResolved} />
+      {showLookup && <CensusTractLookup onResolved={handleResolved} />}
 
       <SectionHeader
         eyebrow={`Census Tract ${tract.tractName}`}
