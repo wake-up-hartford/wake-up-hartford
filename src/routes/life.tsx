@@ -467,24 +467,29 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         </p>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
-        {SECTIONS.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div
-              key={s.id}
-              className={`flex items-center gap-3 rounded-xl border border-border ${s.tint} p-3`}
-            >
-              <span
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
-                style={{ backgroundColor: s.color }}
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-              <span className="text-[13px] font-semibold text-slate-800">{s.name}</span>
-            </div>
-          );
-        })}
+      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <p className="text-[13px] leading-relaxed text-card-foreground">
+          This survey covers <strong>8 areas of life</strong> that most affect
+          stability — from housing and food to safety, income, and legal needs.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+          {SECTIONS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.id} className="flex flex-col items-center gap-1">
+                <span
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-white"
+                  style={{ backgroundColor: s.color }}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <span className="text-[10px] font-medium text-muted-foreground">
+                  {s.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
