@@ -375,62 +375,21 @@ function escapeHtml(s: string) {
 }
 
 function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
-  const [input, setInput] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Tract | null>(null);
   const lookupAddress = useServerFn(geocodeAddressToTract);
 
+  const canSubmit = street.trim().length > 2 && city.trim().length > 1 && state.trim().length >= 2;
+
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const q = input.trim();
-    if (!q) return;
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      const resolved = await lookupAddress({ data: { address: q } });
-      if (resolved.error) {
-        setError(resolved.error);
-        return;
-      }
-      setResult(resolved);
-      onResolved(resolved);
-    } catch {
-      setError("Couldn't reach the Census geocoder. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (!canSubmit) return;
+    const q = `${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()}`;
 
-  return (
-    <div id="census-lookup">
-      <Card className="mb-5">
-        <div className="mb-3 flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <MapPin className="h-4 w-4" />
-        </span>
-        <div>
-          <h2 className="font-display text-lg leading-tight text-card-foreground">Find your census tract</h2>
-          <p className="mt-0.5 text-[12px] text-muted-foreground">
-            Use the format: <span className="font-medium text-foreground">street number + street, city, ST</span> — e.g. <span className="font-medium text-foreground">1600 Pennsylvania Ave NW, Washington, DC</span>. Must be a real street address (no PO boxes, intersections, or place names).
-          </p>
-        </div>
-      </div>
-
-      <form onSubmit={handleLookup} className="flex flex-col gap-2 sm:flex-row">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="1234 Main St, Hartford, CT 06112"
-          className="flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-        />
-        <Button type="submit" disabled={loading || !input.trim()} size="lg">
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-          {loading ? "Looking up…" : "Look up"}
-        </Button>
-      </form>
 
       {error && (
         <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>
