@@ -21,7 +21,7 @@ function HomePage() {
         <span className="text-gold">Name It.</span>{" "}
         <span className="text-accent">Fix It.</span>
       </h1>
-      <p className="-mt-3 mb-3 font-display text-xl leading-snug text-foreground/90">
+      <p className="mt-4 mb-3 font-display text-xl leading-snug text-foreground/90">
         Knowledge is where change begins.
       </p>
       <p className="mb-7 text-[15px] leading-relaxed text-muted-foreground">
