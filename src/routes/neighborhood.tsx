@@ -52,9 +52,14 @@ function NeighborhoodPage() {
 
   return (
     <AppShell>
-      <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="h-4 w-4" /> Back to Start
-      </Link>
+      <div className="mb-4 flex items-center gap-4">
+        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ChevronLeft className="h-4 w-4" /> Back to Start
+        </Link>
+        <a href="#census-lookup" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <Search className="h-4 w-4" /> Look Up Additional Address
+        </a>
+      </div>
 
       <CensusTractLookup onResolved={handleResolved} />
 
