@@ -320,9 +320,9 @@ function ShareSlideshow({ data }: { data: Data }) {
       <div className="flex items-center justify-between gap-2">
         <button
           onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
-          className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium"
+          className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
         >
-          ← Prev
+          <Play className="h-3.5 w-3.5 rotate-180" /> Prev
         </button>
         <button
           onClick={() => setI((x) => (x + 1) % slides.length)}
