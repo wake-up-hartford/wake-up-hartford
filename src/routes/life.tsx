@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { useMemo, useState, type ComponentType } from "react";
+import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
 
 export const Route = createFileRoute("/life")({
