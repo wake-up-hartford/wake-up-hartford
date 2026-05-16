@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { useMemo, useState, type ComponentType } from "react";
+import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
 
 export const Route = createFileRoute("/life")({
@@ -520,6 +520,10 @@ function SurveyScreen({
   const section = SECTIONS[sectionIdx];
   const question = section.questions[questionIdx];
   const Icon = section.icon;
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [sectionIdx, questionIdx]);
 
   const isLastQuestion =
     sectionIdx === SECTIONS.length - 1 &&
