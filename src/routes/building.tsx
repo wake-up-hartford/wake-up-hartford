@@ -62,7 +62,7 @@ function HomePage() {
         {data && (
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 text-sm text-[#dfddce] hover:opacity-80 transition-opacity"
+            className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground hover:bg-secondary opacity-100 bg-inherit text-[#dfddce]"
           >
             <Search className="h-3.5 w-3.5" /> Look up a different address
           </button>
