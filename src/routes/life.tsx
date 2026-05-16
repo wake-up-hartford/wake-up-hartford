@@ -14,6 +14,8 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
+  Mail,
+  Send,
 } from "lucide-react";
 import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
