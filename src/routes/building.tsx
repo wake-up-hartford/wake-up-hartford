@@ -55,9 +55,19 @@ function HomePage() {
 
   return (
     <AppShell>
-      <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="h-4 w-4" /> Back to Start
-      </Link>
+      <div className="mb-4 flex items-center gap-4">
+        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ChevronLeft className="h-4 w-4" /> Back to Start
+        </Link>
+        {data && (
+          <button
+            onClick={handleReset}
+            className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground hover:bg-secondary opacity-0 bg-inherit text-[#dfddce]"
+          >
+            <Search className="h-3.5 w-3.5" /> Look up a different address
+          </button>
+        )}
+      </div>
 
       {!data && (
         <>
