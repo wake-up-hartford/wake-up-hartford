@@ -21,10 +21,10 @@ function HomePage() {
         <span className="text-gold">Name It.</span>{" "}
         <span className="text-accent">Fix It.</span>
       </h1>
-      <p className="mt-4 mb-3 font-display text-xl leading-snug text-foreground/90">
+      <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
         Knowledge is where change begins.
       </p>
-      <p className="mb-7 text-[15px] leading-relaxed text-muted-foreground">
+      <p className="mb-10 text-[15px] leading-relaxed text-foreground/80">
         Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
       </p>
 
