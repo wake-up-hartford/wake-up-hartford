@@ -72,7 +72,12 @@ const Input = z.object({
 });
 
 async function fetchACS(url: string): Promise<Record<string, number>> {
-  const res = await fetch(url);
+  const key = process.env.CENSUS_API_KEY;
+  const finalUrl = key ? `${url}&key=${encodeURIComponent(key)}` : url;
+  const res = await fetch(finalUrl, { redirect: "manual" });
+  if (res.status === 302 || res.headers.get("x-datawebapi-keyerror")) {
+    throw new Error("CENSUS_API_KEY missing or invalid. Get a free key at https://api.census.gov/data/key_signup.html and add it as a secret.");
+  }
   if (!res.ok) throw new Error(`ACS ${res.status}`);
   const json = (await res.json()) as string[][];
   if (!Array.isArray(json) || json.length < 2) throw new Error("ACS empty");
@@ -244,11 +249,12 @@ export const getTractIndicators = createServerFn({ method: "POST" })
       return { fips, population: pop, indicators };
     } catch (err) {
       console.error("getTractIndicators failed", err);
+      const msg = err instanceof Error ? err.message : String(err);
       return {
         fips,
         population: null,
         indicators: [],
-        error: "Couldn't reach the Census API. Please try again in a moment.",
+        error: msg.startsWith("CENSUS_API_KEY") ? msg : "Couldn't reach the Census API. Please try again in a moment.",
       };
     }
   });
