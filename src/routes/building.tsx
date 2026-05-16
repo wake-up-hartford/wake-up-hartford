@@ -362,7 +362,8 @@ function ShareSlideshow({ data }: { data: Data }) {
       </div>
 
       <Button onClick={handleShare} className="w-full" size="lg">
-        <Share2 className="h-4 w-4" /> Share to social or text
+        <Share2 className="h-4 w-4" />
+        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "Share to social or text"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
