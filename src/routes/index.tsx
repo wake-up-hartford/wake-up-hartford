@@ -88,7 +88,7 @@ function DashLink({
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>
         </div>
-        <ArrowRight className="h-5 w-5 text-muted-foreground" />
+        <ArrowRight className={`h-6 w-6 -rotate-12 ${t.title}`} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
       </Card>
     </Link>
   );
