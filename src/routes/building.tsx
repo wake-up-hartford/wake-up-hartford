@@ -309,9 +309,9 @@ function ShareSlideshow({ data }: { data: Data }) {
             <span>{slide.eyebrow}</span>
             <span>{i + 1} / {slides.length}</span>
           </div>
-          <div className="flex flex-1 flex-col justify-center">
-            <p className="font-display text-5xl leading-tight">{slide.title}</p>
-            <p className="mt-3 text-base opacity-90">{slide.body}</p>
+          <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
+            <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
+            <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
           </div>
           <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
         </div>
