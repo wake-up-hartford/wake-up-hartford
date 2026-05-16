@@ -73,7 +73,7 @@ function Stat({ icon: Icon, label, value, small }: { icon: React.ComponentType<{
   return (
     <div className="rounded-xl border border-border bg-card p-2.5 sm:p-3">
       <Icon className="mb-1 h-3.5 w-3.5 text-gold sm:mb-1.5 sm:h-4 sm:w-4" />
-      <p className={`font-display text-sm leading-tight text-foreground sm:${small ? "text-base" : "text-lg"}`}>{value}</p>
+      <p className={`font-display leading-tight text-foreground ${small ? "text-base" : "text-lg"} sm:${small ? "text-lg" : "text-xl"}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground sm:text-[11px]">{label}</p>
     </div>
   );
