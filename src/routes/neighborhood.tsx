@@ -7,7 +7,7 @@ import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShe
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
-import { getTractIndicators, type TractIndicatorsResult, type Indicator } from "@/lib/tract-indicators.functions";
+import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
 
 export const Route = createFileRoute("/neighborhood")({
   head: () => ({
@@ -368,6 +368,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Tract | null>(null);
+  const lookupAddress = useServerFn(geocodeAddressToTract);
 
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -377,33 +378,11 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
     setError(null);
     setResult(null);
     try {
-      const url = new URL("https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress");
-      url.searchParams.set("address", q);
-      url.searchParams.set("benchmark", "Public_AR_Current");
-      url.searchParams.set("vintage", "Current_Current");
-      url.searchParams.set("layers", "Census Tracts");
-      url.searchParams.set("format", "json");
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error("Lookup failed");
-      const json = await res.json();
-      const match = json?.result?.addressMatches?.[0];
-      if (!match) {
-        setError("No match found. Try a more complete US street address.");
+      const resolved = await lookupAddress({ data: { address: q } });
+      if (resolved.error) {
+        setError(resolved.error);
         return;
       }
-      const tract = match.geographies?.["Census Tracts"]?.[0];
-      if (!tract?.STATE || !tract?.COUNTY || !tract?.TRACT) {
-        setError("Address matched but no census tract was returned.");
-        return;
-      }
-      const resolved: Tract = {
-        address: match.matchedAddress,
-        state: String(tract.STATE).padStart(2, "0"),
-        county: String(tract.COUNTY).padStart(3, "0"),
-        tract: String(tract.TRACT).padStart(6, "0"),
-        tractName: tract.NAME ?? tract.BASENAME ?? String(tract.TRACT),
-        neighborhood: match.matchedAddress.split(",").slice(1, 2).join(",").trim(),
-      };
       setResult(resolved);
       onResolved(resolved);
     } catch {
