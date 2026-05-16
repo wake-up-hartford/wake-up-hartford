@@ -108,12 +108,6 @@ function HomePage() {
 
       {data && (
         <>
-          <button
-            onClick={handleReset}
-            className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground hover:bg-secondary"
-          >
-            <Search className="h-3.5 w-3.5" /> Look up a different address
-          </button>
 
           <Card className="mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
