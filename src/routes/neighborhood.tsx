@@ -18,7 +18,7 @@ export const Route = createFileRoute("/neighborhood")({
 });
 
 function NeighborhoodPage() {
-  const { address } = useStoredAddress();
+  const { address, save } = useStoredAddress();
   const data = lookupAddress(address ?? "");
 
   return (
@@ -26,6 +26,8 @@ function NeighborhoodPage() {
       <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Back to Start
       </Link>
+
+      <CensusTractLookup onResolved={(addr) => save(addr)} />
 
       <SectionHeader
         eyebrow={`Census Tract ${data.censusTract}`}
