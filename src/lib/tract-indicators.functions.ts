@@ -65,10 +65,24 @@ export type TractIndicatorsResult = {
   error?: string;
 };
 
+export type GeocodedTractResult = {
+  address: string;
+  state: string;
+  county: string;
+  tract: string;
+  tractName: string;
+  neighborhood?: string;
+  error?: string;
+};
+
 const Input = z.object({
   state: z.string().regex(/^\d{2}$/),
   county: z.string().regex(/^\d{3}$/),
   tract: z.string().regex(/^\d{6}$/),
+});
+
+const GeocodeInput = z.object({
+  address: z.string().trim().min(5).max(200),
 });
 
 async function fetchACS(url: string): Promise<Record<string, number>> {
@@ -126,6 +140,84 @@ function tier(
   if (v >= concern) return "concern";
   return "watch";
 }
+
+export const geocodeAddressToTract = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => GeocodeInput.parse(input))
+  .handler(async ({ data }): Promise<GeocodedTractResult> => {
+    try {
+      const url = new URL("https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress");
+      url.searchParams.set("address", data.address);
+      url.searchParams.set("benchmark", "Public_AR_Current");
+      url.searchParams.set("vintage", "Current_Current");
+      url.searchParams.set("layers", "Census Tracts");
+      url.searchParams.set("format", "json");
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        throw new Error(`Geocoder ${res.status}`);
+      }
+
+      const json = await res.json() as {
+        result?: {
+          addressMatches?: Array<{
+            matchedAddress?: string;
+            geographies?: {
+              [key: string]: Array<{
+                STATE?: string | number;
+                COUNTY?: string | number;
+                TRACT?: string | number;
+                NAME?: string;
+                BASENAME?: string;
+              }>;
+            };
+          }>;
+        };
+      };
+
+      const match = json?.result?.addressMatches?.[0];
+      if (!match) {
+        return {
+          address: data.address,
+          state: "",
+          county: "",
+          tract: "",
+          tractName: "",
+          error: "No match found. Try a more complete US street address.",
+        };
+      }
+
+      const tract = match.geographies?.["Census Tracts"]?.[0];
+      if (!tract?.STATE || !tract?.COUNTY || !tract?.TRACT) {
+        return {
+          address: match.matchedAddress ?? data.address,
+          state: "",
+          county: "",
+          tract: "",
+          tractName: "",
+          error: "Address matched but no census tract was returned.",
+        };
+      }
+
+      return {
+        address: match.matchedAddress ?? data.address,
+        state: String(tract.STATE).padStart(2, "0"),
+        county: String(tract.COUNTY).padStart(3, "0"),
+        tract: String(tract.TRACT).padStart(6, "0"),
+        tractName: tract.NAME ?? tract.BASENAME ?? String(tract.TRACT),
+        neighborhood: (match.matchedAddress ?? data.address).split(",").slice(1, 2).join(",").trim() || undefined,
+      };
+    } catch (err) {
+      console.error("geocodeAddressToTract failed", err);
+      return {
+        address: data.address,
+        state: "",
+        county: "",
+        tract: "",
+        tractName: "",
+        error: "Couldn't reach the Census geocoder. Please try again.",
+      };
+    }
+  });
 
 export const getTractIndicators = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
