@@ -49,7 +49,7 @@ function HomePage() {
           title="Your Life"
           body="Resources for stability, health, and safety."
           tone="blue"
-          badge="Coming soon"
+          
         />
       </div>
 
