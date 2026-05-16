@@ -52,9 +52,14 @@ function NeighborhoodPage() {
 
   return (
     <AppShell>
-      <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="h-4 w-4" /> Back to Start
-      </Link>
+      <div className="mb-4 flex items-center gap-4">
+        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ChevronLeft className="h-4 w-4" /> Back to Start
+        </Link>
+        <a href="#census-lookup" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <Search className="h-4 w-4" /> Look Up Additional Address
+        </a>
+      </div>
 
       <CensusTractLookup onResolved={handleResolved} />
 
@@ -393,8 +398,9 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
   };
 
   return (
-    <Card className="mb-5">
-      <div className="mb-3 flex items-start gap-3">
+    <div id="census-lookup">
+      <Card className="mb-5">
+        <div className="mb-3 flex items-start gap-3">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <MapPin className="h-4 w-4" />
         </span>
@@ -436,6 +442,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
         Address lookup via the US Census Bureau Geocoder. Indicators from ACS 5-year (2022) + USDA Food Access Atlas (2019).
       </p>
     </Card>
+    </div>
   );
 }
 
