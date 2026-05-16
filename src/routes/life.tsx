@@ -191,7 +191,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: "income",
-    name: "Income & Work",
+    name: "Income",
     icon: Briefcase,
     gradient: "from-blue-500 to-sky-600",
     accentText: "text-blue-700",
@@ -239,7 +239,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: "debt",
-    name: "Debt & Finances",
+    name: "Debt",
     icon: CreditCard,
     gradient: "from-purple-500 to-violet-600",
     accentText: "text-purple-700",
@@ -354,7 +354,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: "support",
-    name: "Support & Community",
+    name: "Community",
     icon: Users,
     gradient: "from-teal-400 to-cyan-600",
     accentText: "text-teal-700",
