@@ -249,11 +249,12 @@ export const getTractIndicators = createServerFn({ method: "POST" })
       return { fips, population: pop, indicators };
     } catch (err) {
       console.error("getTractIndicators failed", err);
+      const msg = err instanceof Error ? err.message : String(err);
       return {
         fips,
         population: null,
         indicators: [],
-        error: "Couldn't reach the Census API. Please try again in a moment.",
+        error: msg.startsWith("CENSUS_API_KEY") ? msg : "Couldn't reach the Census API. Please try again in a moment.",
       };
     }
   });
