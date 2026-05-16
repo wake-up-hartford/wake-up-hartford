@@ -446,10 +446,7 @@ function LifePage() {
 function IntroScreen({ onBegin }: { onBegin: () => void }) {
   return (
     <div>
-      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-        Stabilization Survey
-      </p>
-      <p className="mb-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-emerald-600">
+      <p className="mb-2 font-mono text-[14px] font-semibold uppercase tracking-wider text-emerald-600">
         ▸ Your Path Forward
       </p>
       <h1 className="font-display text-3xl leading-tight text-foreground">
