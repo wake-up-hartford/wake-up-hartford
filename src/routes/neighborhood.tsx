@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin } from "lucide-react";
+import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/neighborhood")({
 });
 
 function NeighborhoodPage() {
-  const { address } = useStoredAddress();
+  const { address, save } = useStoredAddress();
   const data = lookupAddress(address ?? "");
 
   return (
@@ -26,6 +26,8 @@ function NeighborhoodPage() {
       <Link to="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Back to Start
       </Link>
+
+      <CensusTractLookup onResolved={(addr) => save(addr)} />
 
       <SectionHeader
         eyebrow={`Census Tract ${data.censusTract}`}
@@ -320,6 +322,111 @@ function NeighborhoodPrint({ data }: { data: Data }) {
 
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
+}
+
+type TractResult = {
+  address: string;
+  tract: string;
+  county: string;
+  state: string;
+};
+
+function CensusTractLookup({ onResolved }: { onResolved: (addr: string) => void }) {
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<TractResult | null>(null);
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = input.trim();
+    if (!q) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const url = new URL("https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress");
+      url.searchParams.set("address", q);
+      url.searchParams.set("benchmark", "Public_AR_Current");
+      url.searchParams.set("vintage", "Current_Current");
+      url.searchParams.set("layers", "Census Tracts");
+      url.searchParams.set("format", "json");
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error("Lookup failed");
+      const json = await res.json();
+      const match = json?.result?.addressMatches?.[0];
+      if (!match) {
+        setError("No match found. Try a more complete US street address.");
+        return;
+      }
+      const tract = match.geographies?.["Census Tracts"]?.[0];
+      if (!tract) {
+        setError("Address matched but no census tract was returned.");
+        return;
+      }
+      const resolved: TractResult = {
+        address: match.matchedAddress,
+        tract: tract.NAME ?? tract.BASENAME ?? tract.TRACT,
+        county: tract.COUNTY ?? "",
+        state: tract.STATE ?? "",
+      };
+      setResult(resolved);
+      onResolved(match.matchedAddress);
+    } catch {
+      setError("Couldn't reach the Census geocoder. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card className="mb-5">
+      <div className="mb-3 flex items-start gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <MapPin className="h-4 w-4" />
+        </span>
+        <div>
+          <h2 className="font-display text-lg leading-tight text-card-foreground">Find your census tract</h2>
+          <p className="mt-0.5 text-[12px] text-muted-foreground">
+            Enter a US street address to look up the official census tract.
+          </p>
+        </div>
+      </div>
+
+      <form onSubmit={handleLookup} className="flex flex-col gap-2 sm:flex-row">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="1234 Main St, Hartford, CT"
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        />
+        <Button type="submit" disabled={loading || !input.trim()} size="lg">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+          {loading ? "Looking up…" : "Look up"}
+        </Button>
+      </form>
+
+      {error && (
+        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>
+      )}
+
+      {result && (
+        <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Census tract</p>
+          <p className="mt-1 font-display text-xl text-card-foreground">{result.tract}</p>
+          <p className="mt-1 text-[12px] text-muted-foreground">{result.address}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            County FIPS {result.county} · State FIPS {result.state}
+          </p>
+        </div>
+      )}
+
+      <p className="mt-3 text-[10px] text-muted-foreground">
+        Powered by the US Census Bureau Geocoder. Addresses are sent to census.gov for lookup only.
+      </p>
+    </Card>
+  );
 }
 
 function Stat({ icon: Icon, label, value, small }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; small?: boolean }) {
