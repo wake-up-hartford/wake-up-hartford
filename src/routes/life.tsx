@@ -499,7 +499,6 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
           })}
         </div>
       </div>
-      </div>
 
       <button
         onClick={onBegin}
