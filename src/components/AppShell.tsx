@@ -13,9 +13,9 @@ const NAV = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   return (
-    <div className="min-h-screen bg-background bg-grain">
+    <div className="min-h-screen overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex max-w-xl items-center justify-between px-5 py-3">
+        <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 py-3 sm:px-5">
           <Link to="/" className="flex items-center gap-3">
             <img src={wuwLogo} alt="Wake Up Wednesday" className={pathname === "/" ? "h-14 w-auto" : "h-10 w-auto"} />
             <span className="text-[11px] uppercase tracking-wider text-muted-foreground leading-tight hidden sm:block">
@@ -25,10 +25,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-xl px-5 pb-28 pt-6">{children}</main>
+      <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
-        <ul className="mx-auto grid max-w-xl grid-cols-4">
+        <ul className="mx-auto grid w-full max-w-xl grid-cols-4 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to;
             return (
