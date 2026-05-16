@@ -19,12 +19,13 @@ export const Route = createFileRoute("/building")({
 });
 
 function HomePage() {
-  const { address, save } = useStoredAddress();
+  const { address, save, clear } = useStoredAddress();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<string | null>(null);
+  const [seeded, setSeeded] = useState(false);
 
   useEffect(() => {
-    if (active) return;
+    if (seeded) return;
     const fromUrl = new URLSearchParams(window.location.search).get("address");
     const seed = fromUrl || address;
     if (seed) {
@@ -32,7 +33,8 @@ function HomePage() {
       setQuery(seed);
       if (fromUrl) save(seed);
     }
-  }, [address, active, save]);
+    if (fromUrl !== null || address !== null) setSeeded(true);
+  }, [address, seeded, save]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +42,13 @@ function HomePage() {
     if (!v) return;
     setActive(v);
     save(v);
+  };
+
+  const handleReset = () => {
+    setActive(null);
+    setQuery("");
+    setSeeded(true);
+    clear();
   };
 
   const data = active ? lookupAddress(active) : null;
@@ -90,7 +99,7 @@ function HomePage() {
       {data && (
         <>
           <button
-            onClick={() => { setActive(null); setQuery(""); }}
+            onClick={handleReset}
             className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground hover:bg-secondary"
           >
             <Search className="h-3.5 w-3.5" /> Look up a different address
