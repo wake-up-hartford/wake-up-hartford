@@ -30,7 +30,7 @@ function NeighborhoodPage() {
         subtitle="A snapshot of how your neighborhood is doing today, in everyday language."
       />
 
-      <div className="mb-5 grid grid-cols-3 gap-2.5">
+      <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-2.5">
         <Stat icon={DollarSign} label="Median income" value={data.area.medianIncome} />
         <Stat icon={HomeIcon} label="Homeowners" value={data.area.homeownership} />
         <Stat icon={TrendingUp} label="Rent burden" value="58%" small />
@@ -71,10 +71,10 @@ function NeighborhoodPage() {
 
 function Stat({ icon: Icon, label, value, small }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; small?: boolean }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3">
-      <Icon className="mb-1.5 h-4 w-4 text-gold" />
-      <p className={`font-display ${small ? "text-base" : "text-lg"} leading-tight text-foreground`}>{value}</p>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
+    <div className="rounded-xl border border-border bg-card p-2.5 sm:p-3">
+      <Icon className="mb-1 h-3.5 w-3.5 text-gold sm:mb-1.5 sm:h-4 sm:w-4" />
+      <p className={`font-display leading-tight text-foreground ${small ? "text-base" : "text-lg"} sm:${small ? "text-lg" : "text-xl"}`}>{value}</p>
+      <p className="text-[10px] text-muted-foreground sm:text-[11px]">{label}</p>
     </div>
   );
 }

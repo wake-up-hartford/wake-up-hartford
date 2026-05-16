@@ -155,15 +155,15 @@ function ReportCard({ data }: { data: Data }) {
     },
   ];
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3">
       {items.map((it) => (
-        <Card key={it.label} className="p-4">
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-3xl leading-none text-foreground">{it.value}</span>
-            <span className="text-sm font-semibold text-foreground">{it.label}</span>
+        <Card key={it.label} className="p-3 sm:p-4">
+          <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
+            <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{it.value}</span>
+            <span className="text-xs font-semibold text-foreground sm:text-sm">{it.label}</span>
           </div>
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <p className="text-xs text-muted-foreground">{it.sub}</p>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[11px] text-muted-foreground sm:text-xs">{it.sub}</p>
             <SeverityPill severity={it.severity as "good" | "watch" | "concern"}>{it.severity}</SeverityPill>
           </div>
         </Card>
