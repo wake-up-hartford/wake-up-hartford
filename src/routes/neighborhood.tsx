@@ -412,7 +412,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="1234 Main St, Hartford, CT 06112"
-          className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <Button type="submit" disabled={loading || !input.trim()} size="lg">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
