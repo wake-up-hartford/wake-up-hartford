@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Calendar, Building2, Trees, HeartHandshake } from "lucide-react";
+import { Calendar, Building2, Trees, HeartHandshake } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
+import { SketchArrow } from "@/components/SketchArrow";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -88,7 +89,7 @@ function DashLink({
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>
         </div>
-        <ArrowRight className={`h-6 w-6 -rotate-12 ${t.title}`} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        <SketchArrow className={`h-9 w-12 shrink-0 -rotate-6 ${t.title}`} />
       </Card>
     </Link>
   );
