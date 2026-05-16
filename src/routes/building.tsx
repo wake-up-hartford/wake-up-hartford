@@ -292,13 +292,42 @@ function ShareSlideshow({ data }: { data: Data }) {
   const [i, setI] = useState(0);
   const slide = slides[i];
 
+  const [shareStatus, setShareStatus] = useState<null | "copied" | "error">(null);
   const handleShare = async () => {
     const text = `${data.address} — ${data.building.codeViolations.open} open code violations, ${data.building.evictions.filings12mo} evictions filed in the last year. See more on Wake Up Wednesday.`;
-    if (navigator.share) {
-      try { await navigator.share({ title: "Wake Up Wednesday", text, url: window.location.href }); } catch {}
-    } else {
-      try { await navigator.clipboard.writeText(text); alert("Copied to clipboard"); } catch {}
+    const url = window.location.href;
+    const payload = `${text}\n${url}`;
+
+    // Try Web Share API first (works on most mobile browsers, often blocked in iframes)
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: "Wake Up Wednesday", text, url });
+        return;
+      } catch (err) {
+        // User cancelled or iframe blocked it — fall through to clipboard
+        if ((err as Error)?.name === "AbortError") return;
+      }
     }
+
+    // Clipboard fallback
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(payload);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = payload;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setShareStatus("copied");
+    } catch {
+      setShareStatus("error");
+    }
+    setTimeout(() => setShareStatus(null), 2500);
   };
 
   return (
@@ -333,7 +362,8 @@ function ShareSlideshow({ data }: { data: Data }) {
       </div>
 
       <Button onClick={handleShare} className="w-full" size="lg">
-        <Share2 className="h-4 w-4" /> Share to social or text
+        <Share2 className="h-4 w-4" />
+        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "Share to social or text"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
