@@ -21,14 +21,14 @@ function HomePage() {
         <span className="text-gold">Name It.</span>{" "}
         <span className="text-accent">Fix It.</span>
       </h1>
-      <p className="mt-4 mb-3 font-display text-xl leading-snug text-foreground/90">
+      <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
         Knowledge is where change begins.
       </p>
-      <p className="mb-7 text-[15px] leading-relaxed text-muted-foreground">
+      <p className="mb-10 text-[15px] leading-relaxed text-foreground/80">
         Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
       </p>
 
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         <DashLink
           to="/neighborhood"
           icon={Trees}
@@ -86,7 +86,7 @@ function DashLink({
             <h3 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h3>
             {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
           </div>
-          <p className="text-sm text-muted-foreground">{body}</p>
+          <p className="text-sm text-card-foreground/80">{body}</p>
         </div>
         <ArrowRight className="h-5 w-5 text-muted-foreground" />
       </Card>
@@ -96,15 +96,15 @@ function DashLink({
 
 function EventCard() {
   return (
-    <div className="mt-6 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15">
+    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15">
       <div className="flex items-start gap-3 p-5">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
           <Calendar className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/70">Join us</p>
-          <h3 className="font-display text-xl leading-tight">Every Wednesday</h3>
-          <p className="mt-1 text-sm text-foreground/80">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/85">Join us</p>
+          <h3 className="font-display text-xl leading-tight text-foreground">Every Wednesday</h3>
+          <p className="mt-1 text-sm text-foreground/85">
             Unity Plaza · Barbour Street · Hartford. Coffee, conversation, and your neighbors.
           </p>
         </div>
@@ -115,7 +115,7 @@ function EventCard() {
 
 function Footer() {
   return (
-    <footer className="mt-10 space-y-2 text-center text-[12px] text-muted-foreground">
+    <footer className="mt-12 space-y-3 text-center text-[13px] text-foreground/70">
       <p>Presented by <strong className="font-semibold text-foreground">NAACP Greater Hartford</strong></p>
       <p>Data partnership with CT Data Collaborative</p>
     </footer>
