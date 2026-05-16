@@ -521,6 +521,10 @@ function SurveyScreen({
   const question = section.questions[questionIdx];
   const Icon = section.icon;
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [sectionIdx, questionIdx]);
+
   const isLastQuestion =
     sectionIdx === SECTIONS.length - 1 &&
     questionIdx === section.questions.length - 1;
