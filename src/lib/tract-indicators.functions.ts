@@ -72,7 +72,12 @@ const Input = z.object({
 });
 
 async function fetchACS(url: string): Promise<Record<string, number>> {
-  const res = await fetch(url);
+  const key = process.env.CENSUS_API_KEY;
+  const finalUrl = key ? `${url}&key=${encodeURIComponent(key)}` : url;
+  const res = await fetch(finalUrl, { redirect: "manual" });
+  if (res.status === 302 || res.headers.get("x-datawebapi-keyerror")) {
+    throw new Error("CENSUS_API_KEY missing or invalid. Get a free key at https://api.census.gov/data/key_signup.html and add it as a secret.");
+  }
   if (!res.ok) throw new Error(`ACS ${res.status}`);
   const json = (await res.json()) as string[][];
   if (!Array.isArray(json) || json.length < 2) throw new Error("ACS empty");
