@@ -401,7 +401,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
         <div>
           <h2 className="font-display text-lg leading-tight text-card-foreground">Find your census tract</h2>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
-            Enter a US street address to load live data for that tract.
+            Use the format: <span className="font-medium text-foreground">street number + street, city, ST</span> — e.g. <span className="font-medium text-foreground">1600 Pennsylvania Ave NW, Washington, DC</span>. Must be a real street address (no PO boxes, intersections, or place names).
           </p>
         </div>
       </div>
@@ -411,7 +411,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="1234 Main St, Hartford, CT"
+          placeholder="1234 Main St, Hartford, CT 06112"
           className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <Button type="submit" disabled={loading || !input.trim()} size="lg">
