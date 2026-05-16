@@ -442,6 +442,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
         Address lookup via the US Census Bureau Geocoder. Indicators from ACS 5-year (2022) + USDA Food Access Atlas (2019).
       </p>
     </Card>
+    </div>
   );
 }
 
