@@ -50,41 +50,52 @@ function HomePage() {
         <ChevronLeft className="h-4 w-4" /> Back home
       </Link>
 
-      <SectionHeader
-        eyebrow="Your home"
-        title="Look up any Hartford address"
-        subtitle="Type a different address anytime — yours, a friend's, a place you might rent."
-      />
+      {!data && (
+        <>
+          <SectionHeader
+            eyebrow="Your home"
+            title="Look up any Hartford address"
+            subtitle="Type a different address anytime — yours, a friend's, a place you might rent."
+          />
 
-      <Card className="mb-5">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
-            Home address
-          </label>
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-            <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
-            <input
-              id="addr"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="247 Garden Street, Hartford"
-              className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
-              autoComplete="street-address"
-              inputMode="text"
-            />
-          </div>
-          <button
-            type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
-          >
-            See the report
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </form>
-      </Card>
+          <Card className="mb-5">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
+                Home address
+              </label>
+              <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+                <input
+                  id="addr"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="247 Garden Street, Hartford"
+                  className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+                  autoComplete="street-address"
+                  inputMode="text"
+                />
+              </div>
+              <button
+                type="submit"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+              >
+                See the report
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+          </Card>
+        </>
+      )}
 
       {data && (
         <>
+          <button
+            onClick={() => { setActive(null); setQuery(""); }}
+            className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-card-foreground hover:bg-secondary"
+          >
+            <Search className="h-3.5 w-3.5" /> Look up a different address
+          </button>
+
           <Card className="mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 opacity-80" />
