@@ -14,6 +14,8 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
+  Mail,
+  Send,
 } from "lucide-react";
 import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -785,6 +787,8 @@ function SummaryScreen({
         </p>
       </div>
 
+      <PlanSignupForm />
+
       <button
         onClick={onRestart}
         className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-transparent px-5 py-3 text-[14px] font-semibold text-muted-foreground hover:bg-secondary/50"
@@ -792,5 +796,154 @@ function SummaryScreen({
         Start Over <ChevronRight className="h-4 w-4" />
       </button>
     </div>
+  );
+}
+
+function PlanSignupForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [wantInfo, setWantInfo] = useState(false);
+  const [wantSms, setWantSms] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const phoneValid = !wantSms || /^[\d().+\-\s]{7,}$/.test(phone.trim());
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailValid) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!phoneValid) {
+      setError("Please enter a valid phone number for text messages.");
+      return;
+    }
+    setError(null);
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="mb-5 rounded-2xl border border-emerald-300 bg-emerald-50 p-5 text-center">
+        <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white">
+          <CheckCircle2 className="h-5 w-5" />
+        </div>
+        <h3 className="font-display text-lg text-emerald-900">You're all set</h3>
+        <p className="mt-1 text-[13px] leading-relaxed text-emerald-800">
+          Your stabilization plan will be sent to <strong>{email}</strong> shortly.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft"
+    >
+      <div className="mb-4 flex items-start gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+          <Mail className="h-4 w-4" />
+        </span>
+        <div>
+          <h3 className="font-display text-[17px] leading-tight text-card-foreground">
+            Get your AI stabilization plan
+          </h3>
+          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
+            Enter your email to receive your personalized plan.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Name <span className="font-normal normal-case text-muted-foreground/70">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Email <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+
+        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/50 p-3 hover:bg-background">
+          <input
+            type="checkbox"
+            checked={wantInfo}
+            onChange={(e) => setWantInfo(e.target.checked)}
+            className="mt-0.5 h-4 w-4 cursor-pointer accent-blue-600"
+          />
+          <span className="text-[13px] leading-relaxed text-card-foreground">
+            Send me more information about <strong>Wake Up Wednesday</strong> and related resources.
+          </span>
+        </label>
+
+        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/50 p-3 hover:bg-background">
+          <input
+            type="checkbox"
+            checked={wantSms}
+            onChange={(e) => setWantSms(e.target.checked)}
+            className="mt-0.5 h-4 w-4 cursor-pointer accent-blue-600"
+          />
+          <span className="text-[13px] leading-relaxed text-card-foreground">
+            Text me about <strong>Wake Up Wednesday</strong> campaigns.
+          </span>
+        </label>
+
+        {wantSms && (
+          <div className="pl-7">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Cell phone number
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="(555) 123-4567"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Standard message and data rates may apply.
+            </p>
+          </div>
+        )}
+
+        {error && (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>
+        )}
+
+        <button
+          type="submit"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft transition hover:from-blue-700 hover:to-indigo-700"
+        >
+          <Send className="h-4 w-4" />
+          Send my plan
+        </button>
+
+        <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+          Your information stays private and is only used to deliver what you've requested.
+        </p>
+      </div>
+    </form>
   );
 }
