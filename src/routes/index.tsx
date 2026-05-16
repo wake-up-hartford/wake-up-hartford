@@ -79,9 +79,6 @@ function DashLink({
   return (
     <Link to={to} className="block">
       <Card className={`flex items-center gap-4 border-l-4 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
-        <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-xl ${t.iconBg} ${t.iconText}`}>
-          <Icon className="h-8 w-8" />
-        </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h3>
@@ -89,7 +86,12 @@ function DashLink({
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>
         </div>
-        <SketchArrow className={`h-9 w-12 shrink-0 -rotate-6 ${t.title}`} />
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <div className={`grid h-14 w-14 place-items-center rounded-xl ${t.iconBg} ${t.iconText}`}>
+            <Icon className="h-8 w-8" />
+          </div>
+          <SketchArrow className={`h-7 w-9 -rotate-6 ${t.title}`} />
+        </div>
       </Card>
     </Link>
   );
