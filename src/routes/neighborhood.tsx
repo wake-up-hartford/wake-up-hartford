@@ -116,10 +116,23 @@ function severityLabel(s: Indicator["severity"]) {
   return s === "good" ? "OK" : s === "watch" ? "Watch" : s === "concern" ? "Concern" : null;
 }
 
+function dotClass(s: Indicator["severity"]) {
+  return s === "good"
+    ? "bg-success"
+    : s === "watch"
+    ? "bg-warning"
+    : s === "concern"
+    ? "bg-destructive"
+    : "bg-muted-foreground/40";
+}
+
 function IndicatorRow({ ind }: { ind: Indicator }) {
-  const label = severityLabel(ind.severity);
   return (
-    <li className="flex items-start justify-between gap-3 py-3.5">
+    <li className="flex items-start gap-3 py-3.5">
+      <div
+        className={`mt-1.5 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
+        aria-label={severityLabel(ind.severity) ?? undefined}
+      />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-xl leading-none text-card-foreground">{ind.value}</span>
@@ -127,7 +140,6 @@ function IndicatorRow({ ind }: { ind: Indicator }) {
         </div>
         <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
       </div>
-      {label && <SeverityPill severity={ind.severity as "good" | "watch" | "concern"}>{label}</SeverityPill>}
     </li>
   );
 }
