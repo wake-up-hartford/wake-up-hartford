@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
+import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
@@ -164,29 +164,33 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
   if (loading) return <Card><p className="py-4 text-sm text-muted-foreground">Loading…</p></Card>;
   return (
     <div className="space-y-4">
-      {indicators.map((ind) => {
-        const label = severityLabel(ind.severity);
-        return (
-          <Card key={ind.key}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
+      {indicators.map((ind) => (
+        <Card key={ind.key}>
+          <div className="flex items-start gap-3">
+            <div
+              className={`mt-2 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
+              aria-label={severityLabel(ind.severity) ?? undefined}
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
                 <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
-                <div>
-                  <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
-                </div>
+                <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
               </div>
-              {label && <SeverityPill severity={ind.severity as "good" | "watch" | "concern"}>{label}</SeverityPill>}
+              <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
+              {ind.stateAverage && (
+                <p className="mt-2 text-xs font-medium text-card-foreground/80">{ind.stateAverage.label}</p>
+              )}
             </div>
-          </Card>
-        );
-      })}
+          </div>
+        </Card>
+      ))}
       <Card>
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where this comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
           All numbers are pulled live from the US Census Bureau's American Community Survey (ACS 5-year, 2022)
-          and the USDA Food Access Research Atlas. "Watch" or "Concern" doesn't mean a neighborhood is bad —
-          it flags something worth knowing about and talking through on Wake Up Wednesday.
+          and the USDA Food Access Research Atlas. Comparisons are against the Connecticut statewide ACS figure.
+          "Watch" or "Concern" doesn't mean a neighborhood is bad — it flags something worth knowing about and
+          talking through on Wake Up Wednesday.
         </p>
       </Card>
     </div>
