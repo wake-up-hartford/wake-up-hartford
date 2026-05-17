@@ -56,6 +56,7 @@ export type Indicator = {
   raw: number | null;
   severity: "good" | "watch" | "concern" | "neutral";
   note: string;
+  stateAverage?: { value: string; raw: number | null; label: string } | null;
 };
 
 export type TractIndicatorsResult = {
