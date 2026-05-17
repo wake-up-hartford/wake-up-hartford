@@ -226,106 +226,138 @@ export const getTractIndicators = createServerFn({ method: "POST" })
     const { state, county, tract } = data;
     const fips = `${state}${county}${tract}`;
     const geo = `for=tract:${tract}&in=state:${state}+county:${county}`;
+    const ctGeo = `for=state:09`;
 
     try {
-      const [b, s] = await Promise.all([
+      const [b, s, bCT, sCT] = await Promise.all([
         fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${geo}`),
         fetchACS(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${geo}`),
+        fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${ctGeo}`),
+        fetchACS(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${ctGeo}`),
       ]);
 
-      const pop = b["B01003_001E"] ?? null;
+      const derive = (b: Record<string, number>, s: Record<string, number>) => {
+        const noHsSum = [
+          "B15003_002E","B15003_003E","B15003_004E","B15003_005E","B15003_006E",
+          "B15003_007E","B15003_008E","B15003_009E","B15003_010E","B15003_011E",
+          "B15003_012E","B15003_013E","B15003_014E","B15003_015E","B15003_016E",
+        ].reduce((sum, k) => sum + (b[k] || 0), 0);
+        const preTotal = (b["B25034_009E"] || 0) + (b["B25034_010E"] || 0) + (b["B25034_011E"] || 0);
+        const medInc = b["B19013_001E"];
+        return {
+          pop: b["B01003_001E"] ?? null,
+          childPovPct: pct(b["B17006_002E"], b["B17006_001E"]),
+          medIncVal: medInc > 0 ? medInc : null,
+          unempPct: pct(b["B23025_005E"], b["B23025_003E"]),
+          noHsPct: pct(noHsSum, b["B15003_001E"]),
+          uninsPct: Number.isFinite(s["S2701_C05_001E"]) ? s["S2701_C05_001E"] : null,
+          pre1960Pct: pct(preTotal, b["B25034_001E"]),
+          severeRentPct: pct(b["B25070_010E"], b["B25070_001E"]),
+          renterPct: pct(b["B25003_003E"], b["B25003_001E"]),
+        };
+      };
 
-      // No HS diploma = sum 002..016
-      const noHsSum = [
-        "B15003_002E","B15003_003E","B15003_004E","B15003_005E","B15003_006E",
-        "B15003_007E","B15003_008E","B15003_009E","B15003_010E","B15003_011E",
-        "B15003_012E","B15003_013E","B15003_014E","B15003_015E","B15003_016E",
-      ].reduce((sum, k) => sum + (b[k] || 0), 0);
-      const noHsPct = pct(noHsSum, b["B15003_001E"]);
-
-      const childPovPct = pct(b["B17006_002E"], b["B17006_001E"]);
-      const medInc = b["B19013_001E"];
-      const medIncVal = medInc > 0 ? medInc : null;
-      const unempPct = pct(b["B23025_005E"], b["B23025_003E"]);
-      const uninsPct = Number.isFinite(s["S2701_C05_001E"]) ? s["S2701_C05_001E"] : null;
-      const preTotal = (b["B25034_009E"] || 0) + (b["B25034_010E"] || 0) + (b["B25034_011E"] || 0);
-      const pre1960Pct = pct(preTotal, b["B25034_001E"]);
-      const severeRentPct = pct(b["B25070_010E"], b["B25070_001E"]);
-      const renterPct = pct(b["B25003_003E"], b["B25003_001E"]);
+      const t = derive(b, s);
+      const ct = derive(bCT, sCT);
       const usdaFlag = FLAGGED.has(fips);
+
+      const cmpPct = (ctRaw: number | null, tractRaw: number | null): string => {
+        if (ctRaw == null || tractRaw == null) return "";
+        const d = tractRaw - ctRaw;
+        if (Math.abs(d) <= 0.5) return " — about the same";
+        return ` — ${Math.abs(d).toFixed(1)} pts ${d > 0 ? "above" : "below"} CT`;
+      };
+      const cmpUSD = (ctRaw: number | null, tractRaw: number | null): string => {
+        if (ctRaw == null || tractRaw == null) return "";
+        const d = tractRaw - ctRaw;
+        if (Math.abs(d) < 500) return " — about the same";
+        return ` — $${Math.abs(Math.round(d)).toLocaleString()} ${d > 0 ? "above" : "below"} CT`;
+      };
+
+      const avgPct = (raw: number | null) => ({ value: fmtPct(raw), raw, label: `CT average: ${fmtPct(raw)}` });
+      const avgPct0 = (raw: number | null) => ({ value: fmtPct(raw, 0), raw, label: `CT average: ${fmtPct(raw, 0)}` });
+      const avgUSD = (raw: number | null) => ({ value: fmtUSD(raw), raw, label: `CT average: ${fmtUSD(raw)}` });
 
       const indicators: Indicator[] = [
         {
           key: "population",
           label: "Total population",
-          value: fmtInt(pop),
-          raw: pop,
+          value: fmtInt(t.pop),
+          raw: t.pop,
           severity: "neutral",
           note: "People living in this census tract (ACS 5-year estimate).",
         },
         {
           key: "child_poverty",
           label: "Children in poverty",
-          value: fmtPct(childPovPct),
-          raw: childPovPct,
-          severity: tier(childPovPct, 10, 25),
+          value: fmtPct(t.childPovPct),
+          raw: t.childPovPct,
+          severity: tier(t.childPovPct, 10, 25),
           note: "Share of children under 18 below the federal poverty line.",
+          stateAverage: { ...avgPct(ct.childPovPct), label: `CT average: ${fmtPct(ct.childPovPct)}${cmpPct(ct.childPovPct, t.childPovPct)}` },
         },
         {
           key: "median_income",
           label: "Median household income",
-          value: fmtUSD(medIncVal),
-          raw: medIncVal,
+          value: fmtUSD(t.medIncVal),
+          raw: t.medIncVal,
           severity: "neutral",
           note: "Half of households earn more, half earn less.",
+          stateAverage: { ...avgUSD(ct.medIncVal), label: `CT median: ${fmtUSD(ct.medIncVal)}${cmpUSD(ct.medIncVal, t.medIncVal)}` },
         },
         {
           key: "unemployment",
           label: "Unemployment rate",
-          value: fmtPct(unempPct),
-          raw: unempPct,
-          severity: tier(unempPct, 4, 10),
+          value: fmtPct(t.unempPct),
+          raw: t.unempPct,
+          severity: tier(t.unempPct, 4, 10),
           note: "Share of the labor force currently looking for work.",
+          stateAverage: { ...avgPct(ct.unempPct), label: `CT average: ${fmtPct(ct.unempPct)}${cmpPct(ct.unempPct, t.unempPct)}` },
         },
         {
           key: "no_hs",
           label: "Adults without a high school diploma",
-          value: fmtPct(noHsPct),
-          raw: noHsPct,
-          severity: tier(noHsPct, 8, 20),
+          value: fmtPct(t.noHsPct),
+          raw: t.noHsPct,
+          severity: tier(t.noHsPct, 8, 20),
           note: "Share of adults age 25+ who never finished high school.",
+          stateAverage: { ...avgPct(ct.noHsPct), label: `CT average: ${fmtPct(ct.noHsPct)}${cmpPct(ct.noHsPct, t.noHsPct)}` },
         },
         {
           key: "uninsured",
           label: "Uninsured residents",
-          value: fmtPct(uninsPct),
-          raw: uninsPct,
-          severity: tier(uninsPct, 6, 15),
+          value: fmtPct(t.uninsPct),
+          raw: t.uninsPct,
+          severity: tier(t.uninsPct, 6, 15),
           note: "Share of people of all ages without health insurance.",
+          stateAverage: { ...avgPct(ct.uninsPct), label: `CT average: ${fmtPct(ct.uninsPct)}${cmpPct(ct.uninsPct, t.uninsPct)}` },
         },
         {
           key: "pre1960",
           label: "Old housing (pre-1960)",
-          value: fmtPct(pre1960Pct, 0),
-          raw: pre1960Pct,
-          severity: tier(pre1960Pct, 20, 50),
+          value: fmtPct(t.pre1960Pct, 0),
+          raw: t.pre1960Pct,
+          severity: tier(t.pre1960Pct, 20, 50),
           note: "Older homes are more likely to contain lead paint.",
+          stateAverage: { ...avgPct0(ct.pre1960Pct), label: `CT average: ${fmtPct(ct.pre1960Pct, 0)}${cmpPct(ct.pre1960Pct, t.pre1960Pct)}` },
         },
         {
           key: "severe_rent",
           label: "Severe rent burden",
-          value: fmtPct(severeRentPct),
-          raw: severeRentPct,
-          severity: tier(severeRentPct, 15, 30),
+          value: fmtPct(t.severeRentPct),
+          raw: t.severeRentPct,
+          severity: tier(t.severeRentPct, 15, 30),
           note: "Renters spending more than half of their income on rent.",
+          stateAverage: { ...avgPct(ct.severeRentPct), label: `CT average: ${fmtPct(ct.severeRentPct)}${cmpPct(ct.severeRentPct, t.severeRentPct)}` },
         },
         {
           key: "renter_share",
           label: "Renter share",
-          value: fmtPct(renterPct, 0),
-          raw: renterPct,
+          value: fmtPct(t.renterPct, 0),
+          raw: t.renterPct,
           severity: "neutral",
           note: "Share of occupied homes that are rented rather than owned.",
+          stateAverage: { ...avgPct0(ct.renterPct), label: `CT average: ${fmtPct(ct.renterPct, 0)}${cmpPct(ct.renterPct, t.renterPct)}` },
         },
         {
           key: "food_access",
@@ -339,7 +371,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         },
       ];
 
-      return { fips, population: pop, indicators };
+      return { fips, population: t.pop, indicators };
     } catch (err) {
       console.error("getTractIndicators failed", err);
       const msg = err instanceof Error ? err.message : String(err);
