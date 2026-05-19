@@ -10,10 +10,10 @@ const DOMAIN_KEYS = [
   "food",
   "health",
   "income",
-  "childcare",
-  "transportation",
+  "debt",
   "legal",
-  "social",
+  "safety",
+  "support",
 ] as const;
 
 const ScoreSchema = z.object({
