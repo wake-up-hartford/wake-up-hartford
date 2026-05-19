@@ -477,7 +477,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
           This survey covers <strong>8 areas of life</strong> that most affect
           stability — from housing and food to safety, income, and legal needs.
         </p>
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
           {SECTIONS.map((s) => {
             const Icon = s.icon;
             return (
