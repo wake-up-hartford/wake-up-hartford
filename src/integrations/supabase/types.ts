@@ -14,7 +14,139 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      intake_responses: {
+        Row: {
+          created_at: string
+          followup: Json
+          id: string
+          survey_scores: Json
+          tract_fips: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          followup?: Json
+          id?: string
+          survey_scores: Json
+          tract_fips?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          followup?: Json
+          id?: string
+          survey_scores?: Json
+          tract_fips?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plan_steps: {
+        Row: {
+          completed_at: string | null
+          detail: string | null
+          domain: string
+          id: string
+          plan_id: string
+          resource_id: string | null
+          step_order: number
+          title: string
+          user_id: string
+          week: number
+        }
+        Insert: {
+          completed_at?: string | null
+          detail?: string | null
+          domain: string
+          id?: string
+          plan_id: string
+          resource_id?: string | null
+          step_order?: number
+          title: string
+          user_id: string
+          week: number
+        }
+        Update: {
+          completed_at?: string | null
+          detail?: string | null
+          domain?: string
+          id?: string
+          plan_id?: string
+          resource_id?: string | null
+          step_order?: number
+          title?: string
+          user_id?: string
+          week?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_steps_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "stabilization_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          language_pref: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          language_pref?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          language_pref?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stabilization_plans: {
+        Row: {
+          generated_at: string
+          id: string
+          intake_id: string | null
+          plan: Json
+          status: string
+          user_id: string
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          intake_id?: string | null
+          plan: Json
+          status?: string
+          user_id: string
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          intake_id?: string | null
+          plan?: Json
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stabilization_plans_intake_id_fkey"
+            columns: ["intake_id"]
+            isOneToOne: false
+            referencedRelation: "intake_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
