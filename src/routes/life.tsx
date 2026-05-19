@@ -628,10 +628,10 @@ function SurveyScreen({
             <button
               key={opt}
               onClick={() => toggle(opt)}
-              className={`flex w-full items-start gap-3 rounded-xl border p-3.5 text-left transition-all ${
+              className={`group flex w-full items-start gap-3 rounded-xl border p-3.5 text-left transition-all ${
                 isSel
                   ? "border-transparent shadow-soft"
-                  : "border-border bg-card hover:bg-secondary/50"
+                  : "border-border bg-card"
               }`}
               style={
                 isSel
@@ -641,11 +641,23 @@ function SurveyScreen({
                     }
                   : undefined
               }
+              onMouseEnter={(e) => {
+                if (!isSel) {
+                  e.currentTarget.style.backgroundColor = section.color;
+                  e.currentTarget.style.borderColor = section.color;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSel) {
+                  e.currentTarget.style.backgroundColor = "";
+                  e.currentTarget.style.borderColor = "";
+                }
+              }}
             >
               <span
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
                   question.type === "single" ? "rounded-full" : "rounded"
-                }`}
+                } group-hover:border-white`}
                 style={{
                   borderColor: isSel ? section.color : "var(--border)",
                   backgroundColor: isSel ? section.color : "transparent",
@@ -655,7 +667,7 @@ function SurveyScreen({
                   <CheckCircle2 className="h-3.5 w-3.5 text-white" strokeWidth={3} />
                 )}
               </span>
-              <span className="text-[14px] leading-snug text-card-foreground">{opt}</span>
+              <span className="text-[14px] leading-snug text-card-foreground group-hover:text-[var(--primary-foreground)]">{opt}</span>
             </button>
           );
         })}
