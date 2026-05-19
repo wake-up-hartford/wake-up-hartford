@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,11 +15,12 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  Mail,
-  Send,
+  LogIn,
 } from "lucide-react";
 import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
+import { useAuth } from "@/hooks/use-auth";
+import { generateStabilizationPlan } from "@/lib/stabilization-plan.functions";
 
 export const Route = createFileRoute("/life")({
   head: () => ({
@@ -789,11 +791,14 @@ function SummaryScreen({
         </p>
       </div>
 
-      <PlanSignupForm />
+      <PlanGenerator
+        scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
+        priorities={priorities}
+      />
 
       <button
         onClick={onRestart}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-transparent px-5 py-3 text-[14px] font-semibold text-muted-foreground hover:bg-secondary/50"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-transparent px-5 py-3 text-[14px] font-semibold text-muted-foreground hover:bg-secondary/50"
       >
         Start Over <ChevronRight className="h-4 w-4" />
       </button>
@@ -801,151 +806,178 @@ function SummaryScreen({
   );
 }
 
-function PlanSignupForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [wantInfo, setWantInfo] = useState(false);
-  const [wantSms, setWantSms] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+/* ---------- Plan generator ---------- */
+
+type Transport = "car" | "bus" | "walking" | "none";
+const BENEFIT_OPTIONS = ["SNAP", "HUSKY/Medicaid", "WIC", "Section 8", "Care 4 Kids", "TANF"];
+
+function PlanGenerator({
+  scores,
+  priorities,
+}: {
+  scores: Record<string, "high" | "moderate" | "stable">;
+  priorities: string[];
+}) {
+  const { user, loading } = useAuth();
+  const nav = useNavigate();
+  const genFn = useServerFn(generateStabilizationPlan);
+
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [hours, setHours] = useState(5);
+  const [transport, setTransport] = useState<Transport>("bus");
+  const [language, setLanguage] = useState("en");
+  const [benefits, setBenefits] = useState<string[]>([]);
+  const [worry, setWorry] = useState("");
+  const [county, setCounty] = useState("Hartford");
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const phoneValid = !wantSms || /^[\d().+\-\s]{7,}$/.test(phone.trim());
+  if (loading) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!emailValid) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    if (!phoneValid) {
-      setError("Please enter a valid phone number for text messages.");
-      return;
-    }
-    setError(null);
-    setSubmitted(true);
-  };
-
-  if (submitted) {
+  if (!user) {
     return (
-      <div className="mb-5 rounded-2xl border border-emerald-300 bg-emerald-50 p-5 text-center">
-        <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white">
-          <CheckCircle2 className="h-5 w-5" />
-        </div>
-        <h3 className="font-display text-lg text-emerald-900">You're all set</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-emerald-800">
-          Your stabilization plan will be sent to <strong>{email}</strong> shortly.
+      <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h3 className="font-display text-[18px] leading-tight text-card-foreground">
+          Sign in to build your plan
+        </h3>
+        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+          Create a free account so we can save your plan, let you check off steps, and come back later.
         </p>
+        <Link
+          to="/auth"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
+        >
+          <LogIn className="h-4 w-4" /> Sign in / sign up
+        </Link>
       </div>
     );
   }
 
+  const toggleBenefit = (b: string) => {
+    setBenefits((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
+  };
+
+  const handleGenerate = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await genFn({
+        data: {
+          survey: { scores, priorities },
+          followup: {
+            adults,
+            children,
+            hoursPerWeek: hours,
+            transport,
+            language,
+            benefits,
+            worry,
+            county,
+          },
+        },
+      });
+      nav({ to: "/plan/$planId", params: { planId: result.planId } });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't generate your plan.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft"
-    >
-      <div className="mb-4 flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-          <Mail className="h-4 w-4" />
-        </span>
-        <div>
-          <h3 className="font-display text-[17px] leading-tight text-card-foreground">
-            Get your AI stabilization plan
-          </h3>
-          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
-            Enter your email to receive your personalized plan.
-          </p>
-        </div>
-      </div>
+    <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <h3 className="font-display text-[18px] leading-tight text-card-foreground">
+        A few last questions
+      </h3>
+      <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+        These help us pick resources that actually fit your life.
+      </p>
 
-      <div className="space-y-3">
-        <div>
-          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            Name <span className="font-normal normal-case text-muted-foreground/70">(optional)</span>
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          />
+      <div className="mt-4 space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <NumberField label="Adults in household" value={adults} setValue={setAdults} min={1} max={10} />
+          <NumberField label="Children" value={children} setValue={setChildren} min={0} max={10} />
         </div>
 
         <div>
-          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            Email <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          />
+          <Label>County in CT</Label>
+          <select value={county} onChange={(e) => setCounty(e.target.value)} className="input">
+            {["Hartford", "New Haven", "Fairfield", "New London", "Litchfield", "Middlesex", "Tolland", "Windham"].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
 
-        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/50 p-3 hover:bg-background">
-          <input
-            type="checkbox"
-            checked={wantInfo}
-            onChange={(e) => setWantInfo(e.target.checked)}
-            className="mt-0.5 h-4 w-4 cursor-pointer accent-blue-600"
-          />
-          <span className="text-[13px] leading-relaxed text-card-foreground">
-            Send me more information about <strong>Wake Up Wednesday</strong> and related resources.
-          </span>
-        </label>
+        <div>
+          <Label>Hours per week you can spend on this plan: {hours}</Label>
+          <input type="range" min={1} max={15} value={hours} onChange={(e) => setHours(Number(e.target.value))} className="w-full" />
+        </div>
 
-        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/50 p-3 hover:bg-background">
-          <input
-            type="checkbox"
-            checked={wantSms}
-            onChange={(e) => setWantSms(e.target.checked)}
-            className="mt-0.5 h-4 w-4 cursor-pointer accent-blue-600"
-          />
-          <span className="text-[13px] leading-relaxed text-card-foreground">
-            Text me about <strong>Wake Up Wednesday</strong> campaigns.
-          </span>
-        </label>
-
-        {wantSms && (
-          <div className="pl-7">
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              Cell phone number
-            </label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="(555) 123-4567"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            />
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              Standard message and data rates may apply.
-            </p>
+        <div>
+          <Label>How you get around</Label>
+          <div className="grid grid-cols-2 gap-2">
+            {(["car", "bus", "walking", "none"] as Transport[]).map((t) => (
+              <button key={t} type="button" onClick={() => setTransport(t)}
+                className={`rounded-lg border px-3 py-2 text-[13px] font-medium capitalize ${transport === t ? "border-blue-600 bg-blue-50 text-blue-700" : "border-border bg-background text-muted-foreground"}`}>
+                {t === "none" ? "no reliable transport" : t}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
 
-        {error && (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>
-        )}
+        <div>
+          <Label>Preferred language</Label>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="input">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+          </select>
+        </div>
 
-        <button
-          type="submit"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft transition hover:from-blue-700 hover:to-indigo-700"
-        >
-          <Send className="h-4 w-4" />
-          Send my plan
+        <div>
+          <Label>Benefits you're already getting (optional)</Label>
+          <div className="flex flex-wrap gap-2">
+            {BENEFIT_OPTIONS.map((b) => (
+              <button key={b} type="button" onClick={() => toggleBenefit(b)}
+                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium ${benefits.includes(b) ? "border-emerald-600 bg-emerald-50 text-emerald-700" : "border-border bg-background text-muted-foreground"}`}>
+                {b}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <Label>Biggest worry right now (optional, one sentence)</Label>
+          <textarea value={worry} onChange={(e) => setWorry(e.target.value)} rows={2} maxLength={280}
+            placeholder="e.g. My landlord said I have to be out by the 30th."
+            className="input" />
+        </div>
+
+        {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>}
+
+        <button onClick={handleGenerate} disabled={busy}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-60">
+          {busy ? "Building your plan…" : (<><Sparkles className="h-4 w-4" /> Generate my 30-day plan</>)}
         </button>
-
-        <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-          Your information stays private and is only used to deliver what you've requested.
-        </p>
+        {busy && <p className="text-center text-[12px] text-muted-foreground">This takes about 10 seconds.</p>}
       </div>
-    </form>
+    </div>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{children}</label>;
+}
+
+function NumberField({ label, value, setValue, min, max }: { label: string; value: number; setValue: (n: number) => void; min: number; max: number }) {
+  return (
+    <div>
+      <Label>{label}</Label>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="h-9 w-9 rounded-lg border border-border bg-background text-card-foreground">−</button>
+        <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground">{value}</span>
+        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="h-9 w-9 rounded-lg border border-border bg-background text-card-foreground">+</button>
+      </div>
+    </div>
   );
 }

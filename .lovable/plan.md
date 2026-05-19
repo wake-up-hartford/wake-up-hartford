@@ -1,41 +1,88 @@
+
 ## Goal
 
-Bring the Detailed tab in line with the new Report Card style (large colored dot on the left instead of a text pill), and where it makes sense, show how each tract value compares to the Connecticut statewide average.
+When someone finishes the Life Stabilization Survey, generate a personalized **30-day stabilization plan**: prioritized domains, week-by-week actions, and real CT referrals from a curated library. Save plans per user so they can return, check off steps, and re-generate later.
 
-## Changes
+## What the user will experience
 
-### 1. Fetch CT statewide values alongside the tract
+1. Finish the survey → see their red/yellow/green snapshot (already built).
+2. Answer 4–6 short follow-up questions (household, transportation, language, hours/week available, plus already-enrolled benefits).
+3. Click **"Generate my 30-day plan"** → loading state → personalized plan appears.
+4. Plan shows: priority summary, Week 1 / 2 / 3 / 4 sections, each with 2–4 checkable action steps, each step linked to a specific local resource (name, phone, address, what to ask for).
+5. Sign in (email + Google) to save the plan, check off steps, and come back later. Without login, they can still view/print but it won't persist.
 
-In `src/lib/tract-indicators.functions.ts`:
-- Inside `getTractIndicators`, add a third `fetchACS` call in the same `Promise.all` for `for=state:09` (B-vars) and a fourth for the S-table — so we get the same metrics computed for all of Connecticut.
-- Compute the same derived percentages (`childPovPct`, `medIncVal`, `unempPct`, `noHsPct`, `uninsPct`, `pre1960Pct`, `severeRentPct`, `renterPct`) for CT.
-- Extend each `Indicator` with an optional `stateAverage` field:
-  ```ts
-  stateAverage?: { value: string; raw: number | null; label: string }
-  ```
-  populated for every indicator except `population` and `food_access` (no meaningful state-wide comparison for those).
-- The `label` is the pre-formatted comparison string ("CT average: 12.4%" or "CT average: $86,200").
+## Build steps
 
-### 2. Update the Detailed tab UI
+### 1. Enable Lovable Cloud
+Needed for auth, database, and the AI gateway. One click; we set it up.
 
-In `src/routes/neighborhood.tsx`, `NeighborhoodDetailed`:
-- Replace the right-side `SeverityPill` with the same left-side colored dot used in `IndicatorRow` (reuse `dotClass`).
-- Under the indicator's `note`, when `stateAverage` is present, render a small comparison line:
-  - Shows "CT average: {value}"
-  - When both raw numbers are numeric, append a short delta like "— 4.2 pts above" / "5.1 pts below" / "about the same" (≤0.5 pts).
-  - For median income, use dollar delta instead of "pts" (e.g. "$12,400 below").
-- Keep the existing "Where this comes from" card; update the copy to note comparisons are vs. the Connecticut statewide ACS figure.
+### 2. Auth + minimal profile
+- Email/password + Google sign-in
+- `profiles` table (id, display_name, language_pref) auto-created on signup
+- Reset-password page
 
-### 3. No other tabs change
+### 3. Curated CT resource library
+- New file `src/data/ct-resources.json` (seeded with ~80–120 entries to start; expandable)
+- Each entry: `{ id, name, domain, services[], phone, address, town, county, hours, languages, eligibility_notes, url, source }`
+- Domains map 1:1 to the 8 survey categories (housing, food, income, health, childcare, transportation, legal, social)
+- Initial seed: 211ct.org top results per domain, CT food bank network, CT legal services, Husky/Access Health CT, CT DOL CTHires, CT shelter network, Care 4 Kids, etc. We start with statewide + the most populated counties; you can expand later.
 
-Report Card, Share, and Print tabs stay as they are. (Print could later include the CT average column, but that's out of scope unless you want it.)
+### 4. Database schema (Lovable Cloud)
+- `intake_responses` — survey scores + follow-up answers (jsonb), user_id, tract fips, created_at
+- `stabilization_plans` — user_id, intake_id, generated_at, plan jsonb (the AI output), status
+- `plan_steps` — plan_id, week (1–4), domain, title, detail, resource_id, order, completed_at
+- RLS: users see only their own rows; resources table is public-read
+
+### 5. Follow-up intake step (after survey, before plan)
+New section on `/life` after submit:
+- Household: adults / children / ages buckets
+- Hours/week available for "plan work" (slider 1–15)
+- Transportation: car / bus only / walking only / none
+- Language preference
+- Benefits already enrolled (multi-select: SNAP, HUSKY, WIC, Section 8, Care 4 Kids, none)
+- Optional: biggest worry right now (free text, 1 sentence)
+
+### 6. Plan-generation server function
+`src/lib/stabilization-plan.functions.ts` (`createServerFn` + `requireSupabaseAuth`):
+- Inputs: intake_id
+- Loads intake + filters `ct-resources.json` to entries matching the user's red/yellow domains, county, and language
+- Calls Lovable AI (`google/gemini-3-flash-preview`) with structured output (Zod schema) that forces:
+  - `priority_summary` (3–4 sentences, plain language, 6th-grade reading level)
+  - `weeks: [{ week, focus, steps: [{ domain, title, detail, resource_id, est_time_minutes }] }]`
+- AI is constrained to only pick `resource_id`s from the provided list (no hallucinated phone numbers)
+- Saves to `stabilization_plans` + `plan_steps`
+
+### 7. Plan UI (`/plan/$planId`)
+- Header: "Your 30-day plan" + priority summary + regenerate button
+- 4 week cards, each collapsible, with checkable steps
+- Each step expands to show: what to do, who to call (real referral card with phone/address), why it matters
+- Print / share buttons
+- "My plans" list at `/plans`
+
+### 8. Safety + tone guardrails (system prompt)
+- Plain language, no jargon, no shame
+- Never promise outcomes ("you will get…"); use "you can apply for…"
+- Always include 211 as a fallback option per domain
+- Flag legal/immigration issues with "talk to a lawyer first" rather than steps
+- Crisis triggers (housing eviction <7 days, food today, DV) → top of plan with hotline numbers, not a 30-day step
 
 ## Technical notes
 
-- CT-level ACS calls use the same endpoints (`acs/acs5` and `acs/acs5/subject`) with `for=state:09` — one extra round trip each, parallelized, so latency impact is minimal and the existing 1-hour query cache covers it.
-- Severity tiers stay tract-based (unchanged); the CT average is informational only.
-- `population` and `food_access` indicators intentionally skip the comparison line.
+- Resource list lives in source control (JSON) so updates are reviewable. Later, can move to a `resources` table for editing in-app.
+- AI calls run in TanStack server functions (no Edge Functions needed).
+- Plan generation typically 8–15 seconds — show a friendly loading screen with "we're building your plan…" + tips.
+- Cost per plan ≈ small (Gemini 3 Flash, ~3–5k input tokens with retrieved resources, ~1.5k structured output).
+- The plan jsonb is the source of truth; `plan_steps` rows are denormalized for fast checkbox writes.
 
-## Open question
+## Out of scope (good follow-ups, not now)
 
-Want the comparison delta shown as plain text (default above), or as a tiny colored chip (green if better than CT, red if worse)?
+- Caseworker/coach view of multiple clients
+- SMS reminders
+- Pulling live 211ct.org API (requires partnership)
+- Re-assessment cadence / progress charts
+- Spanish/Portuguese translation of the UI itself (we will generate plan content in the user's chosen language, but the app chrome stays English for v1)
+
+## Open questions before I build
+
+1. Do you have an existing resource list / spreadsheet I should seed from, or should I assemble the initial ~100 entries from public CT sources?
+2. Should non-signed-in users be able to generate a plan at all (view-only, no save), or require login first?
