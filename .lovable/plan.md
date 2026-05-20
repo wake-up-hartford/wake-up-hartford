@@ -1,15 +1,22 @@
-## Update Life survey intro copy
+## Polish Life intro + survey start
 
-Replace the italic subtitle on the Life Stabilization Survey intro screen with the user-approved version.
+All edits in `src/routes/life.tsx`.
 
-**File:** `src/routes/life.tsx` (intro `<p>` directly under the H1, around line 469-471)
+### 1. Gold hook on intro
+Change `<strong className="text-foreground">Are you in or approaching crisis?</strong>` to use a gold color: `className="text-amber-400"` (vibrant warm gold that reads on the dark background).
 
-**New copy:**
-> Are you in or approaching crisis? This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
+### 2. Vibrant green + bolder ACTION PLAN
+On the "ACTION PLAN" `<strong>` inside the survey-start block, swap `text-emerald-500` for `text-emerald-400 font-extrabold tracking-wide` so it pops more.
 
-**Styling notes:**
-- Drop the `italic` class — at this length italics hurt readability on mobile.
-- Keep the existing muted-foreground color and relaxed leading.
-- Lead sentence ("Are you in or approaching crisis?") gets emphasized as a bold opener so the hook reads first, then the explanation flows in normal weight.
+### 3. Move the "Survey takes 5 to 8 minutes…" block off the intro and onto the survey
+- Remove the entire card (lines ~473-479) from `IntroScreen`.
+- In `SurveyScreen`, render the same card only on the very first question (`sectionIdx === 0 && questionIdx === 0`), placed at the top of the returned JSX, above the progress bar. Same styling (`rounded-2xl border border-border bg-card p-5 shadow-soft mb-5`).
 
-No other copy, layout, or section changes.
+### 4. Larger "Begin Survey" button in display font
+Update the button on `IntroScreen` to:
+- `font-display` instead of default
+- larger text: `text-[18px]`
+- taller padding: `py-5`
+- keep the gradient + arrow
+
+No other layout or behavior changes.
