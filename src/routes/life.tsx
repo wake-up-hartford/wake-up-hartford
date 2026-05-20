@@ -609,9 +609,7 @@ function SurveyScreen({
       </div>
 
       {/* Category badge */}
-      <div
-        className={`mb-4 inline-flex items-center gap-2.5 rounded-full ${section.tint} px-4 py-2.5`}
-      >
+      <div className="mb-4 inline-flex items-center gap-2.5 rounded-2xl border border-border bg-transparent px-4 py-2.5">
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full text-white"
           style={{ backgroundColor: section.color }}
@@ -621,7 +619,7 @@ function SurveyScreen({
         <span className={`text-[15px] font-semibold ${section.accentText}`}>
           {section.name}
         </span>
-        <span className="text-[12px] font-semibold text-foreground/80">
+        <span className="text-[12px] font-semibold text-foreground">
           · Q{questionIdx + 1} of {section.questions.length}
         </span>
       </div>
