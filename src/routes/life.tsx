@@ -582,7 +582,7 @@ function SurveyScreen({
           <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
             Life Stabilization Survey
           </h1>
-          <p className="text-[14px] leading-relaxed text-card-foreground">
+          <p className="text-[14px] leading-relaxed text-foreground">
             This survey takes <strong>5 to 8 minutes</strong> to complete. Your answers will be used to
             create an AI-generated, prioritized{" "}
             <strong className="font-extrabold tracking-wide text-emerald-400">ACTION PLAN</strong>{" "}
