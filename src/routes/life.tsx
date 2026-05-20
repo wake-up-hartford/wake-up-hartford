@@ -469,7 +469,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Life Stabilization Survey
       </h1>
       <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        <strong className="text-amber-400">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
+        <strong className="text-amber-400">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized AI-generated 30-day Action Plan with next steps and CT resources matched to your top priorities.
       </p>
 
 
