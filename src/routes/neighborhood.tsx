@@ -137,7 +137,10 @@ function NeighborhoodPage() {
               <NeighborhoodPrint tract={tract} indicators={indicators} />
             </TabsContent>
           </Tabs>
+
+          <TakeAction />
         </>
+
       )}
     </AppShell>
   );
