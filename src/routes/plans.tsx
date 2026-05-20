@@ -52,15 +52,25 @@ function PlansPage() {
             key={p.id}
             to="/plan/$planId"
             params={{ planId: p.id }}
-            className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-soft hover:bg-secondary/30"
+            className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-soft hover:bg-secondary/30"
           >
-            <div className="flex-1">
-              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {new Date(p.generated_at).toLocaleDateString()}
-              </p>
-              <p className="mt-1 text-[14px] leading-snug text-card-foreground line-clamp-2">{p.summary}</p>
+            <p className="font-display text-[16px] leading-tight text-foreground">
+              Plan Created {new Date(p.generated_at).toLocaleDateString()}
+            </p>
+            {p.priority_domains.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {p.priority_domains.map((d) => (
+                  <span key={d} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent">
+                    {d}
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className="text-[13px] leading-snug text-muted-foreground line-clamp-2">{p.summary}</p>
+            <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+              <span>View plan</span>
+              <ChevronRight className="h-3 w-3" />
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </Link>
         ))}
       </div>
