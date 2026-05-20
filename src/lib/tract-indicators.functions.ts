@@ -388,7 +388,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         fips,
         population: null,
         indicators: [],
-        error: msg.startsWith("CENSUS_API_KEY") ? msg : "Couldn't reach the Census API. Please try again in a moment.",
+        error: msg.startsWith("CENSUS_API_KEY") ? msg : `Couldn't load Census data: ${msg}`,
       };
     }
   });
