@@ -107,7 +107,7 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
         </MapContainer>
       </div>
       <p className="text-center text-xs text-muted-foreground">
-        {loading ? "Looking up address…" : "Tap anywhere on the map to drop a pin."}
+        {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}
       </p>
     </div>
   );
