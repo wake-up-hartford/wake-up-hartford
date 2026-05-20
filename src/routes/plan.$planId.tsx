@@ -113,9 +113,9 @@ function PlanPage() {
           const ws = stepsByWeek.get(w) ?? [];
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <div className="mb-3 flex items-baseline justify-between">
+              <div className="mb-3 flex items-baseline justify-between gap-3">
                 <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
-                {weekMeta && <span className="text-[12px] text-muted-foreground">{weekMeta.focus}</span>}
+                {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
               </div>
               <ul className="space-y-3">
                 {ws.map((s) => {
