@@ -229,10 +229,32 @@ export const geocodeAddressToTract = createServerFn({ method: "POST" })
     }
   });
 
+// CT switched from counties to planning regions in 2022 ACS. Old county FIPS
+// (001-015) no longer return data. Try the new planning region codes in order.
+const CT_PLANNING_REGIONS = ["110", "120", "130", "140", "150", "160", "170", "180", "190"];
+
+async function resolveCtCounty(state: string, county: string, tract: string): Promise<string> {
+  if (state !== "09") return county;
+  // Old CT county codes are 001-015 (odd). Planning regions are 110-190.
+  const n = Number(county);
+  if (n >= 110) return county; // already a planning region
+  for (const pr of CT_PLANNING_REGIONS) {
+    try {
+      const url = `${ACS_BASE}?get=B01003_001E&for=tract:${tract}&in=state:09+county:${pr}`;
+      const res = await fetchACS(url);
+      if (Number.isFinite(res["B01003_001E"])) return pr;
+    } catch {
+      // try next
+    }
+  }
+  return county;
+}
+
 export const getTractIndicators = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data }): Promise<TractIndicatorsResult> => {
-    const { state, county, tract } = data;
+    const { state, tract } = data;
+    const county = await resolveCtCounty(state, data.county, tract);
     const fips = `${state}${county}${tract}`;
     const geo = `for=tract:${tract}&in=state:${state}+county:${county}`;
     const ctGeo = `for=state:09`;
