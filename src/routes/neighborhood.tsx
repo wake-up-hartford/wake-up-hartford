@@ -195,14 +195,17 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
   );
 }
 
-function cardTintClass(s: Indicator["severity"]) {
-  return s === "good"
-    ? "bg-success border-success text-success-foreground"
-    : s === "watch"
-    ? "bg-warning border-warning text-warning-foreground"
-    : s === "concern"
-    ? "border-transparent text-white [background-color:oklch(0.55_0.28_27)]"
-    : "border-transparent text-white [background-color:oklch(0.55_0.02_280)]";
+function cardStyle(s: Indicator["severity"]): { className: string; style?: React.CSSProperties } {
+  if (s === "good") return { className: "bg-success border-success text-success-foreground" };
+  if (s === "watch") return { className: "bg-warning border-warning text-warning-foreground" };
+  if (s === "concern") return {
+    className: "border-transparent text-white",
+    style: { backgroundColor: "oklch(0.5 0.24 27)" },
+  };
+  return {
+    className: "border-transparent text-white",
+    style: { backgroundColor: "oklch(0.5 0.02 280)" },
+  };
 }
 
 function SeverityLegend() {
@@ -232,8 +235,10 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
   return (
     <div className="space-y-4">
       <SeverityLegend />
-      {indicators.map((ind) => (
-        <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
+      {indicators.map((ind) => {
+        const cs = cardStyle(ind.severity);
+        return (
+        <div key={ind.key} className={`rounded-lg border p-4 shadow-sm ${cs.className}`} style={cs.style}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
               <span className="font-display text-2xl leading-none">{ind.value}</span>
@@ -244,8 +249,9 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
               <p className="mt-2 text-xs font-semibold">{ind.stateAverage.label}</p>
             )}
           </div>
-        </Card>
-      ))}
+        </div>
+        );
+      })}
       <Card>
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where this comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
