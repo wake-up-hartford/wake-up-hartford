@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
+
+const PickAddressMap = lazy(() =>
+  import("@/components/BuildingAddressMap").then((m) => ({ default: m.PickAddressMap })),
+);
+const AddressLocationMap = lazy(() =>
+  import("@/components/BuildingAddressMap").then((m) => ({ default: m.AddressLocationMap })),
+);
 
 export const Route = createFileRoute("/building")({
   head: () => ({
@@ -74,34 +81,59 @@ function HomePage() {
           <SectionHeader
             eyebrow="Your home"
             title="Look up any Hartford address"
-            subtitle="Type a different address anytime — yours, a friend's, a place you might rent."
+            subtitle="Type an address — yours, a friend's, a place you might rent — or drop a pin on the map."
           />
 
           <Card className="mb-5">
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
-                Home address
-              </label>
-              <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-                <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
-                <input
-                  id="addr"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="247 Garden Street, Hartford"
-                  className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
-                  autoComplete="street-address"
-                  inputMode="text"
-                />
-              </div>
-              <button
-                type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
-              >
-                See the report
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </form>
+            <Tabs defaultValue="address" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1 mb-4">
+                <TabsTrigger value="address" className="py-1.5 text-xs font-semibold text-[#dfddce] data-[state=active]:text-[#b8860b]">
+                  Enter Address
+                </TabsTrigger>
+                <TabsTrigger value="map" className="py-1.5 text-xs font-semibold text-[#dfddce] data-[state=active]:text-[#b8860b]">
+                  Pick on Map
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="address">
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
+                    Home address
+                  </label>
+                  <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                    <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+                    <input
+                      id="addr"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="247 Garden Street, Hartford"
+                      className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+                      autoComplete="street-address"
+                      inputMode="text"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+                  >
+                    See the report
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="map">
+                <Suspense fallback={<div className="h-[320px] rounded-xl bg-secondary/40 animate-pulse" />}>
+                  <PickAddressMap
+                    onPick={(addr) => {
+                      setQuery(addr);
+                      setActive(addr);
+                      save(addr);
+                    }}
+                  />
+                </Suspense>
+              </TabsContent>
+            </Tabs>
           </Card>
         </>
       )}
@@ -117,6 +149,11 @@ function HomePage() {
                 <p className="truncate font-display text-lg">{data.address}</p>
                 <p className="text-sm opacity-80">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
               </div>
+            </div>
+            <div className="mt-3">
+              <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
+                <AddressLocationMap address={data.address} />
+              </Suspense>
             </div>
           </Card>
 
