@@ -441,19 +441,21 @@ function LifePage() {
         />
       )}
 
-      <Link
-        to="/plans"
-        className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
-      >
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
-          <FileText className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
-          <p className="text-[12px] text-muted-foreground">Stabilization plans you've saved.</p>
-        </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      </Link>
+      {stage === "intro" && (
+        <Link
+          to="/plans"
+          className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
+        >
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
+            <p className="text-[12px] text-muted-foreground">Stabilization plans you've saved.</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      )}
     </AppShell>
   );
 }
