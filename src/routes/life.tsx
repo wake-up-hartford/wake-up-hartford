@@ -887,7 +887,7 @@ function PlanGenerator({
           Sign in to build your plan
         </h3>
         <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-          Create a free account so we can save your plan, let you check off steps, and come back later.
+          Create a free account so this plan can be saved, let you check off steps, and come back later.
         </p>
         <Link
           to="/auth"
