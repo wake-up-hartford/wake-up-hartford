@@ -105,12 +105,22 @@ function AuthPage() {
         <input
           type="password"
           required
-          minLength={6}
+          minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password (min 6 chars)"
+          placeholder="Password"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        {mode === "signup" && (
+          <div className="rounded-lg border border-border bg-muted/30 p-3 text-[12px] text-muted-foreground">
+            <p className="mb-1 font-semibold text-foreground">Password must:</p>
+            <ul className="list-disc space-y-0.5 pl-4">
+              <li>Be at least 8 characters long</li>
+              <li>Include upper &amp; lowercase letters, a number, and a symbol</li>
+              <li>Not be a common or previously leaked password (e.g. "password123")</li>
+            </ul>
+          </div>
+        )}
         {error && <p className="text-[13px] text-destructive">{error}</p>}
         <button
           type="submit"
