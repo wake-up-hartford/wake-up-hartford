@@ -234,11 +234,12 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
 
 function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}` },
+    { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}`, compare: null as string | null },
     ...indicators.slice(0, 4).map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
       body: ind.note,
+      compare: ind.stateAverage?.label ?? null,
     })),
   ];
   const [i, setI] = useState(0);
@@ -291,10 +292,16 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
           <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
+            {slide.compare && (
+              <p className="mt-3 inline-block self-start rounded-full bg-primary-foreground/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
+                {slide.compare}
+              </p>
+            )}
           </div>
           <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
         </div>
       </div>
+
 
       <div className="flex items-center justify-between gap-2">
         <button
