@@ -55,7 +55,7 @@ function NeighborhoodPage() {
           <button
             type="button"
             onClick={() => setTract(null)}
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="ml-auto inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <MapPin className="h-4 w-4" /> Choose another
           </button>
@@ -71,8 +71,8 @@ function NeighborhoodPage() {
           <Card className="mb-5">
             <Tabs defaultValue="map">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold">Map</TabsTrigger>
-                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold">Address</TabsTrigger>
+                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-amber-300 data-[state=active]:text-amber-200">Map</TabsTrigger>
+                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-amber-300 data-[state=active]:text-amber-200">Enter Address</TabsTrigger>
               </TabsList>
               <TabsContent value="map" className="mt-3">
                 <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
@@ -275,7 +275,7 @@ function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
 function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
   const slides = [
     { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
-    ...indicators.slice(0, 4).map((ind) => ({
+    ...indicators.map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
       body: ind.note,
