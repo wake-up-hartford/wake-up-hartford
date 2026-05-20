@@ -517,8 +517,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         </p>
       </div>
 
-
+      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[13px] leading-relaxed text-card-foreground">
+
           Survey covers <strong>8 areas of life</strong> that affect stability.
         </p>
         <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
