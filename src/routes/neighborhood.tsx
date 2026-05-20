@@ -195,14 +195,17 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
   );
 }
 
-function cardTintClass(s: Indicator["severity"]) {
-  return s === "good"
-    ? "bg-success border-success text-success-foreground"
-    : s === "watch"
-    ? "bg-warning border-warning text-warning-foreground"
-    : s === "concern"
-    ? "border-transparent text-white [background-color:oklch(0.55_0.28_27)]"
-    : "border-transparent text-white [background-color:oklch(0.55_0.02_280)]";
+function cardStyle(s: Indicator["severity"]): { className: string; style?: React.CSSProperties } {
+  if (s === "good") return { className: "bg-success border-success text-success-foreground" };
+  if (s === "watch") return { className: "bg-warning border-warning text-warning-foreground" };
+  if (s === "concern") return {
+    className: "border-transparent text-white",
+    style: { backgroundColor: "oklch(0.5 0.24 27)" },
+  };
+  return {
+    className: "border-transparent text-white",
+    style: { backgroundColor: "oklch(0.5 0.02 280)" },
+  };
 }
 
 function SeverityLegend() {
