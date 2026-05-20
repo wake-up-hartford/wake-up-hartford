@@ -580,6 +580,16 @@ function SurveyScreen({
 
   return (
     <div>
+      {sectionIdx === 0 && questionIdx === 0 && (
+        <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+          <p className="text-[14px] leading-relaxed text-card-foreground">
+            Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
+            create an AI generated, prioritized{" "}
+            <strong className="font-extrabold tracking-wide text-emerald-400">ACTION PLAN</strong>{" "}
+            tailored to your situation. There are no wrong answers — be as honest as you can.
+          </p>
+        </div>
+      )}
       {/* Progress */}
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
