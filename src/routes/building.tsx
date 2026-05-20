@@ -34,14 +34,13 @@ function HomePage() {
   useEffect(() => {
     if (seeded) return;
     const fromUrl = new URLSearchParams(window.location.search).get("address");
-    const seed = fromUrl || address;
-    if (seed) {
-      setActive(seed);
-      setQuery(seed);
-      if (fromUrl) save(seed);
+    if (fromUrl) {
+      setActive(fromUrl);
+      setQuery(fromUrl);
+      save(fromUrl);
     }
-    if (fromUrl !== null || address !== null) setSeeded(true);
-  }, [address, seeded, save]);
+    setSeeded(true);
+  }, [seeded, save]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
