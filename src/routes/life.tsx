@@ -648,7 +648,7 @@ function SurveyScreen({
         </button>
 
         {/* Journey graphic */}
-        <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+        <div className="mt-6 overflow-hidden">
           <svg
             viewBox="0 0 680 340"
             xmlns="http://www.w3.org/2000/svg"
@@ -713,9 +713,9 @@ function SurveyScreen({
               textAnchor="middle"
               fill="#fff8e0"
               fontFamily="system-ui, sans-serif"
-              fontSize="16"
-              fontWeight="600"
-              letterSpacing="2"
+              fontSize="26"
+              fontWeight="700"
+              letterSpacing="2.5"
             >
               MOVING TOWARDS STABILITY
             </text>
