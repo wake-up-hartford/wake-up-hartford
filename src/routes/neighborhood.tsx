@@ -71,8 +71,8 @@ function NeighborhoodPage() {
           <Card className="mb-5">
             <Tabs defaultValue="map">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold">Map</TabsTrigger>
-                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold">Address</TabsTrigger>
+                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-amber-300 data-[state=active]:text-amber-200">Map</TabsTrigger>
+                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-amber-300 data-[state=active]:text-amber-200">Enter Address</TabsTrigger>
               </TabsList>
               <TabsContent value="map" className="mt-3">
                 <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
