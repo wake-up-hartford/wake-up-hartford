@@ -2,12 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+
+const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
 
 export const Route = createFileRoute("/neighborhood")({
   head: () => ({
@@ -63,11 +65,38 @@ function NeighborhoodPage() {
           onClick={() => setShowLookup((v) => !v)}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <Search className="h-4 w-4" /> Look Up Additional Address
+          <MapPin className="h-4 w-4" /> Choose a neighborhood
         </button>
       </div>
 
-      {showLookup && <CensusTractLookup onResolved={handleResolved} />}
+      {showLookup && (
+        <Card className="mb-5">
+          <h2 className="font-display text-lg leading-tight text-card-foreground">Choose your neighborhood</h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
+            Tap a tract on the map below, or look up any US address. The highlighted tracts are
+            NAACP Greater Hartford's primary focus — Northeast, Blue Hills, Upper Albany, and
+            adjacent North End neighborhoods.
+          </p>
+
+          <Tabs defaultValue="map" className="mt-4">
+            <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
+              <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold">Map</TabsTrigger>
+              <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold">Address</TabsTrigger>
+            </TabsList>
+            <TabsContent value="map" className="mt-3">
+              <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
+                <TargetTractMap
+                  selectedTract={tract.tract}
+                  onSelect={handleResolved}
+                />
+              </Suspense>
+            </TabsContent>
+            <TabsContent value="address" className="mt-3">
+              <CensusTractLookup onResolved={handleResolved} />
+            </TabsContent>
+          </Tabs>
+        </Card>
+      )}
 
       <SectionHeader
         eyebrow={`Census Tract ${tract.tractName}`}
