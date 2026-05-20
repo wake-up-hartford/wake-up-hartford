@@ -201,8 +201,8 @@ function cardTintClass(s: Indicator["severity"]) {
     : s === "watch"
     ? "bg-warning border-warning text-warning-foreground"
     : s === "concern"
-    ? "bg-destructive border-destructive text-destructive-foreground"
-    : "bg-card border-border text-card-foreground";
+    ? "border-transparent text-white [background-color:oklch(0.55_0.28_27)]"
+    : "border-transparent text-white [background-color:oklch(0.55_0.02_280)]";
 }
 
 function SeverityLegend() {
