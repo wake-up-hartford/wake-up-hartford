@@ -467,16 +467,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Life Stabilization Survey
       </h1>
       <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        <strong className="text-foreground">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
+        <strong className="text-amber-400">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
       </p>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <p className="text-[14px] leading-relaxed text-card-foreground">
-          Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
-          create an AI generated, prioritized <strong className="text-emerald-500">ACTION PLAN</strong> tailored to your situation. There
-          are no wrong answers — be as honest as you can.
-        </p>
-      </div>
 
       <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
         <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
@@ -512,9 +505,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 
       <button
         onClick={onBegin}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-4 text-[15px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
       >
-        Begin Survey <ArrowRight className="h-4 w-4" />
+        Begin Survey <ArrowRight className="h-5 w-5" />
       </button>
     </div>
   );
@@ -587,6 +580,16 @@ function SurveyScreen({
 
   return (
     <div>
+      {sectionIdx === 0 && questionIdx === 0 && (
+        <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+          <p className="text-[14px] leading-relaxed text-card-foreground">
+            Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
+            create an AI generated, prioritized{" "}
+            <strong className="font-extrabold tracking-wide text-emerald-400">ACTION PLAN</strong>{" "}
+            tailored to your situation. There are no wrong answers — be as honest as you can.
+          </p>
+        </div>
+      )}
       {/* Progress */}
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
