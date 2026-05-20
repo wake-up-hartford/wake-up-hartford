@@ -28,11 +28,13 @@ function NeighborhoodPage() {
   const [tract, setTract] = useState<Tract | null>(null);
 
   const fetchIndicators = useServerFn(getTractIndicators);
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ["tract-indicators", tract?.state, tract?.county, tract?.tract],
     queryFn: () => fetchIndicators({ data: { state: tract!.state, county: tract!.county, tract: tract!.tract } }),
     staleTime: 1000 * 60 * 60,
     enabled: !!tract,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 
   const handleResolved = (t: Tract) => {
@@ -101,7 +103,20 @@ function NeighborhoodPage() {
 
           {data?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
-              <p className="text-sm text-destructive">{data.error}</p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-destructive">{data.error}</p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="shrink-0"
+                >
+                  {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                  {isFetching ? "Retrying…" : "Retry"}
+                </Button>
+              </div>
             </Card>
           )}
 
