@@ -81,7 +81,7 @@ function PlanPage() {
         <p className="mb-2 font-mono text-[13px] font-semibold uppercase tracking-wider text-emerald-600">
           ▸ Your 30-day plan
         </p>
-        <h1 className="font-display text-3xl leading-tight text-foreground">Stabilization plan</h1>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
         <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">{plan.priority_summary}</p>
         <p className="mt-3 text-[12px] text-muted-foreground">
           {done} of {total} steps completed
@@ -113,9 +113,9 @@ function PlanPage() {
           const ws = stepsByWeek.get(w) ?? [];
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <div className="mb-3 flex items-baseline justify-between">
+              <div className="mb-3 flex items-baseline justify-between gap-3">
                 <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
-                {weekMeta && <span className="text-[12px] text-muted-foreground">{weekMeta.focus}</span>}
+                {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
               </div>
               <ul className="space-y-3">
                 {ws.map((s) => {
@@ -137,7 +137,7 @@ function PlanPage() {
                             {s.title}
                           </p>
                           {s.detail && (
-                            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{s.detail}</p>
+                            <p className="mt-1 text-[13px] leading-relaxed text-card-foreground/90">{s.detail}</p>
                           )}
                           <span className="mt-1 inline-block rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                             {s.domain}

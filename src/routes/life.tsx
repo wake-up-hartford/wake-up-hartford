@@ -887,7 +887,7 @@ function PlanGenerator({
           Sign in to build your plan
         </h3>
         <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-          Create a free account so we can save your plan, let you check off steps, and come back later.
+          Create a free account so this plan can be saved, let you check off steps, and come back later.
         </p>
         <Link
           to="/auth"
@@ -936,7 +936,7 @@ function PlanGenerator({
         A few last questions
       </h3>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-        These help us pick resources that actually fit your life.
+        These help this plan pick resources that actually fit your life.
       </p>
 
       <div className="mt-4 space-y-4">
@@ -1019,9 +1019,9 @@ function NumberField({ label, value, setValue, min, max }: { label: string; valu
     <div>
       <Label>{label}</Label>
       <div className="flex items-center gap-2">
-        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="h-9 w-9 rounded-lg border border-border bg-background text-card-foreground">−</button>
+        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">−</button>
         <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground">{value}</span>
-        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="h-9 w-9 rounded-lg border border-border bg-background text-card-foreground">+</button>
+        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">+</button>
       </div>
     </div>
   );
