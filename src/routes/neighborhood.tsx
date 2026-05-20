@@ -197,18 +197,41 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
 
 function cardTintClass(s: Indicator["severity"]) {
   return s === "good"
-    ? "bg-success/15 border-success/40"
+    ? "bg-success/35 border-success/60"
     : s === "watch"
-    ? "bg-warning/20 border-warning/50"
+    ? "bg-warning/40 border-warning/70"
     : s === "concern"
-    ? "bg-destructive/15 border-destructive/40"
-    : "bg-muted/40 border-border";
+    ? "bg-destructive/35 border-destructive/60"
+    : "bg-muted/60 border-border";
+}
+
+function SeverityLegend() {
+  const items = [
+    { dot: "bg-success", label: "Green", desc: "On par with or better than CT average" },
+    { dot: "bg-warning", label: "Yellow", desc: "Worth watching — notably off the CT average" },
+    { dot: "bg-destructive", label: "Red", desc: "Concern — significantly worse than CT average" },
+    { dot: "bg-muted-foreground/60", label: "Gray", desc: "No comparison available" },
+  ];
+  return (
+    <Card className="bg-card/95">
+      <h3 className="mb-2 font-display text-base text-card-foreground">What the colors mean</h3>
+      <ul className="space-y-1.5">
+        {items.map((i) => (
+          <li key={i.label} className="flex items-start gap-2 text-xs">
+            <span className={`mt-1 h-3 w-3 shrink-0 rounded-full ${i.dot}`} />
+            <span className="text-card-foreground"><strong>{i.label}:</strong> <span className="text-muted-foreground">{i.desc}</span></span>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
 }
 
 function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]; loading: boolean }) {
   if (loading) return <Card><p className="py-4 text-sm text-muted-foreground">Loading…</p></Card>;
   return (
     <div className="space-y-4">
+      <SeverityLegend />
       {indicators.map((ind) => (
         <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
           <div className="min-w-0">
@@ -216,9 +239,9 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
               <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
               <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
+            <p className="mt-1 text-sm text-card-foreground/85">{ind.note}</p>
             {ind.stateAverage && (
-              <p className="mt-2 text-xs font-medium text-card-foreground/80">{ind.stateAverage.label}</p>
+              <p className="mt-2 text-xs font-semibold text-card-foreground">{ind.stateAverage.label}</p>
             )}
           </div>
         </Card>
