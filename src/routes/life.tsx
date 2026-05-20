@@ -602,7 +602,7 @@ function SurveyScreen({
           onClick={() => setStarted(true)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
         >
-          Start {SECTIONS[0].name} Section <ArrowRight className="h-5 w-5" />
+          Start Survey <ArrowRight className="h-5 w-5" />
         </button>
       </div>
     );
