@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2 } from "lucide-react";
+import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -137,7 +137,10 @@ function NeighborhoodPage() {
               <NeighborhoodPrint tract={tract} indicators={indicators} />
             </TabsContent>
           </Tabs>
+
+          <TakeAction />
         </>
+
       )}
     </AppShell>
   );
@@ -593,6 +596,31 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
         {loading ? "…" : value}
       </p>
       <p className="text-[10px] text-muted-foreground sm:text-[11px]">{label}</p>
+    </div>
+  );
+}
+
+function TakeAction() {
+  return (
+    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
+      <div className="flex items-start gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+          <Megaphone className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
+          <p className="mt-1 text-sm text-foreground/80">
+            Report a problem, get free legal help, or join your neighbors at Unity Plaza.
+          </p>
+          <button
+            type="button"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+          >
+            Take action
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
