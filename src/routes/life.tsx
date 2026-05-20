@@ -473,13 +473,6 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       </p>
 
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
-        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
-        <p className="text-[13px] leading-relaxed">
-          Your responses are private and used only to generate your personalized plan.
-          This is not a diagnostic tool.
-        </p>
-      </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[13px] leading-relaxed text-card-foreground">
@@ -528,6 +521,7 @@ function SurveyScreen({
 }) {
   const [sectionIdx, setSectionIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
+  const [started, setStarted] = useState(false);
 
   const section = SECTIONS[sectionIdx];
   const question = section.questions[questionIdx];
@@ -580,18 +574,42 @@ function SurveyScreen({
     }
   };
 
-  return (
-    <div>
-      {sectionIdx === 0 && questionIdx === 0 && (
+  if (!started) {
+    return (
+      <div>
         <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+          <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
+            Life Stabilization Survey
+          </h1>
           <p className="text-[14px] leading-relaxed text-card-foreground">
-            Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
-            create an AI generated, prioritized{" "}
+            This survey takes <strong>5 to 8 minutes</strong> to complete. Your answers will be used to
+            create an AI-generated, prioritized{" "}
             <strong className="font-extrabold tracking-wide text-emerald-400">ACTION PLAN</strong>{" "}
             tailored to your situation. There are no wrong answers — be as honest as you can.
           </p>
         </div>
-      )}
+
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
+          <p className="text-[13px] leading-relaxed">
+            Your responses are private and used only to generate your personalized plan.
+            This is not a diagnostic tool.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setStarted(true)}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
+        >
+          Start {SECTIONS[0].name} Section <ArrowRight className="h-5 w-5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+
       {/* Progress */}
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between font-semibold uppercase tracking-wider">
