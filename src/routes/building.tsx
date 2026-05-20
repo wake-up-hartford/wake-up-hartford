@@ -61,16 +61,16 @@ function HomePage() {
 
   return (
     <AppShell>
-      <div className="mb-4 flex items-center gap-4">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Start
         </Link>
         {data && (
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 text-sm text-[#dfddce] hover:opacity-80 transition-opacity"
+            className="ml-auto inline-flex items-center gap-1.5 text-sm text-[#dfddce] hover:opacity-80 transition-opacity"
           >
-            <Search className="h-3.5 w-3.5" /> Look up a different address
+            <Search className="h-3.5 w-3.5" /> Look up new address
           </button>
         )}
       </div>
