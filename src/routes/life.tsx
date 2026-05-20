@@ -441,19 +441,21 @@ function LifePage() {
         />
       )}
 
-      <Link
-        to="/plans"
-        className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
-      >
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
-          <FileText className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
-          <p className="text-[12px] text-muted-foreground">Stabilization plans you've saved.</p>
-        </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      </Link>
+      {stage === "intro" && (
+        <Link
+          to="/plans"
+          className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
+        >
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
+            <p className="text-[12px] text-muted-foreground">Stabilization plans you've saved.</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      )}
     </AppShell>
   );
 }
@@ -592,11 +594,11 @@ function SurveyScreen({
       )}
       {/* Progress */}
       <div className="mb-5">
-        <div className="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          <span>
+        <div className="mb-2 flex items-center justify-between font-semibold uppercase tracking-wider">
+          <span className="text-[13px] text-foreground">
             Section {sectionIdx + 1} of {SECTIONS.length}
           </span>
-          <span>{pct}%</span>
+          <span className="text-[11px] text-muted-foreground">{pct}%</span>
         </div>
         <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
           <div
@@ -608,23 +610,23 @@ function SurveyScreen({
 
       {/* Category badge */}
       <div
-        className={`mb-4 inline-flex items-center gap-2 rounded-full ${section.tint} px-3 py-1.5`}
+        className={`mb-4 inline-flex items-center gap-2.5 rounded-full ${section.tint} px-4 py-2.5`}
       >
         <span
-          className="flex h-6 w-6 items-center justify-center rounded-full text-white"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-white"
           style={{ backgroundColor: section.color }}
         >
-          <Icon className="h-3.5 w-3.5" />
+          <Icon className="h-4 w-4" />
         </span>
-        <span className={`text-[12px] font-semibold ${section.accentText}`}>
+        <span className={`text-[15px] font-semibold ${section.accentText}`}>
           {section.name}
         </span>
-        <span className="text-[11px] text-muted-foreground">
+        <span className="text-[12px] font-semibold text-foreground/80">
           · Q{questionIdx + 1} of {section.questions.length}
         </span>
       </div>
 
-      <h2 className="mb-1 font-display text-[22px] leading-snug text-foreground">
+      <h2 className="mb-1 font-display text-[19px] leading-snug text-foreground">
         {question.text}
       </h2>
       <p className="mb-4 text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
