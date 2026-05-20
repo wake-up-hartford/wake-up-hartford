@@ -139,6 +139,10 @@ function HomePage() {
 
       {data && (
         <>
+          <div className="mb-3 rounded-md border border-amber-400/40 bg-amber-400/10 px-3 py-2 text-xs font-medium text-amber-200">
+            Demo only — figures below are placeholder data, not live records.
+          </div>
+
 
           <Card className="mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
