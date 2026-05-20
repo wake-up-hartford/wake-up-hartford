@@ -120,8 +120,8 @@ function pct(numer: number, denom: number): number | null {
   return (numer / denom) * 100;
 }
 
-function fmtPct(v: number | null, digits = 1): string {
-  return v == null ? "—" : `${v.toFixed(digits)}%`;
+function fmtPct(v: number | null, _digits = 0): string {
+  return v == null ? "—" : `${Math.round(v)}%`;
 }
 
 function fmtUSD(v: number | null): string {
