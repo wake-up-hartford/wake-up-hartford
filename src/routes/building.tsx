@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
+
+const PickAddressMap = lazy(() =>
+  import("@/components/BuildingAddressMap").then((m) => ({ default: m.PickAddressMap })),
+);
+const AddressLocationMap = lazy(() =>
+  import("@/components/BuildingAddressMap").then((m) => ({ default: m.AddressLocationMap })),
+);
 
 export const Route = createFileRoute("/building")({
   head: () => ({
