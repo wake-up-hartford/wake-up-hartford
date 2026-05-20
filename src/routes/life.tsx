@@ -646,6 +646,133 @@ function SurveyScreen({
         >
           Start Survey <ArrowRight className="h-5 w-5" />
         </button>
+
+        {/* Journey graphic */}
+        <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+          <svg
+            viewBox="0 0 680 340"
+            xmlns="http://www.w3.org/2000/svg"
+            className="block h-auto w-full"
+            role="img"
+            aria-label="Moving towards Stability"
+          >
+            <defs>
+              <linearGradient id="lifeSky" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="#3a4a5e" />
+                <stop offset="55%" stopColor="#8a8a90" />
+                <stop offset="100%" stopColor="#fce8b8" />
+              </linearGradient>
+              <radialGradient id="lifeSun" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stopColor="#fff3c4" />
+                <stop offset="55%" stopColor="#f5c249" />
+                <stop offset="100%" stopColor="#f5c249" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id="lifeGround1" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="#1f2933" />
+                <stop offset="100%" stopColor="#2f5d3a" />
+              </linearGradient>
+              <linearGradient id="lifeGround2" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="#2a3742" />
+                <stop offset="100%" stopColor="#3f7a3f" />
+              </linearGradient>
+              <linearGradient id="lifeGround3" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="#35464f" />
+                <stop offset="100%" stopColor="#7cc24a" />
+              </linearGradient>
+              <linearGradient id="lifeGround4" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0%" stopColor="#0f1418" />
+                <stop offset="100%" stopColor="#1a2a1f" />
+              </linearGradient>
+              <radialGradient id="lifeGlow" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stopColor="#fff4c2" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#fff4c2" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+
+            {/* Sky */}
+            <rect width="680" height="340" fill="url(#lifeSky)" />
+
+            {/* Sun */}
+            <circle cx="560" cy="90" r="90" fill="url(#lifeSun)" />
+            <circle cx="560" cy="90" r="28" fill="#fff6d5" />
+
+            {/* Dark clouds left */}
+            <ellipse cx="80" cy="70" rx="70" ry="16" fill="#2c333d" opacity="0.85" />
+            <ellipse cx="150" cy="55" rx="55" ry="13" fill="#3a4250" opacity="0.7" />
+            <ellipse cx="40" cy="110" rx="60" ry="12" fill="#2c333d" opacity="0.6" />
+
+            {/* Light wispy clouds right */}
+            <ellipse cx="450" cy="50" rx="60" ry="6" fill="#fff5d8" opacity="0.7" />
+            <ellipse cx="520" cy="40" rx="40" ry="4" fill="#fff5d8" opacity="0.6" />
+            <ellipse cx="620" cy="160" rx="55" ry="5" fill="#fff0c8" opacity="0.5" />
+
+            {/* Title */}
+            <text
+              x="340"
+              y="32"
+              textAnchor="middle"
+              fill="#fff8e0"
+              fontFamily="system-ui, sans-serif"
+              fontSize="16"
+              fontWeight="600"
+              letterSpacing="2"
+            >
+              MOVING TOWARDS STABILITY
+            </text>
+
+            {/* Ground layers - rising left to right */}
+            <path d="M0,260 Q170,250 340,225 T680,170 L680,340 L0,340 Z" fill="url(#lifeGround1)" />
+            <path d="M0,285 Q170,275 340,250 T680,200 L680,340 L0,340 Z" fill="url(#lifeGround2)" opacity="0.85" />
+            <path d="M0,305 Q170,300 340,280 T680,235 L680,340 L0,340 Z" fill="url(#lifeGround3)" />
+
+            {/* Jagged rocks foreground left */}
+            <path d="M20,300 L45,240 L60,290 L80,250 L95,305 Z" fill="#15191f" />
+            <path d="M70,310 L95,260 L115,300 Z" fill="#1c2128" />
+
+            {/* Bushes right plateau */}
+            <ellipse cx="500" cy="232" rx="14" ry="8" fill="#3d6b2a" />
+            <ellipse cx="540" cy="228" rx="10" ry="6" fill="#4a8030" />
+            <ellipse cx="600" cy="226" rx="16" ry="9" fill="#3d6b2a" />
+            <path d="M470 235 l3 -10 M475 234 l2 -8 M580 230 l3 -9" stroke="#2d4a1f" strokeWidth="1.2" strokeLinecap="round" />
+
+            {/* Dark foreground strip */}
+            <path d="M0,325 L680,310 L680,340 L0,340 Z" fill="url(#lifeGround4)" />
+
+            {/* Glow at start */}
+            <circle cx="55" cy="305" r="22" fill="url(#lifeGlow)" />
+            {/* Glow halo at destination */}
+            <circle cx="620" cy="195" r="40" fill="url(#lifeGlow)" />
+
+            {/* Dashed path */}
+            <path
+              d="M55,305 Q200,310 280,275 T460,235 T620,195"
+              fill="none"
+              stroke="#fff4c2"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray="2 9"
+              opacity="0.95"
+            />
+            {/* Path soft glow underlay */}
+            <path
+              d="M55,305 Q200,310 280,275 T460,235 T620,195"
+              fill="none"
+              stroke="#fff4c2"
+              strokeWidth="8"
+              strokeLinecap="round"
+              opacity="0.12"
+            />
+
+            {/* Waypoints */}
+            <circle cx="220" cy="295" r="4" fill="#fff4c2" />
+            <circle cx="370" cy="258" r="4" fill="#fff4c2" />
+            <circle cx="510" cy="220" r="4" fill="#fff4c2" />
+
+            {/* Start & end markers */}
+            <circle cx="55" cy="305" r="6" fill="#fff8e0" />
+            <circle cx="620" cy="195" r="8" fill="#fff8e0" />
+          </svg>
+        </div>
       </div>
     );
   }
