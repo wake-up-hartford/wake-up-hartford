@@ -197,12 +197,12 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
 
 function cardTintClass(s: Indicator["severity"]) {
   return s === "good"
-    ? "bg-success/35 border-success/60"
+    ? "bg-success border-success text-success-foreground"
     : s === "watch"
-    ? "bg-warning/40 border-warning/70"
+    ? "bg-warning border-warning text-warning-foreground"
     : s === "concern"
-    ? "bg-destructive/35 border-destructive/60"
-    : "bg-muted/60 border-border";
+    ? "bg-destructive border-destructive text-destructive-foreground"
+    : "bg-card border-border text-card-foreground";
 }
 
 function SeverityLegend() {
@@ -236,12 +236,12 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
         <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
-              <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
-              <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
+              <span className="font-display text-2xl leading-none">{ind.value}</span>
+              <h3 className="font-display text-lg leading-tight">{ind.label}</h3>
             </div>
-            <p className="mt-1 text-sm text-card-foreground/85">{ind.note}</p>
+            <p className="mt-1 text-sm opacity-90">{ind.note}</p>
             {ind.stateAverage && (
-              <p className="mt-2 text-xs font-semibold text-card-foreground">{ind.stateAverage.label}</p>
+              <p className="mt-2 text-xs font-semibold">{ind.stateAverage.label}</p>
             )}
           </div>
         </Card>
