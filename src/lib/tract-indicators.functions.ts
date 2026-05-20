@@ -341,7 +341,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           label: "Median household income",
           value: fmtUSD(t.medIncVal),
           raw: t.medIncVal,
-          severity: "neutral",
+          severity: tier(t.medIncVal, 90213, 60000, true),
           note: "Half of households earn more, half earn less.",
           stateAverage: { ...avgUSD(ct.medIncVal), label: `CT median: ${fmtUSD(ct.medIncVal)}${cmpUSD(ct.medIncVal, t.medIncVal)}` },
         },
