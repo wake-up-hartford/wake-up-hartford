@@ -616,7 +616,7 @@ function SurveyScreen({
           className="flex h-8 w-8 items-center justify-center rounded-full text-white"
           style={{ backgroundColor: section.color }}
         >
-          <Icon className="h-4.5 w-4.5" />
+          <Icon className="h-4 w-4" />
         </span>
         <span className={`text-[15px] font-semibold ${section.accentText}`}>
           {section.name}
