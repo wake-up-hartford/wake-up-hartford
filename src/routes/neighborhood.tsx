@@ -235,8 +235,10 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
   return (
     <div className="space-y-4">
       <SeverityLegend />
-      {indicators.map((ind) => (
-        <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
+      {indicators.map((ind) => {
+        const cs = cardStyle(ind.severity);
+        return (
+        <Card key={ind.key} className={`border ${cs.className}`} style={cs.style}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
               <span className="font-display text-2xl leading-none">{ind.value}</span>
@@ -248,7 +250,8 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
             )}
           </div>
         </Card>
-      ))}
+        );
+      })}
       <Card>
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where this comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
