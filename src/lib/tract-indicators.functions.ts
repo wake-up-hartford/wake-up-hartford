@@ -303,9 +303,9 @@ export const getTractIndicators = createServerFn({ method: "POST" })
 
       const cmpPct = (ctRaw: number | null, tractRaw: number | null): string => {
         if (ctRaw == null || tractRaw == null) return "";
-        const d = tractRaw - ctRaw;
-        if (Math.abs(d) <= 0.5) return " — about the same";
-        return ` — ${Math.abs(d).toFixed(1)} pts ${d > 0 ? "above" : "below"} CT`;
+        const d = Math.round(tractRaw - ctRaw);
+        if (Math.abs(d) <= 1) return " — about the same";
+        return ` — ${Math.abs(d)} pts ${d > 0 ? "above" : "below"} CT`;
       };
       const cmpUSD = (ctRaw: number | null, tractRaw: number | null): string => {
         if (ctRaw == null || tractRaw == null) return "";
