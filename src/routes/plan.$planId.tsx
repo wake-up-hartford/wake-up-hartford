@@ -137,7 +137,7 @@ function PlanPage() {
                             {s.title}
                           </p>
                           {s.detail && (
-                            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{s.detail}</p>
+                            <p className="mt-1 text-[13px] leading-relaxed text-card-foreground/90">{s.detail}</p>
                           )}
                           <span className="mt-1 inline-block rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                             {s.domain}
