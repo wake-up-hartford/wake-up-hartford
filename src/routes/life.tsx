@@ -475,9 +475,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[14px] leading-relaxed text-card-foreground">
-          This survey takes about <strong>5–8 minutes</strong>. Your answers will be used to
-          create a clear, prioritized action plan tailored to your situation. There are no
-          wrong answers — be as honest as you can.
+          Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
+          create an AI generated, prioritized Action Plan tailored to your situation. There
+          are no wrong answers — be as honest as you can.
         </p>
       </div>
 
