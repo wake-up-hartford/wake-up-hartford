@@ -472,10 +472,54 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         <strong className="text-amber-400">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
       </p>
 
-
+      <div className="mt-5 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-blue-600/15 p-4">
+        <svg viewBox="0 0 320 110" className="block h-auto w-full" aria-hidden="true">
+          <defs>
+            <linearGradient id="lifePath" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stopColor="oklch(0.72 0.17 160)" />
+              <stop offset="100%" stopColor="oklch(0.78 0.14 230)" />
+            </linearGradient>
+          </defs>
+          {/* baseline */}
+          <line x1="10" y1="95" x2="310" y2="95" stroke="currentColor" strokeOpacity="0.18" strokeWidth="1" />
+          {/* stepped bars rising */}
+          {[0,1,2,3,4,5,6,7].map((i) => (
+            <rect
+              key={i}
+              x={14 + i * 38}
+              y={90 - (i + 1) * 8}
+              width="26"
+              height={(i + 1) * 8}
+              rx="3"
+              fill="url(#lifePath)"
+              opacity={0.35 + i * 0.08}
+            />
+          ))}
+          {/* growth line + dots */}
+          <polyline
+            points="22,82 60,74 98,66 136,58 174,50 212,42 250,34 288,22"
+            fill="none"
+            stroke="oklch(0.85 0.15 90)"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          {[ [22,82],[98,66],[174,50],[288,22] ].map(([x,y]) => (
+            <circle key={`${x}-${y}`} cx={x} cy={y} r="3.2" fill="oklch(0.92 0.14 90)" />
+          ))}
+          {/* sprout at the top */}
+          <g transform="translate(286 16)">
+            <path d="M2 6 Q -4 -2 -8 -6 Q 0 -4 2 2 Z" fill="oklch(0.82 0.17 150)" />
+            <path d="M2 6 Q 8 -2 12 -6 Q 4 -4 2 2 Z" fill="oklch(0.78 0.18 145)" />
+          </g>
+        </svg>
+        <p className="mt-2 text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          Small steps · steady progress
+        </p>
+      </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[13px] leading-relaxed text-card-foreground">
+
           Survey covers <strong>8 areas of life</strong> that affect stability.
         </p>
         <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
@@ -502,7 +546,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         onClick={onBegin}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
       >
-        Begin Survey <ArrowRight className="h-5 w-5" />
+        Enter Here <ArrowRight className="h-5 w-5" />
       </button>
     </div>
   );
@@ -602,7 +646,7 @@ function SurveyScreen({
           onClick={() => setStarted(true)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
         >
-          Start {SECTIONS[0].name} Section <ArrowRight className="h-5 w-5" />
+          Start Survey <ArrowRight className="h-5 w-5" />
         </button>
       </div>
     );
