@@ -936,7 +936,7 @@ function PlanGenerator({
         A few last questions
       </h3>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-        These help us pick resources that actually fit your life.
+        These help this plan pick resources that actually fit your life.
       </p>
 
       <div className="mt-4 space-y-4">
