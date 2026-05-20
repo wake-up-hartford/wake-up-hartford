@@ -197,12 +197,12 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
 
 function cardTintClass(s: Indicator["severity"]) {
   return s === "good"
-    ? "bg-success/35 border-success/60"
+    ? "bg-success border-success text-success-foreground"
     : s === "watch"
-    ? "bg-warning/40 border-warning/70"
+    ? "bg-warning border-warning text-warning-foreground"
     : s === "concern"
-    ? "bg-destructive/35 border-destructive/60"
-    : "bg-muted/60 border-border";
+    ? "bg-destructive border-destructive text-destructive-foreground"
+    : "bg-card border-border text-card-foreground";
 }
 
 function SeverityLegend() {
