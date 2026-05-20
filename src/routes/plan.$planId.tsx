@@ -81,7 +81,7 @@ function PlanPage() {
         <p className="mb-2 font-mono text-[13px] font-semibold uppercase tracking-wider text-emerald-600">
           ▸ Your 30-day plan
         </p>
-        <h1 className="font-display text-3xl leading-tight text-foreground">Stabilization plan</h1>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
         <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">{plan.priority_summary}</p>
         <p className="mt-3 text-[12px] text-muted-foreground">
           {done} of {total} steps completed
