@@ -28,11 +28,13 @@ function NeighborhoodPage() {
   const [tract, setTract] = useState<Tract | null>(null);
 
   const fetchIndicators = useServerFn(getTractIndicators);
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ["tract-indicators", tract?.state, tract?.county, tract?.tract],
     queryFn: () => fetchIndicators({ data: { state: tract!.state, county: tract!.county, tract: tract!.tract } }),
     staleTime: 1000 * 60 * 60,
     enabled: !!tract,
+    retry: 2,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 
   const handleResolved = (t: Tract) => {
