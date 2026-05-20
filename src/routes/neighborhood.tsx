@@ -265,14 +265,22 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
   );
 }
 
+function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
+  if (s === "good") return { background: "linear-gradient(135deg, oklch(0.45 0.13 155), oklch(0.38 0.11 155))" };
+  if (s === "watch") return { background: "linear-gradient(135deg, oklch(0.55 0.14 70), oklch(0.45 0.12 65))" };
+  if (s === "concern") return { background: "linear-gradient(135deg, oklch(0.45 0.18 27), oklch(0.38 0.16 25))" };
+  return {};
+}
+
 function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}`, compare: null as string | null },
+    { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
     ...indicators.slice(0, 4).map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
       body: ind.note,
       compare: ind.stateAverage?.label ?? null,
+      severity: ind.severity,
     })),
   ];
   const [i, setI] = useState(0);
@@ -314,9 +322,15 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
     setTimeout(() => setShareStatus(null), 2500);
   };
 
+  const tintStyle = slideBg(slide.severity);
+  const hasTint = Boolean(slide.severity);
+
   return (
     <div className="space-y-3">
-      <div className="aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground shadow-soft">
+      <div
+        className={`aspect-square overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft ${hasTint ? "" : "bg-gradient-to-br from-primary to-primary/80"}`}
+        style={tintStyle}
+      >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-70">
             <span>{slide.eyebrow}</span>
@@ -326,7 +340,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
             {slide.compare && (
-              <p className="mt-3 inline-block self-start rounded-full bg-primary-foreground/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
+              <p className="mt-3 inline-block self-start rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
                 {slide.compare}
               </p>
             )}
@@ -334,6 +348,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
           <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
         </div>
       </div>
+
 
 
       <div className="flex items-center justify-between gap-2">
