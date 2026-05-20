@@ -443,7 +443,7 @@ function LifePage() {
 
       <Link
         to="/plans"
-        className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft transition active:scale-[0.99] hover:bg-secondary/30"
+        className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
       >
         <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
           <FileText className="h-5 w-5" />
