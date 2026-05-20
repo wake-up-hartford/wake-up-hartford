@@ -466,8 +466,8 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       <h1 className="font-display text-3xl leading-tight text-foreground">
         Life Stabilization Survey
       </h1>
-      <p className="mt-3 italic text-[15px] leading-relaxed text-muted-foreground">
-        A confidential first step toward building your personal stability plan.
+      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+        <strong className="text-foreground">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized 30-day Action Plan with next steps and CT resources matched to your top priorities.
       </p>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
