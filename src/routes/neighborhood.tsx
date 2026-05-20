@@ -95,11 +95,6 @@ function NeighborhoodPage() {
             subtitle="Live indicators for this tract, from the Census Bureau and USDA."
           />
 
-          <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-2.5">
-            <Stat icon={DollarSign} label="Median income" value={byKey("median_income")?.value ?? "—"} loading={isLoading} />
-            <Stat icon={HomeIcon} label="Renter share" value={byKey("renter_share")?.value ?? "—"} loading={isLoading} />
-            <Stat icon={TrendingUp} label="Unemployment" value={byKey("unemployment")?.value ?? "—"} small loading={isLoading} />
-          </div>
 
           {data?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
