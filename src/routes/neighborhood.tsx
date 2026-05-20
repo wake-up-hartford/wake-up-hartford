@@ -599,3 +599,28 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
     </div>
   );
 }
+
+function TakeAction() {
+  return (
+    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
+      <div className="flex items-start gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+          <Megaphone className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
+          <p className="mt-1 text-sm text-foreground/80">
+            Report a problem, get free legal help, or join your neighbors at Unity Plaza.
+          </p>
+          <button
+            type="button"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+          >
+            Take action
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
