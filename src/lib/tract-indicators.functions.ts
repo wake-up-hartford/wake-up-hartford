@@ -94,7 +94,16 @@ async function fetchACS(url: string): Promise<Record<string, number>> {
     throw new Error("CENSUS_API_KEY missing or invalid. Get a free key at https://api.census.gov/data/key_signup.html and add it as a secret.");
   }
   if (!res.ok) throw new Error(`ACS ${res.status}`);
-  const json = (await res.json()) as string[][];
+  const text = await res.text();
+  if (!text.trim()) {
+    throw new Error(`ACS empty response from ${url.split("?")[0]}`);
+  }
+  let json: string[][];
+  try {
+    json = JSON.parse(text) as string[][];
+  } catch {
+    throw new Error(`ACS returned non-JSON: ${text.slice(0, 120)}`);
+  }
   if (!Array.isArray(json) || json.length < 2) throw new Error("ACS empty");
   const headers = json[0];
   const row = json[1];
