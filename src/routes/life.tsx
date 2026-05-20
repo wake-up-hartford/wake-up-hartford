@@ -577,7 +577,8 @@ function SurveyScreen({
   if (!started) {
     return (
       <div>
-        <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <div className="mb-5 rounded-2xl border border-border bg-transparent p-5">
+
           <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
             Life Stabilization Survey
           </h1>
