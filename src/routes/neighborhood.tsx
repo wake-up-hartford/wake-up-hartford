@@ -238,7 +238,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
       {indicators.map((ind) => {
         const cs = cardStyle(ind.severity);
         return (
-        <Card key={ind.key} className={`border ${cs.className}`} style={cs.style}>
+        <div key={ind.key} className={`rounded-lg border p-4 shadow-sm ${cs.className}`} style={cs.style}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
               <span className="font-display text-2xl leading-none">{ind.value}</span>
@@ -249,7 +249,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
               <p className="mt-2 text-xs font-semibold">{ind.stateAverage.label}</p>
             )}
           </div>
-        </Card>
+        </div>
         );
       })}
       <Card>
