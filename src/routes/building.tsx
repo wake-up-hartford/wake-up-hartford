@@ -150,6 +150,11 @@ function HomePage() {
                 <p className="text-sm opacity-80">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
               </div>
             </div>
+            <div className="mt-3">
+              <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
+                <AddressLocationMap address={data.address} />
+              </Suspense>
+            </div>
           </Card>
 
           <Tabs defaultValue="card" className="w-full">
