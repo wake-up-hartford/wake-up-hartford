@@ -263,11 +263,28 @@ export const listMyPlans = createServerFn({ method: "POST" })
       .order("generated_at", { ascending: false });
     if (error) throw new Error("Couldn't load plans.");
     return {
-      plans: (data ?? []).map((p) => ({
-        id: p.id,
-        generated_at: p.generated_at,
-        status: p.status,
-        summary: (p.plan as { priority_summary?: string })?.priority_summary ?? "",
-      })),
+      plans: (data ?? []).map((p) => {
+        const plan = p.plan as {
+          priority_summary?: string;
+          weeks?: { steps?: { domain?: string }[] }[];
+        };
+        // Extract top 3 unique domains by first appearance across weeks
+        const domains: string[] = [];
+        for (const w of plan?.weeks ?? []) {
+          for (const s of w?.steps ?? []) {
+            const d = s?.domain;
+            if (d && !domains.includes(d)) domains.push(d);
+            if (domains.length >= 3) break;
+          }
+          if (domains.length >= 3) break;
+        }
+        return {
+          id: p.id,
+          generated_at: p.generated_at,
+          status: p.status,
+          summary: plan?.priority_summary ?? "",
+          priority_domains: domains,
+        };
+      }),
     };
   });
