@@ -52,7 +52,7 @@ function PlansPage() {
             key={p.id}
             to="/plan/$planId"
             params={{ planId: p.id }}
-            className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4 shadow-soft hover:bg-secondary/30"
+            className="flex flex-col gap-2 rounded-xl border border-border p-4 transition-colors bg-[oklch(0.23_0.06_295)] hover:bg-[oklch(0.30_0.06_295)]"
           >
             <p className="font-display text-[16px] leading-tight text-foreground">
               Plan Created {new Date(p.generated_at).toLocaleDateString()}
