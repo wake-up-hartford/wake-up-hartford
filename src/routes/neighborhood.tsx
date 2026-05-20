@@ -195,27 +195,31 @@ function NeighborhoodReportCard({ indicators, loading, error }: { indicators: In
   );
 }
 
+function cardTintClass(s: Indicator["severity"]) {
+  return s === "good"
+    ? "bg-success/15 border-success/40"
+    : s === "watch"
+    ? "bg-warning/20 border-warning/50"
+    : s === "concern"
+    ? "bg-destructive/15 border-destructive/40"
+    : "bg-muted/40 border-border";
+}
+
 function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]; loading: boolean }) {
   if (loading) return <Card><p className="py-4 text-sm text-muted-foreground">Loading…</p></Card>;
   return (
     <div className="space-y-4">
       {indicators.map((ind) => (
-        <Card key={ind.key}>
-          <div className="flex items-start gap-3">
-            <div
-              className={`mt-2 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
-              aria-label={severityLabel(ind.severity) ?? undefined}
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-baseline gap-2">
-                <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
-                <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
-              {ind.stateAverage && (
-                <p className="mt-2 text-xs font-medium text-card-foreground/80">{ind.stateAverage.label}</p>
-              )}
+        <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
+              <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
             </div>
+            <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
+            {ind.stateAverage && (
+              <p className="mt-2 text-xs font-medium text-card-foreground/80">{ind.stateAverage.label}</p>
+            )}
           </div>
         </Card>
       ))}
