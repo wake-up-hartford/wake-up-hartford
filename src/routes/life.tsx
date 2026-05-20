@@ -521,6 +521,7 @@ function SurveyScreen({
 }) {
   const [sectionIdx, setSectionIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
+  const [started, setStarted] = useState(false);
 
   const section = SECTIONS[sectionIdx];
   const question = section.questions[questionIdx];
