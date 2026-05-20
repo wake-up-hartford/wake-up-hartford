@@ -236,12 +236,12 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
         <Card key={ind.key} className={`border ${cardTintClass(ind.severity)}`}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
-              <span className="font-display text-2xl leading-none text-card-foreground">{ind.value}</span>
-              <h3 className="font-display text-lg leading-tight text-card-foreground">{ind.label}</h3>
+              <span className="font-display text-2xl leading-none">{ind.value}</span>
+              <h3 className="font-display text-lg leading-tight">{ind.label}</h3>
             </div>
-            <p className="mt-1 text-sm text-card-foreground/85">{ind.note}</p>
+            <p className="mt-1 text-sm opacity-90">{ind.note}</p>
             {ind.stateAverage && (
-              <p className="mt-2 text-xs font-semibold text-card-foreground">{ind.stateAverage.label}</p>
+              <p className="mt-2 text-xs font-semibold">{ind.stateAverage.label}</p>
             )}
           </div>
         </Card>
