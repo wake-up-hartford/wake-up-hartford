@@ -476,7 +476,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[14px] leading-relaxed text-card-foreground">
           Survey takes <strong>5 to 8 minutes</strong>. Your answers will be used to
-          create an AI generated, prioritized Action Plan tailored to your situation. There
+          create an AI generated, prioritized <strong className="text-emerald-500">ACTION PLAN</strong> tailored to your situation. There
           are no wrong answers — be as honest as you can.
         </p>
       </div>
@@ -491,8 +491,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[13px] leading-relaxed text-card-foreground">
-          This survey covers <strong>8 areas of life</strong> that most affect
-          stability — from housing and food to safety, income, and legal needs.
+          Survey covers <strong>8 areas of life</strong> that affect stability.
         </p>
         <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
           {SECTIONS.map((s) => {
@@ -505,7 +504,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
                 >
                   <Icon className="h-5 w-5" />
                 </span>
-                <span className="text-[10px] font-medium text-muted-foreground">
+                <span className="text-[12px] font-semibold text-card-foreground">
                   {s.name}
                 </span>
               </div>
