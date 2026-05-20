@@ -473,13 +473,6 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       </p>
 
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
-        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
-        <p className="text-[13px] leading-relaxed">
-          Your responses are private and used only to generate your personalized plan.
-          This is not a diagnostic tool.
-        </p>
-      </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <p className="text-[13px] leading-relaxed text-card-foreground">
