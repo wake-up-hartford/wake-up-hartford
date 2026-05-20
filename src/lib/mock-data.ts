@@ -69,9 +69,21 @@ const SAMPLES: Record<string, AddressLookup> = {
   },
 };
 
-export function lookupAddress(_query: string): AddressLookup {
-  return SAMPLES.default;
+export function lookupAddress(query: string): AddressLookup {
+  const q = query.trim();
+  if (!q) return SAMPLES.default;
+  // Try to infer a neighborhood hint from the query string (e.g. reverse-geocoded
+  // Nominatim results often include it). Fall back to the default sample data.
+  const parts = q.split(",").map((s) => s.trim()).filter(Boolean);
+  const street = parts[0] ?? q;
+  const city = parts[1] ?? "Hartford";
+  const state = parts[2] ?? "CT";
+  return {
+    ...SAMPLES.default,
+    address: `${street}, ${city}, ${state}`,
+  };
 }
+
 
 export const RESOURCES = [
   { title: "Rental assistance", body: "UniteCT and Hartford emergency rental help.", phone: "211" },
