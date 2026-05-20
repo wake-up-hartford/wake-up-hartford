@@ -23,32 +23,21 @@ export const Route = createFileRoute("/neighborhood")({
 
 type Tract = { address: string; state: string; county: string; tract: string; tractName: string; neighborhood?: string };
 
-// Default to Upper Albany, Hartford (tract 5024.00)
-const DEFAULT_TRACT: Tract = {
-  address: "247 Garden St, Hartford, CT 06112",
-  state: "09",
-  county: "003",
-  tract: "502400",
-  tractName: "5024.00",
-  neighborhood: "Upper Albany, Hartford",
-};
-
 function NeighborhoodPage() {
   const { save } = useStoredAddress();
-  const [tract, setTract] = useState<Tract>(DEFAULT_TRACT);
-  const [showLookup, setShowLookup] = useState(false);
+  const [tract, setTract] = useState<Tract | null>(null);
 
   const fetchIndicators = useServerFn(getTractIndicators);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["tract-indicators", tract.state, tract.county, tract.tract],
-    queryFn: () => fetchIndicators({ data: { state: tract.state, county: tract.county, tract: tract.tract } }),
+    queryKey: ["tract-indicators", tract?.state, tract?.county, tract?.tract],
+    queryFn: () => fetchIndicators({ data: { state: tract!.state, county: tract!.county, tract: tract!.tract } }),
     staleTime: 1000 * 60 * 60,
+    enabled: !!tract,
   });
 
   const handleResolved = (t: Tract) => {
     setTract(t);
     save(t.address);
-    setShowLookup(false);
   };
 
   const indicators = data?.indicators ?? [];
@@ -60,83 +49,85 @@ function NeighborhoodPage() {
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Start
         </Link>
-        <button
-          type="button"
-          onClick={() => setShowLookup((v) => !v)}
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <MapPin className="h-4 w-4" /> Choose a neighborhood
-        </button>
+        {tract && (
+          <button
+            type="button"
+            onClick={() => setTract(null)}
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <MapPin className="h-4 w-4" /> Choose another
+          </button>
+        )}
       </div>
 
-      {showLookup && (
-        <Card className="mb-5">
-          <h2 className="font-display text-lg leading-tight text-card-foreground">Choose your neighborhood</h2>
-          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
-            Tap a tract on the map below, or look up any US address. The highlighted tracts are
-            NAACP Greater Hartford's primary focus — Northeast, Blue Hills, Upper Albany, and
-            adjacent North End neighborhoods.
-          </p>
+      {!tract && (
+        <>
+          <SectionHeader
+            title="Choose Your Neighborhood"
+            subtitle="Tap a tract on the map, or look up any US address. The highlighted tracts are NAACP Greater Hartford's primary focus — Northeast, Blue Hills, Upper Albany, and adjacent North End neighborhoods."
+          />
+          <Card className="mb-5">
+            <Tabs defaultValue="map">
+              <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
+                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold">Map</TabsTrigger>
+                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold">Address</TabsTrigger>
+              </TabsList>
+              <TabsContent value="map" className="mt-3">
+                <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
+                  <TargetTractMap selectedTract={null} onSelect={handleResolved} />
+                </Suspense>
+              </TabsContent>
+              <TabsContent value="address" className="mt-3">
+                <CensusTractLookup onResolved={handleResolved} />
+              </TabsContent>
+            </Tabs>
+          </Card>
+        </>
+      )}
 
-          <Tabs defaultValue="map" className="mt-4">
-            <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold">Map</TabsTrigger>
-              <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold">Address</TabsTrigger>
+      {tract && (
+        <>
+          <SectionHeader
+            eyebrow={`Census Tract ${tract.tractName}`}
+            title={tract.neighborhood ?? "Your neighborhood"}
+            subtitle="Live indicators for this tract, from the Census Bureau and USDA."
+          />
+
+          <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-2.5">
+            <Stat icon={DollarSign} label="Median income" value={byKey("median_income")?.value ?? "—"} loading={isLoading} />
+            <Stat icon={HomeIcon} label="Renter share" value={byKey("renter_share")?.value ?? "—"} loading={isLoading} />
+            <Stat icon={TrendingUp} label="Unemployment" value={byKey("unemployment")?.value ?? "—"} small loading={isLoading} />
+          </div>
+
+          {data?.error && (
+            <Card className="mb-4 border-destructive/30 bg-destructive/5">
+              <p className="text-sm text-destructive">{data.error}</p>
+            </Card>
+          )}
+
+          <Tabs defaultValue="card" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
+              <TabsTrigger value="card" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
+              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
+              <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
+              <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
             </TabsList>
-            <TabsContent value="map" className="mt-3">
-              <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
-                <TargetTractMap
-                  selectedTract={tract.tract}
-                  onSelect={handleResolved}
-                />
-              </Suspense>
+
+            <TabsContent value="card" className="mt-4">
+              <NeighborhoodReportCard indicators={indicators} loading={isLoading} error={isError} />
             </TabsContent>
-            <TabsContent value="address" className="mt-3">
-              <CensusTractLookup onResolved={handleResolved} />
+            <TabsContent value="story" className="mt-4">
+              <NeighborhoodDetailed indicators={indicators} loading={isLoading} />
+            </TabsContent>
+            <TabsContent value="share" className="mt-4">
+              <NeighborhoodShare tract={tract} indicators={indicators} />
+            </TabsContent>
+            <TabsContent value="print" className="mt-4">
+              <NeighborhoodPrint tract={tract} indicators={indicators} />
             </TabsContent>
           </Tabs>
-        </Card>
+        </>
       )}
-
-      <SectionHeader
-        eyebrow={`Census Tract ${tract.tractName}`}
-        title={tract.neighborhood ?? "Your neighborhood"}
-        subtitle="Live indicators for this tract, from the Census Bureau and USDA."
-      />
-
-      <div className="mb-5 grid grid-cols-3 gap-2 sm:gap-2.5">
-        <Stat icon={DollarSign} label="Median income" value={byKey("median_income")?.value ?? "—"} loading={isLoading} />
-        <Stat icon={HomeIcon} label="Renter share" value={byKey("renter_share")?.value ?? "—"} loading={isLoading} />
-        <Stat icon={TrendingUp} label="Unemployment" value={byKey("unemployment")?.value ?? "—"} small loading={isLoading} />
-      </div>
-
-      {data?.error && (
-        <Card className="mb-4 border-destructive/30 bg-destructive/5">
-          <p className="text-sm text-destructive">{data.error}</p>
-        </Card>
-      )}
-
-      <Tabs defaultValue="card" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
-          <TabsTrigger value="card" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
-          <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
-          <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
-          <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="card" className="mt-4">
-          <NeighborhoodReportCard indicators={indicators} loading={isLoading} error={isError} />
-        </TabsContent>
-        <TabsContent value="story" className="mt-4">
-          <NeighborhoodDetailed indicators={indicators} loading={isLoading} />
-        </TabsContent>
-        <TabsContent value="share" className="mt-4">
-          <NeighborhoodShare tract={tract} indicators={indicators} />
-        </TabsContent>
-        <TabsContent value="print" className="mt-4">
-          <NeighborhoodPrint tract={tract} indicators={indicators} />
-        </TabsContent>
-      </Tabs>
     </AppShell>
   );
 }

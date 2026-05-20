@@ -94,7 +94,16 @@ async function fetchACS(url: string): Promise<Record<string, number>> {
     throw new Error("CENSUS_API_KEY missing or invalid. Get a free key at https://api.census.gov/data/key_signup.html and add it as a secret.");
   }
   if (!res.ok) throw new Error(`ACS ${res.status}`);
-  const json = (await res.json()) as string[][];
+  const text = await res.text();
+  if (!text.trim()) {
+    throw new Error(`ACS empty response from ${url.split("?")[0]}`);
+  }
+  let json: string[][];
+  try {
+    json = JSON.parse(text) as string[][];
+  } catch {
+    throw new Error(`ACS returned non-JSON: ${text.slice(0, 120)}`);
+  }
   if (!Array.isArray(json) || json.length < 2) throw new Error("ACS empty");
   const headers = json[0];
   const row = json[1];
@@ -228,12 +237,21 @@ export const getTractIndicators = createServerFn({ method: "POST" })
     const geo = `for=tract:${tract}&in=state:${state}+county:${county}`;
     const ctGeo = `for=state:09`;
 
+    const safeFetch = async (url: string): Promise<Record<string, number>> => {
+      try {
+        return await fetchACS(url);
+      } catch (err) {
+        console.warn("ACS sub-fetch failed", url, err);
+        return {};
+      }
+    };
+
     try {
       const [b, s, bCT, sCT] = await Promise.all([
         fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${geo}`),
-        fetchACS(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${geo}`),
+        safeFetch(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${geo}`),
         fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${ctGeo}`),
-        fetchACS(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${ctGeo}`),
+        safeFetch(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${ctGeo}`),
       ]);
 
       const derive = (b: Record<string, number>, s: Record<string, number>) => {
@@ -379,7 +397,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         fips,
         population: null,
         indicators: [],
-        error: msg.startsWith("CENSUS_API_KEY") ? msg : "Couldn't reach the Census API. Please try again in a moment.",
+        error: msg.startsWith("CENSUS_API_KEY") ? msg : `Couldn't load Census data: ${msg}`,
       };
     }
   });
