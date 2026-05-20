@@ -125,9 +125,14 @@ function AuthListener() {
   const router = useRouter();
   const qc = useQueryClient();
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        // Drop cached user-scoped data so no protected server fn refetches with a stale enabled flag.
+        qc.removeQueries();
+      } else {
+        qc.invalidateQueries();
+      }
       router.invalidate();
-      qc.invalidateQueries();
     });
     return () => subscription.unsubscribe();
   }, [router, qc]);
