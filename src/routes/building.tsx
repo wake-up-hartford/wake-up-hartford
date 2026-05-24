@@ -637,7 +637,7 @@ function TakeAction() {
           <p className="mt-1 text-sm text-foreground/80">
             Report a problem, get free legal help, or join your neighbors at Unity Plaza.
           </p>
-          <Link to="/life" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]">
+          <Link to="/home-actions" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]">
             Take action
             <ArrowRight className="h-4 w-4" />
           </Link>
