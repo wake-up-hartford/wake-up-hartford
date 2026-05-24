@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
+import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
 
