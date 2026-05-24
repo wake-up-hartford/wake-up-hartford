@@ -96,6 +96,13 @@ function NeighborhoodPage() {
             subtitle="Live indicators for this tract, from the Census Bureau and USDA."
           />
 
+          {indicators.length > 0 && (
+            <TractStoryDialog
+              tractName={tract.tractName}
+              neighborhood={tract.neighborhood ?? `Tract ${tract.tractName}`}
+              indicators={indicators}
+            />
+          )}
 
           {data?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
