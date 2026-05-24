@@ -101,7 +101,9 @@ function NeighborhoodPage() {
               tractName={tract.tractName}
               neighborhood={tract.neighborhood ?? `Tract ${tract.tractName}`}
               indicators={indicators}
+              stateFips={tract.state}
             />
+
           )}
 
           {data?.error && (
