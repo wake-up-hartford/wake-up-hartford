@@ -466,11 +466,12 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
   return (
     <div>
       <h1 className="font-display text-3xl leading-tight text-foreground">
-        Life Stabilization Survey
+        Your Path to Stability
       </h1>
       <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        <strong className="text-amber-400">Are you in or approaching crisis?</strong> This 5-minute survey turns your answers into a personalized AI-generated 30-day Action Plan with next steps and CT resources matched to your top priorities.
+        Life can get hard. This short survey takes 5 minutes. Answer a few questions and we'll build you a free, personal 30-day plan — with real resources in Connecticut to help you move forward.
       </p>
+
 
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
