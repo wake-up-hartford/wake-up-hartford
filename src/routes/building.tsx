@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer } from "lucide-react";
+import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
 
@@ -160,6 +161,10 @@ function HomePage() {
             </div>
           </Card>
 
+          <LandlordCard data={data} />
+
+          <BuildingStoryDialog data={data} />
+
           <Tabs defaultValue="card" className="w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
             <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
@@ -268,6 +273,7 @@ function DetailedReport({ data }: { data: Data }) {
         </ul>
         <PlainLanguage>
           Open violations mean the city has asked your landlord to fix something. You can call <strong>311</strong> if a problem hasn't been fixed.
+          {" "}Across <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties this owner has <strong>{data.landlordPortfolio.totalOpenCodeViolations}</strong> open violations in total.
         </PlainLanguage>
       </Card>
 
@@ -286,6 +292,7 @@ function DetailedReport({ data }: { data: Data }) {
         <p className="mt-1 text-sm text-muted-foreground">{data.building.evictions.note}</p>
         <PlainLanguage>
           If you receive a notice to quit, <strong>you have rights</strong>. Free legal help: call <strong>(860) 541-5000</strong>.
+          {" "}This owner filed <strong>{data.landlordPortfolio.totalEvictions12mo}</strong> evictions across their <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties in the last year.
         </PlainLanguage>
       </Card>
 
@@ -322,6 +329,9 @@ function DetailedReport({ data }: { data: Data }) {
             </li>
           ))}
         </ul>
+        <PlainLanguage>
+          Across all <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties owned by {data.landlord}, residents and neighbors have filed <strong>{data.landlordPortfolio.totalComplaints311_12mo}</strong> 311 complaints in the last 12 months.
+        </PlainLanguage>
       </Card>
     </div>
   );
@@ -537,6 +547,66 @@ function PrintReport({ data }: { data: Data }) {
           <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">311 complaints</div><div className="font-display text-2xl">{c311.count12mo}</div></div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function LandlordCard({ data }: { data: Data }) {
+  const c = data.landlordContact;
+  const p = data.landlordPortfolio;
+  return (
+    <Card className="mb-5">
+      <div className="flex items-start gap-3">
+        <Building2 className="mt-0.5 h-5 w-5 text-primary" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Owner / Landlord</p>
+          <h2 className="font-display text-lg leading-tight">{data.landlord}</h2>
+
+          <div className="mt-3 space-y-1.5 text-sm">
+            {c.phone && (
+              <p className="flex items-center gap-2 text-foreground">
+                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                <a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`} className="hover:underline">{c.phone}</a>
+              </p>
+            )}
+            {c.email && (
+              <p className="flex items-center gap-2 text-foreground">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                <a href={`mailto:${c.email}`} className="hover:underline break-all">{c.email}</a>
+              </p>
+            )}
+            {c.mailingAddress && (
+              <p className="flex items-start gap-2 text-foreground">
+                <MapPin className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
+                <span>{c.mailingAddress}</span>
+              </p>
+            )}
+          </div>
+
+          <div className="mt-4 rounded-xl border border-border bg-secondary/40 p-3">
+            <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <Briefcase className="h-3.5 w-3.5" /> This owner's full Hartford portfolio
+            </p>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <PortfolioStat value={p.propertiesInHartford} label="properties" />
+              <PortfolioStat value={p.totalUnits} label="total units" />
+              <PortfolioStat value={p.totalOpenCodeViolations} label="open code violations" />
+              <PortfolioStat value={p.totalEvictions12mo} label="evictions, last yr" />
+              <PortfolioStat value={p.totalComplaints311_12mo} label="311 complaints, last yr" />
+            </div>
+            {p.note && <p className="mt-2 text-xs text-muted-foreground">{p.note}</p>}
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function PortfolioStat({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="rounded-md bg-card px-2.5 py-2">
+      <div className="font-display text-xl leading-none text-foreground">{value}</div>
+      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
     </div>
   );
 }
