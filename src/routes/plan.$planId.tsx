@@ -86,7 +86,7 @@ function PlanPage() {
           to="/auth"
           className="mt-3 inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-2.5 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
         >
-          Sign In to receive plan via text/email)
+          Sign In to receive plan via text/email
         </Link>
         <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">{plan.priority_summary}</p>
         <p className="mt-3 text-[12px] text-muted-foreground">
