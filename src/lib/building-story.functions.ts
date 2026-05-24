@@ -58,8 +58,8 @@ Same owner's full Hartford portfolio:
     const systemPrompt = `You are a community-data storyteller writing for Hartford, Connecticut tenants and neighbors.
 Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
 Ground every claim in the numbers provided — never invent facts, history, names, or place details.
-Tell the story of this specific building: what the records show, what residents likely experience, how this building compares to the owner's broader portfolio, and what rights or resources matter most.
-Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`;
+Tell the story of this specific building: what the records show, what residents likely experience, and how it compares to the owner's broader portfolio.
+Length: 2 to 3 tight paragraphs, roughly 120-180 words total. Plain prose, no headings, no bullet lists. Be concise — cut anything that isn't essential.`;
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
