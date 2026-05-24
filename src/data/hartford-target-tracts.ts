@@ -9,7 +9,7 @@ export type TargetTract = {
   tract: string; // 6-digit census tract code
   tractName: string;
   neighborhood: string;
-  group: "northeast" | "blue_hills" | "upper_albany" | "adjacent";
+  group: "northeast" | "blue_hills" | "upper_albany" | "adjacent" | "other";
   // True if a 2020-vintage polygon is available on the map
   hasPolygon: boolean;
 };
@@ -45,6 +45,7 @@ export const GROUP_COLORS: Record<TargetTract["group"], string> = {
   blue_hills: "#0891b2",    // teal
   upper_albany: "#16a34a",  // green
   adjacent: "#d97706",      // amber
+  other: "#94a3b8",         // slate (non-target Hartford tracts)
 };
 
 export const GROUP_LABELS: Record<TargetTract["group"], string> = {
@@ -52,4 +53,5 @@ export const GROUP_LABELS: Record<TargetTract["group"], string> = {
   blue_hills: "Blue Hills",
   upper_albany: "Upper Albany",
   adjacent: "North End Adjacent",
+  other: "Other Hartford",
 };
