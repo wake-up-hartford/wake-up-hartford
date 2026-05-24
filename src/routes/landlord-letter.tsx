@@ -191,7 +191,7 @@ ${tenantName || "[Your name]"}
           <input
             value={tenantName}
             onChange={(e) => setTenantName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
             placeholder="Jane Doe"
           />
         </Field>
@@ -200,7 +200,7 @@ ${tenantName || "[Your name]"}
             <input
               value={tenantAddress}
               onChange={(e) => setTenantAddress(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
               placeholder="123 Main St"
             />
           </Field>
@@ -208,7 +208,7 @@ ${tenantName || "[Your name]"}
             <input
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
               placeholder="2B"
             />
           </Field>
@@ -219,7 +219,7 @@ ${tenantName || "[Your name]"}
               type="tel"
               value={tenantPhone}
               onChange={(e) => setTenantPhone(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
               placeholder="(860) 555-0100"
             />
           </Field>
@@ -228,7 +228,7 @@ ${tenantName || "[Your name]"}
               type="email"
               value={tenantEmail}
               onChange={(e) => setTenantEmail(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
               placeholder="you@example.com"
             />
           </Field>
@@ -241,7 +241,7 @@ ${tenantName || "[Your name]"}
           <input
             value={landlordName}
             onChange={(e) => setLandlordName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
             placeholder="ABC Property Management"
           />
         </Field>
@@ -250,7 +250,7 @@ ${tenantName || "[Your name]"}
             value={landlordAddress}
             onChange={(e) => setLandlordAddress(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
             placeholder="456 Park Ave, Hartford, CT 06106"
           />
         </Field>
@@ -277,7 +277,7 @@ ${tenantName || "[Your name]"}
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
             placeholder="Example: The radiator in the front bedroom has not produced heat since Nov 1. My children have been sleeping in coats."
           />
         </Field>
@@ -285,7 +285,7 @@ ${tenantName || "[Your name]"}
           <input
             value={firstNoticedDate}
             onChange={(e) => setFirstNoticedDate(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
             placeholder="e.g. early October 2025"
           />
         </Field>
@@ -303,7 +303,7 @@ ${tenantName || "[Your name]"}
             <input
               value={previousReportNotes}
               onChange={(e) => setPreviousReportNotes(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
               placeholder="e.g. text message on 10/12 and phone call on 10/20"
             />
           </Field>
