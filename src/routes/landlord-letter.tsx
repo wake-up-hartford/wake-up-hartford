@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, Printer, Copy, Mail } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
+import { lookupAddress } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/landlord-letter")({
   head: () => ({
@@ -34,14 +35,24 @@ const ISSUE_OPTIONS = [
 
 function LandlordLetterPage() {
   const { address } = useStoredAddress();
+  const lookup = useMemo(() => (address ? lookupAddress(address) : null), [address]);
+  const lookupLandlordAddress = lookup?.landlordContact.mailingAddress ?? "";
 
   const [tenantName, setTenantName] = useState("");
   const [unit, setUnit] = useState("");
   const [tenantAddress, setTenantAddress] = useState(address ?? "");
   const [tenantPhone, setTenantPhone] = useState("");
   const [tenantEmail, setTenantEmail] = useState("");
-  const [landlordName, setLandlordName] = useState("");
-  const [landlordAddress, setLandlordAddress] = useState("");
+  const [landlordName, setLandlordName] = useState(lookup?.landlord ?? "");
+  const [landlordAddress, setLandlordAddress] = useState(lookupLandlordAddress);
+
+  // Autofill tenant + landlord fields once the stored address resolves from localStorage.
+  useEffect(() => {
+    if (address && !tenantAddress) setTenantAddress(address);
+    if (lookup?.landlord && !landlordName) setLandlordName(lookup.landlord);
+    if (lookupLandlordAddress && !landlordAddress) setLandlordAddress(lookupLandlordAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, lookup]);
   const [issues, setIssues] = useState<Set<string>>(new Set());
   const [details, setDetails] = useState("");
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
