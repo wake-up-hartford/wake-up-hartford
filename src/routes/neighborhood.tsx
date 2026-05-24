@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { TractStoryDialog } from "@/components/TractStoryDialog";
 
 const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
 
