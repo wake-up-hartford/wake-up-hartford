@@ -18,9 +18,10 @@ type Props = {
   tractName: string;
   neighborhood: string;
   indicators: Indicator[];
+  stateFips?: string;
 };
 
-export function TractStoryDialog({ tractName, neighborhood, indicators }: Props) {
+export function TractStoryDialog({ tractName, neighborhood, indicators, stateFips }: Props) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const generate = useServerFn(generateTractStory);
@@ -31,6 +32,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators }: Props)
         data: {
           tractName,
           neighborhood,
+          stateFips,
           indicators: indicators.map((i) => ({
             key: i.key,
             label: i.label,
