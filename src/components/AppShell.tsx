@@ -9,7 +9,7 @@ const ROTATING_MESSAGES = [
   "Where a child lives should not determine their future.",
   "Awareness without investment is not justice.",
   "Data without action is not accountability.",
-  "These neighborhoods do not need pity. They need investment, and structural change.",
+  "Our neighborhoods do not need pity. They need investment, and structural change.",
 ];
 
 function RotatingMessages() {
