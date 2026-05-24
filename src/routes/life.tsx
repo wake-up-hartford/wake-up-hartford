@@ -600,7 +600,7 @@ function SurveyScreen({
               Sign in and stay connected <span className="text-[13px] font-normal text-blue-200/80">[optional]</span>
             </h3>
             <p className="mt-1 text-[13px] leading-relaxed text-blue-50/90">
-              We'll send your Action Plan by email. You'll also get updates on free resources and community action you can be part of — NAACP Greater Hartford campaigns working to change the systems that affect your life.
+              We'll send your Action Plan by email. You'll also get updates on free resources and community action you can be part of — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
             </p>
           </div>
           <div className="flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">

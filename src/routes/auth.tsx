@@ -90,7 +90,7 @@ function AuthPage() {
       <div className="mt-6 space-y-3">
         <h2 className="font-display text-3xl leading-tight text-foreground">Sign in + Stay Connected</h2>
         <p className="text-[14px] leading-relaxed text-muted-foreground">
-          We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action you can be part of — NAACP Greater Hartford campaigns working to change the systems that affect your life.
+          We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action you can be part of — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
         </p>
         <button
           onClick={() => { setMode("signup"); setError(null); }}
@@ -166,7 +166,7 @@ function AuthPage() {
               className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
             />
             <span>
-              Send me info on free resources and NAACP Greater Hartford campaign updates.
+              Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
             </span>
           </label>
         )}
