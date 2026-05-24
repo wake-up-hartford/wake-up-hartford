@@ -658,14 +658,14 @@ function SurveyScreen({
             : "Select all that apply"}
       </p>
 
-      <div className="space-y-2.5">
+      <div className="space-y-1.5">
         {question.options.map((opt) => {
           const isSel = selected.includes(opt);
           return (
             <button
               key={opt}
               onClick={() => toggle(opt)}
-              className={`group flex w-full items-start gap-3 rounded-xl border p-3.5 text-left transition-all ${
+              className={`group flex w-full items-center gap-3 rounded-xl border px-3.5 py-2 text-left transition-all ${
                 isSel
                   ? "border-transparent shadow-soft"
                   : "border-border bg-card"
@@ -692,7 +692,7 @@ function SurveyScreen({
               }}
             >
               <span
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
+                className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
                   question.type === "single" ? "rounded-full" : "rounded"
                 } group-hover:border-white`}
                 style={{
