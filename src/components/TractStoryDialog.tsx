@@ -117,8 +117,8 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   };
 
   const handleCopy = async () => {
-    if (!mutation.data?.story) return;
-    await navigator.clipboard.writeText(mutation.data.story);
+    if (!story) return;
+    await navigator.clipboard.writeText(story);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -144,14 +144,14 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
         </DialogHeader>
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
-          {mutation.isPending && (
+          {mutation.isPending && !story && (
             <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
               <Loader2 className="h-6 w-6 animate-spin" />
               <p className="text-sm">Writing the story…</p>
             </div>
           )}
 
-          {mutation.isError && (
+          {!story && mutation.isError && (
             <div className="space-y-3 py-6 text-center">
               <p className="text-sm text-destructive">Couldn't generate the story.</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
@@ -160,7 +160,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
             </div>
           )}
 
-          {mutation.data?.error && (
+          {!story && mutation.data?.error && (
             <div className="space-y-3 py-6 text-center">
               <p className="text-sm text-destructive">{mutation.data.error}</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
@@ -169,9 +169,9 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
             </div>
           )}
 
-          {mutation.data?.story && (
+          {story && (
             <div className="space-y-3 whitespace-pre-wrap text-[15px] leading-relaxed text-foreground/90">
-              {mutation.data.story.split(/\n\n+/).map((para, i) => (
+              {story.split(/\n\n+/).map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
@@ -179,15 +179,26 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
         </div>
 
         <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-          AI-generated from public ACS census data and USDA food-access flags. May contain errors — verify before citing.
+          AI-generated from public ACS census data and USDA food-access flags. Saved locally and reused next time you open this tract. May contain errors — verify before citing.
         </p>
 
         <DialogFooter className="gap-2 sm:gap-2">
-          {mutation.data?.story && (
-            <Button variant="outline" size="sm" onClick={handleCopy}>
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
+          {story && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRegenerate}
+                disabled={mutation.isPending}
+              >
+                <RefreshCw className={`h-4 w-4 ${mutation.isPending ? "animate-spin" : ""}`} />
+                Regenerate
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleCopy}>
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </>
           )}
           <Button size="sm" onClick={() => setOpen(false)}>Close</Button>
         </DialogFooter>
