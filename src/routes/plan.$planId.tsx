@@ -82,6 +82,12 @@ function PlanPage() {
           ▸ Your 30-day plan
         </p>
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
+        <Link
+          to="/auth"
+          className="mt-3 inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-2.5 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+        >
+          Sign In to receive plan
+        </Link>
         <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">{plan.priority_summary}</p>
         <p className="mt-3 text-[12px] text-muted-foreground">
           {done} of {total} steps completed
