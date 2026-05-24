@@ -292,6 +292,7 @@ function DetailedReport({ data }: { data: Data }) {
         <p className="mt-1 text-sm text-muted-foreground">{data.building.evictions.note}</p>
         <PlainLanguage>
           If you receive a notice to quit, <strong>you have rights</strong>. Free legal help: call <strong>(860) 541-5000</strong>.
+          {" "}This owner filed <strong>{data.landlordPortfolio.totalEvictions12mo}</strong> evictions across their <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties in the last year.
         </PlainLanguage>
       </Card>
 
