@@ -9,6 +9,19 @@ export type AddressLookup = {
   yearBuilt: number;
   units: number;
   landlord: string;
+  landlordContact: {
+    phone?: string;
+    email?: string;
+    mailingAddress?: string;
+  };
+  landlordPortfolio: {
+    propertiesInHartford: number;
+    totalUnits: number;
+    totalOpenCodeViolations: number;
+    totalEvictions12mo: number;
+    totalComplaints311_12mo: number;
+    note?: string;
+  };
   building: {
     codeViolations: { open: number; closed12mo: number; recent: { date: string; description: string; status: "Open" | "Closed" }[] };
     evictions: { filings12mo: number; rate: string; note: string };
