@@ -54,7 +54,7 @@ function HomePage() {
           tone="gold"
         />
         <DashLink
-          to="/building"
+          to="/home"
           icon={Building2}
           title="Your Home"
           body="Look up any Hartford address. Code issues, evictions, utilities."
@@ -104,7 +104,7 @@ const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; ti
 function DashLink({
   to, icon: Icon, title, body, tone, badge,
 }: {
-  to: "/building" | "/neighborhood" | "/life";
+  to:  "/home" | "/neighborhood" | "/life";
   icon: React.ComponentType<{ className?: string }>;
   title: string; body: string; tone: Tone; badge?: string;
 }) {

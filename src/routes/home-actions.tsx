@@ -93,7 +93,7 @@ function HomeActionsPage() {
     <AppShell>
       <div className="mb-3">
         <Link
-          to="/building"
+          to="/home"
           className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
