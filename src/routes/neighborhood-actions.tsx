@@ -13,19 +13,13 @@ import {
   Megaphone,
   Users,
   MessageSquareWarning,
-  Phone,
-  ExternalLink,
   ArrowRight,
+  ExternalLink,
 } from "lucide-react";
 import { useMemo, type ComponentType } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
-import { getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
-import {
-  VETTED_RESOURCES,
-  INDICATOR_TO_TAGS,
-  type Resource,
-} from "@/data/vetted-resources";
+import { getTractIndicators } from "@/lib/tract-indicators.functions";
 
 const search = z.object({
   state: fallback(z.string().regex(/^\d{2}$/), "09").default("09"),
