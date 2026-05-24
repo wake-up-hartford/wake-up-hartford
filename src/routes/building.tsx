@@ -598,6 +598,14 @@ function LandlordCard({ data }: { data: Data }) {
             </div>
             {p.note && <p className="mt-2 text-xs text-muted-foreground">{p.note}</p>}
           </div>
+
+          <Link
+            to="/landlord-letter"
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-[14px] font-semibold text-gold-foreground shadow-soft transition active:scale-[0.99]"
+          >
+            <Mail className="h-4 w-4" />
+            Write a Letter of Complaint to your Landlord
+          </Link>
         </div>
       </div>
     </Card>

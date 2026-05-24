@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlansRouteImport } from './routes/plans'
 import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
 import { Route as LifeRouteImport } from './routes/life'
+import { Route as LandlordLetterRouteImport } from './routes/landlord-letter'
 import { Route as BuildingRouteImport } from './routes/building'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,6 +31,11 @@ const NeighborhoodRoute = NeighborhoodRouteImport.update({
 const LifeRoute = LifeRouteImport.update({
   id: '/life',
   path: '/life',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandlordLetterRoute = LandlordLetterRouteImport.update({
+  id: '/landlord-letter',
+  path: '/landlord-letter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildingRoute = BuildingRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/building': typeof BuildingRoute
+  '/landlord-letter': typeof LandlordLetterRoute
   '/life': typeof LifeRoute
   '/neighborhood': typeof NeighborhoodRoute
   '/plans': typeof PlansRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/building': typeof BuildingRoute
+  '/landlord-letter': typeof LandlordLetterRoute
   '/life': typeof LifeRoute
   '/neighborhood': typeof NeighborhoodRoute
   '/plans': typeof PlansRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/building': typeof BuildingRoute
+  '/landlord-letter': typeof LandlordLetterRoute
   '/life': typeof LifeRoute
   '/neighborhood': typeof NeighborhoodRoute
   '/plans': typeof PlansRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/building'
+    | '/landlord-letter'
     | '/life'
     | '/neighborhood'
     | '/plans'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/building'
+    | '/landlord-letter'
     | '/life'
     | '/neighborhood'
     | '/plans'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/building'
+    | '/landlord-letter'
     | '/life'
     | '/neighborhood'
     | '/plans'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   BuildingRoute: typeof BuildingRoute
+  LandlordLetterRoute: typeof LandlordLetterRoute
   LifeRoute: typeof LifeRoute
   NeighborhoodRoute: typeof NeighborhoodRoute
   PlansRoute: typeof PlansRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/life'
       fullPath: '/life'
       preLoaderRoute: typeof LifeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landlord-letter': {
+      id: '/landlord-letter'
+      path: '/landlord-letter'
+      fullPath: '/landlord-letter'
+      preLoaderRoute: typeof LandlordLetterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/building': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   BuildingRoute: BuildingRoute,
+  LandlordLetterRoute: LandlordLetterRoute,
   LifeRoute: LifeRoute,
   NeighborhoodRoute: NeighborhoodRoute,
   PlansRoute: PlansRoute,
