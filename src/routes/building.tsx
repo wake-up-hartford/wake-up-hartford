@@ -161,6 +161,10 @@ function HomePage() {
             </div>
           </Card>
 
+          <LandlordCard data={data} />
+
+          <BuildingStoryDialog data={data} />
+
           <Tabs defaultValue="card" className="w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
             <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
