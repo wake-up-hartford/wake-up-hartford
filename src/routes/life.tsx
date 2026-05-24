@@ -584,7 +584,7 @@ function SurveyScreen({
         <div className="mb-5 rounded-2xl border border-border bg-transparent p-5">
 
           <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
-            Life Stabilization Survey
+            Your Path Survey
           </h1>
           <p className="text-[14px] leading-relaxed text-foreground">
             This survey takes <strong>5 to 8 minutes</strong> to complete. Your answers will be used to
