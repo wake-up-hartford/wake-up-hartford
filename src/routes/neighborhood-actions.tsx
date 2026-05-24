@@ -1,15 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { ChevronLeft, HandHeart, Mail, Share2, Phone, ExternalLink, Loader2, Copy, Check, Sparkles } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  ChevronLeft,
+  HandHeart,
+  ClipboardList,
+  PenLine,
+  Vote,
+  ShieldCheck,
+  Megaphone,
+  Users,
+  MessageSquareWarning,
+  Phone,
+  ExternalLink,
+  ArrowRight,
+} from "lucide-react";
+import { useMemo, type ComponentType } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
-import { draftAdvocacyLetter } from "@/lib/action-letter.functions";
-import { VETTED_RESOURCES, INDICATOR_TO_TAGS, type Resource, type ResourceTag } from "@/data/vetted-resources";
+import {
+  VETTED_RESOURCES,
+  INDICATOR_TO_TAGS,
+  type Resource,
+} from "@/data/vetted-resources";
 
 const search = z.object({
   state: fallback(z.string().regex(/^\d{2}$/), "09").default("09"),
@@ -24,7 +40,11 @@ export const Route = createFileRoute("/neighborhood-actions")({
   head: () => ({
     meta: [
       { title: "Take Action — Wake Up Wednesday" },
-      { name: "description", content: "Three concrete actions you can take based on your neighborhood's data." },
+      {
+        name: "description",
+        content:
+          "Concrete actions you can take based on what the data shows about your neighborhood.",
+      },
     ],
   }),
   component: ActionsPage,
@@ -43,56 +63,254 @@ function ActionsPage() {
   });
 
   const indicators = data?.indicators ?? [];
+  const concerns = useMemo(
+    () => indicators.filter((i) => i.severity === "concern"),
+    [indicators],
+  );
+  const rentBurdenRed = concerns.some((i) => i.key === "rent_burden");
+  const housingAgeRed = concerns.some((i) => i.key === "housing_age" || i.key === "age_of_housing");
+  const multipleRed = concerns.length >= 3;
 
   return (
     <AppShell>
       <div className="mb-4">
-        <Link to="/neighborhood" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/neighborhood"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ChevronLeft className="h-4 w-4" /> Back to report
         </Link>
       </div>
 
       <SectionHeader
-        eyebrow={`Census Tract ${tractName}`}
+        eyebrow={tractLabel}
         title="Take action for your neighborhood"
-        subtitle="Three things you can do right now, tailored to what the data shows about this tract."
+        subtitle="Things you can do right now, tailored to what the data shows about this tract."
       />
 
+      {/* For you */}
+      <GroupHeader>For you & your neighbors</GroupHeader>
+
       <ActionCardFindHelp indicators={indicators} loading={isLoading} />
-      <ActionCardEmailRep
-        indicators={indicators}
-        loading={isLoading}
-        tractName={tractName}
-        neighborhood={tractLabel}
+
+      <ActionCard
+        icon={ClipboardList}
+        accent="sky"
+        title="Start my 30-Day Plan"
+        body="A short survey turns this tract's top concerns into a personal stabilization plan — housing, income, food, health."
+        cta={
+          <Link to="/life">
+            <Button size="sm">
+              Begin survey <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        }
+        tag={concerns.length > 0 ? `Pre-tagged: ${concerns.slice(0, 2).map((c) => c.label.toLowerCase()).join(", ")}` : undefined}
       />
-      <ActionCardShare indicators={indicators} state={state} county={county} tract={tract} name={tractName} neighborhood={tractLabel} />
+
+      {(rentBurdenRed || housingAgeRed) && (
+        <ActionCard
+          icon={PenLine}
+          accent="rose"
+          title="Write a letter to your landlord"
+          body={
+            rentBurdenRed
+              ? "Rent burden is high here. If your unit has problems, a formal complaint creates a paper trail and your legal protection."
+              : "Much of the housing stock here is older. A formal complaint creates a paper trail and your legal protection if there are habitability issues."
+          }
+          cta={
+            <Link to="/landlord-letter">
+              <Button size="sm">
+                Open the tool <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          }
+          tag="Recommended for this tract"
+        />
+      )}
+
+      <ActionCard
+        icon={Vote}
+        accent="amber"
+        title="Register to vote (or check your registration)"
+        body="Turnout in tracts like this one shapes whether the city listens. Two minutes on the CT Secretary of State site."
+        cta={
+          <a
+            href="https://portaldir.ct.gov/sots/LookUp.aspx"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Button size="sm">
+              Check registration <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </a>
+        }
+      />
+
+      <ActionCard
+        icon={ShieldCheck}
+        accent="emerald"
+        title="Know Your Rights card"
+        body={
+          concerns.length > 0
+            ? `A printable one-pager built around the top issues here: ${concerns.slice(0, 2).map((c) => c.label.toLowerCase()).join(" and ")}.`
+            : "A printable one-pager covering tenant rights, SNAP eligibility, and where to call if something goes wrong."
+        }
+        cta={
+          <Button size="sm" variant="outline" disabled>
+            Coming soon
+          </Button>
+        }
+      />
+
+      {/* Organizing */}
+      <GroupHeader>Organize this block</GroupHeader>
+
+      <ActionCard
+        icon={Megaphone}
+        accent="gold"
+        title="Host a Wake Up Wednesday here"
+        body={
+          multipleRed
+            ? "Multiple indicators are red in this tract — it's a strong candidate for an in-person meeting. We'll help you find a space and bring the right partners."
+            : "Bring neighbors together for a one-hour conversation. We'll help you find a space and bring the right partners."
+        }
+        cta={
+          <a href="mailto:hello@wakeupwednesday.org?subject=Host%20a%20Wake%20Up%20Wednesday">
+            <Button size="sm">
+              Volunteer to host <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </a>
+        }
+        tag={multipleRed ? "Suggested for this tract" : undefined}
+      />
+
+      <ActionCard
+        icon={Users}
+        accent="indigo"
+        title="Become a Block Captain"
+        body="Be the trusted point person for your block — share what you see, connect neighbors to resources, and help us keep the data honest."
+        cta={
+          <a href="mailto:hello@wakeupwednesday.org?subject=Block%20Captain%20interest">
+            <Button size="sm">
+              Sign up <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </a>
+        }
+      />
+
+      <ActionCard
+        icon={MessageSquareWarning}
+        accent="slate"
+        title="Report what's missing"
+        body="The numbers here don't match what you're seeing on the ground? Tell us. Ground-truth from residents makes this report better."
+        cta={
+          <a
+            href={`mailto:hello@wakeupwednesday.org?subject=${encodeURIComponent(
+              `Ground-truth: ${tractLabel}`,
+            )}&body=${encodeURIComponent(
+              `Tract ${tractName} — what the data gets wrong:\n\n`,
+            )}`}
+          >
+            <Button size="sm" variant="outline">
+              Send feedback <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </a>
+        }
+      />
     </AppShell>
   );
 }
 
-// ---------- 1. Find help ----------
+// ---------- shared pieces ----------
 
-function ActionCardFindHelp({ indicators, loading }: { indicators: Indicator[]; loading: boolean }) {
+function GroupHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="mb-3 mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground first:mt-2">
+      {children}
+    </h3>
+  );
+}
+
+const ACCENT: Record<string, string> = {
+  emerald: "bg-emerald-500/20 text-emerald-300",
+  sky: "bg-sky-500/20 text-sky-300",
+  rose: "bg-rose-500/20 text-rose-300",
+  amber: "bg-amber-500/20 text-amber-300",
+  gold: "bg-gold/25 text-gold",
+  indigo: "bg-indigo-500/20 text-indigo-300",
+  slate: "bg-slate-500/20 text-slate-300",
+};
+
+function ActionCard({
+  icon: Icon,
+  accent,
+  title,
+  body,
+  cta,
+  tag,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  accent: keyof typeof ACCENT | string;
+  title: string;
+  body: string;
+  cta: React.ReactNode;
+  tag?: string;
+}) {
+  return (
+    <Card className="mb-4">
+      <div className="flex items-start gap-3">
+        <div
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${ACCENT[accent] ?? ACCENT.emerald}`}
+        >
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-display text-lg leading-tight">{title}</h2>
+            {tag && (
+              <span className="rounded-full border border-gold/40 bg-gold/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold">
+                {tag}
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-sm text-foreground/80">{body}</p>
+          <div className="mt-3">{cta}</div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ---------- Find help (kept from prior version) ----------
+
+function ActionCardFindHelp({
+  indicators,
+  loading,
+}: {
+  indicators: Indicator[];
+  loading: boolean;
+}) {
   const prioritized = useMemo(() => prioritizeResources(indicators), [indicators]);
 
   return (
-    <Card className="mb-5">
+    <Card className="mb-4">
       <div className="mb-3 flex items-start gap-3">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/20 text-emerald-300">
           <HandHeart className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-display text-xl leading-tight">Get help in your neighborhood</h2>
+          <h2 className="font-display text-lg leading-tight">Find help near me</h2>
           <p className="mt-1 text-sm text-foreground/80">
             {loading
               ? "Loading recommendations…"
-              : "These organizations are ranked by what this tract needs most. All free or low-cost."}
+              : "Vetted CT organizations — food pantries, clinics, rent help, utility assistance — ranked by what this tract needs most."}
           </p>
         </div>
       </div>
 
       <div className="space-y-2.5">
-        {prioritized.slice(0, 6).map((r) => (
+        {prioritized.slice(0, 5).map((r) => (
           <ResourceRow key={r.name} resource={r} />
         ))}
       </div>
@@ -107,12 +325,20 @@ function ResourceRow({ resource }: { resource: Resource }) {
       <p className="mt-1 text-sm text-foreground/75">{resource.description}</p>
       <div className="mt-2 flex flex-wrap gap-3 text-sm">
         {resource.phone && (
-          <a href={`tel:${resource.phone.replace(/[^0-9]/g, "")}`} className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200">
+          <a
+            href={`tel:${resource.phone.replace(/[^0-9]/g, "")}`}
+            className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200"
+          >
             <Phone className="h-3.5 w-3.5" /> {resource.phone}
           </a>
         )}
         {resource.url && (
-          <a href={resource.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-gold hover:text-amber-200">
+          <a
+            href={resource.url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-gold hover:text-amber-200"
+          >
             <ExternalLink className="h-3.5 w-3.5" /> Website
           </a>
         )}
@@ -134,271 +360,4 @@ function prioritizeResources(indicators: Indicator[]): Resource[] {
     const sb = b.tags.reduce((acc, t) => acc + (weight[t] ?? 0), 0);
     return sb - sa;
   });
-}
-
-// ---------- 2. Email rep ----------
-
-function ActionCardEmailRep({
-  indicators,
-  loading,
-  tractName,
-  neighborhood,
-}: {
-  indicators: Indicator[];
-  loading: boolean;
-  tractName: string;
-  neighborhood: string;
-}) {
-  const [tone, setTone] = useState<"urgent" | "constructive" | "personal">("constructive");
-  const [audience, setAudience] = useState<"state_rep" | "council">("state_rep");
-  const [letter, setLetter] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const draft = useServerFn(draftAdvocacyLetter);
-  const mutation = useMutation({
-    mutationFn: async () => {
-      const payload = {
-        tractName,
-        neighborhood,
-        audience,
-        tone,
-        senderName: "",
-        indicators: indicators.map((i) => ({
-          key: i.key,
-          label: i.label,
-          value: i.value,
-          severity: i.severity,
-          note: i.note ?? "",
-          stateAverage: i.stateAverage ? { value: i.stateAverage.value, label: i.stateAverage.label } : null,
-        })),
-      };
-      return draft({ data: payload });
-    },
-    onSuccess: (res) => {
-      if (res.letter) {
-        setLetter(res.letter);
-        setError(null);
-      } else {
-        setError(res.error ?? "Could not generate letter.");
-      }
-    },
-  });
-
-  const copy = async () => {
-    await navigator.clipboard.writeText(letter);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
-  const mailto = `mailto:?subject=${encodeURIComponent(`Conditions in Census Tract ${tractName}`)}&body=${encodeURIComponent(letter)}`;
-
-  return (
-    <Card className="mb-5">
-      <div className="mb-3 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sky-500/20 text-sky-300">
-          <Mail className="h-5 w-5" />
-        </div>
-        <div>
-          <h2 className="font-display text-xl leading-tight">Tell your representative</h2>
-          <p className="mt-1 text-sm text-foreground/80">
-            Draft an email that cites the real numbers from this tract. Pick a tone, then edit before sending.
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
-        <SegmentedField
-          label="To"
-          value={audience}
-          onChange={(v) => setAudience(v as "state_rep" | "council")}
-          options={[
-            { value: "state_rep", label: "State Rep" },
-            { value: "council", label: "Council" },
-          ]}
-        />
-        <SegmentedField
-          label="Tone"
-          value={tone}
-          onChange={(v) => setTone(v as "urgent" | "constructive" | "personal")}
-          options={[
-            { value: "urgent", label: "Urgent" },
-            { value: "constructive", label: "Constructive" },
-            { value: "personal", label: "Personal" },
-          ]}
-        />
-      </div>
-
-      <Button
-        type="button"
-        onClick={() => mutation.mutate()}
-        disabled={loading || mutation.isPending || indicators.length === 0}
-        className="w-full"
-      >
-        {mutation.isPending ? (
-          <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Drafting…</>
-        ) : (
-          <><Sparkles className="mr-2 h-4 w-4" /> {letter ? "Regenerate draft" : "Draft my email"}</>
-        )}
-      </Button>
-
-      {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-
-      {letter && (
-        <div className="mt-4">
-          <textarea
-            value={letter}
-            onChange={(e) => setLetter(e.target.value)}
-            rows={12}
-            className="w-full rounded-xl border border-border bg-card/80 p-3 text-sm leading-relaxed text-card-foreground"
-          />
-          <div className="mt-2 flex flex-wrap gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={copy}>
-              {copied ? <><Check className="mr-1.5 h-3.5 w-3.5" /> Copied</> : <><Copy className="mr-1.5 h-3.5 w-3.5" /> Copy</>}
-            </Button>
-            <a href={mailto}>
-              <Button type="button" size="sm">
-                <Mail className="mr-1.5 h-3.5 w-3.5" /> Open in email app
-              </Button>
-            </a>
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            We can't auto-look up your specific rep yet — find yours at{" "}
-            <a href="https://www.cga.ct.gov/asp/menu/cgafindleg.asp" target="_blank" rel="noreferrer" className="text-gold underline">cga.ct.gov</a>.
-          </p>
-        </div>
-      )}
-    </Card>
-  );
-}
-
-function SegmentedField({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <div>
-      <p className="mb-1 font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
-      <div className="flex rounded-lg bg-secondary/60 p-0.5">
-        {options.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
-            className={`flex-1 rounded-md px-2 py-1 text-[11px] font-semibold transition ${
-              value === o.value ? "bg-card text-card-foreground shadow" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ---------- 3. Share ----------
-
-function ActionCardShare({
-  indicators,
-  state,
-  county,
-  tract,
-  name,
-  neighborhood,
-}: {
-  indicators: Indicator[];
-  state: string;
-  county: string;
-  tract: string;
-  name: string;
-  neighborhood: string;
-}) {
-  const [copied, setCopied] = useState(false);
-
-  const topConcerns = indicators
-    .filter((i) => i.severity === "concern")
-    .slice(0, 3)
-    .map((i) => `${i.label.toLowerCase()} ${i.value}`)
-    .join(", ");
-
-  const shareUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/neighborhood-actions?state=${state}&county=${county}&tract=${tract}&name=${encodeURIComponent(name)}&neighborhood=${encodeURIComponent(neighborhood)}`
-    : "";
-
-  const summary = topConcerns
-    ? `${neighborhood} (Tract ${name}): ${topConcerns}. See the full neighborhood report: ${shareUrl}`
-    : `${neighborhood} (Tract ${name}) — see the full neighborhood report: ${shareUrl}`;
-
-  const councilDraft = `Dear Council Member,
-
-I'm writing about ${neighborhood} (Census Tract ${name}). The data shows ${topConcerns || "concerning conditions"}. I'd like to know what the city is doing about it and how residents can be part of the solution.
-
-Full report: ${shareUrl}
-
-Thank you,
-[Your name]`;
-
-  const share = async (text: string) => {
-    if (typeof navigator !== "undefined" && (navigator as Navigator & { share?: (d: ShareData) => Promise<void> }).share) {
-      try {
-        await (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share({ text });
-        return;
-      } catch {/* user cancelled */}
-    }
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
-  return (
-    <Card className="mb-5">
-      <div className="mb-3 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold/25 text-gold">
-          <Share2 className="h-5 w-5" />
-        </div>
-        <div>
-          <h2 className="font-display text-xl leading-tight">Share this report</h2>
-          <p className="mt-1 text-sm text-foreground/80">
-            Send the numbers to a neighbor, a council member, or a reporter.
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Quick share</p>
-          <p className="rounded-xl border border-border bg-card/60 p-3 text-sm text-card-foreground">{summary}</p>
-          <Button type="button" size="sm" variant="outline" className="mt-2" onClick={() => share(summary)}>
-            {copied ? <><Check className="mr-1.5 h-3.5 w-3.5" /> Copied</> : <><Share2 className="mr-1.5 h-3.5 w-3.5" /> Share</>}
-          </Button>
-        </div>
-
-        <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Share to a council member</p>
-          <textarea
-            defaultValue={councilDraft}
-            rows={8}
-            className="w-full rounded-xl border border-border bg-card/80 p-3 text-sm leading-relaxed text-card-foreground"
-            onChange={() => { /* user edits locally */ }}
-          />
-          <a
-            href={`mailto:?subject=${encodeURIComponent(`Conditions in Census Tract ${name}`)}&body=${encodeURIComponent(councilDraft)}`}
-            className="mt-2 inline-block"
-          >
-            <Button type="button" size="sm">
-              <Mail className="mr-1.5 h-3.5 w-3.5" /> Open in email
-            </Button>
-          </a>
-        </div>
-      </div>
-    </Card>
-  );
 }
