@@ -81,23 +81,33 @@ export const generateTractStory = createServerFn({ method: "POST" })
         ? stateInfo.name
         : "this community";
 
+    const toneLine = data.tone === "direct"
+      ? `Tone: direct and practical. Be matter-of-fact and unsentimental. Lead with the numbers and what they mean concretely for daily life. Skip warmth, encouragement, and hopeful framing — just describe what is true.`
+      : `Tone: warm and hopeful. Be plain-spoken, honest, and hopeful. Acknowledge hardship without sensationalizing it, and close on what can be built on together.`;
+
+    const closingLine = data.tone === "direct"
+      ? `End with one short paragraph that names the most pressing practical needs the numbers point to. No pep talk.`
+      : `End with one short paragraph about what residents and neighbors can build on together.`;
+
     const systemPrompt = isCT
       ? `You are a community-data storyteller writing for Hartford, Connecticut residents.
-Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
+Write at an 8th-grade reading level.
+${toneLine}
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
 Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
 When a number is far from the Connecticut average, name the gap plainly.
 Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
-End with one short paragraph about what residents and neighbors can build on together.
+${closingLine}
 Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`
       : `You are a community-data storyteller writing for residents of ${placePhrase}.
-Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
+Write at an 8th-grade reading level.
+${toneLine}
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
 Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
 Do NOT mention Connecticut, Hartford, or any CT-specific comparisons — this tract is not in Connecticut.
 No statewide comparisons are provided, so describe the numbers on their own terms rather than comparing to an average.
 Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
-End with one short paragraph about what residents and neighbors can build on together.
+${closingLine}
 Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`;
 
     const userPrompt = `Census Tract ${data.tractName} — ${data.neighborhood}${isCT ? ", Hartford, CT" : stateInfo ? `, ${stateInfo.name}` : ""}.
