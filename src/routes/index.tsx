@@ -79,12 +79,14 @@ function HomePage() {
           Sign In
         </Link>
       ) : (
-        <button
-          onClick={() => signOut()}
-          className="mt-8 flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
-        >
-          Log Out
-        </button>
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => signOut()}
+            className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+          >
+            Log Out
+          </button>
+        </div>
       )}
       <Footer />
     </AppShell>
