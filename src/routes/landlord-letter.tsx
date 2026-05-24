@@ -45,6 +45,14 @@ function LandlordLetterPage() {
   const [tenantEmail, setTenantEmail] = useState("");
   const [landlordName, setLandlordName] = useState(lookup?.landlord ?? "");
   const [landlordAddress, setLandlordAddress] = useState(lookupLandlordAddress);
+
+  // Autofill tenant + landlord fields once the stored address resolves from localStorage.
+  useEffect(() => {
+    if (address && !tenantAddress) setTenantAddress(address);
+    if (lookup?.landlord && !landlordName) setLandlordName(lookup.landlord);
+    if (lookupLandlordAddress && !landlordAddress) setLandlordAddress(lookupLandlordAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, lookup]);
   const [issues, setIssues] = useState<Set<string>>(new Set());
   const [details, setDetails] = useState("");
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
