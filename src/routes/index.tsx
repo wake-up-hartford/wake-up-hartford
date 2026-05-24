@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, Building2, Trees, HeartHandshake, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,10 +14,25 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
+function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
+  if (!user) return null;
+  const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+  const candidates = [meta.first_name, meta.given_name, meta.full_name, meta.name];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c.trim().split(/\s+/)[0];
+  }
+  if (user.email) return user.email.split("@")[0];
+  return null;
+}
+
 function HomePage() {
+  const { user } = useAuth();
+  const firstName = getFirstName(user);
   return (
     <AppShell>
-      <p className="mb-2 text-sm text-foreground/70">Hi Daniel</p>
+      {firstName && (
+        <p className="mb-2 text-sm text-foreground/70">Welcome back, {firstName}</p>
+      )}
       <h1 className="font-display text-3xl leading-tight">
         <span className="text-primary">See It.</span>{" "}
         <span className="text-gold">Name It.</span>{" "}
