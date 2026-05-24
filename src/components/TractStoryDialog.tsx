@@ -72,25 +72,26 @@ export function TractStoryDialog({ tractName, neighborhood, indicators }: Props)
           Read the story of this neighborhood
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
-        <DialogHeader>
-          <DialogTitle className="font-display text-xl">
-            {neighborhood} — Tract {tractName}
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-hidden p-5 sm:p-6">
+        <DialogHeader className="space-y-2 text-left">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">The story of this neighborhood</p>
+          <DialogTitle className="font-display text-2xl leading-tight sm:text-2xl">
+            {neighborhood}
           </DialogTitle>
-          <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
+          <p className="text-sm text-muted-foreground">Tract {tractName} · written by AI from the indicators on this page.</p>
         </DialogHeader>
 
-        <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
+        <div className="-mx-1 max-h-[60vh] overflow-y-auto px-1 py-3">
           {mutation.isPending && (
             <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
               <Loader2 className="h-6 w-6 animate-spin" />
-              <p className="text-sm">Writing the story…</p>
+              <p className="text-base">Writing the story…</p>
             </div>
           )}
 
           {mutation.isError && (
             <div className="space-y-3 py-6 text-center">
-              <p className="text-sm text-destructive">Couldn't generate the story.</p>
+              <p className="text-base text-destructive">Couldn't generate the story.</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
                 Try again
               </Button>
@@ -99,7 +100,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators }: Props)
 
           {mutation.data?.error && (
             <div className="space-y-3 py-6 text-center">
-              <p className="text-sm text-destructive">{mutation.data.error}</p>
+              <p className="text-base text-destructive">{mutation.data.error}</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
                 Try again
               </Button>
@@ -107,7 +108,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators }: Props)
           )}
 
           {mutation.data?.story && (
-            <div className="space-y-3 whitespace-pre-wrap text-[15px] leading-relaxed text-foreground/90">
+            <div className="mx-auto max-w-prose space-y-5 text-[17px] leading-[1.7] text-foreground/90">
               {mutation.data.story.split(/\n\n+/).map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -115,7 +116,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators }: Props)
           )}
         </div>
 
-        <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
           AI-generated from public ACS census data and USDA food-access flags. May contain errors — verify before citing.
         </p>
 
