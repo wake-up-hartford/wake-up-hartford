@@ -551,6 +551,66 @@ function PrintReport({ data }: { data: Data }) {
   );
 }
 
+function LandlordCard({ data }: { data: Data }) {
+  const c = data.landlordContact;
+  const p = data.landlordPortfolio;
+  return (
+    <Card className="mb-5">
+      <div className="flex items-start gap-3">
+        <Building2 className="mt-0.5 h-5 w-5 text-primary" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Owner / Landlord</p>
+          <h2 className="font-display text-lg leading-tight">{data.landlord}</h2>
+
+          <div className="mt-3 space-y-1.5 text-sm">
+            {c.phone && (
+              <p className="flex items-center gap-2 text-foreground">
+                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                <a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`} className="hover:underline">{c.phone}</a>
+              </p>
+            )}
+            {c.email && (
+              <p className="flex items-center gap-2 text-foreground">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                <a href={`mailto:${c.email}`} className="hover:underline break-all">{c.email}</a>
+              </p>
+            )}
+            {c.mailingAddress && (
+              <p className="flex items-start gap-2 text-foreground">
+                <MapPin className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
+                <span>{c.mailingAddress}</span>
+              </p>
+            )}
+          </div>
+
+          <div className="mt-4 rounded-xl border border-border bg-secondary/40 p-3">
+            <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <Briefcase className="h-3.5 w-3.5" /> This owner's full Hartford portfolio
+            </p>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+              <PortfolioStat value={p.propertiesInHartford} label="properties" />
+              <PortfolioStat value={p.totalUnits} label="total units" />
+              <PortfolioStat value={p.totalOpenCodeViolations} label="open code violations" />
+              <PortfolioStat value={p.totalEvictions12mo} label="evictions, last yr" />
+              <PortfolioStat value={p.totalComplaints311_12mo} label="311 complaints, last yr" />
+            </div>
+            {p.note && <p className="mt-2 text-xs text-muted-foreground">{p.note}</p>}
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function PortfolioStat({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="rounded-md bg-card px-2.5 py-2">
+      <div className="font-display text-xl leading-none text-foreground">{value}</div>
+      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
 }
