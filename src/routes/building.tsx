@@ -273,6 +273,7 @@ function DetailedReport({ data }: { data: Data }) {
         </ul>
         <PlainLanguage>
           Open violations mean the city has asked your landlord to fix something. You can call <strong>311</strong> if a problem hasn't been fixed.
+          {" "}Across <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties this owner has <strong>{data.landlordPortfolio.totalOpenCodeViolations}</strong> open violations in total.
         </PlainLanguage>
       </Card>
 
