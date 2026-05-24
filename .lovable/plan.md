@@ -1,47 +1,47 @@
-# AI Story of the Tract
+## Rotating advocacy messages in the header
 
-## What you'll see
+Add a rotating ticker of civil-rights messages to the `AppShell` header, visible on every route **except** the home page (`/`).
 
-On the neighborhood page, once a tract is loaded and its indicators are showing, a new link/button appears near the top of the report — something like:
+### Where it goes
 
-> **Read the story of this neighborhood →**  *(AI-generated)*
+In `src/components/AppShell.tsx`, inside the existing sticky `<header>`, add a thin second row directly **below** the current logo row. It only renders when `pathname !== "/"`.
 
-Clicking it opens a popup (modal dialog) with a 4–6 paragraph narrative written by AI that turns the raw indicators (poverty, income, unemployment, education, housing age, rent burden, uninsured rate, food access flag, etc.) into a plain-language story about the tract — strengths, challenges, what residents are likely experiencing, and how this tract compares to the Connecticut state averages we already fetch.
+Layout:
+```
+┌─────────────────────────────────────────────┐
+│  [logo]  NAACP Greater Hartford             │ ← existing row
+│  "Poverty by ZIP code is a civil rights…"   │ ← new rotating line
+└─────────────────────────────────────────────┘
+```
 
-The popup will:
-- Show the tract name + neighborhood as the title
-- Stream the story in token-by-token so it feels alive (no long blank wait)
-- Include a small **"AI-generated from public ACS census data — may contain errors"** disclaimer at the bottom
-- Have a **Copy** button and a **Close** button
+### Behavior
 
-## How it works (technical)
+- The 6 messages cycle one at a time (not a marquee), ~5 seconds each.
+- Cross-fade between messages (200ms fade-out → swap → fade-in), implemented with a simple `useState` + `setInterval` and a CSS opacity transition. No new dependencies.
+- Respects `prefers-reduced-motion`: if reduced motion is set, swap without fading.
+- Single line, truncates with ellipsis if it overflows on 390px width (full text still readable on most messages at this size; the longest one — "These neighborhoods do not need pity…" — will likely truncate on the narrowest phones, which is acceptable for a ticker).
 
-1. **New server function** `generateTractStory` in `src/lib/tract-story.functions.ts`
-   - Input: the same `{ state, county, tract }` we already use, plus the tract display name + neighborhood label
-   - Internally: re-uses `getTractIndicators` to fetch the indicators (or accepts them as input to avoid a second API call)
-   - Calls the **Lovable AI Gateway** (`https://ai.gateway.lovable.dev/v1/chat/completions`) using the auto-provisioned `LOVABLE_API_KEY` — no user setup needed
-   - Default model: `google/gemini-3-flash-preview` (fast, free tier, good at narrative writing)
-   - System prompt frames the AI as a community-data storyteller writing for Hartford residents at an 8th-grade reading level, grounded only in the numbers provided, no invented facts
-   - Returns the streamed response body directly to the client
+### Visual style
 
-2. **New popup component** `TractStoryDialog.tsx`
-   - Built on the existing `shadcn/ui` `Dialog` (already in the project)
-   - Triggered by a button placed in `src/routes/neighborhood.tsx` right under the tract header
-   - Uses fetch + ReadableStream to render tokens as they arrive (per the AI-gateway streaming pattern)
-   - Handles `429` (rate-limited — show "Try again in a moment") and `402` (credits exhausted — show "AI credits depleted, contact admin") gracefully with a toast
+- Font: a distinctive serif to feel editorial/quote-like and stand out from the sans-serif UI. Load **Instrument Serif** (italic) from Google Fonts by appending it to the existing `<link>` in `src/routes/__root.tsx`. It's a free, expressive display serif that pairs well with Unbounded + Inter.
+- Size: `text-[12px]` with `leading-snug`, italic, slight letter-spacing.
+- Color: `text-muted-foreground` so it sits quietly under the logo without competing.
+- Container: full-width strip, `border-t border-border/60`, `py-1.5`, centered text, same `max-w-xl` as the rest of the header.
 
-3. **No DB changes, no new dependencies.** Lovable AI Gateway + existing UI primitives only.
+### Files changed
 
-## What I will NOT change
+1. **`src/components/AppShell.tsx`**
+   - Add a `RotatingMessages` subcomponent (messages array, interval, fade state).
+   - Render it inside `<header>` below the logo row, gated by `pathname !== "/"`.
 
-- The map, the indicator cards, the address lookup, the existing routes — all untouched
-- No new data sources; the story is built from the ACS indicators already on the page
+2. **`src/routes/__root.tsx`**
+   - Extend the existing Google Fonts `<link>` href to also load `Instrument+Serif:ital@0;1`.
 
-## Open questions before I build
+3. **`src/styles.css`**
+   - Add a `--font-serif-display: "Instrument Serif", Georgia, serif;` token under `@theme inline` so the ticker can use a semantic class (`font-[var(--font-serif-display)]` or a small utility).
 
-None blocking — but a couple of things you might want to tune later:
-- **Tone**: I'll default to "warm, plain-language, hopeful but honest." Say the word if you want it more clinical or more activist.
-- **Length**: ~250–400 words by default. Easy to adjust.
-- **Caching**: First version generates fresh each click. If costs become a concern we can cache per tract in the database.
+No route changes, no backend, no new packages.
 
-Approve this and I'll implement it.
+### Open question
+
+Confirm that the home page (`/`) should be the only excluded route. The `AppShell` also wraps Neighborhood, Home (building), and Life — the ticker will appear on all three. If you'd rather exclude additional routes (e.g. `/auth`), say which.
