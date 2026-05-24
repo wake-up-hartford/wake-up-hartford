@@ -17,8 +17,12 @@ const Input = z.object({
   tractName: z.string(),
   neighborhood: z.string(),
   stateFips: z.string().regex(/^\d{2}$/).optional(),
+  tone: z.enum(["warm", "direct"]).optional().default("warm"),
   indicators: z.array(IndicatorInput).min(1),
 });
+
+export type Tone = "warm" | "direct";
+
 
 // FIPS state code → (name, abbr). Used to localize the AI story so it doesn't
 // hardcode Connecticut when the user looked up a tract in another state.
