@@ -35,14 +35,16 @@ const ISSUE_OPTIONS = [
 
 function LandlordLetterPage() {
   const { address } = useStoredAddress();
+  const lookup = useMemo(() => (address ? lookupAddress(address) : null), [address]);
+  const lookupLandlordAddress = lookup?.landlordContact.mailingAddress ?? "";
 
   const [tenantName, setTenantName] = useState("");
   const [unit, setUnit] = useState("");
   const [tenantAddress, setTenantAddress] = useState(address ?? "");
   const [tenantPhone, setTenantPhone] = useState("");
   const [tenantEmail, setTenantEmail] = useState("");
-  const [landlordName, setLandlordName] = useState("");
-  const [landlordAddress, setLandlordAddress] = useState("");
+  const [landlordName, setLandlordName] = useState(lookup?.landlord ?? "");
+  const [landlordAddress, setLandlordAddress] = useState(lookupLandlordAddress);
   const [issues, setIssues] = useState<Set<string>>(new Set());
   const [details, setDetails] = useState("");
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
