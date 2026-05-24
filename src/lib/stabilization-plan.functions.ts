@@ -41,21 +41,21 @@ const Input = z.object({
 const PlanStep = z.object({
   domain: z.string(),
   title: z.string(),
-  detail: z.string(),
+  detail: z.string().optional().default(""),
   resource_id: z.string().nullable().optional(),
-  est_time_minutes: z.number().int().min(5).max(240).optional(),
+  est_time_minutes: z.number().int().min(1).max(600).optional(),
 });
 
 const PlanWeek = z.object({
-  week: z.number().int().min(1).max(4),
-  focus: z.string(),
-  steps: z.array(PlanStep).min(1).max(5),
+  week: z.number().int().min(1).max(8),
+  focus: z.string().optional().default(""),
+  steps: z.array(PlanStep).min(1).max(10),
 });
 
 const PlanShape = z.object({
   priority_summary: z.string(),
   crisis_flags: z.array(z.object({ note: z.string(), hotline: z.string() })).default([]),
-  weeks: z.array(PlanWeek).length(4),
+  weeks: z.array(PlanWeek).min(1).max(8),
 });
 
 function pickResourcesFor(survey: z.infer<typeof ScoreSchema>, followup: z.infer<typeof FollowupSchema>): Resource[] {
