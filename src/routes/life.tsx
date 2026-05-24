@@ -1023,9 +1023,9 @@ function NumberField({ label, value, setValue, min, max }: { label: string; valu
     <div>
       <Label>{label}</Label>
       <div className="flex items-center gap-2">
-        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">−</button>
+        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">−</button>
         <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground">{value}</span>
-        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">+</button>
+        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">+</button>
       </div>
     </div>
   );
