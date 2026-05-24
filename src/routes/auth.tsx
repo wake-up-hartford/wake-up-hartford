@@ -74,9 +74,23 @@ function AuthPage() {
         Sign in to save your stabilization plan, check off steps, and come back later.
       </p>
 
+      <div className="mt-6 space-y-3">
+        <h2 className="font-display text-xl text-foreground">Sign in + Stay Connected</h2>
+        <p className="text-[14px] leading-relaxed text-muted-foreground">
+          We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action you can be part of — NAACP Greater Hartford campaigns working to change the systems that affect your life.
+        </p>
+        <button
+          onClick={() => { setMode("signup"); setError(null); }}
+          className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+        >
+          Create Account
+        </button>
+        <p className="text-center text-[13px] italic text-muted-foreground">-OR, if returning...</p>
+      </div>
+
       <button
         onClick={handleGoogle}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
       >
         Continue with Google
       </button>
