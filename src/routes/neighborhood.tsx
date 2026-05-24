@@ -56,7 +56,7 @@ function NeighborhoodPage() {
           <button
             type="button"
             onClick={() => setTract(null)}
-            className="ml-auto inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="ml-auto inline-flex items-center justify-end gap-1 text-right text-sm text-muted-foreground hover:text-foreground"
           >
             <MapPin className="h-4 w-4" /> Choose another neighborhood
           </button>
