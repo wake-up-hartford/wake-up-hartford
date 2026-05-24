@@ -71,6 +71,14 @@ function HomePage() {
       </div>
 
       <EventCard />
+      {!user && (
+        <Link
+          to="/auth"
+          className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+        >
+          Sign In
+        </Link>
+      )}
       <Footer />
     </AppShell>
   );
