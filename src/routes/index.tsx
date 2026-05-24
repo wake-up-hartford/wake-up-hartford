@@ -63,7 +63,7 @@ function HomePage() {
         <DashLink
           to="/life"
           icon={HeartHandshake}
-          title="Your Life"
+          title="Your Path"
           body="Resources for stability, health, and safety."
           tone="blue"
           
