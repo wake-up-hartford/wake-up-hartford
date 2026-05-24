@@ -106,7 +106,7 @@ function HomePage() {
                       id="addr"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="247 Garden Street, Hartford"
+                      placeholder="555 Main Street, Hartford"
                       className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
                       autoComplete="street-address"
                       inputMode="text"
