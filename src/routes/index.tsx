@@ -26,7 +26,7 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 }
 
 function HomePage() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const firstName = getFirstName(user);
   return (
     <AppShell>
@@ -71,13 +71,20 @@ function HomePage() {
       </div>
 
       <EventCard />
-      {!user && (
+      {!user ? (
         <Link
           to="/auth"
           className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
         >
           Sign In
         </Link>
+      ) : (
+        <button
+          onClick={() => signOut()}
+          className="mt-8 flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+        >
+          Log Out
+        </button>
       )}
       <Footer />
     </AppShell>
