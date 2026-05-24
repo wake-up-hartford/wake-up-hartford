@@ -832,11 +832,11 @@ function SummaryScreen({
         })}
       </div>
 
-      <div className="mb-5 flex items-start gap-3 rounded-2xl border-2 border-dashed border-blue-400/60 bg-blue-50/60 p-4">
-        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-        <p className="text-[13px] leading-relaxed text-slate-700">
-          <strong>Next step:</strong> An AI-generated stabilization plan will be created
-          based on your responses — with specific resources, steps, and timelines.
+      <div className="mb-5">
+        <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
+        <p className="mt-2 text-[14px] leading-relaxed text-slate-700">
+          An AI-generated Plan will be created based on your responses — with specific
+          resources, steps, and timelines.
         </p>
       </div>
 
