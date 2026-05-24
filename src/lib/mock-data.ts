@@ -44,6 +44,19 @@ const SAMPLES: Record<string, AddressLookup> = {
     yearBuilt: 1928,
     units: 12,
     landlord: "Garden Street Holdings LLC",
+    landlordContact: {
+      phone: "(860) 555-0142",
+      email: "manager@gardenstreetholdings.com",
+      mailingAddress: "PO Box 4821, Hartford, CT 06147",
+    },
+    landlordPortfolio: {
+      propertiesInHartford: 14,
+      totalUnits: 168,
+      totalOpenCodeViolations: 31,
+      totalEvictions12mo: 22,
+      totalComplaints311_12mo: 47,
+      note: "This owner is one of the larger landlords in north Hartford.",
+    },
     building: {
       codeViolations: {
         open: 3,
