@@ -327,6 +327,9 @@ function DetailedReport({ data }: { data: Data }) {
             </li>
           ))}
         </ul>
+        <PlainLanguage>
+          Across all <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties owned by {data.landlord}, residents and neighbors have filed <strong>{data.landlordPortfolio.totalComplaints311_12mo}</strong> 311 complaints in the last 12 months.
+        </PlainLanguage>
       </Card>
     </div>
   );
