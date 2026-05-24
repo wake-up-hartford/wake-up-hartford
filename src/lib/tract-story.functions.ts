@@ -83,6 +83,7 @@ Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
 Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
 When a number is far from the Connecticut average, name the gap plainly.
+Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
 End with one short paragraph about what residents and neighbors can build on together.
 Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`
       : `You are a community-data storyteller writing for residents of ${placePhrase}.
@@ -91,6 +92,7 @@ Ground every claim in the numbers provided — never invent facts, statistics, h
 Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
 Do NOT mention Connecticut, Hartford, or any CT-specific comparisons — this tract is not in Connecticut.
 No statewide comparisons are provided, so describe the numbers on their own terms rather than comparing to an average.
+Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
 End with one short paragraph about what residents and neighbors can build on together.
 Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`;
 

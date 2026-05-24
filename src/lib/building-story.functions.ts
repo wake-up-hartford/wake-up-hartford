@@ -59,6 +59,7 @@ Same owner's full Hartford portfolio:
 Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
 Ground every claim in the numbers provided — never invent facts, history, names, or place details.
 Tell the story of this specific building: what the records show, what residents likely experience, and how it compares to the owner's broader portfolio.
+Write in third person about tenants and neighbors. Do NOT use "we," "us," or "our" — you are not a tenant or member of this community, you are an outside storyteller.
 Length: 2 to 3 tight paragraphs, roughly 120-180 words total. Plain prose, no headings, no bullet lists. Be concise — cut anything that isn't essential.`;
 
     try {
