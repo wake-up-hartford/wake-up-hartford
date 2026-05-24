@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles, Loader2, Copy, Check, RefreshCw } from "lucide-react";
@@ -11,8 +11,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { generateTractStory } from "@/lib/tract-story.functions";
+import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
+
+const TONE_STORAGE_KEY = "wuw.tract-story.tone";
+const TONE_OPTIONS: { value: Tone; label: string }[] = [
+  { value: "warm", label: "Warm & hopeful" },
+  { value: "direct", label: "Direct & practical" },
+];
 
 type Props = {
   tractName: string;
