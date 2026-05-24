@@ -75,26 +75,25 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           Read the story of this building
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-hidden p-5 sm:p-6">
-        <DialogHeader className="space-y-2 text-left">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">The story of this building</p>
-          <DialogTitle className="font-display text-2xl leading-tight sm:text-2xl">{data.address}</DialogTitle>
-          <p className="text-sm text-muted-foreground">
-            Written by AI from the records for this building and its owner.
+      <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
+        <DialogHeader>
+          <DialogTitle className="font-display text-xl">{data.address}</DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            An AI-written story, grounded in the records for this building and its owner.
           </p>
         </DialogHeader>
 
-        <div className="-mx-1 max-h-[60vh] overflow-y-auto px-1 py-3">
+        <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
           {mutation.isPending && (
             <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
               <Loader2 className="h-6 w-6 animate-spin" />
-              <p className="text-base">Writing the story…</p>
+              <p className="text-sm">Writing the story…</p>
             </div>
           )}
 
           {mutation.isError && (
             <div className="space-y-3 py-6 text-center">
-              <p className="text-base text-destructive">Couldn't generate the story.</p>
+              <p className="text-sm text-destructive">Couldn't generate the story.</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
                 Try again
               </Button>
@@ -103,7 +102,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
 
           {mutation.data?.error && (
             <div className="space-y-3 py-6 text-center">
-              <p className="text-base text-destructive">{mutation.data.error}</p>
+              <p className="text-sm text-destructive">{mutation.data.error}</p>
               <Button size="sm" variant="outline" onClick={() => mutation.mutate()}>
                 Try again
               </Button>
@@ -111,7 +110,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           )}
 
           {mutation.data?.story && (
-            <div className="mx-auto max-w-prose space-y-5 text-[17px] leading-[1.7] text-foreground/90">
+            <div className="space-y-3 whitespace-pre-wrap text-[15px] leading-relaxed text-foreground/90">
               {mutation.data.story.split(/\n\n+/).map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -119,7 +118,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           )}
         </div>
 
-        <p className="border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
           AI-generated from city housing, court, utility, and 311 records (demo data in this preview). May contain errors — verify before citing.
         </p>
 
