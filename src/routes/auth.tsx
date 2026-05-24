@@ -69,7 +69,7 @@ function AuthPage() {
       </Link>
 
       <div className="mt-6 space-y-3">
-        <h2 className="font-display text-xl text-foreground">Sign in + Stay Connected</h2>
+        <h2 className="font-display text-3xl leading-tight text-foreground">Sign in + Stay Connected</h2>
         <p className="text-[14px] leading-relaxed text-muted-foreground">
           We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action you can be part of — NAACP Greater Hartford campaigns working to change the systems that affect your life.
         </p>
