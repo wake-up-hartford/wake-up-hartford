@@ -145,6 +145,8 @@ function HomePage() {
           </div>
 
 
+          <BuildingStoryDialog data={data} />
+
           <Card className="mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 opacity-80" />
@@ -162,8 +164,6 @@ function HomePage() {
           </Card>
 
           <LandlordCard data={data} />
-
-          <BuildingStoryDialog data={data} />
 
           <Tabs defaultValue="card" className="w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
