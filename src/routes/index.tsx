@@ -26,7 +26,7 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 }
 
 function HomePage() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const firstName = getFirstName(user);
   return (
     <AppShell>
