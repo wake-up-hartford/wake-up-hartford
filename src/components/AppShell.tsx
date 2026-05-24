@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/" className="flex items-center gap-3">
             <img src={wuwLogo} alt="Wake Up Wednesday" className={pathname === "/" ? "h-14 w-auto" : "h-10 w-auto"} />
             <span className="text-[11px] uppercase tracking-wider text-muted-foreground leading-tight hidden sm:block">
-              NAACP Greater<br />Hartford
+              Greater Hartford<br />Branch NAACP
             </span>
           </Link>
         </div>
