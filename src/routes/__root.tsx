@@ -74,11 +74,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Wake Up Wednesday — NAACP Greater Hartford" },
+      { title: "Wake Up Wednesday — GREATER HARTFORD BRANCH NAACP" },
       { name: "description", content: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT." },
       { name: "theme-color", content: "#2a2a5c" },
       { property: "og:title", content: "Wake Up Wednesday" },
-      { property: "og:description", content: "A community guide from NAACP Greater Hartford." },
+      { property: "og:description", content: "A community guide from GREATER HARTFORD BRANCH NAACP." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

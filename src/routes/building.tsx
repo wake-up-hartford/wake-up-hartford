@@ -472,7 +472,7 @@ function PrintReport({ data }: { data: Data }) {
 </style></head><body>
   <div class="header">
     <div class="titles">
-      <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
+      <p class="eyebrow">Wake Up Wednesday · GREATER HARTFORD BRANCH NAACP</p>
       <h1>${escapeHtml(data.address)}</h1>
       <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
     </div>

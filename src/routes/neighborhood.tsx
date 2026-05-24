@@ -67,7 +67,7 @@ function NeighborhoodPage() {
         <>
           <SectionHeader
             title="Choose Your Neighborhood"
-            subtitle="Tap a tract on the map, or look up any US address. The highlighted tracts are NAACP Greater Hartford's primary focus — Northeast, Blue Hills, Upper Albany, and adjacent North End neighborhoods."
+            subtitle="Tap a tract on the map, or look up any US address. The highlighted tracts are GREATER HARTFORD BRANCH NAACP's primary focus — Northeast, Blue Hills, Upper Albany, and adjacent North End neighborhoods."
           />
           <Card className="mb-5">
             <Tabs defaultValue="map">
@@ -422,7 +422,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
 </style></head><body>
   <div class="header">
     <div class="titles">
-      <p class="eyebrow">Wake Up Wednesday · NAACP Greater Hartford</p>
+      <p class="eyebrow">Wake Up Wednesday · GREATER HARTFORD BRANCH NAACP</p>
       <h1>${escapeHtml(tract.neighborhood ?? tract.tractName)}</h1>
       <p class="sub">Census Tract ${escapeHtml(tract.tractName)} · ${escapeHtml(tract.address)}</p>
     </div>
