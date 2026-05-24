@@ -45,6 +45,7 @@ export const GROUP_COLORS: Record<TargetTract["group"], string> = {
   blue_hills: "#0891b2",    // teal
   upper_albany: "#16a34a",  // green
   adjacent: "#d97706",      // amber
+  other: "#94a3b8",         // slate (non-target Hartford tracts)
 };
 
 export const GROUP_LABELS: Record<TargetTract["group"], string> = {
@@ -52,4 +53,5 @@ export const GROUP_LABELS: Record<TargetTract["group"], string> = {
   blue_hills: "Blue Hills",
   upper_albany: "Upper Albany",
   adjacent: "North End Adjacent",
+  other: "Other Hartford",
 };
