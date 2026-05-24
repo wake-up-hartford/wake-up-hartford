@@ -37,12 +37,12 @@ function RotatingMessages() {
 
   return (
     <div className="border-t border-border/60">
-      <div className="mx-auto w-full max-w-xl px-4 py-1.5 sm:px-5">
+      <div className="mx-auto w-full max-w-xl px-5 py-2.5 sm:px-6 sm:py-2">
         <p
-          className="text-center text-[12px] italic leading-snug text-muted-foreground transition-opacity duration-300"
+          className="text-center text-[15px] sm:text-[14px] italic leading-snug text-foreground/80 transition-opacity duration-300"
           style={{
             fontFamily: '"Instrument Serif", Georgia, serif',
-            letterSpacing: "0.01em",
+            letterSpacing: "0.005em",
             opacity: visible ? 1 : 0,
           }}
         >
