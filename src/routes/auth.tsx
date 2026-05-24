@@ -10,12 +10,24 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function passwordMeetsRules(p: string) {
+  return (
+    p.length >= 8 &&
+    /[a-z]/.test(p) &&
+    /[A-Z]/.test(p) &&
+    /\d/.test(p) &&
+    /[^A-Za-z0-9]/.test(p)
+  );
+}
+
 function AuthPage() {
   const nav = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [optIn, setOptIn] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +55,11 @@ function AuthPage() {
           email,
           password,
           options: {
-            data: { display_name: name || email.split("@")[0] },
+            data: {
+              display_name: name || email.split("@")[0],
+              phone: phone || null,
+              opt_in_updates: optIn,
+            },
             emailRedirectTo: window.location.origin + "/plans",
           },
         });
@@ -61,6 +77,9 @@ function AuthPage() {
       setBusy(false);
     }
   };
+
+  const showPwHelp =
+    mode === "signup" && password.length > 0 && !passwordMeetsRules(password);
 
   return (
     <AppShell>
@@ -95,12 +114,21 @@ function AuthPage() {
 
       <form onSubmit={handleEmail} className="space-y-3">
         {mode === "signup" && (
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name (optional)"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
-          />
+          <>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name (optional)"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Cell phone (optional, for text alerts & plan link)"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+          </>
         )}
         <input
           type="email"
@@ -119,7 +147,7 @@ function AuthPage() {
           placeholder="Password"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
-        {mode === "signup" && (
+        {showPwHelp && (
           <div className="rounded-lg border border-border bg-muted/30 p-3 text-[12px] text-muted-foreground">
             <p className="mb-1 font-semibold text-foreground">Password must:</p>
             <ul className="list-disc space-y-0.5 pl-4">
@@ -128,6 +156,19 @@ function AuthPage() {
               <li>Not be a common or previously leaked password (e.g. "password123")</li>
             </ul>
           </div>
+        )}
+        {mode === "signup" && (
+          <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+            <input
+              type="checkbox"
+              checked={optIn}
+              onChange={(e) => setOptIn(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+            />
+            <span>
+              Send me info on free resources and NAACP Greater Hartford campaign updates.
+            </span>
+          </label>
         )}
         {error && <p className="text-[13px] text-destructive">{error}</p>}
         <button
@@ -139,12 +180,14 @@ function AuthPage() {
         </button>
       </form>
 
-      <button
-        onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(null); }}
-        className="mt-4 w-full text-center text-[13px] text-muted-foreground hover:text-foreground"
-      >
-        {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
-      </button>
+      {mode === "signin" && (
+        <button
+          onClick={() => { setMode("signup"); setError(null); }}
+          className="mt-4 w-full text-center text-[13px] text-muted-foreground hover:text-foreground"
+        >
+          New here? Create an account
+        </button>
+      )}
     </AppShell>
   );
 }
