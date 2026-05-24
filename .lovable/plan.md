@@ -1,47 +1,52 @@
-## Rotating advocacy messages in the header
+# Plan: Neighborhood "Take Action" page
 
-Add a rotating ticker of civil-rights messages to the `AppShell` header, visible on every route **except** the home page (`/`).
+## Goal
+Turn the placeholder "Take action" button on `/neighborhood` into a real link that opens a new page tailored to the looked-up tract, surfacing the 3 highest-leverage actions a resident or organizer can take right now.
 
-### Where it goes
+## New route
+`src/routes/neighborhood-actions.tsx` → `/neighborhood-actions?tract=<geoid>`
 
-In `src/components/AppShell.tsx`, inside the existing sticky `<header>`, add a thin second row directly **below** the current logo row. It only renders when `pathname !== "/"`.
+- Reads the `tract` query param (and `state`/`county` if needed) so the page knows which neighborhood it's about.
+- Re-uses the existing `getTractIndicators` server function to pull the same data the report card used, so action copy can reference the tract's top concerns (e.g., "Rent burden here is X% — Y points above CT").
+- Shows the tract name + a small map thumbnail at the top, with a "Back to report" link.
 
-Layout:
-```
-┌─────────────────────────────────────────────┐
-│  [logo]  NAACP Greater Hartford             │ ← existing row
-│  "Poverty by ZIP code is a civil rights…"   │ ← new rotating line
-└─────────────────────────────────────────────┘
-```
+## The 3 actions (each as a card)
 
-### Behavior
+### 1. Find help near me
+- Header: "Get help in your neighborhood"
+- Auto-prioritizes the vetted CT orgs by the tract's red/yellow indicators (e.g., if Food Access is red, surface food orgs first; if Rent Burden is red, surface housing/legal orgs first).
+- Each org card: name, what they do, phone, link. Uses the same 33-org list already in the vetted resources doc — embed as a small in-code dataset (`src/data/vetted-resources.ts`).
+- "See all resources" link at the bottom.
 
-- The 6 messages cycle one at a time (not a marquee), ~5 seconds each.
-- Cross-fade between messages (200ms fade-out → swap → fade-in), implemented with a simple `useState` + `setInterval` and a CSS opacity transition. No new dependencies.
-- Respects `prefers-reduced-motion`: if reduced motion is set, swap without fading.
-- Single line, truncates with ellipsis if it overflows on 390px width (full text still readable on most messages at this size; the longest one — "These neighborhoods do not need pity…" — will likely truncate on the narrowest phones, which is acceptable for a ticker).
+### 2. Email my state rep
+- Header: "Tell your representative what's happening here"
+- Generates a pre-drafted advocacy email via Lovable AI (Gemini 1.5 Flash, same pattern as the tract story) citing the tract's 2–3 worst indicators with the CT comparison.
+- User picks tone: Urgent / Constructive / Personal.
+- For now: shows the drafted message in a textarea with Copy + "Open in email app" (`mailto:`) buttons. A note explains that auto-lookup of the resident's specific legislator is coming soon — the user fills in the rep's email.
+- New server fn: `src/lib/action-letter.functions.ts` → `draftRepLetter({ geoid, tone })`.
 
-### Visual style
+### 3. Share to a council member or neighbor
+- Header: "Share this report"
+- Two share modes:
+  - **Quick share** — copies a short summary ("Tract X in Hartford: rent burden 58%, child poverty 41%. See the full report: <url>") + the deep link to `/neighborhood?tract=...`.
+  - **Share to council** — same as quick share but with a pre-filled message addressed to "Dear Council Member,". User pastes the council member's email.
+- Uses Web Share API on mobile when available, falls back to copy-to-clipboard.
 
-- Font: a distinctive serif to feel editorial/quote-like and stand out from the sans-serif UI. Load **Instrument Serif** (italic) from Google Fonts by appending it to the existing `<link>` in `src/routes/__root.tsx`. It's a free, expressive display serif that pairs well with Unbounded + Inter.
-- Size: `text-[12px]` with `leading-snug`, italic, slight letter-spacing.
-- Color: `text-muted-foreground` so it sits quietly under the logo without competing.
-- Container: full-width strip, `border-t border-border/60`, `py-1.5`, centered text, same `max-w-xl` as the rest of the header.
+## Wiring the button
+- In `src/routes/neighborhood.tsx`, change the `<button>` inside `TakeAction` to a `<Link to="/neighborhood-actions" search={{ tract: geoid }}>`.
+- Pass the current `geoid` (and state/county) into `TakeAction` as props.
 
-### Files changed
+## Visual style
+- Match the existing neighborhood page: dark card surfaces, gold accents, status dots reused for the indicator chips at the top of each action card.
+- Each action card has its own icon (HandHeart / Mail / Share2 from lucide) and a clear primary CTA button.
 
-1. **`src/components/AppShell.tsx`**
-   - Add a `RotatingMessages` subcomponent (messages array, interval, fade state).
-   - Render it inside `<header>` below the logo row, gated by `pathname !== "/"`.
+## Files touched
+- **New:** `src/routes/neighborhood-actions.tsx`
+- **New:** `src/lib/action-letter.functions.ts` (AI-drafted rep email)
+- **New:** `src/data/vetted-resources.ts` (33 orgs as structured data, tagged by domain)
+- **Edit:** `src/routes/neighborhood.tsx` — wire `TakeAction` to the new route, pass tract context
 
-2. **`src/routes/__root.tsx`**
-   - Extend the existing Google Fonts `<link>` href to also load `Instrument+Serif:ital@0;1`.
-
-3. **`src/styles.css`**
-   - Add a `--font-serif-display: "Instrument Serif", Georgia, serif;` token under `@theme inline` so the ticker can use a semantic class (`font-[var(--font-serif-display)]` or a small utility).
-
-No route changes, no backend, no new packages.
-
-### Open question
-
-Confirm that the home page (`/`) should be the only excluded route. The `AppShell` also wraps Neighborhood, Home (building), and Life — the ticker will appear on all three. If you'd rather exclude additional routes (e.g. `/auth`), say which.
+## Out of scope (can do next)
+- Auto-lookup of the resident's specific state rep/council member from the tract (needs CT legislator GeoJSON).
+- Saving sent letters to the user's account.
+- Tracking which orgs the user contacted.

@@ -148,7 +148,7 @@ function NeighborhoodPage() {
             </TabsContent>
           </Tabs>
 
-          <TakeAction />
+          <TakeAction tract={tract} />
         </>
 
       )}
@@ -610,7 +610,7 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
   );
 }
 
-function TakeAction() {
+function TakeAction({ tract }: { tract: Tract }) {
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
       <div className="flex items-start gap-3">
@@ -620,15 +620,22 @@ function TakeAction() {
         <div className="flex-1">
           <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
           <p className="mt-1 text-sm text-foreground/80">
-            Report a problem, get free legal help, or join your neighbors at Unity Plaza.
+            Find help, email your rep, or share this report — tailored to what this tract needs most.
           </p>
-          <button
-            type="button"
+          <Link
+            to="/neighborhood-actions"
+            search={{
+              state: tract.state,
+              county: tract.county,
+              tract: tract.tract,
+              name: tract.tractName,
+              neighborhood: tract.neighborhood ?? "",
+            }}
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
           >
             Take action
             <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
