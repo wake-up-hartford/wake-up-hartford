@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { Sparkles, Loader2, Copy, Check } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check, RefreshCw } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +21,54 @@ type Props = {
   stateFips?: string;
 };
 
+const CACHE_PREFIX = "wuw.tract-story.v1:";
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
+
+type CacheEntry = { story: string; savedAt: number };
+
+function readCache(key: string): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CACHE_PREFIX + key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CacheEntry;
+    if (!parsed?.story) return null;
+    if (Date.now() - parsed.savedAt > CACHE_TTL_MS) {
+      localStorage.removeItem(CACHE_PREFIX + key);
+      return null;
+    }
+    return parsed.story;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(key: string, story: string) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(
+      CACHE_PREFIX + key,
+      JSON.stringify({ story, savedAt: Date.now() } satisfies CacheEntry),
+    );
+  } catch {
+    // ignore quota / disabled storage
+  }
+}
+
 export function TractStoryDialog({ tractName, neighborhood, indicators, stateFips }: Props) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [cachedStory, setCachedStory] = useState<string | null>(null);
   const generate = useServerFn(generateTractStory);
+
+  // Cache key includes tract + state + a fingerprint of the indicators so
+  // the cache invalidates if the underlying data changes.
+  const cacheKey = useMemo(() => {
+    const fingerprint = indicators
+      .map((i) => `${i.key}=${i.value}|${i.severity}`)
+      .join(";");
+    return `${stateFips ?? "00"}:${tractName}:${fingerprint}`;
+  }, [tractName, stateFips, indicators]);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -45,14 +89,31 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           })),
         },
       }),
+    onSuccess: (result) => {
+      if (result?.story) writeCache(cacheKey, result.story);
+    },
   });
+
+  const story = mutation.data?.story ?? cachedStory;
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next && !mutation.data && !mutation.isPending) {
-      mutation.mutate();
+    if (next) {
+      const cached = readCache(cacheKey);
+      if (cached) {
+        setCachedStory(cached);
+      } else if (!mutation.data && !mutation.isPending) {
+        setCachedStory(null);
+        mutation.mutate();
+      }
     }
     if (!next) setCopied(false);
+  };
+
+  const handleRegenerate = () => {
+    setCachedStory(null);
+    mutation.reset();
+    mutation.mutate();
   };
 
   const handleCopy = async () => {
