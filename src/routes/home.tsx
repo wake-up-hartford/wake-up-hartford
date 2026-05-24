@@ -16,7 +16,7 @@ const AddressLocationMap = lazy(() =>
   import("@/components/BuildingAddressMap").then((m) => ({ default: m.AddressLocationMap })),
 );
 
-export const Route = createFileRoute("/building")({
+export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Your Home — Wake Up Wednesday" },
@@ -436,7 +436,7 @@ function PrintReport({ data }: { data: Data }) {
   const c311 = data.building.complaints311;
 
   const handlePrint = async () => {
-    const shareUrl = `${window.location.origin}/building?address=${encodeURIComponent(data.address)}`;
+    const shareUrl = `${window.location.origin}/home?address=${encodeURIComponent(data.address)}`;
     let qrDataUrl = "";
     try {
       const QRCode = (await import("qrcode")).default;
