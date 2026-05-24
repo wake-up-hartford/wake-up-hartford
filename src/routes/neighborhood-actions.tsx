@@ -402,5 +402,3 @@ Thank you,
     </Card>
   );
 }
-
-function _useNav() { return useNavigate(); }
