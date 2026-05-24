@@ -38,7 +38,7 @@ export type AddressLookup = {
 
 const SAMPLES: Record<string, AddressLookup> = {
   default: {
-    address: "247 Garden Street, Hartford, CT 06112",
+    address: "555 Main Street, Hartford, CT 06103",
     neighborhood: "Upper Albany",
     censusTract: "5024.00",
     yearBuilt: 1928,
