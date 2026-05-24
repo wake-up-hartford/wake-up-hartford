@@ -1,7 +1,57 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Building2, Trees, HeartHandshake } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import wuwLogo from "@/assets/wuw-logo.png";
+
+const ROTATING_MESSAGES = [
+  "Concentrated poverty is not natural. It is produced by policy choices.",
+  "Poverty by ZIP code is a civil rights issue.",
+  "Where a child lives should not determine their future.",
+  "Awareness without investment is not justice.",
+  "Data without action is not accountability.",
+  "These neighborhoods do not need pity. They need investment, and structural change.",
+];
+
+function RotatingMessages() {
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    const interval = setInterval(() => {
+      if (reduce) {
+        setIndex((i) => (i + 1) % ROTATING_MESSAGES.length);
+        return;
+      }
+      setVisible(false);
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % ROTATING_MESSAGES.length);
+        setVisible(true);
+      }, 250);
+    }, 5500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="border-t border-border/60">
+      <div className="mx-auto w-full max-w-xl px-4 py-1.5 sm:px-5">
+        <p
+          className="text-center text-[12px] italic leading-snug text-muted-foreground transition-opacity duration-300"
+          style={{
+            fontFamily: '"Instrument Serif", Georgia, serif',
+            letterSpacing: "0.01em",
+            opacity: visible ? 1 : 0,
+          }}
+        >
+          {ROTATING_MESSAGES[index]}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 const NAV = [
   { to: "/", label: "Start", icon: Home },
