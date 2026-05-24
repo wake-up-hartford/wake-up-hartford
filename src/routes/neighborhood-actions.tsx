@@ -91,7 +91,22 @@ function ActionsPage() {
       {/* For you */}
       <GroupHeader>For you & your neighbors</GroupHeader>
 
-      <ActionCardFindHelp indicators={indicators} loading={isLoading} />
+      <ActionCard
+        icon={HandHeart}
+        accent="emerald"
+        title="Find help near me"
+        body="Tell us what you need — housing, food, health, legal, jobs — and we'll show vetted Connecticut organizations that can help."
+        cta={
+          <Link
+            to="/find-help"
+            search={{ state, county, tract, name, neighborhood }}
+          >
+            <Button size="sm">
+              Start checklist <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        }
+      />
 
       <ActionCard
         icon={ClipboardList}
