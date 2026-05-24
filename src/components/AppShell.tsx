@@ -73,6 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
           </Link>
         </div>
+        {pathname !== "/" && <RotatingMessages />}
       </header>
 
       <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">{children}</main>
