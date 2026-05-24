@@ -13,19 +13,13 @@ import {
   Megaphone,
   Users,
   MessageSquareWarning,
-  Phone,
-  ExternalLink,
   ArrowRight,
+  ExternalLink,
 } from "lucide-react";
 import { useMemo, type ComponentType } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
-import { getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
-import {
-  VETTED_RESOURCES,
-  INDICATOR_TO_TAGS,
-  type Resource,
-} from "@/data/vetted-resources";
+import { getTractIndicators } from "@/lib/tract-indicators.functions";
 
 const search = z.object({
   state: fallback(z.string().regex(/^\d{2}$/), "09").default("09"),
@@ -91,7 +85,22 @@ function ActionsPage() {
       {/* For you */}
       <GroupHeader>For you & your neighbors</GroupHeader>
 
-      <ActionCardFindHelp indicators={indicators} loading={isLoading} />
+      <ActionCard
+        icon={HandHeart}
+        accent="emerald"
+        title="Find help near me"
+        body="Tell us what you need — housing, food, health, legal, jobs — and we'll show vetted Connecticut organizations that can help."
+        cta={
+          <Link
+            to="/find-help"
+            search={{ state, county, tract, name, neighborhood }}
+          >
+            <Button size="sm">
+              Start checklist <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        }
+      />
 
       <ActionCard
         icon={ClipboardList}
@@ -282,82 +291,3 @@ function ActionCard({
   );
 }
 
-// ---------- Find help (kept from prior version) ----------
-
-function ActionCardFindHelp({
-  indicators,
-  loading,
-}: {
-  indicators: Indicator[];
-  loading: boolean;
-}) {
-  const prioritized = useMemo(() => prioritizeResources(indicators), [indicators]);
-
-  return (
-    <Card className="mb-4">
-      <div className="mb-3 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/20 text-emerald-300">
-          <HandHeart className="h-5 w-5" />
-        </div>
-        <div>
-          <h2 className="font-display text-lg leading-tight">Find help near me</h2>
-          <p className="mt-1 text-sm text-foreground/80">
-            {loading
-              ? "Loading recommendations…"
-              : "Vetted CT organizations — food pantries, clinics, rent help, utility assistance — ranked by what this tract needs most."}
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-2.5">
-        {prioritized.slice(0, 5).map((r) => (
-          <ResourceRow key={r.name} resource={r} />
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-function ResourceRow({ resource }: { resource: Resource }) {
-  return (
-    <div className="rounded-xl border border-border bg-card/60 p-3">
-      <p className="font-semibold text-card-foreground">{resource.name}</p>
-      <p className="mt-1 text-sm text-foreground/75">{resource.description}</p>
-      <div className="mt-2 flex flex-wrap gap-3 text-sm">
-        {resource.phone && (
-          <a
-            href={`tel:${resource.phone.replace(/[^0-9]/g, "")}`}
-            className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200"
-          >
-            <Phone className="h-3.5 w-3.5" /> {resource.phone}
-          </a>
-        )}
-        {resource.url && (
-          <a
-            href={resource.url}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-gold hover:text-amber-200"
-          >
-            <ExternalLink className="h-3.5 w-3.5" /> Website
-          </a>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function prioritizeResources(indicators: Indicator[]): Resource[] {
-  const weight: Record<string, number> = {};
-  for (const ind of indicators) {
-    const tags = INDICATOR_TO_TAGS[ind.key];
-    if (!tags) continue;
-    const w = ind.severity === "concern" ? 3 : ind.severity === "watch" ? 1 : 0;
-    for (const t of tags) weight[t] = (weight[t] ?? 0) + w;
-  }
-  return [...VETTED_RESOURCES].sort((a, b) => {
-    const sa = a.tags.reduce((acc, t) => acc + (weight[t] ?? 0), 0);
-    const sb = b.tags.reduce((acc, t) => acc + (weight[t] ?? 0), 0);
-    return sb - sa;
-  });
-}

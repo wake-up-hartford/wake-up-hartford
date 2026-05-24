@@ -16,6 +16,7 @@ import { Route as LifeRouteImport } from './routes/life'
 import { Route as LandlordLetterRouteImport } from './routes/landlord-letter'
 import { Route as HomeActionsRouteImport } from './routes/home-actions'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as FindHelpRouteImport } from './routes/find-help'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
@@ -55,6 +56,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FindHelpRoute = FindHelpRouteImport.update({
+  id: '/find-help',
+  path: '/find-help',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -74,6 +80,7 @@ const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
   '/landlord-letter': typeof LandlordLetterRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
   '/landlord-letter': typeof LandlordLetterRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
   '/landlord-letter': typeof LandlordLetterRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/find-help'
     | '/home'
     | '/home-actions'
     | '/landlord-letter'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/find-help'
     | '/home'
     | '/home-actions'
     | '/landlord-letter'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/auth'
+    | '/find-help'
     | '/home'
     | '/home-actions'
     | '/landlord-letter'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  FindHelpRoute: typeof FindHelpRoute
   HomeRoute: typeof HomeRoute
   HomeActionsRoute: typeof HomeActionsRoute
   LandlordLetterRoute: typeof LandlordLetterRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/find-help': {
+      id: '/find-help'
+      path: '/find-help'
+      fullPath: '/find-help'
+      preLoaderRoute: typeof FindHelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  FindHelpRoute: FindHelpRoute,
   HomeRoute: HomeRoute,
   HomeActionsRoute: HomeActionsRoute,
   LandlordLetterRoute: LandlordLetterRoute,
