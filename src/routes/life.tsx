@@ -692,7 +692,7 @@ function SurveyScreen({
               }}
             >
               <span
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
+                className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
                   question.type === "single" ? "rounded-full" : "rounded"
                 } group-hover:border-white`}
                 style={{
