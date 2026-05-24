@@ -248,7 +248,7 @@ const ACCENT: Record<string, string> = {
   amber: "bg-amber-500/20 text-amber-300",
   gold: "bg-gold/25 text-gold",
   indigo: "bg-indigo-500/20 text-indigo-300",
-  slate: "bg-slate-500/20 text-slate-300",
+  slate: "bg-accent/20 text-accent",
 };
 
 function ActionCard({
