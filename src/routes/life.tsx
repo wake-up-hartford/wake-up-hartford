@@ -832,11 +832,11 @@ function SummaryScreen({
         })}
       </div>
 
-      <div className="mb-5 flex items-start gap-3 rounded-2xl border-2 border-dashed border-blue-400/60 bg-blue-50/60 p-4">
-        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-        <p className="text-[13px] leading-relaxed text-slate-700">
-          <strong>Next step:</strong> An AI-generated stabilization plan will be created
-          based on your responses — with specific resources, steps, and timelines.
+      <div className="mb-5">
+        <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
+        <p className="mt-2 text-[14px] leading-relaxed text-slate-700">
+          An AI-generated Plan will be created based on your responses — with specific
+          resources, steps, and timelines.
         </p>
       </div>
 
@@ -1023,9 +1023,9 @@ function NumberField({ label, value, setValue, min, max }: { label: string; valu
     <div>
       <Label>{label}</Label>
       <div className="flex items-center gap-2">
-        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">−</button>
+        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">−</button>
         <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground">{value}</span>
-        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="h-7 w-7 rounded-md border border-border bg-background text-[13px] text-card-foreground">+</button>
+        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">+</button>
       </div>
     </div>
   );
