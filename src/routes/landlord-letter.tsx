@@ -4,6 +4,7 @@ import { ChevronLeft, Printer, Copy, Mail } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
+import { lookupAddress } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/landlord-letter")({
   head: () => ({
