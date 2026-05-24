@@ -67,12 +67,6 @@ function AuthPage() {
       <Link to="/life" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Back
       </Link>
-      <h1 className="font-display text-3xl text-foreground">
-        {mode === "signin" ? "Sign in" : "Create an account"}
-      </h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-        Sign in to save your stabilization plan, check off steps, and come back later.
-      </p>
 
       <div className="mt-6 space-y-3">
         <h2 className="font-display text-xl text-foreground">Sign in + Stay Connected</h2>
