@@ -59,27 +59,48 @@ export const generateTractStory = createServerFn({ method: "POST" })
       return { story: null, error: "AI service is not configured." };
     }
 
+    const stateInfo = data.stateFips ? STATE_BY_FIPS[data.stateFips] : undefined;
+    const isCT = data.stateFips === "09" || !data.stateFips;
+
     const indicatorLines = data.indicators
       .map((i) => {
-        const cmp = i.stateAverage ? ` (CT average: ${i.stateAverage.value})` : "";
+        // Comparisons in the indicator payload are always against Connecticut.
+        // Only include them when the tract is actually in CT.
+        const cmp = isCT && i.stateAverage ? ` (CT average: ${i.stateAverage.value})` : "";
         return `- ${i.label}: ${i.value} [${i.severity}]${cmp}${i.note ? ` — ${i.note}` : ""}`;
       })
       .join("\n");
 
-    const systemPrompt = `You are a community-data storyteller writing for Hartford, Connecticut residents.
+    const placePhrase = isCT
+      ? "Hartford, Connecticut"
+      : stateInfo
+        ? stateInfo.name
+        : "this community";
+
+    const systemPrompt = isCT
+      ? `You are a community-data storyteller writing for Hartford, Connecticut residents.
 Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
 Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
 When a number is far from the Connecticut average, name the gap plainly.
 End with one short paragraph about what residents and neighbors can build on together.
+Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`
+      : `You are a community-data storyteller writing for residents of ${placePhrase}.
+Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
+Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
+Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
+Do NOT mention Connecticut, Hartford, or any CT-specific comparisons — this tract is not in Connecticut.
+No statewide comparisons are provided, so describe the numbers on their own terms rather than comparing to an average.
+End with one short paragraph about what residents and neighbors can build on together.
 Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`;
 
-    const userPrompt = `Census Tract ${data.tractName} — ${data.neighborhood}, Hartford, CT.
+    const userPrompt = `Census Tract ${data.tractName} — ${data.neighborhood}${isCT ? ", Hartford, CT" : stateInfo ? `, ${stateInfo.name}` : ""}.
 
 Indicators from the U.S. Census Bureau (American Community Survey) and USDA:
 ${indicatorLines}
 
 Write the story of this neighborhood based only on these indicators.`;
+
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
