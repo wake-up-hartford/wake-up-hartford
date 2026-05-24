@@ -1,39 +1,47 @@
-## Goal
-Create a new Google Doc that mirrors the Tasks/Subtasks in the Gantt Chart sheet, with plain-language, step-by-step guidance for contributors who are new to PWA development, civic-data work, and the project's workflow.
+# AI Story of the Tract
 
-## Approach
+## What you'll see
 
-1. **Read the Gantt Chart sheet** via the Google Sheets connector to pull the full task/subtask hierarchy (including the ~30 rows already marked done plus everything still outstanding). Capture: phase headings, task name, subtask name, owner/role if listed, and current status.
+On the neighborhood page, once a tract is loaded and its indicators are showing, a new link/button appears near the top of the report — something like:
 
-2. **Generate detailed explanations** for each subtask using Lovable AI (Gemini). For every subtask, produce:
-   - **What it means** — 1–2 sentence plain-English description
-   - **Why it matters** — how it fits the larger project
-   - **How to do it** — concrete steps a newcomer can follow
-   - **Tools / links** — relevant tool, file, or resource (e.g., Lovable editor, Supabase dashboard, Google Sheet, specific routes in this app)
-   - **Done when** — clear definition of done
-   - Cross-references to already-completed work where relevant, so new contributors see what's already in place vs. what they're picking up.
+> **Read the story of this neighborhood →**  *(AI-generated)*
 
-3. **Create the Google Doc** via the Google Docs connector (same Google account that now has edit access on the sheet). Structure:
-   - Title + short project orientation (what the PWA is, who it serves, key concepts: PWA, Supabase/Lovable Cloud, routes, tracts, etc.)
-   - "How to use this guide" section
-   - One H1 per phase, H2 per task, H3 per subtask, with the explanation blocks above
-   - Status badges inline (Done / In progress / To do) pulled from the Gantt sheet so the doc stays a live-ish snapshot
-   - Appendix: glossary of terms (PWA, RLS, route, tract, GeoJSON, etc.) and links to the sheet + preview URL
+Clicking it opens a popup (modal dialog) with a 4–6 paragraph narrative written by AI that turns the raw indicators (poverty, income, unemployment, education, housing age, rent burden, uninsured rate, food access flag, etc.) into a plain-language story about the tract — strengths, challenges, what residents are likely experiencing, and how this tract compares to the Connecticut state averages we already fetch.
 
-4. **Share the link** back in chat once the doc is created.
+The popup will:
+- Show the tract name + neighborhood as the title
+- Stream the story in token-by-token so it feels alive (no long blank wait)
+- Include a small **"AI-generated from public ACS census data — may contain errors"** disclaimer at the bottom
+- Have a **Copy** button and a **Close** button
 
-## What I need from you before I build
+## How it works (technical)
 
-- **Confirm Google account / sharing**: the doc will be created in the Google account currently connected (the same one that can now edit the sheet). Is that the account you want to own it, or should I create it elsewhere and share?
-- **Audience depth**: should explanations assume *zero* technical background (explain what a browser tab is) or *some* background (knows how to use Google Workspace, but new to dev/data)? I'll default to the second unless you say otherwise.
-- **Scope**: include *all* rows (done + outstanding) so it works as a full reference, or only the outstanding work going forward?
-- **Length tolerance**: detailed guide could easily be 30–60 pages. OK, or do you want a tighter version (~15 pages) with links out to deeper material for selected subtasks?
+1. **New server function** `generateTractStory` in `src/lib/tract-story.functions.ts`
+   - Input: the same `{ state, county, tract }` we already use, plus the tract display name + neighborhood label
+   - Internally: re-uses `getTractIndicators` to fetch the indicators (or accepts them as input to avoid a second API call)
+   - Calls the **Lovable AI Gateway** (`https://ai.gateway.lovable.dev/v1/chat/completions`) using the auto-provisioned `LOVABLE_API_KEY` — no user setup needed
+   - Default model: `google/gemini-3-flash-preview` (fast, free tier, good at narrative writing)
+   - System prompt frames the AI as a community-data storyteller writing for Hartford residents at an 8th-grade reading level, grounded only in the numbers provided, no invented facts
+   - Returns the streamed response body directly to the client
 
-Once you answer these I'll generate the doc in one pass.
+2. **New popup component** `TractStoryDialog.tsx`
+   - Built on the existing `shadcn/ui` `Dialog` (already in the project)
+   - Triggered by a button placed in `src/routes/neighborhood.tsx` right under the tract header
+   - Uses fetch + ReadableStream to render tokens as they arrive (per the AI-gateway streaming pattern)
+   - Handles `429` (rate-limited — show "Try again in a moment") and `402` (credits exhausted — show "AI credits depleted, contact admin") gracefully with a toast
 
-## Technical notes (for the build step)
+3. **No DB changes, no new dependencies.** Lovable AI Gateway + existing UI primitives only.
 
-- Read sheet: `GET .../spreadsheets/{id}/values/'Gantt Chart'!A1:Z200`
-- Generate prose: `/tmp/lovable_ai.py` with Gemini, batched per subtask
-- Create doc: `POST .../documents` then `batchUpdate` with insertText + updateParagraphStyle (HEADING_1/2/3) requests
-- No app code changes — this is a one-off artifact, not a feature in the PWA.
+## What I will NOT change
+
+- The map, the indicator cards, the address lookup, the existing routes — all untouched
+- No new data sources; the story is built from the ACS indicators already on the page
+
+## Open questions before I build
+
+None blocking — but a couple of things you might want to tune later:
+- **Tone**: I'll default to "warm, plain-language, hopeful but honest." Say the word if you want it more clinical or more activist.
+- **Length**: ~250–400 words by default. Easy to adjust.
+- **Caching**: First version generates fresh each click. If costs become a concern we can cache per tract in the database.
+
+Approve this and I'll implement it.

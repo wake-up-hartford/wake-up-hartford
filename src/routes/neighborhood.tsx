@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { TractStoryDialog } from "@/components/TractStoryDialog";
 
 const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
 
@@ -95,6 +96,13 @@ function NeighborhoodPage() {
             subtitle="Live indicators for this tract, from the Census Bureau and USDA."
           />
 
+          {indicators.length > 0 && (
+            <TractStoryDialog
+              tractName={tract.tractName}
+              neighborhood={tract.neighborhood ?? `Tract ${tract.tractName}`}
+              indicators={indicators}
+            />
+          )}
 
           {data?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
