@@ -163,8 +163,6 @@ function HomePage() {
             </div>
           </Card>
 
-          <LandlordCard data={data} />
-
           <Tabs defaultValue="card" className="w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
             <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
@@ -187,6 +185,10 @@ function HomePage() {
               <PrintReport data={data} />
             </TabsContent>
           </Tabs>
+
+          <div className="mt-5">
+            <LandlordCard data={data} />
+          </div>
 
           <TakeAction />
         </>
