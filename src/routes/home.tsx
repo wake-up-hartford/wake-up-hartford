@@ -135,6 +135,7 @@ function HomePage() {
               </TabsContent>
             </Tabs>
           </Card>
+          <TakeAction />
         </>
       )}
 
