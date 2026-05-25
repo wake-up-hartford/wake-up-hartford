@@ -87,7 +87,7 @@ function FindHelpPage() {
       />
 
       <Card className="mb-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+        <p className="mb-3 uppercase tracking-[0.18em] text-gold font-bold text-sm">
           What do you need help with?
         </p>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
