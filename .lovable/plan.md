@@ -1,52 +1,50 @@
-# Plan: Neighborhood "Take Action" page
-
 ## Goal
-Turn the placeholder "Take action" button on `/neighborhood` into a real link that opens a new page tailored to the looked-up tract, surfacing the 3 highest-leverage actions a resident or organizer can take right now.
 
-## New route
-`src/routes/neighborhood-actions.tsx` → `/neighborhood-actions?tract=<geoid>`
+Produce a single visual flow chart the team can use as a reference for the current prototype — every page, its purpose in one line, and the links that connect them.
 
-- Reads the `tract` query param (and `state`/`county` if needed) so the page knows which neighborhood it's about.
-- Re-uses the existing `getTractIndicators` server function to pull the same data the report card used, so action copy can reference the tract's top concerns (e.g., "Rent burden here is X% — Y points above CT").
-- Shows the tract name + a small map thumbnail at the top, with a "Back to report" link.
+## Deliverable
 
-## The 3 actions (each as a card)
+A Mermaid diagram saved to `/mnt/documents/wakeup-wednesday-flow.mmd`, embedded in chat as a `lov-artifact` so it renders inline and is downloadable. No app code changes.
 
-### 1. Find help near me
-- Header: "Get help in your neighborhood"
-- Auto-prioritizes the vetted CT orgs by the tract's red/yellow indicators (e.g., if Food Access is red, surface food orgs first; if Rent Burden is red, surface housing/legal orgs first).
-- Each org card: name, what they do, phone, link. Uses the same 33-org list already in the vetted resources doc — embed as a small in-code dataset (`src/data/vetted-resources.ts`).
-- "See all resources" link at the bottom.
+## Pages to include (from `src/routes/`)
 
-### 2. Email my state rep
-- Header: "Tell your representative what's happening here"
-- Generates a pre-drafted advocacy email via Lovable AI (Gemini 1.5 Flash, same pattern as the tract story) citing the tract's 2–3 worst indicators with the CT comparison.
-- User picks tone: Urgent / Constructive / Personal.
-- For now: shows the drafted message in a textarea with Copy + "Open in email app" (`mailto:`) buttons. A note explains that auto-lookup of the resident's specific legislator is coming soon — the user fills in the rep's email.
-- New server fn: `src/lib/action-letter.functions.ts` → `draftRepLetter({ geoid, tone })`.
+| Route | Title on page | What's on it |
+|---|---|---|
+| `/` (`index.tsx`) | **See It. Name It. Fix It.** (Home) | 3 dashboard cards → Neighborhood / Home / Life, event card, Sign In / Log Out |
+| `/auth` | **Sign in / Sign up** | Email+password, Google OAuth, redirects to `/plans` |
+| `/neighborhood` | **Your Neighborhood** | Tract report card: indicators, map to find tract, PDF/share, CTA → Take Action |
+| `/neighborhood-actions` | **Take action for your neighborhood** | Action cards: Find help, 30-Day Plan, Landlord letter, Voter reg, KYR card, Host WUW, Block Captain, Report what's missing |
+| `/find-help` | **Find Help** (checklist) | Need checkboxes → filtered vetted CT resources |
+| `/home` | **Your Home** | Address lookup, code violations, evictions, utility shutoffs, 311, landlord card, PDF/share, CTA → Home Actions |
+| `/home-actions` | **Take Action on Your Home** | Action list: landlord letter, call inspector, legal aid, document conditions, etc. |
+| `/landlord-letter` | **Letter of Complaint to Your Landlord** | Form (tenant info, landlord info, issues) → generated letter |
+| `/life` | **Your Path / Stabilization Survey** | Multi-step survey → completion → creates a plan |
+| `/plans` | **Your plans** | List of saved 30-day plans (auth required) |
+| `/plan/$planId` | **Your 30-Day Plan** | Week-by-week stabilization plan detail |
+| 404 / Error | **Not found / Error** | Root-level fallbacks |
 
-### 3. Share to a council member or neighbor
-- Header: "Share this report"
-- Two share modes:
-  - **Quick share** — copies a short summary ("Tract X in Hartford: rent burden 58%, child poverty 41%. See the full report: <url>") + the deep link to `/neighborhood?tract=...`.
-  - **Share to council** — same as quick share but with a pre-filled message addressed to "Dear Council Member,". User pastes the council member's email.
-- Uses Web Share API on mobile when available, falls back to copy-to-clipboard.
+## Connections to draw
 
-## Wiring the button
-- In `src/routes/neighborhood.tsx`, change the `<button>` inside `TakeAction` to a `<Link to="/neighborhood-actions" search={{ tract: geoid }}>`.
-- Pass the current `geoid` (and state/county) into `TakeAction` as props.
+- Home `/` → Neighborhood, Home, Life, Auth
+- Auth → Plans (post-login)
+- Neighborhood → Neighborhood Actions (+ back to Home)
+- Neighborhood Actions → Find Help, Life (30-day plan), Landlord Letter, external (voter reg, mailto)
+- Home → Home Actions (+ back to Home page `/`)
+- Home Actions → Landlord Letter, external (legal aid, inspector)
+- Life (survey complete) → Plan detail
+- Plans → Plan detail
+- All sub-pages → back to their parent
 
-## Visual style
-- Match the existing neighborhood page: dark card surfaces, gold accents, status dots reused for the indicator chips at the top of each action card.
-- Each action card has its own icon (HandHeart / Mail / Share2 from lucide) and a clear primary CTA button.
+## Diagram style
 
-## Files touched
-- **New:** `src/routes/neighborhood-actions.tsx`
-- **New:** `src/lib/action-letter.functions.ts` (AI-drafted rep email)
-- **New:** `src/data/vetted-resources.ts` (33 orgs as structured data, tagged by domain)
-- **Edit:** `src/routes/neighborhood.tsx` — wire `TakeAction` to the new route, pass tract context
+- Top-down flowchart, grouped into subgraphs: **Entry**, **Neighborhood flow**, **Home flow**, **Life / Plans flow**, **Shared tools**, **System**.
+- Color-code by section so the team can see the three pillars (Neighborhood / Home / Life) at a glance.
+- Each node shows the route path + short page title + 1-line description.
 
-## Out of scope (can do next)
-- Auto-lookup of the resident's specific state rep/council member from the tract (needs CT legislator GeoJSON).
-- Saving sent letters to the user's account.
-- Tracking which orgs the user contacted.
+## Output
+
+1. Write Mermaid source to `/mnt/documents/wakeup-wednesday-flow.mmd`.
+2. Embed via `<lov-artifact …mime_type="text/vnd.mermaid">` so it renders in chat.
+3. Brief note in chat pointing to the artifact and how to edit (it's plain text — team can tweak boxes/labels directly, or tell me what to add/remove).
+
+No source code in the app is modified.
