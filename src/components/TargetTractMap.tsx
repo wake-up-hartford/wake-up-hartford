@@ -101,6 +101,30 @@ export default function TargetTractMap({
 
   return (
     <div className="space-y-2.5">
+      {picked ? (
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3">
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-card-foreground">
+              Tract {picked.tractName}
+            </p>
+            <p className="truncate text-xs text-muted-foreground">
+              {picked.neighborhood}, Hartford
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            View this neighborhood
+          </button>
+        </div>
+      ) : (
+        <p className="text-center text-xs text-muted-foreground">
+          Tap a tract on the map to select it.
+        </p>
+      )}
+
       <div className="overflow-hidden rounded-xl border border-border">
         <MapContainer
           style={{ height: 320, width: "100%" }}
@@ -136,29 +160,6 @@ export default function TargetTractMap({
         ))}
       </div>
 
-      {picked ? (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3">
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-card-foreground">
-              Tract {picked.tractName}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">
-              {picked.neighborhood}, Hartford
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleConfirm}
-            className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            View this neighborhood
-          </button>
-        </div>
-      ) : (
-        <p className="text-center text-xs text-muted-foreground">
-          Tap a tract on the map to select it.
-        </p>
-      )}
     </div>
   );
 }
