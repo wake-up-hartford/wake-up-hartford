@@ -141,9 +141,18 @@ function FindHelpPage() {
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {matches.length} {matches.length === 1 ? "organization" : "organizations"} can help you
           </h3>
-          <div className="space-y-2.5">
-            {matches.map((r) => (
-              <ResourceRow key={r.name} resource={r} />
+          <div className="space-y-5">
+            {grouped.map((group) => (
+              <div key={group.tag}>
+                <h4 className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-gold">
+                  {group.label}
+                </h4>
+                <div className="space-y-2.5">
+                  {group.resources.map((r) => (
+                    <ResourceRow key={r.name} resource={r} />
+                  ))}
+                </div>
+              </div>
             ))}
             {matches.length === 0 && (
               <Card>
