@@ -333,7 +333,7 @@ ${tenantName || "[Your name]"}
         </pre>
       </Card>
 
-      <pre id="print-letter">{letter}</pre>
+      <pre id="print-letter" className="hidden">{letter}</pre>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 print:hidden">
         <Button onClick={handlePrint} size="lg" className="w-full">
