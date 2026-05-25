@@ -65,7 +65,8 @@ function FindHelpPage() {
     });
   };
 
-  const matches = useMemo(() => filterResources(VETTED_RESOURCES, selected), [selected]);
+  const grouped = useMemo(() => groupResources(VETTED_RESOURCES, selected), [selected]);
+  const matches = useMemo(() => grouped.flatMap((g) => g.resources), [grouped]);
   const hasSelection = selected.size > 0;
 
   return (
