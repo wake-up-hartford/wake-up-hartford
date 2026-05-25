@@ -11,8 +11,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ListenButton } from "@/components/ListenButton";
 import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
+
 
 const TONE_STORAGE_KEY = "wuw.tract-story.tone";
 const TONE_OPTIONS: { value: Tone; label: string }[] = [
@@ -252,6 +254,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
         <DialogFooter className="gap-2 sm:gap-2">
           {story && (
             <>
+              <ListenButton text={story} cacheKey={cacheKey} />
               <Button
                 variant="ghost"
                 size="sm"
@@ -269,6 +272,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           )}
           <Button size="sm" onClick={() => setOpen(false)}>Close</Button>
         </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );
