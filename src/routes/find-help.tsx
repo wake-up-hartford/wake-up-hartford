@@ -193,16 +193,24 @@ function FindHelpPage() {
   );
 }
 
-function filterResources(all: Resource[], selected: Set<ResourceTag>): Resource[] {
+function groupResources(
+  all: Resource[],
+  selected: Set<ResourceTag>,
+): { tag: ResourceTag; label: string; resources: Resource[] }[] {
   if (selected.size === 0) return [];
-  return all
-    .map((r) => {
-      const overlap = r.tags.filter((t) => selected.has(t)).length;
-      return { r, overlap };
-    })
-    .filter(({ overlap }) => overlap > 0)
-    .sort((a, b) => b.overlap - a.overlap)
-    .map(({ r }) => r);
+  const orderedNeeds = NEEDS.filter((n) => selected.has(n.id));
+  const assigned = new Set<string>();
+  const groups: { tag: ResourceTag; label: string; resources: Resource[] }[] = [];
+  for (const need of orderedNeeds) {
+    const resources = all.filter(
+      (r) => !assigned.has(r.name) && r.tags.includes(need.id),
+    );
+    resources.forEach((r) => assigned.add(r.name));
+    if (resources.length > 0) {
+      groups.push({ tag: need.id, label: need.label, resources });
+    }
+  }
+  return groups;
 }
 
 function ResourceRow({ resource }: { resource: Resource }) {
