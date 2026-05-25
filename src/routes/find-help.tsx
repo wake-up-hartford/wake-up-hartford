@@ -199,7 +199,7 @@ function ResourceRow({ resource }: { resource: Resource }) {
   return (
     <div className="rounded-xl border border-border bg-card/60 p-3">
       <p className="font-semibold text-card-foreground">{resource.name}</p>
-      <p className="mt-1 text-sm text-foreground/75">{resource.description}</p>
+      <p className="mt-1 text-sm text-foreground">{resource.description}</p>
       <div className="mt-2 flex flex-wrap gap-3 text-sm">
         {resource.phone && (
           <a
