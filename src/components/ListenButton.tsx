@@ -73,13 +73,9 @@ export function ListenButton({ text, cacheKey }: Props) {
     setStatus("loading");
     setErrMsg(null);
     try {
-      const response = (await synth({ data: { text } })) as unknown as Response;
-      if (!response.ok) {
-        const msg = await response.text().catch(() => "");
-        throw new Error(msg || `TTS failed (${response.status})`);
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+      const result = await synth({ data: { text } });
+      if ("error" in result) throw new Error(result.error);
+      const url = `data:${result.mimeType};base64,${result.audioBase64}`;
       audioCache.set(cacheKey, url);
       playFromUrl(url);
     } catch (e) {
@@ -88,6 +84,7 @@ export function ListenButton({ text, cacheKey }: Props) {
       setErrMsg(e instanceof Error ? e.message : "Couldn't generate audio.");
     }
   };
+
 
   const disabled = !text || status === "loading";
   const label =

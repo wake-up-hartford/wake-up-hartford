@@ -6,15 +6,15 @@ const InputSchema = z.object({
   voiceId: z.string().min(1).max(64).optional(),
 });
 
-export const synthesizeStory = createServerFn({ method: "POST", response: "raw" })
+export const synthesizeStory = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ audioBase64: string; mimeType: string } | { error: string }> => {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {
-      return new Response("ELEVENLABS_API_KEY is not configured", { status: 500 });
+      return { error: "Text-to-speech is not configured." };
     }
 
-    const voiceId = data.voiceId ?? "EXAVITQu4vr4xnSDxMaL"; // Sarah — warm, clear
+    const voiceId = data.voiceId ?? "EXAVITQu4vr4xnSDxMaL"; // Sarah
 
     const upstream = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
@@ -39,16 +39,12 @@ export const synthesizeStory = createServerFn({ method: "POST", response: "raw" 
     );
 
     if (!upstream.ok) {
-      const errText = await upstream.text();
-      return new Response(errText || "TTS failed", { status: upstream.status });
+      const errText = await upstream.text().catch(() => "");
+      console.error("ElevenLabs TTS error", upstream.status, errText);
+      return { error: `TTS failed (${upstream.status}).` };
     }
 
     const buf = await upstream.arrayBuffer();
-    return new Response(buf, {
-      status: 200,
-      headers: {
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "private, max-age=3600",
-      },
-    });
+    const audioBase64 = Buffer.from(buf).toString("base64");
+    return { audioBase64, mimeType: "audio/mpeg" };
   });
