@@ -14,7 +14,7 @@ export const synthesizeStory = createServerFn({ method: "POST" })
       return { error: "Text-to-speech is not configured." };
     }
 
-    const voiceId = data.voiceId ?? "EXAVITQu4vr4xnSDxMaL"; // Sarah
+    const voiceId = data.voiceId ?? "h8LZpYr8y3VBz0q2x0LP";
 
     const upstream = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
