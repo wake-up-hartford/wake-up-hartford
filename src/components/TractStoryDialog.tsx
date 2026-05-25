@@ -209,7 +209,13 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
               );
             })}
           </div>
+          {story && (
+            <div className="ml-auto">
+              <ListenButton text={story} cacheKey={cacheKey} />
+            </div>
+          )}
         </div>
+
 
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
@@ -254,13 +260,13 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
         <DialogFooter className="gap-2 sm:gap-2">
           {story && (
             <>
-              <ListenButton text={story} cacheKey={cacheKey} />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleRegenerate}
                 disabled={mutation.isPending}
               >
+
                 <RefreshCw className={`h-4 w-4 ${mutation.isPending ? "animate-spin" : ""}`} />
                 Regenerate
               </Button>
