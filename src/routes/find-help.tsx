@@ -200,7 +200,7 @@ function ResourceRow({ resource }: { resource: Resource }) {
     <div className="rounded-xl border border-border bg-card/60 p-3">
       <p className="font-semibold text-card-foreground">{resource.name}</p>
       <p className="mt-1 text-sm text-foreground">{resource.description}</p>
-      <div className="mt-2 flex flex-wrap gap-3 text-sm">
+      <div className="mt-2 flex flex-wrap gap-3 text-sm text-[#ed9954]">
         {resource.phone && (
           <a
             href={`tel:${resource.phone.replace(/[^0-9]/g, "")}`}
