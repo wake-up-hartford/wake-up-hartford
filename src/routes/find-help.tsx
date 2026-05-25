@@ -87,7 +87,7 @@ function FindHelpPage() {
       />
 
       <Card className="mb-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
           What do you need help with?
         </p>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -106,7 +106,7 @@ function FindHelpPage() {
               >
                 <span
                   className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border ${
-                    on ? "border-emerald-400 bg-emerald-400 text-emerald-950" : "border-border bg-background"
+                    on ? "border-emerald-400 bg-emerald-400 text-emerald-950" : "border-border/40 bg-background/40"
                   }`}
                   aria-hidden
                 >
