@@ -163,6 +163,7 @@
   body * { visibility: hidden !important; }
   #print-letter, #print-letter * { visibility: visible !important; }
   #print-letter {
+    display: block !important;
     position: absolute;
     inset: 0;
     margin: 0;
