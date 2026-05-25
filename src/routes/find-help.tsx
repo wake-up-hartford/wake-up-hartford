@@ -138,7 +138,7 @@ function FindHelpPage() {
       {hasSelection ? (
         <>
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            {matches.length} {matches.length === 1 ? "organization" : "organizations"} can help
+            {matches.length} {matches.length === 1 ? "organization" : "organizations"} can help you
           </h3>
           <div className="space-y-2.5">
             {matches.map((r) => (
