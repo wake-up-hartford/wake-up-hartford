@@ -11,8 +11,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ListenButton } from "@/components/ListenButton";
 import { generateBuildingStory } from "@/lib/building-story.functions";
 import type { AddressLookup } from "@/lib/mock-data";
+
 
 export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
   const [open, setOpen] = useState(false);
@@ -124,13 +126,17 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
 
         <DialogFooter className="gap-2 sm:gap-2">
           {mutation.data?.story && (
-            <Button variant="outline" size="sm" onClick={handleCopy}>
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
+            <>
+              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}`} />
+              <Button variant="outline" size="sm" onClick={handleCopy}>
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </>
           )}
           <Button size="sm" onClick={() => setOpen(false)}>Close</Button>
         </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );
