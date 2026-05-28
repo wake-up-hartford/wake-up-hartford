@@ -413,6 +413,8 @@ type Answers = Record<string, string[]>;
 function LifePage() {
   const [stage, setStage] = useState<"intro" | "survey" | "summary">("intro");
   const [answers, setAnswers] = useState<Answers>({});
+  const { user, loading: authLoading } = useAuth();
+
 
   return (
     <AppShell>
