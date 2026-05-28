@@ -86,10 +86,13 @@ const GeocodeInput = z.object({
   address: z.string().trim().min(5).max(200),
 });
 
-async function fetchACS(url: string): Promise<Record<string, number>> {
+async function fetchACS(url: string, timeoutMs = 12000): Promise<Record<string, number>> {
   const key = process.env.CENSUS_API_KEY;
   const finalUrl = key ? `${url}&key=${encodeURIComponent(key)}` : url;
-  const res = await fetch(finalUrl, { redirect: "manual" });
+  const res = await fetch(finalUrl, {
+    redirect: "manual",
+    signal: AbortSignal.timeout(timeoutMs),
+  });
   if (res.status === 302 || res.headers.get("x-datawebapi-keyerror")) {
     throw new Error("CENSUS_API_KEY missing or invalid. Get a free key at https://api.census.gov/data/key_signup.html and add it as a secret.");
   }
@@ -114,6 +117,12 @@ async function fetchACS(url: string): Promise<Record<string, number>> {
   });
   return out;
 }
+
+// Cache CT statewide ACS averages in-memory per worker instance (they don't
+// vary by tract and the statewide query is the slowest one).
+type StateCacheEntry = { at: number; b: Record<string, number>; s: Record<string, number> };
+const STATE_CACHE = new Map<string, StateCacheEntry>();
+const STATE_CACHE_TTL_MS = 1000 * 60 * 60 * 6; // 6h
 
 function pct(numer: number, denom: number): number | null {
   if (!Number.isFinite(numer) || !Number.isFinite(denom) || denom <= 0) return null;
