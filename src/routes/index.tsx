@@ -42,7 +42,7 @@ function HomePage() {
         Knowledge is where change begins.
       </p>
       <p className="mb-10 text-[15px] leading-relaxed text-foreground/80">
-        Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
+        [[INTRO TEXT HERE]] Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
       </p>
 
       <div className="grid gap-4">
