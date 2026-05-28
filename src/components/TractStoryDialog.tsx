@@ -16,11 +16,7 @@ import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
 
 
-const TONE_STORAGE_KEY = "wuw.tract-story.tone";
-const TONE_OPTIONS: { value: Tone; label: string }[] = [
-  { value: "warm", label: "Warm & hopeful" },
-  { value: "direct", label: "Direct & practical" },
-];
+const TONE: Tone = "warm";
 
 type Props = {
   tractName: string;
