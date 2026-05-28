@@ -458,9 +458,23 @@ function LifePage() {
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       )}
+      )}
+
+      {!authLoading && !user && (
+        <div className="mt-10 border-t border-border/60 pt-4 text-center">
+          <Link
+            to="/auth"
+            className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+          >
+            <LogIn className="h-3.5 w-3.5" />
+            Save & finish later — sign in
+          </Link>
+        </div>
+      )}
     </AppShell>
   );
 }
+
 
 /* ---------- Intro ---------- */
 
