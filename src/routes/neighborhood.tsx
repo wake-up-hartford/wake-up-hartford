@@ -128,7 +128,7 @@ function NeighborhoodPage() {
           <Tabs defaultValue="story" className="w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">3 ways to view Neighborhood data</p>
             <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
+              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
               <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
               <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
             </TabsList>
