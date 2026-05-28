@@ -140,7 +140,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/20 disabled:opacity-50"
         >
           <Sparkles className="h-4 w-4" />
-          Click.To.Listen
+          Listen to Neighborhood's Story
         </button>
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
