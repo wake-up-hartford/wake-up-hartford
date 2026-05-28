@@ -188,33 +188,11 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
         </DialogHeader>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Tone</span>
-          <div className="inline-flex rounded-full border border-border bg-muted/40 p-0.5">
-            {TONE_OPTIONS.map((opt) => {
-              const active = tone === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => handleToneChange(opt.value)}
-                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition ${
-                    active
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+        {story && (
+          <div className="flex justify-end border-b border-border pb-3">
+            <ListenButton text={story} cacheKey={cacheKey} />
           </div>
-          {story && (
-            <div className="ml-auto">
-              <ListenButton text={story} cacheKey={cacheKey} />
-            </div>
-          )}
-        </div>
+        )}
 
 
 
