@@ -870,7 +870,7 @@ function SummaryScreen({
 
       <div className="mb-5">
         <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
-        <p className="mt-2 text-[14px] leading-relaxed text-slate-700">
+        <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
           An AI-generated Plan will be created based on your responses — with specific
           resources, steps, and timelines.
         </p>
