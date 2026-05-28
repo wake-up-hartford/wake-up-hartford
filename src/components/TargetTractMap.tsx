@@ -116,7 +116,7 @@ export default function TargetTractMap({
           <button
             type="button"
             onClick={handleConfirm}
-            className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-base font-bold text-primary-foreground hover:bg-primary/90"
           >
             View this neighborhood
           </button>
