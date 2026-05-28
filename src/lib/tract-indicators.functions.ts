@@ -277,13 +277,31 @@ export const getTractIndicators = createServerFn({ method: "POST" })
       }
     };
 
+    const loadStateAverages = async (): Promise<{ b: Record<string, number>; s: Record<string, number> }> => {
+      const cached = STATE_CACHE.get(state);
+      if (cached && Date.now() - cached.at < STATE_CACHE_TTL_MS) {
+        return { b: cached.b, s: cached.s };
+      }
+      const stateGeo = `for=state:${state}`;
+      const [b, s] = await Promise.all([
+        safeFetch(`${ACS_BASE}?get=${B_VARS.join(",")}&${stateGeo}`),
+        safeFetch(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${stateGeo}`),
+      ]);
+      if (Object.keys(b).length > 0) {
+        STATE_CACHE.set(state, { at: Date.now(), b, s });
+      }
+      return { b, s };
+    };
+
     try {
-      const [b, s, bCT, sCT] = await Promise.all([
+      // Tract-level data must succeed; statewide is best-effort and cached.
+      const [b, s, stateAvgs] = await Promise.all([
         fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${geo}`),
         safeFetch(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${geo}`),
-        fetchACS(`${ACS_BASE}?get=${B_VARS.join(",")}&${ctGeo}`),
-        safeFetch(`${ACS_SUBJECT}?get=${SUBJECT_VARS.join(",")}&${ctGeo}`),
+        loadStateAverages(),
       ]);
+      const bCT = stateAvgs.b;
+      const sCT = stateAvgs.s;
 
       const derive = (b: Record<string, number>, s: Record<string, number>) => {
         const noHsSum = [
