@@ -924,7 +924,7 @@ function PlanGenerator({
     return (
       <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <h3 className="font-display text-[18px] leading-tight text-card-foreground">
-          Sign in to build your plan
+          Sign in to receive your plan
         </h3>
         <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
           Create a free account so this plan can be saved, let you check off steps, and come back later.
