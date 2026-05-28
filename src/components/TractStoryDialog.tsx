@@ -63,24 +63,11 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [cachedStory, setCachedStory] = useState<string | null>(null);
-  const [tone, setToneState] = useState<Tone>("warm");
+  const tone: Tone = TONE;
   const generate = useServerFn(generateTractStory);
 
-  // Load saved tone preference on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(TONE_STORAGE_KEY);
-      if (saved === "warm" || saved === "direct") setToneState(saved);
-    } catch {}
-  }, []);
-
-  const setTone = (next: Tone) => {
-    setToneState(next);
-    try { localStorage.setItem(TONE_STORAGE_KEY, next); } catch {}
-  };
-
   // Cache key includes tract + state + tone + a fingerprint of the indicators so
-  // the cache invalidates if the underlying data or tone changes.
+  // the cache invalidates if the underlying data changes.
   const cacheKey = useMemo(() => {
     const fingerprint = indicators
       .map((i) => `${i.key}=${i.value}|${i.severity}`)
@@ -115,18 +102,6 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
 
   const story = mutation.data?.story ?? cachedStory;
 
-  const loadForCurrentKey = () => {
-    const cached = readCache(cacheKey);
-    if (cached) {
-      setCachedStory(cached);
-      mutation.reset();
-    } else {
-      setCachedStory(null);
-      mutation.reset();
-      mutation.mutate();
-    }
-  };
-
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     if (next) {
@@ -141,20 +116,12 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
     if (!next) setCopied(false);
   };
 
-  const handleToneChange = (next: Tone) => {
-    if (next === tone) return;
-    setTone(next);
-    if (open) {
-      // Defer to next tick so cacheKey recomputes with new tone before lookup
-      setTimeout(loadForCurrentKey, 0);
-    }
-  };
-
   const handleRegenerate = () => {
     setCachedStory(null);
     mutation.reset();
     mutation.mutate();
   };
+
 
 
   const handleCopy = async () => {
