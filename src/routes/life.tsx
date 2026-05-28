@@ -418,12 +418,22 @@ function LifePage() {
 
   return (
     <AppShell>
-      <Link
-        to="/"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ChevronLeft className="h-4 w-4" /> Back to Your Life
-      </Link>
+      {stage === "intro" ? (
+        <Link
+          to="/"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back to Start
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setStage("intro")}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back to Your Life
+        </button>
+      )}
 
       {stage === "intro" && <IntroScreen onBegin={() => setStage("survey")} />}
       {stage === "survey" && (
