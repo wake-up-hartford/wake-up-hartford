@@ -266,7 +266,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
     const county = await resolveCtCounty(state, data.county, tract);
     const fips = `${state}${county}${tract}`;
     const geo = `for=tract:${tract}&in=state:${state}+county:${county}`;
-    const ctGeo = `for=state:09`;
+    
 
     const safeFetch = async (url: string): Promise<Record<string, number>> => {
       try {
