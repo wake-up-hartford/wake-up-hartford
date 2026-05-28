@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles, Loader2, Copy, Check, RefreshCw } from "lucide-react";
@@ -16,11 +16,7 @@ import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
 
 
-const TONE_STORAGE_KEY = "wuw.tract-story.tone";
-const TONE_OPTIONS: { value: Tone; label: string }[] = [
-  { value: "warm", label: "Warm & hopeful" },
-  { value: "direct", label: "Direct & practical" },
-];
+const TONE: Tone = "warm";
 
 type Props = {
   tractName: string;
@@ -67,24 +63,11 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [cachedStory, setCachedStory] = useState<string | null>(null);
-  const [tone, setToneState] = useState<Tone>("warm");
+  const tone: Tone = TONE;
   const generate = useServerFn(generateTractStory);
 
-  // Load saved tone preference on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(TONE_STORAGE_KEY);
-      if (saved === "warm" || saved === "direct") setToneState(saved);
-    } catch {}
-  }, []);
-
-  const setTone = (next: Tone) => {
-    setToneState(next);
-    try { localStorage.setItem(TONE_STORAGE_KEY, next); } catch {}
-  };
-
   // Cache key includes tract + state + tone + a fingerprint of the indicators so
-  // the cache invalidates if the underlying data or tone changes.
+  // the cache invalidates if the underlying data changes.
   const cacheKey = useMemo(() => {
     const fingerprint = indicators
       .map((i) => `${i.key}=${i.value}|${i.severity}`)
@@ -119,18 +102,6 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
 
   const story = mutation.data?.story ?? cachedStory;
 
-  const loadForCurrentKey = () => {
-    const cached = readCache(cacheKey);
-    if (cached) {
-      setCachedStory(cached);
-      mutation.reset();
-    } else {
-      setCachedStory(null);
-      mutation.reset();
-      mutation.mutate();
-    }
-  };
-
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     if (next) {
@@ -145,20 +116,12 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
     if (!next) setCopied(false);
   };
 
-  const handleToneChange = (next: Tone) => {
-    if (next === tone) return;
-    setTone(next);
-    if (open) {
-      // Defer to next tick so cacheKey recomputes with new tone before lookup
-      setTimeout(loadForCurrentKey, 0);
-    }
-  };
-
   const handleRegenerate = () => {
     setCachedStory(null);
     mutation.reset();
     mutation.mutate();
   };
+
 
 
   const handleCopy = async () => {
@@ -188,33 +151,11 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
         </DialogHeader>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Tone</span>
-          <div className="inline-flex rounded-full border border-border bg-muted/40 p-0.5">
-            {TONE_OPTIONS.map((opt) => {
-              const active = tone === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => handleToneChange(opt.value)}
-                  className={`rounded-full px-3 py-1 text-[12px] font-medium transition ${
-                    active
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+        {story && (
+          <div className="flex justify-end border-b border-border pb-3">
+            <ListenButton text={story} cacheKey={cacheKey} />
           </div>
-          {story && (
-            <div className="ml-auto">
-              <ListenButton text={story} cacheKey={cacheKey} />
-            </div>
-          )}
-        </div>
+        )}
 
 
 
