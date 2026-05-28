@@ -45,6 +45,7 @@ function HomePage() {
         [[INTRO TEXT HERE]] Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
       </p>
 
+      <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
         <DashLink
           to="/neighborhood"
