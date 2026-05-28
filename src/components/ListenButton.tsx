@@ -94,7 +94,7 @@ export function ListenButton({ text, cacheKey }: Props) {
         ? "Pause"
         : status === "paused"
           ? "Resume"
-          : "Listen";
+          : "Click.To.Listen";
   const Icon =
     status === "loading" ? Loader2 : status === "playing" ? Pause : status === "paused" ? Play : Volume2;
 
