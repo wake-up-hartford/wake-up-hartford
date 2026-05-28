@@ -458,7 +458,7 @@ function LifePage() {
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       )}
-      )}
+
 
       {!authLoading && !user && (
         <div className="mt-10 border-t border-border/60 pt-4 text-center">
