@@ -418,14 +418,15 @@ function LifePage() {
 
   return (
     <AppShell>
-      {stage === "intro" ? (
+      {stage === "intro" && (
         <Link
           to="/"
           className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" /> Back to Start
         </Link>
-      ) : (
+      )}
+      {stage === "summary" && (
         <button
           type="button"
           onClick={() => setStage("intro")}
