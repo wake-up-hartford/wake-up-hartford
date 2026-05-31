@@ -5,6 +5,13 @@ import "leaflet/dist/leaflet.css";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import geojsonRaw from "@/data/hartford-target-tracts.geojson?raw";
 import { GROUP_COLORS, GROUP_LABELS, type TargetTract } from "@/data/hartford-target-tracts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type TractProps = {
   geoid: string;
