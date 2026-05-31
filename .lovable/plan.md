@@ -1,43 +1,66 @@
-## Goal
+# Section 2: Primary User Journeys — App Manual
 
-Create a new Google Doc titled **"App Manual — Section 1: Plain-Language Style Guide"** in your connected Google Docs account (Joanne's Google Docs). This will be the first section of the App Manual and a foundation other writing rules can build on.
+Append a new section to the existing App Manual Google Doc (the one that holds the Plain-Language Style Guide). One section, three sub-sections — one per tool. Each journey is a lightweight step list with the entry point, 3–6 numbered steps, the success outcome, and a **[Built]** or **[Planned]** tag per journey so the manual doubles as a light roadmap.
 
-## Target reading level
+## What gets added to the doc
 
-- **Flesch-Kincaid Grade Level: 5–6** (someone who finished 5th or 6th grade can read it easily)
-- **Flesch Reading Ease: 80+** (very easy)
-- Average sentence length: **≤ 15 words**
-- Avoid words with 3+ syllables when a shorter word works
+**Section 2 — Primary User Journeys**
 
-## Document outline
+Short intro paragraph (≤3 sentences, plain-language rules):
+- What a user journey is
+- Why we map them (shared language for design, copy, and support)
+- How to read the tags: **[Built]** = works today, **[Planned]** = in the roadmap
 
-1. **Purpose** — why plain language matters for this app (trust, accessibility, fewer support questions)
-2. **Who we write for** — assume a busy adult reader, any background, reading on a phone
-3. **Reading level target** — the numbers above + how to check (Hemingway App, free Flesch-Kincaid checkers)
-4. **The 10 core rules**
-   1. Use short sentences (aim for 15 words or fewer)
-   2. Use short, common words (say *use* not *utilize*)
-   3. Write in active voice (*"We saved your changes"* not *"Your changes have been saved"*)
-   4. Speak directly to the reader — use *you*
-   5. Use *we* for the app/team
-   6. Avoid jargon, acronyms, and legal-speak; if you must use a term, define it once
-   7. One idea per sentence, one topic per paragraph
-   8. Use everyday verbs, not noun phrases (*decide* not *make a decision*)
-   9. Be specific about numbers, dates, and actions
-   10. Read it out loud — if you stumble, rewrite it
-5. **Tone** — warm, calm, respectful, never condescending or cutesy
-6. **Formatting rules** — sentence case for buttons and headings, no ALL CAPS, bullet lists over long paragraphs, bold for the one thing that matters most
-7. **Words to avoid / preferred swaps** — a short table (e.g. *utilize → use*, *commence → start*, *in order to → to*, *prior to → before*, *terminate → end*, *assistance → help*)
-8. **Good vs. bad examples** — 6–8 side-by-side pairs covering: a button label, an error message, an empty state, a confirmation, a help tooltip, an email subject, a privacy note, an onboarding step
-9. **Checklist before shipping any text** — 5-item checklist the writer runs through
-10. **How to measure** — paste text into a reading-level checker; revise until grade ≤ 6
+### 2.1 Your Home — journeys
+Derived from `/home`, `/home-actions`, `/landlord-letter`.
+
+1. **Check my address for housing concerns** — [Built]
+2. **Write a complaint letter to my landlord** — [Built]
+3. **Report a code violation to the city** — [Built] (tel: 311)
+4. **Get free legal help as a tenant** — [Built] (tel: legal aid)
+5. **Recover my security deposit** — [Planned]
+6. **Document conditions with photos** — [Planned]
+
+### 2.2 Your Neighborhood — journeys
+Derived from `/neighborhood`, `/neighborhood-actions`, `/find-help`.
+
+1. **See the data report for my census tract** — [Built]
+2. **Find help near me (housing, food, health, legal, jobs)** — [Built]
+3. **Take action based on my tract's red flags** — [Built]
+4. **Register to vote / check registration** — [Built] (external link)
+5. **Host a Wake Up Wednesday on my block** — [Built] (mailto)
+6. **Become a Block Captain** — [Built] (mailto)
+7. **Report what the data is missing (ground-truth)** — [Built]
+
+### 2.3 Your Life — journeys
+Derived from `/life`, `/plans`, `/plan/$planId`.
+
+1. **Start my 30-Day Stabilization Plan** — [Built]
+2. **View and revisit my saved plan** — [Built]
+3. **See all my past plans** — [Built]
+4. **Sign in / create an account to save plans** — [Built] (`/auth`)
+5. **Reset my password** — [Built] (`/reset-password`)
+
+Each journey uses the same micro-template:
+```
+Title — [Built|Planned]
+Entry point: <route or screen>
+Steps:
+  1. …
+  2. …
+  3. …
+Success: <one sentence describing the outcome>
+```
 
 ## How it will be built
 
-- Use the Google Docs connector (already linked) to create the document
-- Build it via TipTap JSON → Google Docs `batchUpdate` so headings, bullets, and the swap table render as native Google Docs structure (not pasted HTML)
-- Return the shareable Google Docs link when done
+- Reuse the same Google Docs connector script pattern as Section 1.
+- **Append**, don't replace: fetch the doc, find the current `endIndex`, insert Section 2 starting there.
+- Build a `batchUpdate` payload with `HEADING_1` for "Section 2 — Primary User Journeys", `HEADING_2` for each tool (2.1 / 2.2 / 2.3), `HEADING_3` for each journey title, bulleted steps, and a small italic tag for `[Built]` / `[Planned]`.
+- Apply plain-language style guide rules to all copy (short sentences, "you", active voice).
+- Return the same shareable Google Doc link when done.
 
-## Open question (optional — I can pick sensible defaults if you don't answer)
+## Open questions (I'll use these defaults if you don't answer)
 
-- Voice: should the guide use **"we"** for the app team (friendlier) or stay neutral/impersonal? Default: **"we" + "you"**.
+- **Add a persona line per journey** (e.g. "Hartford renter on a phone")? Default: **no**, to keep it lightweight as you chose.
+- **Include the route path** (e.g. `/home-actions`) next to entry points? Default: **yes** — useful for the team, harmless for readers.
