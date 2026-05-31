@@ -1,55 +1,43 @@
-# Improve Sign-In Flow
+## Goal
 
-Fix the misleading "weak password" error and add the missing pieces of the auth flow. None of this requires the `wakeupwednesday.org` email domain — branded sender address can be wired up later in one pass.
+Create a new Google Doc titled **"App Manual — Section 1: Plain-Language Style Guide"** in your connected Google Docs account (Joanne's Google Docs). This will be the first section of the App Manual and a foundation other writing rules can build on.
 
-## 1. Clearer signup error messages (`src/routes/auth.tsx`)
+## Target reading level
 
-Map Supabase auth errors to plain-language messages instead of showing the raw API string:
+- **Flesch-Kincaid Grade Level: 5–6** (someone who finished 5th or 6th grade can read it easily)
+- **Flesch Reading Ease: 80+** (very easy)
+- Average sentence length: **≤ 15 words**
+- Avoid words with 3+ syllables when a shorter word works
 
-- `weak_password` / "Password should contain..." → keep current rule hint
-- `pwned` / HIBP rejection → **"This password has appeared in a known data breach. Please choose a different one."**
-- `user_already_exists` → "An account with this email already exists. Try signing in."
-- `invalid_credentials` (signin) → "Email or password is incorrect."
-- Network / unknown → generic fallback
+## Document outline
 
-## 2. Forgot password flow
+1. **Purpose** — why plain language matters for this app (trust, accessibility, fewer support questions)
+2. **Who we write for** — assume a busy adult reader, any background, reading on a phone
+3. **Reading level target** — the numbers above + how to check (Hemingway App, free Flesch-Kincaid checkers)
+4. **The 10 core rules**
+   1. Use short sentences (aim for 15 words or fewer)
+   2. Use short, common words (say *use* not *utilize*)
+   3. Write in active voice (*"We saved your changes"* not *"Your changes have been saved"*)
+   4. Speak directly to the reader — use *you*
+   5. Use *we* for the app/team
+   6. Avoid jargon, acronyms, and legal-speak; if you must use a term, define it once
+   7. One idea per sentence, one topic per paragraph
+   8. Use everyday verbs, not noun phrases (*decide* not *make a decision*)
+   9. Be specific about numbers, dates, and actions
+   10. Read it out loud — if you stumble, rewrite it
+5. **Tone** — warm, calm, respectful, never condescending or cutesy
+6. **Formatting rules** — sentence case for buttons and headings, no ALL CAPS, bullet lists over long paragraphs, bold for the one thing that matters most
+7. **Words to avoid / preferred swaps** — a short table (e.g. *utilize → use*, *commence → start*, *in order to → to*, *prior to → before*, *terminate → end*, *assistance → help*)
+8. **Good vs. bad examples** — 6–8 side-by-side pairs covering: a button label, an error message, an empty state, a confirmation, a help tooltip, an email subject, a privacy note, an onboarding step
+9. **Checklist before shipping any text** — 5-item checklist the writer runs through
+10. **How to measure** — paste text into a reading-level checker; revise until grade ≤ 6
 
-**`src/routes/auth.tsx`** — Add a "Forgot password?" link visible in signin mode. Clicking it reveals an inline email input + "Send reset link" button that calls:
-```ts
-supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: window.location.origin + "/reset-password"
-})
-```
-Show a toast / inline confirmation on success.
+## How it will be built
 
-**`src/routes/reset-password.tsx`** (new) — Public route. Renders inside `AppShell`. Shows a "Set a new password" form with one password input + confirmation. On submit calls `supabase.auth.updateUser({ password })`. On success, redirects to `/plans`. Detects the recovery token from the URL hash (Supabase sets `type=recovery` in `window.location.hash`).
+- Use the Google Docs connector (already linked) to create the document
+- Build it via TipTap JSON → Google Docs `batchUpdate` so headings, bullets, and the swap table render as native Google Docs structure (not pasted HTML)
+- Return the shareable Google Docs link when done
 
-## 3. Email-confirmation pending screen
+## Open question (optional — I can pick sensible defaults if you don't answer)
 
-After a successful signup, instead of flipping back to signin mode with a small inline message, show a dedicated "Check your email" state inside `auth.tsx`:
-
-- Friendly headline + the email address used
-- "Didn't get it?" → **Resend** button that calls `supabase.auth.resend({ type: 'signup', email })` with a 30-second cooldown
-- "Use a different email" link to reset back to the signup form
-
-## 4. Sonner toasts
-
-Mount `<Toaster />` in `src/routes/__root.tsx` (currently not mounted) so we can use `toast.success(...)` / `toast.error(...)` for reset-link sent, password updated, resend sent, etc.
-
-## 5. Google sign-in sanity check
-
-Verify the Google provider is enabled via `configure_social_auth` (idempotent). If not enabled, enable it so the existing "Continue with Google" button works on first click.
-
-## Out of scope (waits for wakeupwednesday.org email)
-
-- Branded `from` address on auth emails
-- Custom-styled HTML email templates
-- Transactional email (Action Plan delivery, campaign updates)
-
-These get wired up in one pass once DNS for `wakeupwednesday.org` is ready.
-
-## Technical notes
-
-- All changes are frontend-only except the `configure_social_auth` call. No DB migrations.
-- `/reset-password` must be a top-level public route (not under `_authenticated`) so the recovery link works for signed-out users.
-- HIBP detection: Supabase returns `error.code === 'weak_password'` with a message containing "pwned" or "compromised" when the leaked-password check rejects. Match on both code and message substring for robustness.
+- Voice: should the guide use **"we"** for the app team (friendlier) or stay neutral/impersonal? Default: **"we" + "you"**.
