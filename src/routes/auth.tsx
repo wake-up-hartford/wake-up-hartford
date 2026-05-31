@@ -271,9 +271,15 @@ function AuthPage() {
   if (view === "choose") {
     return (
       <AppShell>
-        <Link to="/life" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <button
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
+            else nav({ to: "/life" });
+          }}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ChevronLeft className="h-4 w-4" /> Back
-        </Link>
+        </button>
         <div className="mt-6 space-y-3">
           <h2 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h2>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
