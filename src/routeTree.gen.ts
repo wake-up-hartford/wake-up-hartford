@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PlansRouteImport } from './routes/plans'
 import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
 import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
@@ -21,6 +22,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlansRoute = PlansRouteImport.update({
   id: '/plans',
   path: '/plans',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/reset-password'
     | '/plan/$planId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/reset-password'
     | '/plan/$planId'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/reset-password'
     | '/plan/$planId'
   fileRoutesById: FileRoutesById
 }
@@ -170,11 +182,19 @@ export interface RootRouteChildren {
   NeighborhoodRoute: typeof NeighborhoodRoute
   NeighborhoodActionsRoute: typeof NeighborhoodActionsRoute
   PlansRoute: typeof PlansRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plans': {
       id: '/plans'
       path: '/plans'
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   NeighborhoodRoute: NeighborhoodRoute,
   NeighborhoodActionsRoute: NeighborhoodActionsRoute,
   PlansRoute: PlansRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,38 +1,55 @@
-## Accessibility fix pass (WCAG AA)
+# Improve Sign-In Flow
 
-Scope: presentation-only edits. No logic, data, or routing changes.
+Fix the misleading "weak password" error and add the missing pieces of the auth flow. None of this requires the `wakeupwednesday.org` email domain — branded sender address can be wired up later in one pass.
 
-### 1. Label all icon-only buttons
-Add `aria-label` to icon-only `<button>`s:
-- `src/routes/neighborhood.tsx` — carousel prev/next arrows, close button
-- `src/components/BuildingStoryDialog.tsx` — close button
-- `src/components/TractStoryDialog.tsx` — close button
-- `src/components/TargetTractMap.tsx` — interactive button
-- `src/routes/life.tsx` — +/− steppers ("Decrease", "Increase")
+## 1. Clearer signup error messages (`src/routes/auth.tsx`)
 
-### 2. Replace raw colors with design tokens
-Swap hardcoded Tailwind colors for semantic tokens so contrast is consistent with the cream theme:
-- `src/routes/life.tsx` — `from-blue-600 to-indigo-600 text-white` → `bg-primary text-primary-foreground`; `bg-slate-700 text-[#f5efe0]` steppers → `bg-secondary text-secondary-foreground`
-- `src/routes/neighborhood.tsx` — `text-white` and `bg-white/15` chips → token-based equivalents that maintain ≥4.5:1 contrast
-- Add any missing tokens to `src/styles.css` if needed
+Map Supabase auth errors to plain-language messages instead of showing the raw API string:
 
-### 3. Bump tap target sizes
-- `src/routes/life.tsx` steppers: `h-5 w-5` → `min-h-11 min-w-11` (WCAG 2.2 SC 2.5.8)
-- Audit other custom buttons for <24×24 hit areas
+- `weak_password` / "Password should contain..." → keep current rule hint
+- `pwned` / HIBP rejection → **"This password has appeared in a known data breach. Please choose a different one."**
+- `user_already_exists` → "An account with this email already exists. Try signing in."
+- `invalid_credentials` (signin) → "Email or password is incorrect."
+- Network / unknown → generic fallback
 
-### 4. Add focus-visible rings to custom buttons
-Append `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` to the custom `<button>` elements in `life.tsx`, `neighborhood.tsx`, and the story dialogs.
+## 2. Forgot password flow
 
-### 5. Mark rotating banner as polite live region
-`src/components/AppShell.tsx` — add `aria-live="polite"` and `aria-atomic="true"` to the rotating message `<p>` (or `aria-hidden="true"` if we'd rather not announce it).
+**`src/routes/auth.tsx`** — Add a "Forgot password?" link visible in signin mode. Clicking it reveals an inline email input + "Send reset link" button that calls:
+```ts
+supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: window.location.origin + "/reset-password"
+})
+```
+Show a toast / inline confirmation on success.
 
-### 6. Spot fixes
-- Swap any `h-screen` → `h-dvh` for full-height layouts on mobile
-- Verify heading order on each route (h1 → h2 → h3, no skips)
+**`src/routes/reset-password.tsx`** (new) — Public route. Renders inside `AppShell`. Shows a "Set a new password" form with one password input + confirmation. On submit calls `supabase.auth.updateUser({ password })`. On success, redirects to `/plans`. Detects the recovery token from the URL hash (Supabase sets `type=recovery` in `window.location.hash`).
 
-### Out of scope
-- Map (Leaflet) keyboard polish — would require pulling in a Leaflet a11y plugin; flag for later
-- AAA-level changes (7:1 contrast, etc.)
+## 3. Email-confirmation pending screen
 
-### Verification
-After edits: re-grep for `text-white`, `bg-slate-`, `from-blue-`, `aria-label` on icon buttons; visually confirm preview still looks right at 1003×853 and mobile widths.
+After a successful signup, instead of flipping back to signin mode with a small inline message, show a dedicated "Check your email" state inside `auth.tsx`:
+
+- Friendly headline + the email address used
+- "Didn't get it?" → **Resend** button that calls `supabase.auth.resend({ type: 'signup', email })` with a 30-second cooldown
+- "Use a different email" link to reset back to the signup form
+
+## 4. Sonner toasts
+
+Mount `<Toaster />` in `src/routes/__root.tsx` (currently not mounted) so we can use `toast.success(...)` / `toast.error(...)` for reset-link sent, password updated, resend sent, etc.
+
+## 5. Google sign-in sanity check
+
+Verify the Google provider is enabled via `configure_social_auth` (idempotent). If not enabled, enable it so the existing "Continue with Google" button works on first click.
+
+## Out of scope (waits for wakeupwednesday.org email)
+
+- Branded `from` address on auth emails
+- Custom-styled HTML email templates
+- Transactional email (Action Plan delivery, campaign updates)
+
+These get wired up in one pass once DNS for `wakeupwednesday.org` is ready.
+
+## Technical notes
+
+- All changes are frontend-only except the `configure_social_auth` call. No DB migrations.
+- `/reset-password` must be a top-level public route (not under `_authenticated`) so the recovery link works for signed-out users.
+- HIBP detection: Supabase returns `error.code === 'weak_password'` with a message containing "pwned" or "compromised" when the leaked-password check rejects. Match on both code and message substring for robustness.
