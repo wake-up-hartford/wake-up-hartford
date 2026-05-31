@@ -27,18 +27,31 @@ function friendlyAuthError(err: unknown, context: "signin" | "signup" | "reset" 
   const msg = (e?.message || "").toLowerCase();
   const code = e?.code || "";
 
-  // HIBP / leaked password
+  // HIBP / leaked password — Supabase often returns code "weak_password" with a
+  // message mentioning "pwned", "compromised", "data breach", or "leaked".
   if (
-    code === "weak_password" &&
-    (msg.includes("pwned") || msg.includes("compromised") || msg.includes("data breach") || msg.includes("leaked"))
+    msg.includes("pwned") || msg.includes("compromised") ||
+    msg.includes("data breach") || msg.includes("leaked")
   ) {
     return "This password has appeared in a known data breach. Please choose a different one.";
   }
-  if (code === "weak_password" || msg.includes("password should")) {
-    return "That password doesn't meet the requirements. Use 8+ characters with upper & lowercase, a number, and a symbol.";
+  // Only show the strength-rules message when we're confident the rules were the issue.
+  if (
+    code === "weak_password" ||
+    msg.includes("password should contain") ||
+    msg.includes("password is too short") ||
+    msg.includes("password must")
+  ) {
+    return "That password doesn't meet the requirements. Use 8+ characters with upper & lowercase, a number, and a symbol. If it already does, the password may have been flagged as compromised — try a different one.";
   }
   if (code === "user_already_exists" || msg.includes("already registered") || msg.includes("user already")) {
     return "An account with this email already exists. Try signing in instead.";
+  }
+  if (code === "phone_exists" || (msg.includes("phone") && (msg.includes("already") || msg.includes("exists") || msg.includes("registered")))) {
+    return "That phone number is already linked to another account. Leave the phone field blank or use a different number.";
+  }
+  if (code === "email_exists") {
+    return "That email is already registered. Try signing in instead.";
   }
   if (code === "invalid_credentials" || msg.includes("invalid login")) {
     return "Email or password is incorrect.";
@@ -46,13 +59,16 @@ function friendlyAuthError(err: unknown, context: "signin" | "signup" | "reset" 
   if (code === "email_not_confirmed" || msg.includes("email not confirmed")) {
     return "Please confirm your email first. Check your inbox for the confirmation link.";
   }
+  if (code === "validation_failed" || msg.includes("invalid")) {
+    return e?.message || "One of the fields is invalid. Please double-check and try again.";
+  }
   if (msg.includes("rate limit") || msg.includes("too many")) {
     return "Too many attempts. Please wait a minute and try again.";
   }
   if (msg.includes("network") || msg.includes("fetch")) {
     return "Network issue. Check your connection and try again.";
   }
-  // Fallback
+  // Fallback — surface the raw Supabase message so the user sees the real cause.
   if (context === "signup") return e?.message || "Couldn't create your account. Please try again.";
   if (context === "reset") return e?.message || "Couldn't send the reset link. Please try again.";
   if (context === "resend") return e?.message || "Couldn't resend the email. Please try again.";
