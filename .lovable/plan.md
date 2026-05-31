@@ -1,45 +1,21 @@
-# Plan: "How To Launch This App" guide
+# Plan: Publish the launch guide as a Google Doc
 
-Create a single Markdown document at `/mnt/documents/how-to-launch-wake-up-wednesday.md` (downloadable from the chat) that walks a non-developer through every step needed to take the current Wake Up Wednesday app from preview to a real, public, installable web app.
+Push the existing launch guide into your Google Docs so you can share, comment, and edit it like any other Google Doc.
 
-## Audience & tone
-- Reader: a novice — assumes no coding background, no Supabase/Cloudflare knowledge.
-- Style: short numbered steps, plain language, "click here, then this happens" phrasing, callouts for common gotchas.
-- Lovable-first: describe everything in Lovable's UI (Publish button, Connectors, Cloud, Settings). Never mention Supabase dashboard or raw infra.
+## Steps
 
-## Sections the document will cover
+1. **Connect Google Docs.** Call `standard_connectors--connect` with `google_docs` so Lovable can create a document on your behalf. You'll pick (or create) the Google account in the popup.
+2. **Create a new doc.** `POST` to the gateway's `/documents` endpoint with the title **"Wake Up Wednesday — How To Launch"**. The response returns a `documentId` and the edit URL.
+3. **Insert the guide content.** Send a single `batchUpdate` request that:
+   - Inserts each section as text in order.
+   - Applies `HEADING_1` to the document title and section headers ("1. What ready for public use means", "2. Final content pass", etc.), `HEADING_2` to sub-sections, and `NORMAL_TEXT` to body paragraphs.
+   - Bullet/checkbox lists are added with `createParagraphBullets` (using `BULLET_CHECKBOX` preset for the day-of-launch checklist so you can tick items off in Google Docs).
+   - Bold marks for emphasized phrases.
+4. **Return the link.** Reply with the Google Docs URL so you can open it in one click.
 
-1. **What "ready for public use" means** — a one-paragraph checklist preview.
-2. **Final content pass** — replace `[[INTRO TEXT HERE]]` placeholder on the home page, proofread copy, confirm logo and favicon look right.
-3. **Test the app yourself**
-   - Walk through each module (Home, Neighborhood, Life survey, Find Help, Plans).
-   - Try the survey end-to-end, including "Save & finish later → sign in".
-   - Open on a phone via the preview URL and confirm it looks good.
-4. **Turn on authentication properly**
-   - In Lovable Cloud → Auth, decide whether to require email confirmation (recommended ON for public launch).
-   - Enable Google sign-in if desired.
-   - Add a real "From" email domain (Cloud → Emails) so confirmation emails don't come from a generic address.
-5. **Check the backend is safe**
-   - Run the built-in Security scan from the Lovable sidebar; fix anything flagged.
-   - Confirm Row Level Security is on for any table holding user data.
-6. **Set up a custom domain**
-   - Publish the app (Publish button → Public).
-   - Connect a domain in Project Settings → Domains; follow the DNS instructions.
-7. **Make it installable (PWA basics already in place)**
-   - Confirm `manifest.webmanifest`, `icon-192.png`, `icon-512.png` exist and the icons reflect the new logo.
-   - Test "Add to Home Screen" on iPhone and Android.
-   - Note: full offline mode is not enabled (and shouldn't be without explicit work).
-8. **SEO & sharing polish**
-   - Confirm each route has a unique title/description and an og:image.
-   - Use Lovable's SEO panel to clear any findings.
-9. **Analytics & feedback**
-   - Optional: add a simple analytics connector.
-   - Confirm the "Report what's missing" mailto links go to a real inbox (also flagged in `TODO.md`).
-10. **Open items from `TODO.md`** — short reminder list (resources data source decision, Know Your Rights card, Find Help categories review).
-11. **Day-of-launch checklist** — one-page tick-box summary the user can print.
-12. **After launch: how to keep updating** — edits in Lovable auto-deploy on Publish; how to roll back; where to read logs.
+## Notes
 
-## Deliverable
-- One file: `/mnt/documents/how-to-launch-wake-up-wednesday.md`
-- Emitted as a `<presentation-artifact>` so the user can preview and download it.
-- No code or app changes — documentation only.
+- This uses the Google account *you* connect — the doc lives in your Drive, not each end user's.
+- Source content is the Markdown already saved at `/mnt/documents/how-to-launch-wake-up-wednesday.md`; no changes to wording.
+- The original `.md` file stays available in chat as a backup.
+- No app/code changes; this is a one-off script run via `code--exec`.
