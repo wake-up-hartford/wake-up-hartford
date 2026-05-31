@@ -59,12 +59,13 @@ function friendlyAuthError(err: unknown, context: "signin" | "signup" | "reset" 
   return e?.message || "Something went wrong. Please try again.";
 }
 
-type View = "signin" | "signup" | "forgot" | "pending";
+type View = "choose" | "signin" | "signup" | "forgot" | "pending";
 
 function AuthPage() {
   const nav = useNavigate();
-  const [view, setView] = useState<View>("signin");
+  const [view, setView] = useState<View>("choose");
   const [email, setEmail] = useState("");
+  const [emailConfirm, setEmailConfirm] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
