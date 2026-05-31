@@ -9,7 +9,15 @@ export type TargetTract = {
   tract: string; // 6-digit census tract code
   tractName: string;
   neighborhood: string;
-  group: "northeast" | "blue_hills" | "upper_albany" | "adjacent" | "frog_hollow" | "other";
+  group:
+    | "northeast"
+    | "blue_hills"
+    | "upper_albany"
+    | "adjacent"
+    | "frog_hollow"
+    | "clay_arsenal"
+    | "asylum_hill"
+    | "other";
   // True if a 2020-vintage polygon is available on the map
   hasPolygon: boolean;
 };
@@ -25,7 +33,6 @@ export const TARGET_TRACTS: TargetTract[] = [
   // Blue Hills
   { tract: "500700", tractName: "5007.00", neighborhood: "Blue Hills", group: "blue_hills", hasPolygon: false },
   { tract: "500800", tractName: "5008.00", neighborhood: "Blue Hills", group: "blue_hills", hasPolygon: false },
-  { tract: "500900", tractName: "5009.00", neighborhood: "Blue Hills", group: "blue_hills", hasPolygon: true },
   // Upper Albany
   { tract: "501200", tractName: "5012.00", neighborhood: "Upper Albany", group: "upper_albany", hasPolygon: true },
   { tract: "501300", tractName: "5013.00", neighborhood: "Upper Albany", group: "upper_albany", hasPolygon: true },
@@ -34,10 +41,16 @@ export const TARGET_TRACTS: TargetTract[] = [
   // North End adjacent
   { tract: "501100", tractName: "5011.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
   { tract: "501600", tractName: "5016.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
-  { tract: "501700", tractName: "5017.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: true },
-  { tract: "501800", tractName: "5018.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: true },
   { tract: "501900", tractName: "5019.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
   { tract: "502000", tractName: "5020.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
+  // Clay-Arsenal
+  { tract: "500900", tractName: "5009.00", neighborhood: "Clay-Arsenal", group: "clay_arsenal", hasPolygon: true },
+  { tract: "501700", tractName: "5017.00", neighborhood: "Clay-Arsenal", group: "clay_arsenal", hasPolygon: true },
+  { tract: "501800", tractName: "5018.00", neighborhood: "Clay-Arsenal", group: "clay_arsenal", hasPolygon: true },
+  // Asylum Hill
+  { tract: "503101", tractName: "5031.01", neighborhood: "Asylum Hill", group: "asylum_hill", hasPolygon: true },
+  { tract: "503102", tractName: "5031.02", neighborhood: "Asylum Hill", group: "asylum_hill", hasPolygon: true },
+  { tract: "503300", tractName: "5033.00", neighborhood: "Asylum Hill", group: "asylum_hill", hasPolygon: true },
   // Frog Hollow
   { tract: "502800", tractName: "5028.00", neighborhood: "Frog Hollow", group: "frog_hollow", hasPolygon: true },
   { tract: "502900", tractName: "5029.00", neighborhood: "Frog Hollow", group: "frog_hollow", hasPolygon: true },
@@ -50,6 +63,8 @@ export const GROUP_COLORS: Record<TargetTract["group"], string> = {
   upper_albany: "#16a34a",  // green
   adjacent: "#d97706",      // amber
   frog_hollow: "#9333ea",   // purple
+  clay_arsenal: "#dc2626",  // red
+  asylum_hill: "#db2777",   // pink
   other: "#94a3b8",         // slate (non-target Hartford tracts)
 };
 
@@ -59,6 +74,7 @@ export const GROUP_LABELS: Record<TargetTract["group"], string> = {
   upper_albany: "Upper Albany",
   adjacent: "North End Adjacent",
   frog_hollow: "Frog Hollow",
+  clay_arsenal: "Clay-Arsenal",
+  asylum_hill: "Asylum Hill",
   other: "Other Hartford",
 };
-
