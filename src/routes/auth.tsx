@@ -101,6 +101,11 @@ function AuthPage() {
     setError(null);
     try {
       if (view === "signup") {
+        if (email.trim().toLowerCase() !== emailConfirm.trim().toLowerCase()) {
+          setError("The two email addresses don't match. Please re-enter.");
+          setBusy(false);
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
