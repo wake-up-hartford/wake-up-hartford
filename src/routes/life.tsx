@@ -1041,7 +1041,7 @@ function PlanGenerator({
         {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>}
 
         <button onClick={handleGenerate} disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-60">
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-[14px] font-semibold text-primary-foreground shadow-soft hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
           {busy ? "Building your plan…" : (<><Sparkles className="h-4 w-4" /> Generate my 30-day plan</>)}
         </button>
         {busy && <p className="text-center text-[12px] text-muted-foreground">This takes about 10 seconds.</p>}
@@ -1059,9 +1059,9 @@ function NumberField({ label, value, setValue, min, max }: { label: string; valu
     <div>
       <Label>{label}</Label>
       <div className="flex items-center gap-2">
-        <button type="button" onClick={() => setValue(Math.max(min, value - 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">−</button>
-        <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground">{value}</span>
-        <button type="button" onClick={() => setValue(Math.min(max, value + 1))} className="flex h-5 w-5 items-center justify-center rounded-md border border-border bg-slate-700 text-[12px] leading-none text-[#f5efe0] hover:bg-slate-800">+</button>
+        <button type="button" aria-label={`Decrease ${label}`} onClick={() => setValue(Math.max(min, value - 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-secondary text-base leading-none text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">−</button>
+        <span className="flex-1 text-center text-[15px] font-semibold text-card-foreground" aria-live="polite">{value}</span>
+        <button type="button" aria-label={`Increase ${label}`} onClick={() => setValue(Math.min(max, value + 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-secondary text-base leading-none text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">+</button>
       </div>
     </div>
   );

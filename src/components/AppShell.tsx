@@ -39,6 +39,8 @@ function RotatingMessages() {
     <div className="border-t border-border/60">
       <div className="mx-auto w-full max-w-xl px-5 py-2.5 sm:px-6 sm:py-2">
         <p
+          aria-live="polite"
+          aria-atomic="true"
           className="text-center text-[15px] sm:text-[14px] italic leading-snug text-foreground/80 transition-opacity duration-300"
           style={{
             fontFamily: '"Instrument Serif", Georgia, serif',
@@ -63,7 +65,7 @@ const NAV = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background bg-grain">
+    <div className="min-h-dvh overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 py-3 sm:px-5">
           <Link to="/" className="flex items-center gap-3">
