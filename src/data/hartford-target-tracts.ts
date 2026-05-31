@@ -9,7 +9,7 @@ export type TargetTract = {
   tract: string; // 6-digit census tract code
   tractName: string;
   neighborhood: string;
-  group: "northeast" | "blue_hills" | "upper_albany" | "adjacent" | "other";
+  group: "northeast" | "blue_hills" | "upper_albany" | "adjacent" | "frog_hollow" | "other";
   // True if a 2020-vintage polygon is available on the map
   hasPolygon: boolean;
 };
