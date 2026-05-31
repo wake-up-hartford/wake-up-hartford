@@ -177,25 +177,24 @@ export default function TargetTractMap({
 
       {/* Keyboard / screen-reader accessible alternative to clicking the map */}
       <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="tract-select"
-          className="text-xs font-medium text-muted-foreground"
-        >
+        <label className="text-xs font-medium text-muted-foreground">
           Or select a tract from the list
         </label>
-        <select
-          id="tract-select"
+        <Select
           value={picked?.tract ?? ""}
-          onChange={(e) => handleSelectChange(e.target.value)}
-          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          onValueChange={handleSelectChange}
         >
-          <option value="">— Choose a census tract —</option>
-          {tractOptions.map((p) => (
-            <option key={p.tract} value={p.tract}>
-              Tract {p.tractName} — {p.neighborhood}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="— Choose a census tract —" />
+          </SelectTrigger>
+          <SelectContent>
+            {tractOptions.map((p) => (
+              <SelectItem key={p.tract} value={p.tract}>
+                Tract {p.tractName} — {p.neighborhood}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
