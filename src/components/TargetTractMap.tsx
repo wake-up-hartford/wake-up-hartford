@@ -189,10 +189,16 @@ export default function TargetTractMap({
           </SelectTrigger>
           <SelectContent className="z-[500]">
             {tractOptions.map((p) => (
-              <SelectItem key={p.tract} value={p.tract}>
+              <SelectItem
+                key={p.tract}
+                value={p.tract}
+                style={{ color: GROUP_COLORS[p.group] }}
+                className="font-medium"
+              >
                 Tract {p.tractName} — {p.neighborhood}
               </SelectItem>
             ))}
+
           </SelectContent>
         </Select>
       </div>
