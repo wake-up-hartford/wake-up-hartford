@@ -1,66 +1,46 @@
-# Section 2: Primary User Journeys — App Manual
+## Visual flow map of the Section 2 user journeys
 
-Append a new section to the existing App Manual Google Doc (the one that holds the Plain-Language Style Guide). One section, three sub-sections — one per tool. Each journey is a lightweight step list with the entry point, 3–6 numbered steps, the success outcome, and a **[Built]** or **[Planned]** tag per journey so the manual doubles as a light roadmap.
+Create a Mermaid flowchart diagram (`text/vnd.mermaid` artifact) saved to `/mnt/documents/user-journeys-flow.mmd`, visualizing the three tools and their journeys from the App Manual Section 2.
 
-## What gets added to the doc
+### Structure
 
-**Section 2 — Primary User Journeys**
+A single top-down flowchart with three swimlane-style subgraphs — one per tool — so the user can see all journeys at a glance:
 
-Short intro paragraph (≤3 sentences, plain-language rules):
-- What a user journey is
-- Why we map them (shared language for design, copy, and support)
-- How to read the tags: **[Built]** = works today, **[Planned]** = in the roadmap
-
-### 2.1 Your Home — journeys
-Derived from `/home`, `/home-actions`, `/landlord-letter`.
-
-1. **Check my address for housing concerns** — [Built]
-2. **Write a complaint letter to my landlord** — [Built]
-3. **Report a code violation to the city** — [Built] (tel: 311)
-4. **Get free legal help as a tenant** — [Built] (tel: legal aid)
-5. **Recover my security deposit** — [Planned]
-6. **Document conditions with photos** — [Planned]
-
-### 2.2 Your Neighborhood — journeys
-Derived from `/neighborhood`, `/neighborhood-actions`, `/find-help`.
-
-1. **See the data report for my census tract** — [Built]
-2. **Find help near me (housing, food, health, legal, jobs)** — [Built]
-3. **Take action based on my tract's red flags** — [Built]
-4. **Register to vote / check registration** — [Built] (external link)
-5. **Host a Wake Up Wednesday on my block** — [Built] (mailto)
-6. **Become a Block Captain** — [Built] (mailto)
-7. **Report what the data is missing (ground-truth)** — [Built]
-
-### 2.3 Your Life — journeys
-Derived from `/life`, `/plans`, `/plan/$planId`.
-
-1. **Start my 30-Day Stabilization Plan** — [Built]
-2. **View and revisit my saved plan** — [Built]
-3. **See all my past plans** — [Built]
-4. **Sign in / create an account to save plans** — [Built] (`/auth`)
-5. **Reset my password** — [Built] (`/reset-password`)
-
-Each journey uses the same micro-template:
 ```
-Title — [Built|Planned]
-Entry point: <route or screen>
-Steps:
-  1. …
-  2. …
-  3. …
-Success: <one sentence describing the outcome>
+                 [ Wake Up Wednesday App ]
+                           │
+       ┌───────────────────┼───────────────────┐
+       ▼                   ▼                   ▼
+  Your Home          Your Neighborhood      Your Life
+  (/home)            (/neighborhood)        (/life)
+       │                   │                   │
+   journeys…           journeys…            journeys…
 ```
 
-## How it will be built
+Inside each subgraph, each journey is rendered as a small left-to-right chain:
+`Entry → Step 1 → Step 2 → … → Success`
 
-- Reuse the same Google Docs connector script pattern as Section 1.
-- **Append**, don't replace: fetch the doc, find the current `endIndex`, insert Section 2 starting there.
-- Build a `batchUpdate` payload with `HEADING_1` for "Section 2 — Primary User Journeys", `HEADING_2` for each tool (2.1 / 2.2 / 2.3), `HEADING_3` for each journey title, bulleted steps, and a small italic tag for `[Built]` / `[Planned]`.
-- Apply plain-language style guide rules to all copy (short sentences, "you", active voice).
-- Return the same shareable Google Doc link when done.
+### Visual encoding
 
-## Open questions (I'll use these defaults if you don't answer)
+- **[Built]** journeys: default node style
+- **[Planned]** journeys: dashed border (`classDef planned stroke-dasharray: 5 5`)
+- **Entry points**: rounded rectangle with route path (e.g. `/home-actions`)
+- **Success outcomes**: stadium shape (`([Success: …])`)
+- External actions (`tel:`, `mailto:`, external links): noted with a small icon label
 
-- **Add a persona line per journey** (e.g. "Hartford renter on a phone")? Default: **no**, to keep it lightweight as you chose.
-- **Include the route path** (e.g. `/home-actions`) next to entry points? Default: **yes** — useful for the team, harmless for readers.
+### Coverage
+
+All journeys from the approved Section 2:
+- **2.1 Your Home** — 6 journeys (4 Built, 2 Planned)
+- **2.2 Your Neighborhood** — 7 journeys (all Built)
+- **2.3 Your Life** — 5 journeys (all Built)
+
+### Output
+
+- File: `/mnt/documents/user-journeys-flow.mmd`
+- Delivered inline as a `<lov-artifact mime_type="text/vnd.mermaid">` so it renders directly in chat with auto light/dark theming.
+- No custom colors — let the theme handle contrast.
+
+### One open question (default if unanswered)
+
+- **One combined diagram, or three separate diagrams (one per tool)?** Default: **one combined** — easier to share, fits the "map" framing you used.
