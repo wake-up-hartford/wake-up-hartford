@@ -59,12 +59,13 @@ function friendlyAuthError(err: unknown, context: "signin" | "signup" | "reset" 
   return e?.message || "Something went wrong. Please try again.";
 }
 
-type View = "signin" | "signup" | "forgot" | "pending";
+type View = "choose" | "signin" | "signup" | "forgot" | "pending";
 
 function AuthPage() {
   const nav = useNavigate();
-  const [view, setView] = useState<View>("signin");
+  const [view, setView] = useState<View>("choose");
   const [email, setEmail] = useState("");
+  const [emailConfirm, setEmailConfirm] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -100,6 +101,11 @@ function AuthPage() {
     setError(null);
     try {
       if (view === "signup") {
+        if (email.trim().toLowerCase() !== emailConfirm.trim().toLowerCase()) {
+          setError("The two email addresses don't match. Please re-enter.");
+          setBusy(false);
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -245,62 +251,168 @@ function AuthPage() {
     );
   }
 
-  // ===== Sign in / Sign up =====
+  // ===== Choose: Create Account vs Sign In =====
+  if (view === "choose") {
+    return (
+      <AppShell>
+        <Link to="/life" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ChevronLeft className="h-4 w-4" /> Back
+        </Link>
+        <div className="mt-6 space-y-3">
+          <h2 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h2>
+          <p className="text-[14px] leading-relaxed text-muted-foreground">
+            We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
+          </p>
+        </div>
+        <div className="mt-6 space-y-3">
+          <button
+            onClick={() => { setView("signup"); setError(null); }}
+            className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[15px] font-semibold text-white shadow-soft hover:bg-amber-600"
+          >
+            Create Account
+          </button>
+          <p className="text-center text-[12px] text-muted-foreground">
+            Sign up with Google or with email + password
+          </p>
+          <div className="my-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
+            <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
+          </div>
+          <button
+            onClick={() => { setView("signin"); setError(null); }}
+            className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+          >
+            Sign In (already registered)
+          </button>
+        </div>
+      </AppShell>
+    );
+  }
+
+  // ===== Sign in =====
+  if (view === "signin") {
+    return (
+      <AppShell>
+        <button
+          onClick={() => { setView("choose"); setError(null); }}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back
+        </button>
+        <h2 className="font-display text-3xl leading-tight text-foreground">Sign in</h2>
+        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+          Welcome back. Use Google or the email and password you signed up with.
+        </p>
+
+        <button
+          onClick={handleGoogle}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+        >
+          Continue with Google
+        </button>
+
+        <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
+          <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <form onSubmit={handleEmail} className="space-y-3">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          />
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          />
+          {error && <p className="text-[13px] text-destructive">{error}</p>}
+          <button
+            type="submit"
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
+          >
+            {busy ? "Working…" : "Sign in"}
+          </button>
+        </form>
+
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <button
+            onClick={() => { setView("forgot"); setError(null); }}
+            className="text-[13px] text-muted-foreground hover:text-foreground"
+          >
+            Forgot password?
+          </button>
+          <button
+            onClick={() => { setView("signup"); setError(null); }}
+            className="text-[13px] text-muted-foreground hover:text-foreground"
+          >
+            New here? Create an account
+          </button>
+        </div>
+      </AppShell>
+    );
+  }
+
+  // ===== Sign up =====
   return (
     <AppShell>
-      <Link to="/life" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <button
+        onClick={() => { setView("choose"); setError(null); }}
+        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ChevronLeft className="h-4 w-4" /> Back
-      </Link>
-
-      <div className="mt-6 space-y-3">
-        <h2 className="font-display text-3xl leading-tight text-foreground">Sign in + Stay Connected</h2>
-        <p className="text-[14px] leading-relaxed text-muted-foreground">
-          We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action you can be part of — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
-        </p>
-        <button
-          onClick={() => { setView("signup"); setError(null); }}
-          className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
-        >
-          Create Account
-        </button>
-        <p className="text-center text-[13px] italic text-muted-foreground">-OR, if returning...</p>
-      </div>
+      </button>
+      <h2 className="font-display text-3xl leading-tight text-foreground">Create your account</h2>
+      <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+        Sign up with Google for one-tap access, or create an account with your email and a password.
+      </p>
 
       <button
         onClick={handleGoogle}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
       >
         Continue with Google
       </button>
 
       <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
-        <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
+        <span className="h-px flex-1 bg-border" /> or sign up with email <span className="h-px flex-1 bg-border" />
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
-        {view === "signup" && (
-          <>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name (optional)"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
-            />
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Cell phone (optional, for text alerts & plan link)"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
-            />
-          </>
-        )}
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name (optional)"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+        />
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Cell phone (optional, for text alerts & plan link)"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+        />
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+        />
+        <input
+          type="email"
+          required
+          value={emailConfirm}
+          onChange={(e) => setEmailConfirm(e.target.value)}
+          onPaste={(e) => { e.preventDefault(); setError("Please retype your email to confirm it."); }}
+          placeholder="Confirm email"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
         <input
@@ -322,53 +434,33 @@ function AuthPage() {
             </ul>
           </div>
         )}
-        {view === "signup" && (
-          <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
-            <input
-              type="checkbox"
-              checked={optIn}
-              onChange={(e) => setOptIn(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
-            />
-            <span>
-              Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
-            </span>
-          </label>
-        )}
+        <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+          <input
+            type="checkbox"
+            checked={optIn}
+            onChange={(e) => setOptIn(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+          />
+          <span>
+            Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
+          </span>
+        </label>
         {error && <p className="text-[13px] text-destructive">{error}</p>}
         <button
           type="submit"
           disabled={busy}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
         >
-          {busy ? "Working…" : view === "signin" ? "Sign in" : "Create account"}
+          {busy ? "Working…" : "Create account"}
         </button>
       </form>
 
-      {view === "signin" && (
-        <div className="mt-4 flex flex-col items-center gap-2">
-          <button
-            onClick={() => { setView("forgot"); setError(null); }}
-            className="text-[13px] text-muted-foreground hover:text-foreground"
-          >
-            Forgot password?
-          </button>
-          <button
-            onClick={() => { setView("signup"); setError(null); }}
-            className="text-[13px] text-muted-foreground hover:text-foreground"
-          >
-            New here? Create an account
-          </button>
-        </div>
-      )}
-      {view === "signup" && (
-        <button
-          onClick={() => { setView("signin"); setError(null); }}
-          className="mt-4 w-full text-center text-[13px] text-muted-foreground hover:text-foreground"
-        >
-          Already have an account? Sign in
-        </button>
-      )}
+      <button
+        onClick={() => { setView("signin"); setError(null); }}
+        className="mt-4 w-full text-center text-[13px] text-muted-foreground hover:text-foreground"
+      >
+        Already have an account? Sign in
+      </button>
     </AppShell>
   );
 }
