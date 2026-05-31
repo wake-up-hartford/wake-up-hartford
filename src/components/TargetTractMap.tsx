@@ -101,6 +101,18 @@ export default function TargetTractMap({
     });
   };
 
+  // Build a sorted list of tracts that appear on the map (for the keyboard fallback).
+  const tractOptions = useMemo(() => {
+    return data.features
+      .map((f) => f.properties)
+      .sort((a, b) => a.tractName.localeCompare(b.tractName));
+  }, []);
+
+  const handleSelectChange = (tractCode: string) => {
+    const found = tractOptions.find((p) => p.tract === tractCode) ?? null;
+    setPicked(found);
+  };
+
   return (
     <div className="space-y-2.5">
       {picked ? (
@@ -116,23 +128,29 @@ export default function TargetTractMap({
           <button
             type="button"
             onClick={handleConfirm}
-            className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 sm:px-5 sm:py-2.5 sm:text-base"
+            className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-5 sm:py-2.5 sm:text-base"
           >
             View this neighborhood
           </button>
         </div>
       ) : (
         <p className="text-center text-xs text-muted-foreground">
-          Tap a tract on the map to select it.
+          Tap a tract on the map, or use the dropdown below, to select it.
         </p>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div
+        role="region"
+        aria-label="Map of Hartford target census tracts. Use the dropdown below to select a tract with the keyboard."
+        className="overflow-hidden rounded-xl border border-border"
+      >
         <MapContainer
           style={{ height: 320, width: "100%" }}
           scrollWheelZoom={false}
           zoomControl
           attributionControl
+          keyboard
+          keyboardPanDelta={80}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -150,12 +168,36 @@ export default function TargetTractMap({
         </MapContainer>
       </div>
 
+      {/* Keyboard / screen-reader accessible alternative to clicking the map */}
+      <div className="flex flex-col gap-1.5">
+        <label
+          htmlFor="tract-select"
+          className="text-xs font-medium text-muted-foreground"
+        >
+          Or select a tract from the list
+        </label>
+        <select
+          id="tract-select"
+          value={picked?.tract ?? ""}
+          onChange={(e) => handleSelectChange(e.target.value)}
+          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          <option value="">— Choose a census tract —</option>
+          {tractOptions.map((p) => (
+            <option key={p.tract} value={p.tract}>
+              Tract {p.tractName} — {p.neighborhood}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
         {Object.entries(GROUP_LABELS).map(([key, label]) => (
           <span key={key} className="inline-flex items-center gap-1.5">
             <span
               className="inline-block h-2.5 w-2.5 rounded-sm"
               style={{ backgroundColor: GROUP_COLORS[key as TargetTract["group"]] }}
+              aria-hidden="true"
             />
             {label}
           </span>
@@ -165,3 +207,4 @@ export default function TargetTractMap({
     </div>
   );
 }
+
