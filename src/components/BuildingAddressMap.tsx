@@ -199,7 +199,11 @@ export function AddressLocationMap({ address }: { address: string }) {
   if (err) return null;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
+    <div
+      role="img"
+      aria-label={`Map showing the approximate location of ${address}`}
+      className="overflow-hidden rounded-xl border border-border"
+    >
       <MapContainer
         center={center}
         zoom={pos ? 16 : 12}
