@@ -91,7 +91,7 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
     if (addr) onPick(addr);
   };
 
-  const handleTypedSubmit = async (e: React.FormEvent) => {
+  const handleTypedSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const value = typed.trim();
     if (!value) return;
