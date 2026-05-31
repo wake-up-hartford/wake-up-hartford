@@ -358,14 +358,18 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
 
       <div className="flex items-center justify-between gap-2">
         <button
+          type="button"
+          aria-label="Previous slide"
           onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <Play className="h-3.5 w-3.5 rotate-180" /> Prev
         </button>
         <button
+          type="button"
+          aria-label="Next slide"
           onClick={() => setI((x) => (x + 1) % slides.length)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <Play className="h-3.5 w-3.5" /> Next
         </button>
