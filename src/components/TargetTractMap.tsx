@@ -176,7 +176,7 @@ export default function TargetTractMap({
       </div>
 
       {/* Keyboard / screen-reader accessible alternative to clicking the map */}
-      <div className="flex flex-col gap-1.5">
+      <div className="relative z-[100]">
         <label className="text-xs font-medium text-muted-foreground">
           Or select a tract from the list
         </label>
@@ -187,7 +187,7 @@ export default function TargetTractMap({
           <SelectTrigger className="w-full">
             <SelectValue placeholder="— Choose a census tract —" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="z-[500]">
             {tractOptions.map((p) => (
               <SelectItem key={p.tract} value={p.tract}>
                 Tract {p.tractName} — {p.neighborhood}
