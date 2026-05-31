@@ -38,6 +38,10 @@ export const TARGET_TRACTS: TargetTract[] = [
   { tract: "501800", tractName: "5018.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: true },
   { tract: "501900", tractName: "5019.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
   { tract: "502000", tractName: "5020.00", neighborhood: "North End Adjacent", group: "adjacent", hasPolygon: false },
+  // Frog Hollow
+  { tract: "502800", tractName: "5028.00", neighborhood: "Frog Hollow", group: "frog_hollow", hasPolygon: true },
+  { tract: "502900", tractName: "5029.00", neighborhood: "Frog Hollow", group: "frog_hollow", hasPolygon: true },
+  { tract: "503000", tractName: "5030.00", neighborhood: "Frog Hollow", group: "frog_hollow", hasPolygon: true },
 ];
 
 export const GROUP_COLORS: Record<TargetTract["group"], string> = {
@@ -45,6 +49,7 @@ export const GROUP_COLORS: Record<TargetTract["group"], string> = {
   blue_hills: "#0891b2",    // teal
   upper_albany: "#16a34a",  // green
   adjacent: "#d97706",      // amber
+  frog_hollow: "#9333ea",   // purple
   other: "#94a3b8",         // slate (non-target Hartford tracts)
 };
 
@@ -53,5 +58,7 @@ export const GROUP_LABELS: Record<TargetTract["group"], string> = {
   blue_hills: "Blue Hills",
   upper_albany: "Upper Albany",
   adjacent: "North End Adjacent",
+  frog_hollow: "Frog Hollow",
   other: "Other Hartford",
 };
+
