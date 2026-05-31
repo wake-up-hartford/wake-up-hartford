@@ -190,9 +190,15 @@ function AuthPage() {
   if (view === "pending") {
     return (
       <AppShell>
-        <Link to="/life" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <button
+          onClick={() => {
+            if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
+            else nav({ to: "/life" });
+          }}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ChevronLeft className="h-4 w-4" /> Back
-        </Link>
+        </button>
         <div className="mt-8 flex flex-col items-center text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
             <MailCheck className="h-7 w-7" />
