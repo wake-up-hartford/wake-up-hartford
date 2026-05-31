@@ -80,6 +80,8 @@ function Recenter({ pos }: { pos: LatLng | null }) {
 export function PickAddressMap({ onPick }: { onPick: (address: string) => void }) {
   const [pin, setPin] = useState<LatLng | null>(null);
   const [loading, setLoading] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [typedError, setTypedError] = useState<string | null>(null);
 
   const handleClick = async (p: LatLng) => {
     setPin(p);
@@ -89,14 +91,36 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
     if (addr) onPick(addr);
   };
 
+  const handleTypedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = typed.trim();
+    if (!value) return;
+    setTypedError(null);
+    setLoading(true);
+    const p = await forwardGeocode(value);
+    setLoading(false);
+    if (p) {
+      setPin(p);
+      onPick(/hartford/i.test(value) ? value : `${value}, Hartford, CT`);
+    } else {
+      setTypedError("We couldn't find that address. Try including a street and city.");
+    }
+  };
+
   return (
     <div className="space-y-2">
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div
+        role="region"
+        aria-label="Map of Hartford. Click to drop a pin and look up an address, or use the text field below to type an address."
+        className="overflow-hidden rounded-xl border border-border"
+      >
         <MapContainer
           center={HARTFORD_CENTER}
           zoom={13}
           style={{ height: 320, width: "100%" }}
           scrollWheelZoom={false}
+          keyboard
+          keyboardPanDelta={80}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -106,12 +130,47 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
           {pin && <Marker position={[pin.lat, pin.lng]} />}
         </MapContainer>
       </div>
-      <p className="text-center text-xs text-muted-foreground">
+      <p className="text-center text-xs text-muted-foreground" aria-live="polite">
         {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}
       </p>
+
+      {/* Keyboard / screen-reader accessible alternative to clicking the map */}
+      <form onSubmit={handleTypedSubmit} className="flex flex-col gap-1.5">
+        <label
+          htmlFor="address-input"
+          className="text-xs font-medium text-muted-foreground"
+        >
+          Or type a Hartford address
+        </label>
+        <div className="flex gap-2">
+          <input
+            id="address-input"
+            type="text"
+            value={typed}
+            onChange={(e) => setTyped(e.target.value)}
+            placeholder="e.g. 1212 Main St"
+            className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            aria-describedby={typedError ? "address-input-error" : undefined}
+            aria-invalid={typedError ? true : undefined}
+          />
+          <button
+            type="submit"
+            disabled={loading || typed.trim().length === 0}
+            className="shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+          >
+            Use address
+          </button>
+        </div>
+        {typedError ? (
+          <p id="address-input-error" className="text-xs text-destructive" role="alert">
+            {typedError}
+          </p>
+        ) : null}
+      </form>
     </div>
   );
 }
+
 
 /** Read-only map showing where the looked-up address is. */
 export function AddressLocationMap({ address }: { address: string }) {
