@@ -21,6 +21,7 @@ import type { AddressLookup } from "@/lib/mock-data";
 export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [language] = useLanguage();
   const generate = useServerFn(generateBuildingStory);
 
   const mutation = useMutation({
@@ -32,6 +33,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           yearBuilt: data.yearBuilt,
           units: data.units,
           landlord: data.landlord,
+          language,
           building: {
             openCodeViolations: data.building.codeViolations.open,
             closedCodeViolations12mo: data.building.codeViolations.closed12mo,
@@ -60,6 +62,15 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
     if (next && !mutation.data && !mutation.isPending) mutation.mutate();
     if (!next) setCopied(false);
   };
+
+  // Re-generate when language changes while dialog is open.
+  useEffect(() => {
+    if (open) {
+      mutation.reset();
+      mutation.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const handleCopy = async () => {
     if (!mutation.data?.story) return;
