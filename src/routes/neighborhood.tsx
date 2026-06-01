@@ -279,7 +279,7 @@ function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
 
 function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: tract.neighborhood ?? tract.tractName, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
+    { eyebrow: "Wake Up Wednesday", title: `See the story of ${tract.neighborhood ?? tract.tractName}, told in data.`, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
     ...indicators.map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
