@@ -86,6 +86,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           neighborhood,
           stateFips,
           tone,
+          language,
           indicators: indicators.map((i) => ({
             key: i.key,
             label: i.label,
