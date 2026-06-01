@@ -1,7 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight } from "lucide-react";
+import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight, ShieldCheck, AlertTriangle, AlertOctagon, Minus } from "lucide-react";
+
+type SeverityIconProps = { severity: Indicator["severity"] | null; className?: string };
+function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
+  if (severity === "good") return <ShieldCheck className={className} aria-label="On par or better than CT" />;
+  if (severity === "watch") return <AlertTriangle className={className} aria-label="Worth watching" />;
+  if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
+  return <Minus className={className} aria-label="Neutral" />;
+}
+function _severityColorClass(s: Indicator["severity"] | null): string {
+  if (s === "good") return "text-success";
+  if (s === "watch") return "text-warning";
+  if (s === "concern") return "text-destructive";
+  return "text-muted-foreground";
+}
 import { lazy, Suspense, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -246,6 +260,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
         <div key={ind.key} className={`rounded-lg border p-4 shadow-sm ${cs.className}`} style={cs.style}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
+              <SeverityIcon severity={ind.severity} className="h-5 w-5 self-center shrink-0" />
               <span className="font-display text-2xl leading-none">{ind.value}</span>
               <h3 className="font-display text-lg leading-tight">{ind.label}</h3>
             </div>
@@ -342,11 +357,15 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
             <span>{i + 1} / {slides.length}</span>
           </div>
           <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
+            {slide.severity && (
+              <SeverityIcon severity={slide.severity} className="mb-2 h-8 w-8 opacity-90" />
+            )}
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
             {slide.compare && (
-              <p className="mt-3 inline-block self-start rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
-                {slide.compare}
+              <p className="mt-3 inline-flex items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
+                {slide.severity && <SeverityIcon severity={slide.severity} className="h-3.5 w-3.5 shrink-0" />}
+                <span className="break-words">{slide.compare}</span>
               </p>
             )}
           </div>
