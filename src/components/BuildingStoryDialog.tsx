@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles, Loader2, Copy, Check } from "lucide-react";
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/lib/language";
 import { generateBuildingStory } from "@/lib/building-story.functions";
 import type { AddressLookup } from "@/lib/mock-data";
 
