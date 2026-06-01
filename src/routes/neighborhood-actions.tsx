@@ -115,7 +115,6 @@ function ActionsPage() {
             </Button>
           </Link>
         }
-        tag={concerns.length > 0 ? `Pre-tagged: ${concerns.slice(0, 2).map((c) => c.label.toLowerCase()).join(", ")}` : undefined}
       />
 
       {(rentBurdenRed || housingAgeRed) && (
