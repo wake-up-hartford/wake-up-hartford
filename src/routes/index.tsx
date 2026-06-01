@@ -41,9 +41,16 @@ function HomePage() {
       <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
         Knowledge is where change begins.
       </p>
-      <p className="mb-10 text-[15px] leading-relaxed text-foreground/80">
+      <p className="mb-4 text-[15px] leading-relaxed text-foreground/80">
         [[INTRO TEXT HERE]] Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
       </p>
+
+      <a
+        href="#"
+        className="mb-6 flex w-full items-center justify-center rounded-xl border-2 border-primary bg-primary/5 px-5 py-3 text-sm font-semibold text-primary shadow-soft hover:bg-primary/10"
+      >
+        Watch: How This Tool Can Help You and Your Neighborhood
+      </a>
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
