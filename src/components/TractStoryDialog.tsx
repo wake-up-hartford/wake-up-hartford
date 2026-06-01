@@ -65,17 +65,18 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [cachedStory, setCachedStory] = useState<string | null>(null);
+  const [language] = useLanguage();
   const tone: Tone = TONE;
   const generate = useServerFn(generateTractStory);
 
-  // Cache key includes tract + state + tone + a fingerprint of the indicators so
-  // the cache invalidates if the underlying data changes.
+  // Cache key includes tract + state + tone + language + a fingerprint of the
+  // indicators so the cache invalidates if the underlying data changes.
   const cacheKey = useMemo(() => {
     const fingerprint = indicators
       .map((i) => `${i.key}=${i.value}|${i.severity}`)
       .join(";");
-    return `${stateFips ?? "00"}:${tractName}:${tone}:${fingerprint}`;
-  }, [tractName, stateFips, tone, indicators]);
+    return `${stateFips ?? "00"}:${tractName}:${tone}:${language}:${fingerprint}`;
+  }, [tractName, stateFips, tone, language, indicators]);
 
   const mutation = useMutation({
     mutationFn: () =>
