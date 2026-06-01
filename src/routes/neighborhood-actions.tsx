@@ -159,7 +159,11 @@ function ActionsPage() {
               target="_blank"
               rel="noreferrer"
             >
-              <Button size="sm" variant="outline">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-500 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950 dark:hover:text-blue-300"
+              >
                 Check Registration <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
               </Button>
             </a>
