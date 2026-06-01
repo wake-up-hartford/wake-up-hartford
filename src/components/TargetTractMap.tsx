@@ -133,13 +133,13 @@ export default function TargetTractMap({
               {picked.neighborhood}, Hartford
             </p>
           </div>
-          <button
+          <Button
             type="button"
             onClick={handleConfirm}
-            className="shrink-0 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-5 sm:py-2.5 sm:text-base"
+            className="shrink-0 rounded-full"
           >
             View this neighborhood
-          </button>
+          </Button>
         </div>
       ) : (
         <p className="text-center text-xs text-muted-foreground">
