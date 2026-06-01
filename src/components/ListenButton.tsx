@@ -6,8 +6,9 @@ import { synthesizeStory } from "@/lib/tts.functions";
 
 type Props = {
   text: string | null | undefined;
-  /** Stable cache key (e.g. tract id + tone). Audio is cached per key in memory. */
+  /** Stable cache key (e.g. tract id + tone + language). Audio is cached per key in memory. */
   cacheKey: string;
+  language?: "en" | "es";
 };
 
 const audioCache = new Map<string, string>(); // cacheKey -> object URL
