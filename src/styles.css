@@ -53,8 +53,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.04 260);
 
-  /* Brand purple — civic, bold (from "WEDNESDAY") */
-  --primary: oklch(0.36 0.19 300);
+  /* Brand blue — civic, bold */
+  --primary: oklch(0.55 0.16 245);
   --primary-foreground: oklch(0.985 0.012 85);
 
   /* Soft warm sand */
