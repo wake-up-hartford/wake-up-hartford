@@ -13,7 +13,7 @@ type Props = {
 
 const audioCache = new Map<string, string>(); // cacheKey -> object URL
 
-export function ListenButton({ text, cacheKey }: Props) {
+export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const synth = useServerFn(synthesizeStory);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">("idle");
