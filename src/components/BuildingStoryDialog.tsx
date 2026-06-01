@@ -97,8 +97,15 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
             An AI-written story, grounded in the records for this building and its owner.
           </p>
         </DialogHeader>
-        <div className="flex justify-start border-b border-border pb-3">
+        <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
           <LanguageToggle />
+          {mutation.data?.story && (
+            <ListenButton
+              text={mutation.data.story}
+              cacheKey={`building:${data.address}:${language}`}
+              language={language}
+            />
+          )}
         </div>
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
@@ -142,13 +149,10 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
 
         <DialogFooter className="gap-2 sm:gap-2">
           {mutation.data?.story && (
-            <>
-              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}:${language}`} language={language} />
-              <Button variant="outline" size="sm" onClick={handleCopy}>
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-            </>
+            <Button variant="outline" size="sm" onClick={handleCopy}>
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied" : "Copy"}
+            </Button>
           )}
           <Button size="sm" onClick={() => setOpen(false)}>Close</Button>
         </DialogFooter>
