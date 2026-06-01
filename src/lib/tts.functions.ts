@@ -6,6 +6,70 @@ const InputSchema = z.object({
   voiceId: z.string().min(1).max(64).optional(),
 });
 
+// --- Number-to-words helpers so the TTS voice reads "4,567" as
+// "four thousand five hundred sixty-seven" instead of stumbling over digits.
+const ONES = [
+  "zero","one","two","three","four","five","six","seven","eight","nine",
+  "ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
+  "seventeen","eighteen","nineteen",
+];
+const TENS = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+
+function under1000ToWords(n: number): string {
+  if (n < 20) return ONES[n];
+  if (n < 100) {
+    const t = Math.floor(n / 10);
+    const o = n % 10;
+    return o === 0 ? TENS[t] : `${TENS[t]}-${ONES[o]}`;
+  }
+  const h = Math.floor(n / 100);
+  const rest = n % 100;
+  return rest === 0 ? `${ONES[h]} hundred` : `${ONES[h]} hundred ${under1000ToWords(rest)}`;
+}
+
+function integerToWords(n: number): string {
+  if (!Number.isFinite(n)) return String(n);
+  if (n < 0) return `negative ${integerToWords(-n)}`;
+  if (n === 0) return "zero";
+  const units = ["", "thousand", "million", "billion", "trillion"];
+  const parts: string[] = [];
+  let i = 0;
+  let rem = Math.floor(n);
+  while (rem > 0 && i < units.length) {
+    const chunk = rem % 1000;
+    if (chunk > 0) {
+      parts.unshift(units[i] ? `${under1000ToWords(chunk)} ${units[i]}` : under1000ToWords(chunk));
+    }
+    rem = Math.floor(rem / 1000);
+    i++;
+  }
+  return parts.join(" ").trim();
+}
+
+function numberTokenToWords(token: string): string {
+  // Strip commas; keep optional decimal.
+  const clean = token.replace(/,/g, "");
+  if (!/^-?\d+(\.\d+)?$/.test(clean)) return token;
+  const [intPart, decPart] = clean.split(".");
+  const intWords = integerToWords(Number(intPart));
+  if (decPart == null) return intWords;
+  const decWords = decPart.split("").map((d) => ONES[Number(d)]).join(" ");
+  return `${intWords} point ${decWords}`;
+}
+
+function spokenifyNumbers(text: string): string {
+  // Currency: $4,567 / $1.2 million
+  let out = text.replace(/\$\s?(-?\d{1,3}(?:,\d{3})+|\-?\d+(?:\.\d+)?)/g, (_m, num: string) => {
+    return `${numberTokenToWords(num)} dollars`;
+  });
+  // Percent: 25% / 25.5%
+  out = out.replace(/(-?\d+(?:\.\d+)?)\s?%/g, (_m, num: string) => `${numberTokenToWords(num)} percent`);
+  // Plain comma-grouped or large bare numbers: 4,567 or 12345
+  out = out.replace(/\b-?\d{1,3}(?:,\d{3})+(?:\.\d+)?\b/g, (m) => numberTokenToWords(m));
+  out = out.replace(/\b\d{4,}(?:\.\d+)?\b/g, (m) => numberTokenToWords(m));
+  return out;
+}
+
 export const synthesizeStory = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }): Promise<{ audioBase64: string; mimeType: string } | { error: string }> => {
@@ -15,6 +79,8 @@ export const synthesizeStory = createServerFn({ method: "POST" })
     }
 
     const voiceId = data.voiceId ?? "YjlcD3XHztjJEo2wNszv";
+    const spokenText = spokenifyNumbers(data.text);
+
 
     const upstream = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
@@ -25,7 +91,7 @@ export const synthesizeStory = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: data.text,
+          text: spokenText,
           model_id: "eleven_multilingual_v2",
           voice_settings: {
             stability: 0.55,
