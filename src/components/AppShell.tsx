@@ -41,7 +41,7 @@ function RotatingMessages() {
         <p
           aria-live="polite"
           aria-atomic="true"
-          className="text-center text-[15px] sm:text-[14px] italic leading-snug text-foreground transition-opacity duration-300"
+          className="text-center text-[15px] sm:text-[14px] italic leading-snug text-gold transition-opacity duration-300"
           style={{
             fontFamily: '"Public Sans", sans-serif',
             fontWeight: 500,
