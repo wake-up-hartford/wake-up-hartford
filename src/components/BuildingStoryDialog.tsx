@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles, Loader2, Copy, Check } from "lucide-react";
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/lib/language";
 import { generateBuildingStory } from "@/lib/building-story.functions";
 import type { AddressLookup } from "@/lib/mock-data";
 
@@ -19,6 +21,7 @@ import type { AddressLookup } from "@/lib/mock-data";
 export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [language] = useLanguage();
   const generate = useServerFn(generateBuildingStory);
 
   const mutation = useMutation({
@@ -30,6 +33,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           yearBuilt: data.yearBuilt,
           units: data.units,
           landlord: data.landlord,
+          language,
           building: {
             openCodeViolations: data.building.codeViolations.open,
             closedCodeViolations12mo: data.building.codeViolations.closed12mo,
@@ -59,6 +63,15 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
     if (!next) setCopied(false);
   };
 
+  // Re-generate when language changes while dialog is open.
+  useEffect(() => {
+    if (open) {
+      mutation.reset();
+      mutation.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
   const handleCopy = async () => {
     if (!mutation.data?.story) return;
     await navigator.clipboard.writeText(mutation.data.story);
@@ -84,6 +97,9 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
             An AI-written story, grounded in the records for this building and its owner.
           </p>
         </DialogHeader>
+        <div className="flex justify-start border-b border-border pb-3">
+          <LanguageToggle />
+        </div>
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
           {mutation.isPending && (
@@ -127,7 +143,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
         <DialogFooter className="gap-2 sm:gap-2">
           {mutation.data?.story && (
             <>
-              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}`} />
+              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}:${language}`} language={language} />
               <Button variant="outline" size="sm" onClick={handleCopy}>
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Copied" : "Copy"}

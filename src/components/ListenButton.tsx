@@ -6,13 +6,14 @@ import { synthesizeStory } from "@/lib/tts.functions";
 
 type Props = {
   text: string | null | undefined;
-  /** Stable cache key (e.g. tract id + tone). Audio is cached per key in memory. */
+  /** Stable cache key (e.g. tract id + tone + language). Audio is cached per key in memory. */
   cacheKey: string;
+  language?: "en" | "es";
 };
 
 const audioCache = new Map<string, string>(); // cacheKey -> object URL
 
-export function ListenButton({ text, cacheKey }: Props) {
+export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const synth = useServerFn(synthesizeStory);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">("idle");
@@ -73,7 +74,7 @@ export function ListenButton({ text, cacheKey }: Props) {
     setStatus("loading");
     setErrMsg(null);
     try {
-      const result = await synth({ data: { text } });
+      const result = await synth({ data: { text, language } });
       if ("error" in result) throw new Error(result.error);
       const url = `data:${result.mimeType};base64,${result.audioBase64}`;
       audioCache.set(cacheKey, url);
@@ -87,14 +88,17 @@ export function ListenButton({ text, cacheKey }: Props) {
 
 
   const disabled = !text || status === "loading";
+  const labels = language === "es"
+    ? { loading: "Cargando…", pause: "Pausar", resume: "Reanudar", play: "Escuchar" }
+    : { loading: "Loading…", pause: "Pause", resume: "Resume", play: "Click to Listen" };
   const label =
     status === "loading"
-      ? "Loading…"
+      ? labels.loading
       : status === "playing"
-        ? "Pause"
+        ? labels.pause
         : status === "paused"
-          ? "Resume"
-          : "Click to Listen";
+          ? labels.resume
+          : labels.play;
   const Icon =
     status === "loading" ? Loader2 : status === "playing" ? Pause : status === "paused" ? Play : Volume2;
 

@@ -4,7 +4,14 @@ import { z } from "zod";
 const InputSchema = z.object({
   text: z.string().min(1).max(5000),
   voiceId: z.string().min(1).max(64).optional(),
+  language: z.enum(["en", "es"]).optional().default("en"),
 });
+
+// Default voices per language. EN keeps the existing warm voice.
+// ES uses a Spanish-capable ElevenLabs voice (multilingual v2 already supports
+// Spanish, so any voice works — picking a warm female community voice).
+const DEFAULT_VOICE_EN = "YjlcD3XHztjJEo2wNszv";
+const DEFAULT_VOICE_ES = "FGY2WhTYpPnrIDTdsKH5"; // Laura — warm, multilingual
 
 // --- Number-to-words helpers so the TTS voice reads "4,567" as
 // "four thousand five hundred sixty-seven" instead of stumbling over digits.
@@ -78,8 +85,11 @@ export const synthesizeStory = createServerFn({ method: "POST" })
       return { error: "Text-to-speech is not configured." };
     }
 
-    const voiceId = data.voiceId ?? "YjlcD3XHztjJEo2wNszv";
-    const spokenText = spokenifyNumbers(data.text);
+    const voiceId =
+      data.voiceId ?? (data.language === "es" ? DEFAULT_VOICE_ES : DEFAULT_VOICE_EN);
+    // The English number-to-words expander would mispronounce in Spanish; pass
+    // the raw text through and let the multilingual voice handle digits.
+    const spokenText = data.language === "es" ? data.text : spokenifyNumbers(data.text);
 
 
     const upstream = await fetch(

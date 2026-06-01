@@ -18,6 +18,7 @@ const Input = z.object({
   neighborhood: z.string(),
   stateFips: z.string().regex(/^\d{2}$/).optional(),
   tone: z.enum(["warm", "direct"]).optional().default("warm"),
+  language: z.enum(["en", "es"]).optional().default("en"),
   indicators: z.array(IndicatorInput).min(1),
 });
 
@@ -89,6 +90,11 @@ export const generateTractStory = createServerFn({ method: "POST" })
       ? `End with one short paragraph that names the most pressing practical needs the numbers point to. No pep talk.`
       : `End with one short paragraph about what residents and neighbors can build on together.`;
 
+    const languageLine =
+      data.language === "es"
+        ? `\nWrite the entire response in Spanish (es-US, plain Hartford community Spanish, accessible and warm). Keep proper nouns, program names, agency names, and place names in English (e.g. "Hartford", "Connecticut", "ACS"). Do not include English translations in parentheses.`
+        : "";
+
     const systemPrompt = isCT
       ? `You are a community-data storyteller writing for Hartford, Connecticut residents.
 Write at an 8th-grade reading level.
@@ -98,7 +104,7 @@ Do not use hedge phrases like "according to the data." Just tell the story the n
 When a number is far from the Connecticut average, name the gap plainly.
 Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
 ${closingLine}
-Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`
+Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.${languageLine}`
       : `You are a community-data storyteller writing for residents of ${placePhrase}.
 Write at an 8th-grade reading level.
 ${toneLine}
@@ -108,7 +114,7 @@ Do NOT mention Connecticut, Hartford, or any CT-specific comparisons — this tr
 No statewide comparisons are provided, so describe the numbers on their own terms rather than comparing to an average.
 Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
 ${closingLine}
-Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.`;
+Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.${languageLine}`;
 
     const userPrompt = `Census Tract ${data.tractName} — ${data.neighborhood}${isCT ? ", Hartford, CT" : stateInfo ? `, ${stateInfo.name}` : ""}.
 

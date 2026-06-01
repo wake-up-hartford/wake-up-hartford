@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { Sparkles, Loader2, Copy, Check, RefreshCw } from "lucide-react";
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/lib/language";
 import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
 
@@ -63,17 +65,18 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [cachedStory, setCachedStory] = useState<string | null>(null);
+  const [language] = useLanguage();
   const tone: Tone = TONE;
   const generate = useServerFn(generateTractStory);
 
-  // Cache key includes tract + state + tone + a fingerprint of the indicators so
-  // the cache invalidates if the underlying data changes.
+  // Cache key includes tract + state + tone + language + a fingerprint of the
+  // indicators so the cache invalidates if the underlying data changes.
   const cacheKey = useMemo(() => {
     const fingerprint = indicators
       .map((i) => `${i.key}=${i.value}|${i.severity}`)
       .join(";");
-    return `${stateFips ?? "00"}:${tractName}:${tone}:${fingerprint}`;
-  }, [tractName, stateFips, tone, indicators]);
+    return `${stateFips ?? "00"}:${tractName}:${tone}:${language}:${fingerprint}`;
+  }, [tractName, stateFips, tone, language, indicators]);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -83,6 +86,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           neighborhood,
           stateFips,
           tone,
+          language,
           indicators: indicators.map((i) => ({
             key: i.key,
             label: i.label,
@@ -102,19 +106,29 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
 
   const story = mutation.data?.story ?? cachedStory;
 
+  const loadForCurrentKey = () => {
+    const cached = readCache(cacheKey);
+    if (cached) {
+      setCachedStory(cached);
+      mutation.reset();
+    } else {
+      setCachedStory(null);
+      mutation.reset();
+      mutation.mutate();
+    }
+  };
+
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next) {
-      const cached = readCache(cacheKey);
-      if (cached) {
-        setCachedStory(cached);
-      } else if (!mutation.data && !mutation.isPending) {
-        setCachedStory(null);
-        mutation.mutate();
-      }
-    }
+    if (next) loadForCurrentKey();
     if (!next) setCopied(false);
   };
+
+  // Re-load when language changes while the dialog is open.
+  useEffect(() => {
+    if (open) loadForCurrentKey();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const handleRegenerate = () => {
     setCachedStory(null);
@@ -151,11 +165,10 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
         </DialogHeader>
 
-        {story && (
-          <div className="flex justify-end border-b border-border pb-3">
-            <ListenButton text={story} cacheKey={cacheKey} />
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
+          <LanguageToggle />
+          {story && <ListenButton text={story} cacheKey={cacheKey} language={language} />}
+        </div>
 
 
 
