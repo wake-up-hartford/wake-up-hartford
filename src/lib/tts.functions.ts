@@ -91,7 +91,7 @@ export const synthesizeStory = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: data.text,
+          text: spokenText,
           model_id: "eleven_multilingual_v2",
           voice_settings: {
             stability: 0.55,
