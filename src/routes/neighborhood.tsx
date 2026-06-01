@@ -357,11 +357,15 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
             <span>{i + 1} / {slides.length}</span>
           </div>
           <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
+            {slide.severity && (
+              <SeverityIcon severity={slide.severity} className="mb-2 h-8 w-8 opacity-90" />
+            )}
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
             {slide.compare && (
-              <p className="mt-3 inline-block self-start rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
-                {slide.compare}
+              <p className="mt-3 inline-flex items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold leading-snug break-words sm:text-sm">
+                {slide.severity && <SeverityIcon severity={slide.severity} className="h-3.5 w-3.5 shrink-0" />}
+                <span className="break-words">{slide.compare}</span>
               </p>
             )}
           </div>
