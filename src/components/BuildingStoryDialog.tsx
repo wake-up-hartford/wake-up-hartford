@@ -143,7 +143,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
         <DialogFooter className="gap-2 sm:gap-2">
           {mutation.data?.story && (
             <>
-              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}`} />
+              <ListenButton text={mutation.data.story} cacheKey={`building:${data.address}:${language}`} language={language} />
               <Button variant="outline" size="sm" onClick={handleCopy}>
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 {copied ? "Copied" : "Copy"}
