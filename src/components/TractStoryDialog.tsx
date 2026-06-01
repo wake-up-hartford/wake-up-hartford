@@ -106,19 +106,29 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
 
   const story = mutation.data?.story ?? cachedStory;
 
+  const loadForCurrentKey = () => {
+    const cached = readCache(cacheKey);
+    if (cached) {
+      setCachedStory(cached);
+      mutation.reset();
+    } else {
+      setCachedStory(null);
+      mutation.reset();
+      mutation.mutate();
+    }
+  };
+
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next) {
-      const cached = readCache(cacheKey);
-      if (cached) {
-        setCachedStory(cached);
-      } else if (!mutation.data && !mutation.isPending) {
-        setCachedStory(null);
-        mutation.mutate();
-      }
-    }
+    if (next) loadForCurrentKey();
     if (!next) setCopied(false);
   };
+
+  // Re-load when language changes while the dialog is open.
+  useEffect(() => {
+    if (open) loadForCurrentKey();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   const handleRegenerate = () => {
     setCachedStory(null);
