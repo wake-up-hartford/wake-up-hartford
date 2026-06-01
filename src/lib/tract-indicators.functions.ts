@@ -325,7 +325,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
 
       const t = derive(b, s);
       const ct = derive(bCT, sCT);
-      const usdaFlag = FLAGGED.has(fips);
+      
 
       const cmpPct = (ctRaw: number | null, tractRaw: number | null): string => {
         if (ctRaw == null || tractRaw == null) return "";
