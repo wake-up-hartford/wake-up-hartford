@@ -7,6 +7,7 @@ const Input = z.object({
   yearBuilt: z.number(),
   units: z.number(),
   landlord: z.string(),
+  language: z.enum(["en", "es"]).optional().default("en"),
   building: z.object({
     openCodeViolations: z.number(),
     closedCodeViolations12mo: z.number(),
