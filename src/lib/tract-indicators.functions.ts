@@ -340,9 +340,53 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         return ` — $${Math.abs(Math.round(d)).toLocaleString()} ${d > 0 ? "above" : "below"} CT`;
       };
 
+      // Build a narrative sentence comparing this tract to the CT average.
+      // `higherIsWorse` controls the framing (e.g. poverty up = bad, income up = good).
+      const sentencePct = (
+        ctRaw: number | null,
+        tractRaw: number | null,
+        opts: { higherIsWorse?: boolean; subject: string; decimals?: number },
+      ): string => {
+        const decimals = opts.decimals ?? 1;
+        const ctStr = fmtPct(ctRaw, decimals);
+        if (ctRaw == null || tractRaw == null) return `Statewide, the figure is ${ctStr}.`;
+        const d = tractRaw - ctRaw;
+        const absD = Math.abs(d);
+        if (absD < 1) return `Right in line with Connecticut as a whole (${ctStr}).`;
+        const ratio = ctRaw > 0 ? tractRaw / ctRaw : null;
+        const times =
+          ratio && ratio >= 1.5 ? ` — nearly ${ratio >= 1.95 ? Math.round(ratio) : ratio.toFixed(1)}× the state rate`
+          : ratio && ratio > 0 && ratio <= 0.67 ? ` — about ${(1 / ratio).toFixed(1)}× lower than the state`
+          : "";
+        const higher = d > 0;
+        const worse = opts.higherIsWorse ? higher : !higher;
+        const verb = worse ? "struggles more than" : "is doing better than";
+        const direction = higher ? "higher" : "lower";
+        return `At ${fmtPct(tractRaw, decimals)}, ${opts.subject} ${verb} Connecticut overall (${ctStr}) — ${Math.round(absD)} points ${direction}${times}.`;
+      };
+
+      const sentenceUSD = (
+        ctRaw: number | null,
+        tractRaw: number | null,
+        opts: { higherIsWorse?: boolean; subject: string },
+      ): string => {
+        const ctStr = fmtUSD(ctRaw);
+        if (ctRaw == null || tractRaw == null) return `Statewide, the figure is ${ctStr}.`;
+        const d = tractRaw - ctRaw;
+        const absD = Math.abs(d);
+        if (absD < 500) return `Right in line with the Connecticut median (${ctStr}).`;
+        const higher = d > 0;
+        const worse = opts.higherIsWorse ? higher : !higher;
+        const verb = worse ? "lags behind" : "outpaces";
+        const direction = higher ? "above" : "below";
+        return `At ${fmtUSD(tractRaw)}, ${opts.subject} ${verb} Connecticut overall (${ctStr}) — $${Math.abs(Math.round(d)).toLocaleString()} ${direction} the state median.`;
+      };
+
       const avgPct = (raw: number | null) => ({ value: fmtPct(raw), raw, label: `CT average: ${fmtPct(raw)}` });
       const avgPct0 = (raw: number | null) => ({ value: fmtPct(raw, 0), raw, label: `CT average: ${fmtPct(raw, 0)}` });
       const avgUSD = (raw: number | null) => ({ value: fmtUSD(raw), raw, label: `CT average: ${fmtUSD(raw)}` });
+
+      void cmpPct; void cmpUSD;
 
       const indicators: Indicator[] = [
         {
@@ -360,7 +404,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.childPovPct,
           severity: tier(t.childPovPct, 10, 25),
           note: "Share of children under 18 below the federal poverty line.",
-          stateAverage: { ...avgPct(ct.childPovPct), label: `CT average: ${fmtPct(ct.childPovPct)}${cmpPct(ct.childPovPct, t.childPovPct)}` },
+          stateAverage: { ...avgPct(ct.childPovPct), label: sentencePct(ct.childPovPct, t.childPovPct, { higherIsWorse: true, subject: "this neighborhood's child poverty rate" }) },
         },
         {
           key: "median_income",
@@ -369,7 +413,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.medIncVal,
           severity: tier(t.medIncVal, 90213, 60000, true),
           note: "This tract's median household income as a share of Connecticut's median.",
-          stateAverage: { ...avgUSD(ct.medIncVal), label: `CT median: ${fmtUSD(ct.medIncVal)}` },
+          stateAverage: { ...avgUSD(ct.medIncVal), label: t.medIncVal != null && ct.medIncVal ? `Households here earn about ${Math.round((t.medIncVal / ct.medIncVal) * 100)}¢ for every dollar a typical Connecticut household brings home (CT median ${fmtUSD(ct.medIncVal)}).` : `Statewide median: ${fmtUSD(ct.medIncVal)}.` },
         },
         {
           key: "median_income_usd",
@@ -378,7 +422,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.medIncVal,
           severity: tier(t.medIncVal, 90213, 60000, true),
           note: "Half of households earn more, half earn less.",
-          stateAverage: { ...avgUSD(ct.medIncVal), label: `CT median: ${fmtUSD(ct.medIncVal)}${cmpUSD(ct.medIncVal, t.medIncVal)}` },
+          stateAverage: { ...avgUSD(ct.medIncVal), label: sentenceUSD(ct.medIncVal, t.medIncVal, { higherIsWorse: false, subject: "the typical household here" }) },
         },
         {
           key: "unemployment",
@@ -387,7 +431,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.unempPct,
           severity: tier(t.unempPct, 4, 10),
           note: "Share of the labor force currently looking for work.",
-          stateAverage: { ...avgPct(ct.unempPct), label: `CT average: ${fmtPct(ct.unempPct)}${cmpPct(ct.unempPct, t.unempPct)}` },
+          stateAverage: { ...avgPct(ct.unempPct), label: sentencePct(ct.unempPct, t.unempPct, { higherIsWorse: true, subject: "joblessness in this neighborhood" }) },
         },
         {
           key: "no_hs",
@@ -396,7 +440,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.noHsPct,
           severity: tier(t.noHsPct, 8, 20),
           note: "Share of adults age 25+ who never finished high school.",
-          stateAverage: { ...avgPct(ct.noHsPct), label: `CT average: ${fmtPct(ct.noHsPct)}${cmpPct(ct.noHsPct, t.noHsPct)}` },
+          stateAverage: { ...avgPct(ct.noHsPct), label: sentencePct(ct.noHsPct, t.noHsPct, { higherIsWorse: true, subject: "the share of adults here without a diploma" }) },
         },
         {
           key: "uninsured",
@@ -405,7 +449,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.uninsPct,
           severity: tier(t.uninsPct, 6, 15),
           note: "Share of people of all ages without health insurance.",
-          stateAverage: { ...avgPct(ct.uninsPct), label: `CT average: ${fmtPct(ct.uninsPct)}${cmpPct(ct.uninsPct, t.uninsPct)}` },
+          stateAverage: { ...avgPct(ct.uninsPct), label: sentencePct(ct.uninsPct, t.uninsPct, { higherIsWorse: true, subject: "the uninsured rate here" }) },
         },
         {
           key: "pre1960",
@@ -414,7 +458,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.pre1960Pct,
           severity: tier(t.pre1960Pct, 20, 50),
           note: "Older homes are more likely to contain lead paint.",
-          stateAverage: { ...avgPct0(ct.pre1960Pct), label: `CT average: ${fmtPct(ct.pre1960Pct, 0)}${cmpPct(ct.pre1960Pct, t.pre1960Pct)}` },
+          stateAverage: { ...avgPct0(ct.pre1960Pct), label: sentencePct(ct.pre1960Pct, t.pre1960Pct, { higherIsWorse: true, subject: "the share of pre-1960 housing here", decimals: 0 }) },
         },
         {
           key: "severe_rent",
@@ -423,7 +467,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.severeRentPct,
           severity: tier(t.severeRentPct, 15, 30),
           note: "Renters spending more than half of their income on rent.",
-          stateAverage: { ...avgPct(ct.severeRentPct), label: `CT average: ${fmtPct(ct.severeRentPct)}${cmpPct(ct.severeRentPct, t.severeRentPct)}` },
+          stateAverage: { ...avgPct(ct.severeRentPct), label: sentencePct(ct.severeRentPct, t.severeRentPct, { higherIsWorse: true, subject: "the share of severely rent-burdened renters here" }) },
         },
         {
           key: "renter_share",
@@ -432,7 +476,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.renterPct,
           severity: "neutral",
           note: "Share of occupied homes that are rented rather than owned.",
-          stateAverage: { ...avgPct0(ct.renterPct), label: `CT average: ${fmtPct(ct.renterPct, 0)}${cmpPct(ct.renterPct, t.renterPct)}` },
+          stateAverage: { ...avgPct0(ct.renterPct), label: sentencePct(ct.renterPct, t.renterPct, { higherIsWorse: false, subject: "the renter share here", decimals: 0 }) },
         },
       ];
 
