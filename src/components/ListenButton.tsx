@@ -74,7 +74,7 @@ export function ListenButton({ text, cacheKey, language = "en" }: Props) {
     setStatus("loading");
     setErrMsg(null);
     try {
-      const result = await synth({ data: { text } });
+      const result = await synth({ data: { text, language } });
       if ("error" in result) throw new Error(result.error);
       const url = `data:${result.mimeType};base64,${result.audioBase64}`;
       audioCache.set(cacheKey, url);
