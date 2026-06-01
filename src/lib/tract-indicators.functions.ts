@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import usdaFlagged from "@/data/usda-food-access.json";
 
-const FLAGGED = new Set<string>(usdaFlagged as string[]);
+
 
 const ACS_YEAR = "2022";
 const ACS_BASE = `https://api.census.gov/data/${ACS_YEAR}/acs/acs5`;
