@@ -1,59 +1,99 @@
 ## Goal
 
-Create a new Google Doc titled **"Wake Up Wednesday — Measuring Success & Analytics Plan"** that answers two linked questions:
-1. How do we measure success across the 4 categories (Engagement, Outcomes, Advocacy Impact, Community Reach)?
-2. What analytics events should the app capture?
+Let users read and listen to the *generated* content in Spanish: tract stories, building stories, stabilization plans, and landlord/action letters, plus the audio narration. Static UI (nav, buttons, headers, onboarding) stays English for now. Vetted-resource cards stay English. This is the cheapest, lowest-maintenance step toward bilingual support.
 
-The doc is meant to be a working draft GHB NAACP can edit, share with CTDC, and use to spec the analytics instrumentation later.
+## What the user will see
 
-## Deliverable structure
+- A small **EN / ES** pill (segmented control) appears at the top of any screen that shows generated AI content: the Tract Story dialog, the Building Story dialog, the Stabilization Plan page (`/plan/$planId`), and the Landlord Letter page (`/landlord-letter`).
+- Default is EN. Tapping ES re-generates that piece of content in Spanish and, if the user then taps **Listen**, the audio plays in Spanish too.
+- The language choice is remembered per device (localStorage) so a Spanish-dominant user doesn't have to re-tap it every screen.
+- Nothing else changes — the rest of the app stays English in Phase 1.
 
-**1. Purpose** — one short paragraph: WUW measures success by whether Hartford residents in the 24 target tracts actually move from awareness → action → stability, and whether the app surfaces patterns that strengthen advocacy.
+## Why not full UI translation right now
 
-**2. Measurement framework — the 4 categories**
+- The intro is still `[[INTRO TEXT HERE]]` and copy is actively churning. Translating chrome that's about to change wastes effort and creates stale-translation risk.
+- Resource cards (hours, eligibility notes) aren't translated in `ct-resources.json`. A toggle that flips chrome but leaves resources English looks broken.
+- The highest-value words on the app are AI-generated, and AI translation is free + always current.
 
-For each category: definition, 3–5 KPIs, data source, review cadence.
+## Technical approach
 
-- **Engagement** — Is the app being used meaningfully (not just opened)?
-  KPIs: monthly active users in target tracts, survey completion rate, plan-generation rate, return-visit rate within 30 days, avg. session depth, listen-to-audio rate.
-- **Outcomes** — Are users getting unstuck on housing, food, income, legal, etc.?
-  KPIs: % of plan steps marked complete at 7/30/60 days, self-reported "this helped" rate, referral connection rate (user contacted resource), eviction-letter generations, crisis-flag follow-through.
-- **Advocacy Impact** — Is WUW data shifting policy & funder conversations?
-  KPIs: # of tract-level briefs shared with electeds, citations of WUW data in council/legislative testimony, press mentions, # of partner orgs using WUW data, funder meetings sourced from app insights.
-- **Community Reach** — Are we reaching the right people, not just the easy-to-reach?
-  KPIs: % of users from the 19 PA 23-205 tracts vs 5 next-highest, language distribution (EN/ES/other), referral-source mix (church, school, library, social), unique addresses looked up, repeat users per tract.
+### 1. Language preference
 
-**3. Analytics events to capture**
+- New file `src/lib/language.ts`: exports `getLanguage()`, `setLanguage("en" | "es")`, and a `useLanguage()` hook (subscribes via a tiny event emitter / `storage` event so dialogs re-render when the user toggles).
+- Stored in `localStorage` under key `wuw_content_lang`.
 
-A table of every event, with: event name, trigger, properties, which KPI(s) it feeds.
+### 2. Server functions: accept a `language` param
 
-Events grouped by surface:
-- **Onboarding / auth**: `signup_started`, `signup_completed`, `signin`, `signout`
-- **Neighborhood / map**: `tract_viewed` (tract_fips), `tract_story_opened`, `address_lookup` (geocoded tract), `map_zoomed`, `target_tract_clicked`
-- **Home section**: `building_lookup` (address hash), `building_story_opened`, `landlord_letter_generated`, `landlord_letter_downloaded`
-- **Your Path Survey → Plan**: `survey_started`, `survey_step_completed` (step #), `survey_completed`, `followup_completed`, `plan_generated` (priority_domains, plan_id), `plan_viewed`, `plan_step_toggled` (week, domain, done/undone), `plan_step_completion_rate_snapshot` (7/30/60-day cron)
-- **Find Help / resources**: `resource_viewed` (resource_id, domain), `resource_phone_clicked`, `resource_website_clicked`, `resource_directions_clicked`, `referral_outcome_reported` (connected / no answer / not eligible / helped)
-- **Take Action**: `take_action_clicked` (action_type), `neighborhood_action_started`, `home_action_started`, `share_clicked` (channel)
-- **Audio / accessibility**: `listen_started` (surface, content_id), `listen_completed`, `language_changed`
-- **Advocacy export**: `tract_brief_exported`, `data_snapshot_downloaded` (for partners/electeds)
+Update these four server functions to take an optional `language: "en" | "es"` input and pass it into the model prompt as an explicit instruction ("Respond in Spanish (es-US, plain Hartford community Spanish, 6th-grade reading level). Keep proper nouns and program names in English."):
 
-**4. Privacy & ethics guardrails**
-- Hash addresses; never store raw address with user_id.
-- Aggregate to tract level for any external reporting; never publish counts <5.
-- Self-reported outcome questions are always optional, plain-language, no shame framing.
-- All analytics stored in Lovable Cloud (Supabase) under RLS; no third-party trackers without explicit consent.
+- `src/lib/tract-story.functions.ts`
+- `src/lib/building-story.functions.ts`
+- `src/lib/stabilization-plan.functions.ts`
+- `src/lib/action-letter.functions.ts`
 
-**5. Reporting cadence**
-- Weekly internal dashboard (engagement + plan completion)
-- Quarterly community report (all 4 categories, plain-language, shared with target-tract residents)
-- Annual impact report (advocacy + funder facing)
+No schema changes. The Spanish output is just stored alongside the English in the same TanStack Query cache, keyed by `[..., language]` so EN and ES coexist without one clobbering the other.
 
-**6. Open questions for GHB NAACP**
-- Who owns the analytics dashboard internally?
-- Do we want self-reported outcome check-ins by email/SMS at 7/30 days, or only in-app?
-- Should referral-outcome reporting be incentivized (raffle, gift card) or kept purely voluntary?
-- Which 3 KPIs go on a public-facing "WUW impact" page on the app itself?
+### 3. TTS: pick a Spanish voice when `language === "es"`
 
-## Mechanics
+- `src/lib/tts.functions.ts` already accepts an optional `voiceId`. Add an optional `language` input.
+- When `language === "es"`, default `voiceId` to a Spanish ElevenLabs voice (e.g. a warm female community-voice ID — pick from the Voice Library; multilingual v2 already supports Spanish).
+- Also skip the English number-to-words spokenifier when `language === "es"` (it would mispronounce — better to let the model say digits naturally in Spanish, or add a Spanish number expander later).
+- `ListenButton` passes the current language through.
 
-In build mode I'll create a new Google Doc via the existing Google Docs connector (`POST /documents` + a single `batchUpdate`), populate it with the structure above as headings + paragraphs + a small events table, and return the doc URL. I will not modify any other doc.
+### 4. UI: the EN / ES toggle
+
+- New component `src/components/LanguageToggle.tsx` — a small segmented pill matching the existing design tokens (gold accent, rounded-full, border).
+- Mounted at the top of:
+  - `TractStoryDialog`
+  - `BuildingStoryDialog`
+  - `/plan/$planId` route
+  - `/landlord-letter` route
+- When toggled, the component calls `setLanguage(...)` and the dialog/page's `useQuery` re-fetches because `language` is in its query key.
+
+### 5. Caching & invalidation
+
+- Query keys gain a `language` segment: `["tract-story", tractId, "es"]`, `["building-story", addressId, "es"]`, etc.
+- No DB migration. Generated Spanish content is cached in React Query the same way English is today.
+
+### 6. Microcopy strings the toggle itself uses
+
+- "EN" / "ES" labels only — no other Spanish UI strings.
+- aria-label: `"Switch content language"`.
+
+## Out of scope (deferred to Phase 2)
+
+- react-i18next, translated nav, translated buttons, translated onboarding.
+- Translated resource cards (`name_es`, `eligibility_notes_es`, etc.).
+- Browser language auto-detection.
+- Spanish number-to-words for TTS.
+- Persisting language to the user's Supabase profile.
+
+## Files to add / change
+
+**Add**
+- `src/lib/language.ts`
+- `src/components/LanguageToggle.tsx`
+
+**Edit (small surgical changes)**
+- `src/lib/tract-story.functions.ts` — accept `language`, inject into prompt
+- `src/lib/building-story.functions.ts` — same
+- `src/lib/stabilization-plan.functions.ts` — same
+- `src/lib/action-letter.functions.ts` — same
+- `src/lib/tts.functions.ts` — accept `language`, pick Spanish voice, skip English number expander when `es`
+- `src/components/TractStoryDialog.tsx` — mount toggle, include language in query key, pass to TTS
+- `src/components/BuildingStoryDialog.tsx` — same
+- `src/components/ListenButton.tsx` — accept/pass `language` prop
+- `src/routes/plan.$planId.tsx` — mount toggle, include language in query key
+- `src/routes/landlord-letter.tsx` — mount toggle, include language in query key
+
+## Validation
+
+- Toggle to ES on a tract story → text regenerates in Spanish within a few seconds.
+- Tap Listen on the Spanish text → audio plays in a Spanish voice.
+- Toggle back to EN → original English content reappears instantly (cached).
+- Refresh the page → language preference persists.
+- Nav, buttons, and resource cards remain English (expected).
+
+## Estimated scope
+
+Small — one focused build. No DB, no auth, no new dependencies.
