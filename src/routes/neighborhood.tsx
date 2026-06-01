@@ -10,7 +10,7 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-function severityColorClass(s: Indicator["severity"] | null): string {
+function _severityColorClass(s: Indicator["severity"] | null): string {
   if (s === "good") return "text-success";
   if (s === "watch") return "text-warning";
   if (s === "concern") return "text-destructive";
