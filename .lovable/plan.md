@@ -1,50 +1,59 @@
 ## Goal
 
-Replace the current broad collaboration proposal with a stripped-down **Data Hosting & Refresh Agreement** between GHB NAACP and CT Data Collaborative, scoped strictly to CTDC housing and refreshing the three datasets the Wake Up Wednesday app actually needs, plus mutual NDA / IP-protection language so the model can be replicated at larger scale without leaking the design.
+Create a new Google Doc titled **"Wake Up Wednesday — Measuring Success & Analytics Plan"** that answers two linked questions:
+1. How do we measure success across the 4 categories (Engagement, Outcomes, Advocacy Impact, Community Reach)?
+2. What analytics events should the app capture?
 
-## Deliverable
+The doc is meant to be a working draft GHB NAACP can edit, share with CTDC, and use to spec the analytics instrumentation later.
 
-A new Google Doc (created via the Google Docs connector in build mode) titled **"Data Hosting & Refresh Agreement — Wake Up Wednesday / CT Data Collaborative"**, with this structure:
+## Deliverable structure
 
-1. **Parties & Purpose** — GHB NAACP owns and operates the Wake Up Wednesday app; CTDC's role is limited to hosting and refreshing the agreed datasets.
-2. **Scope of CTDC Services** — narrow, dataset-by-dataset (see below). Explicitly excludes app design, indicator selection, community testing, story development, co-promotion, and the "joint work" framing in the current draft.
-3. **Datasets, Sources & Refresh Cadence** (table):
-   | # | Dataset | Source(s) | Refresh |
-   |---|---|---|---|
-   | 1 | Hartford target-tract indicators (24 tracts: 19 PA 23-205 + 5 next-highest poverty) — demographics, education, income, housing, workforce, mobility, civic | ACS 5-yr, CSDE, Opportunity Atlas, SOTS voter file | **Annual** |
-   | 2 | Building/eviction data for "Your Home" — SOTS ownership records, eviction filings, housing code violations, 311 complaints, Fair Rent / Fair Housing filings, utility shutoffs (where available) | CT Judicial, Hartford Open Data, SOTS, HUD | **Quarterly** |
-   | 3 | Vetted CT resources list — name, services, phone, address, hours, languages, eligibility, URL | Curated by GHB NAACP; CTDC validates URLs/phones each cycle | **Quarterly** |
-   USDA food-access flags are explicitly **out of scope**.
-4. **Delivery format** — flat JSON / CSV at a stable CTDC-hosted URL the app reads at build/runtime; schema versioned; change notice ≥ 14 days before breaking changes.
-5. **Data quality & QA** — CTDC cleans, dedupes, validates against prior cycle, flags anomalies before publishing.
-6. **Confidentiality & NDA** — mutual NDA covering: the app concept, UX, indicator/story design, prompt/AI-generation logic, source code, unreleased datasets, roadmap, funder conversations. Survives termination 3 years. Permitted disclosures: legal compulsion, pre-approved press, aggregated impact metrics.
-7. **Intellectual property** — GHB NAACP retains all rights in the app, brand "Wake Up Wednesday," indicator selection, narrative design, code, and the right to replicate the model in other cities. CTDC retains rights in its underlying cleaned datasets; grants GHB NAACP a perpetual, royalty-free license to use them in WUW and successor/replicated deployments. No CTDC co-branding or co-promotion required or implied.
-8. **Cost & funding** — GHB NAACP supports the cost of CTDC's hosting/refresh work, scoped annually; either party may pause work if funding lapses.
-9. **Term, termination & data portability** — 1-year initial term, auto-renew, 60-day termination for convenience; on termination CTDC delivers final dataset snapshots and ceases use of confidential materials.
-10. **Signatures**.
+**1. Purpose** — one short paragraph: WUW measures success by whether Hartford residents in the 24 target tracts actually move from awareness → action → stability, and whether the app surfaces patterns that strengthen advocacy.
 
-## Open questions (need 1 quick answer before I draft)
+**2. Measurement framework — the 4 categories**
 
-A few small choices that shape the doc — I'll ask in the next turn via a short multi-choice question:
+For each category: definition, 3–5 KPIs, data source, review cadence.
 
-- **NDA strength**: mutual + 3-yr survival (recommended), or one-way protecting only GHB NAACP IP?
-- **Additional datasets worth considering** (your "are there others?" question) — my picks, ranked:
-  1. **CT Judicial small-claims / housing-court calendar by tract** — pairs naturally with evictions, shows pre-eviction pressure.
-  2. **DEEP environmental-justice block-group flags** — overlays cleanly on target tracts, strong policy hook.
-  3. **CT DOL unemployment-insurance claims by ZIP, monthly** — leading indicator, refreshes faster than ACS.
-  4. **Hartford blight / vacant-property registry** — complements code violations in "Your Home."
-  5. **CT Voices for Children child-poverty tract estimates** — sharper than ACS 5-yr for the "make poverty visible" frame.
-  I'd recommend adding #1 and #4 to scope now (both quarterly, both already in CTDC's wheelhouse) and leaving #2–#5 as a "future additions" appendix.
+- **Engagement** — Is the app being used meaningfully (not just opened)?
+  KPIs: monthly active users in target tracts, survey completion rate, plan-generation rate, return-visit rate within 30 days, avg. session depth, listen-to-audio rate.
+- **Outcomes** — Are users getting unstuck on housing, food, income, legal, etc.?
+  KPIs: % of plan steps marked complete at 7/30/60 days, self-reported "this helped" rate, referral connection rate (user contacted resource), eviction-letter generations, crisis-flag follow-through.
+- **Advocacy Impact** — Is WUW data shifting policy & funder conversations?
+  KPIs: # of tract-level briefs shared with electeds, citations of WUW data in council/legislative testimony, press mentions, # of partner orgs using WUW data, funder meetings sourced from app insights.
+- **Community Reach** — Are we reaching the right people, not just the easy-to-reach?
+  KPIs: % of users from the 19 PA 23-205 tracts vs 5 next-highest, language distribution (EN/ES/other), referral-source mix (church, school, library, social), unique addresses looked up, repeat users per tract.
 
-## Out of scope (explicitly removed from current draft)
+**3. Analytics events to capture**
 
-- Co-design of look & feel, indicator selection, gamification.
-- Community consultation / testing process (GHB NAACP runs this).
-- Joint fundraising language.
-- CTDC web-site companion display, evictions explorer integration, co-promotion.
-- Timelines for tool launch, story development, beta dates.
-- App components #1/#2/#3 narrative descriptions (kept only as a one-paragraph context blurb).
+A table of every event, with: event name, trigger, properties, which KPI(s) it feeds.
+
+Events grouped by surface:
+- **Onboarding / auth**: `signup_started`, `signup_completed`, `signin`, `signout`
+- **Neighborhood / map**: `tract_viewed` (tract_fips), `tract_story_opened`, `address_lookup` (geocoded tract), `map_zoomed`, `target_tract_clicked`
+- **Home section**: `building_lookup` (address hash), `building_story_opened`, `landlord_letter_generated`, `landlord_letter_downloaded`
+- **Your Path Survey → Plan**: `survey_started`, `survey_step_completed` (step #), `survey_completed`, `followup_completed`, `plan_generated` (priority_domains, plan_id), `plan_viewed`, `plan_step_toggled` (week, domain, done/undone), `plan_step_completion_rate_snapshot` (7/30/60-day cron)
+- **Find Help / resources**: `resource_viewed` (resource_id, domain), `resource_phone_clicked`, `resource_website_clicked`, `resource_directions_clicked`, `referral_outcome_reported` (connected / no answer / not eligible / helped)
+- **Take Action**: `take_action_clicked` (action_type), `neighborhood_action_started`, `home_action_started`, `share_clicked` (channel)
+- **Audio / accessibility**: `listen_started` (surface, content_id), `listen_completed`, `language_changed`
+- **Advocacy export**: `tract_brief_exported`, `data_snapshot_downloaded` (for partners/electeds)
+
+**4. Privacy & ethics guardrails**
+- Hash addresses; never store raw address with user_id.
+- Aggregate to tract level for any external reporting; never publish counts <5.
+- Self-reported outcome questions are always optional, plain-language, no shame framing.
+- All analytics stored in Lovable Cloud (Supabase) under RLS; no third-party trackers without explicit consent.
+
+**5. Reporting cadence**
+- Weekly internal dashboard (engagement + plan completion)
+- Quarterly community report (all 4 categories, plain-language, shared with target-tract residents)
+- Annual impact report (advocacy + funder facing)
+
+**6. Open questions for GHB NAACP**
+- Who owns the analytics dashboard internally?
+- Do we want self-reported outcome check-ins by email/SMS at 7/30 days, or only in-app?
+- Should referral-outcome reporting be incentivized (raffle, gift card) or kept purely voluntary?
+- Which 3 KPIs go on a public-facing "WUW impact" page on the app itself?
 
 ## Mechanics
 
-In build mode I'll: (1) re-confirm the Google Docs connection is linked, (2) create a new doc via `POST /documents`, (3) populate it with a single `batchUpdate` call, (4) return the new doc URL. I will **not** modify the original doc.
+In build mode I'll create a new Google Doc via the existing Google Docs connector (`POST /documents` + a single `batchUpdate`), populate it with the structure above as headings + paragraphs + a small events table, and return the doc URL. I will not modify any other doc.
