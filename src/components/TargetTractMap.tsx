@@ -38,7 +38,7 @@ function FitBounds({ bounds }: { bounds: L.LatLngBoundsExpression }) {
   const map = useMap();
   useEffect(() => {
     map.fitBounds(bounds, { padding: [12, 12] });
-    map.zoomIn(0.8, { animate: false });
+    map.zoomIn(1.8, { animate: false });
 
   }, [map, bounds]);
   return null;
