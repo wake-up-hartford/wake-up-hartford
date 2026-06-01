@@ -435,17 +435,8 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           note: "Share of occupied homes that are rented rather than owned.",
           stateAverage: { ...avgPct0(ct.renterPct), label: `CT average: ${fmtPct(ct.renterPct, 0)}${cmpPct(ct.renterPct, t.renterPct)}` },
         },
-        {
-          key: "food_access",
-          label: "Food access (USDA)",
-          value: usdaFlag ? "Low-access" : "OK",
-          raw: usdaFlag ? 1 : 0,
-          severity: usdaFlag ? "concern" : "good",
-          note: usdaFlag
-            ? "USDA classifies this tract as low-income with a significant share of residents more than ½ mile (urban) or 10 miles (rural) from the nearest supermarket."
-            : "Not classified as a low-income, low-supermarket-access tract (½-mile urban / 10-mile rural threshold).",
-        },
       ];
+
 
       return { fips, population: t.pop, indicators };
     } catch (err) {
