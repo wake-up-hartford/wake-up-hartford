@@ -125,6 +125,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
         // Re-scope global text tokens inside cards so child text stays readable
         // on the cream surface even in dark mode.
         ["--foreground" as string]: "var(--card-foreground)",
+        ["--background" as string]: "var(--card)",
         ["--muted-foreground" as string]: "oklch(0.45 0.04 290)",
         ["--border" as string]: "oklch(0.85 0.02 80)",
       }}
