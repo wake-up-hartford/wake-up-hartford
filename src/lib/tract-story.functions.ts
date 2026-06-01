@@ -18,6 +18,7 @@ const Input = z.object({
   neighborhood: z.string(),
   stateFips: z.string().regex(/^\d{2}$/).optional(),
   tone: z.enum(["warm", "direct"]).optional().default("warm"),
+  language: z.enum(["en", "es"]).optional().default("en"),
   indicators: z.array(IndicatorInput).min(1),
 });
 
