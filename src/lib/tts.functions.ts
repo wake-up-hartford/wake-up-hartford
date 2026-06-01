@@ -85,8 +85,11 @@ export const synthesizeStory = createServerFn({ method: "POST" })
       return { error: "Text-to-speech is not configured." };
     }
 
-    const voiceId = data.voiceId ?? "YjlcD3XHztjJEo2wNszv";
-    const spokenText = spokenifyNumbers(data.text);
+    const voiceId =
+      data.voiceId ?? (data.language === "es" ? DEFAULT_VOICE_ES : DEFAULT_VOICE_EN);
+    // The English number-to-words expander would mispronounce in Spanish; pass
+    // the raw text through and let the multilingual voice handle digits.
+    const spokenText = data.language === "es" ? data.text : spokenifyNumbers(data.text);
 
 
     const upstream = await fetch(
