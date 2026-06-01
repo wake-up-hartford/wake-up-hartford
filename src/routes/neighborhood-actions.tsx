@@ -141,18 +141,29 @@ function ActionsPage() {
       <ActionCard
         icon={Vote}
         accent="amber"
-        title="Register to vote (or check your registration)"
+        title="VOTE!"
         body="Turnout in tracts like this one shapes whether the city listens. Two minutes on the CT Secretary of State site."
         cta={
-          <a
-            href="https://portaldir.ct.gov/sots/LookUp.aspx"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Button size="sm">
-              Check registration <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-            </Button>
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href="https://voterregistration.ct.gov/OLVR/welcome.do"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button size="sm">
+                Register to Vote <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
+            </a>
+            <a
+              href="https://portaldir.ct.gov/sots/LookUp.aspx"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button size="sm" variant="outline">
+                Check Registration <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
+            </a>
+          </div>
         }
       />
 
