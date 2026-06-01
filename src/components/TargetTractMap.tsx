@@ -184,7 +184,7 @@ export default function TargetTractMap({
           value={picked?.tract ?? ""}
           onValueChange={handleSelectChange}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full border-primary text-primary hover:bg-primary/10">
             <SelectValue placeholder="— Choose a census tract —" />
           </SelectTrigger>
           <SelectContent className="z-[500]">
