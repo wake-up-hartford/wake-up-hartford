@@ -1,27 +1,50 @@
 ## Goal
-Change the "Food access (USDA)" indicator to use the USDA Food Access Research Atlas **LILA_halfand10** measure (low-income tracts where a significant number/share of residents are >½ mile urban or >10 miles rural from the nearest supermarket) instead of the current **LILA_1and10** (1 mile / 10 miles) measure.
 
-## Changes
+Replace the current broad collaboration proposal with a stripped-down **Data Hosting & Refresh Agreement** between GHB NAACP and CT Data Collaborative, scoped strictly to CTDC housing and refreshing the three datasets the Wake Up Wednesday app actually needs, plus mutual NDA / IP-protection language so the model can be replicated at larger scale without leaking the design.
 
-1. **Regenerate `src/data/usda-food-access.json`**
-   - Download the latest USDA Food Access Research Atlas tract-level dataset.
-   - Filter rows where `LILA_halfand10 = 1` (instead of the current `LILA_1and10 = 1`).
-   - Write the resulting list of 11-digit tract FIPS codes back to the same JSON file (same shape — a flat `string[]`), so no code that consumes it needs to change structurally.
+## Deliverable
 
-2. **Update copy in `src/lib/tract-indicators.functions.ts`** (the only place that references the flag)
-   - Change the indicator `note` for the flagged case from:
-     > "USDA classifies this tract as low-income and more than 1 mile from a supermarket."
-   
-     to:
-     > "USDA classifies this tract as low-income and more than ½ mile (urban) or 10 miles (rural) from the nearest supermarket."
-   - Update the unflagged `note` to match the new threshold wording.
-   - Label stays "Food access (USDA)"; severity logic (concern vs good) and the "Low-access" / "OK" values stay the same.
+A new Google Doc (created via the Google Docs connector in build mode) titled **"Data Hosting & Refresh Agreement — Wake Up Wednesday / CT Data Collaborative"**, with this structure:
 
-## Out of scope
-- No UI/layout changes on the neighborhood page.
-- No changes to other indicators or the Manual / resident notice docs.
-- The threshold values in `tier()` for other indicators are untouched.
+1. **Parties & Purpose** — GHB NAACP owns and operates the Wake Up Wednesday app; CTDC's role is limited to hosting and refreshing the agreed datasets.
+2. **Scope of CTDC Services** — narrow, dataset-by-dataset (see below). Explicitly excludes app design, indicator selection, community testing, story development, co-promotion, and the "joint work" framing in the current draft.
+3. **Datasets, Sources & Refresh Cadence** (table):
+   | # | Dataset | Source(s) | Refresh |
+   |---|---|---|---|
+   | 1 | Hartford target-tract indicators (24 tracts: 19 PA 23-205 + 5 next-highest poverty) — demographics, education, income, housing, workforce, mobility, civic | ACS 5-yr, CSDE, Opportunity Atlas, SOTS voter file | **Annual** |
+   | 2 | Building/eviction data for "Your Home" — SOTS ownership records, eviction filings, housing code violations, 311 complaints, Fair Rent / Fair Housing filings, utility shutoffs (where available) | CT Judicial, Hartford Open Data, SOTS, HUD | **Quarterly** |
+   | 3 | Vetted CT resources list — name, services, phone, address, hours, languages, eligibility, URL | Curated by GHB NAACP; CTDC validates URLs/phones each cycle | **Quarterly** |
+   USDA food-access flags are explicitly **out of scope**.
+4. **Delivery format** — flat JSON / CSV at a stable CTDC-hosted URL the app reads at build/runtime; schema versioned; change notice ≥ 14 days before breaking changes.
+5. **Data quality & QA** — CTDC cleans, dedupes, validates against prior cycle, flags anomalies before publishing.
+6. **Confidentiality & NDA** — mutual NDA covering: the app concept, UX, indicator/story design, prompt/AI-generation logic, source code, unreleased datasets, roadmap, funder conversations. Survives termination 3 years. Permitted disclosures: legal compulsion, pre-approved press, aggregated impact metrics.
+7. **Intellectual property** — GHB NAACP retains all rights in the app, brand "Wake Up Wednesday," indicator selection, narrative design, code, and the right to replicate the model in other cities. CTDC retains rights in its underlying cleaned datasets; grants GHB NAACP a perpetual, royalty-free license to use them in WUW and successor/replicated deployments. No CTDC co-branding or co-promotion required or implied.
+8. **Cost & funding** — GHB NAACP supports the cost of CTDC's hosting/refresh work, scoped annually; either party may pause work if funding lapses.
+9. **Term, termination & data portability** — 1-year initial term, auto-renew, 60-day termination for convenience; on termination CTDC delivers final dataset snapshots and ceases use of confidential materials.
+10. **Signatures**.
 
-## Technical notes
-- USDA Food Access Research Atlas dataset is published as an Excel workbook (`Food Access Research Atlas.xlsx`, sheet "Food Access Research Atlas") at ers.usda.gov. The regeneration script will fetch it, read the `LILA_halfand10` column with the `CensusTract` column, and emit the JSON.
-- The current JSON has ~1k–2k entries; the ½-mile/10-mile measure flags substantially more tracts, so file size will grow modestly (still well under 100 KB).
+## Open questions (need 1 quick answer before I draft)
+
+A few small choices that shape the doc — I'll ask in the next turn via a short multi-choice question:
+
+- **NDA strength**: mutual + 3-yr survival (recommended), or one-way protecting only GHB NAACP IP?
+- **Additional datasets worth considering** (your "are there others?" question) — my picks, ranked:
+  1. **CT Judicial small-claims / housing-court calendar by tract** — pairs naturally with evictions, shows pre-eviction pressure.
+  2. **DEEP environmental-justice block-group flags** — overlays cleanly on target tracts, strong policy hook.
+  3. **CT DOL unemployment-insurance claims by ZIP, monthly** — leading indicator, refreshes faster than ACS.
+  4. **Hartford blight / vacant-property registry** — complements code violations in "Your Home."
+  5. **CT Voices for Children child-poverty tract estimates** — sharper than ACS 5-yr for the "make poverty visible" frame.
+  I'd recommend adding #1 and #4 to scope now (both quarterly, both already in CTDC's wheelhouse) and leaving #2–#5 as a "future additions" appendix.
+
+## Out of scope (explicitly removed from current draft)
+
+- Co-design of look & feel, indicator selection, gamification.
+- Community consultation / testing process (GHB NAACP runs this).
+- Joint fundraising language.
+- CTDC web-site companion display, evictions explorer integration, co-promotion.
+- Timelines for tool launch, story development, beta dates.
+- App components #1/#2/#3 narrative descriptions (kept only as a one-paragraph context blurb).
+
+## Mechanics
+
+In build mode I'll: (1) re-confirm the Google Docs connection is linked, (2) create a new doc via `POST /documents`, (3) populate it with a single `batchUpdate` call, (4) return the new doc URL. I will **not** modify the original doc.
