@@ -165,11 +165,10 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
           <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
         </DialogHeader>
 
-        {story && (
-          <div className="flex justify-end border-b border-border pb-3">
-            <ListenButton text={story} cacheKey={cacheKey} />
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
+          <LanguageToggle />
+          {story && <ListenButton text={story} cacheKey={cacheKey} language={language} />}
+        </div>
 
 
 
