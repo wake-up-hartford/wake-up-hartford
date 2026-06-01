@@ -352,34 +352,39 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         if (ctRaw == null || tractRaw == null) return `Statewide, the figure is ${ctStr}.`;
         const d = tractRaw - ctRaw;
         const absD = Math.abs(d);
-        if (absD < 1) return `Right in line with Connecticut as a whole (${ctStr}).`;
+        if (absD < 1) return `About the same as Connecticut overall (${ctStr}).`;
         const ratio = ctRaw > 0 ? tractRaw / ctRaw : null;
-        const times =
-          ratio && ratio >= 1.5 ? ` — nearly ${ratio >= 1.95 ? Math.round(ratio) : ratio.toFixed(1)}× the state rate`
-          : ratio && ratio > 0 && ratio <= 0.67 ? ` — about ${(1 / ratio).toFixed(1)}× lower than the state`
-          : "";
         const higher = d > 0;
-        const worse = opts.higherIsWorse ? higher : !higher;
-        const verb = worse ? "struggles more than" : "is doing better than";
-        const direction = higher ? "higher" : "lower";
-        return `At ${fmtPct(tractRaw, decimals)}, ${opts.subject} ${verb} Connecticut overall (${ctStr}) — ${Math.round(absD)} points ${direction}${times}.`;
+        // Magnitude phrasing in plain language
+        let magnitude: string;
+        if (ratio && ratio >= 2) magnitude = higher ? `more than double` : `less than half`;
+        else if (ratio && ratio >= 1.5) magnitude = `a lot ${higher ? "higher" : "lower"}`;
+        else if (ratio && ratio > 0 && ratio <= 0.5) magnitude = `less than half`;
+        else if (ratio && ratio > 0 && ratio <= 0.67) magnitude = `a lot lower`;
+        else if (absD >= 5) magnitude = `noticeably ${higher ? "higher" : "lower"}`;
+        else magnitude = `a little ${higher ? "higher" : "lower"}`;
+        return `At ${fmtPct(tractRaw, decimals)}, ${opts.subject} is ${magnitude} than Connecticut overall (${ctStr}) — ${Math.round(absD)} points ${higher ? "above" : "below"} the state.`;
       };
 
       const sentenceUSD = (
         ctRaw: number | null,
         tractRaw: number | null,
-        opts: { higherIsWorse?: boolean; subject: string },
+        opts: { subject: string },
       ): string => {
         const ctStr = fmtUSD(ctRaw);
         if (ctRaw == null || tractRaw == null) return `Statewide, the figure is ${ctStr}.`;
         const d = tractRaw - ctRaw;
         const absD = Math.abs(d);
-        if (absD < 500) return `Right in line with the Connecticut median (${ctStr}).`;
+        if (absD < 500) return `About the same as the Connecticut median (${ctStr}).`;
         const higher = d > 0;
-        const worse = opts.higherIsWorse ? higher : !higher;
-        const verb = worse ? "lags behind" : "outpaces";
-        const direction = higher ? "above" : "below";
-        return `At ${fmtUSD(tractRaw)}, ${opts.subject} ${verb} Connecticut overall (${ctStr}) — $${Math.abs(Math.round(d)).toLocaleString()} ${direction} the state median.`;
+        const ratio = ctRaw > 0 ? tractRaw / ctRaw : null;
+        let magnitude: string;
+        if (ratio && ratio >= 2) magnitude = `more than double`;
+        else if (ratio && ratio >= 1.4) magnitude = `a lot higher`;
+        else if (ratio && ratio > 0 && ratio <= 0.5) magnitude = `less than half`;
+        else if (ratio && ratio > 0 && ratio <= 0.7) magnitude = `a lot less`;
+        else magnitude = higher ? `a little higher` : `a little less`;
+        return `At ${fmtUSD(tractRaw)}, ${opts.subject} is ${magnitude} than the Connecticut median (${ctStr}) — $${Math.abs(Math.round(d)).toLocaleString()} ${higher ? "above" : "below"} the state.`;
       };
 
       const avgPct = (raw: number | null) => ({ value: fmtPct(raw), raw, label: `CT average: ${fmtPct(raw)}` });
