@@ -70,6 +70,7 @@ function ActionsPage() {
       <div className="mb-4">
         <Link
           to="/neighborhood"
+          search={{ state, county, tract, name, neighborhood }}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" /> Back to report
