@@ -107,7 +107,7 @@ function ActionsPage() {
         icon={ClipboardList}
         accent="sky"
         title="Start my 30-Day Plan"
-        body="A short survey turns this tract's top concerns into a personal stabilization plan — housing, income, food, health."
+        body="A short survey turns YOUR top concerns into a personal stabilization plan — housing, income, food, health."
         cta={
           <Link to="/life">
             <Button size="sm">
