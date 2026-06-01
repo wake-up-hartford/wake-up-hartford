@@ -1,7 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight } from "lucide-react";
+import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight, ShieldCheck, AlertTriangle, AlertOctagon, Minus } from "lucide-react";
+
+type SeverityIconProps = { severity: Indicator["severity"] | null; className?: string };
+function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
+  if (severity === "good") return <ShieldCheck className={className} aria-label="On par or better than CT" />;
+  if (severity === "watch") return <AlertTriangle className={className} aria-label="Worth watching" />;
+  if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
+  return <Minus className={className} aria-label="Neutral" />;
+}
+function severityColorClass(s: Indicator["severity"] | null): string {
+  if (s === "good") return "text-success";
+  if (s === "watch") return "text-warning";
+  if (s === "concern") return "text-destructive";
+  return "text-muted-foreground";
+}
 import { lazy, Suspense, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
