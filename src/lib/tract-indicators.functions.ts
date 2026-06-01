@@ -427,7 +427,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: t.medIncVal,
           severity: tier(t.medIncVal, 90213, 60000, true),
           note: "Half of households earn more, half earn less.",
-          stateAverage: { ...avgUSD(ct.medIncVal), label: sentenceUSD(ct.medIncVal, t.medIncVal, { higherIsWorse: false, subject: "the typical household here" }) },
+          stateAverage: { ...avgUSD(ct.medIncVal), label: sentenceUSD(ct.medIncVal, t.medIncVal, { subject: "the typical household here" }) },
         },
         {
           key: "unemployment",
