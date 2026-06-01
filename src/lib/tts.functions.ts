@@ -4,7 +4,14 @@ import { z } from "zod";
 const InputSchema = z.object({
   text: z.string().min(1).max(5000),
   voiceId: z.string().min(1).max(64).optional(),
+  language: z.enum(["en", "es"]).optional().default("en"),
 });
+
+// Default voices per language. EN keeps the existing warm voice.
+// ES uses a Spanish-capable ElevenLabs voice (multilingual v2 already supports
+// Spanish, so any voice works — picking a warm female community voice).
+const DEFAULT_VOICE_EN = "YjlcD3XHztjJEo2wNszv";
+const DEFAULT_VOICE_ES = "FGY2WhTYpPnrIDTdsKH5"; // Laura — warm, multilingual
 
 // --- Number-to-words helpers so the TTS voice reads "4,567" as
 // "four thousand five hundred sixty-seven" instead of stumbling over digits.
