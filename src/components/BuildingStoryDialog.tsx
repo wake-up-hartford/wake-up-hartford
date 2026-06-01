@@ -97,6 +97,9 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
             An AI-written story, grounded in the records for this building and its owner.
           </p>
         </DialogHeader>
+        <div className="flex justify-start border-b border-border pb-3">
+          <LanguageToggle />
+        </div>
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
           {mutation.isPending && (
