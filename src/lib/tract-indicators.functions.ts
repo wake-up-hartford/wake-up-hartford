@@ -442,8 +442,8 @@ export const getTractIndicators = createServerFn({ method: "POST" })
           raw: usdaFlag ? 1 : 0,
           severity: usdaFlag ? "concern" : "good",
           note: usdaFlag
-            ? "USDA classifies this tract as low-income and more than 1 mile from a supermarket."
-            : "Not classified as a low-income, low-supermarket-access tract.",
+            ? "USDA classifies this tract as low-income with a significant share of residents more than ½ mile (urban) or 10 miles (rural) from the nearest supermarket."
+            : "Not classified as a low-income, low-supermarket-access tract (½-mile urban / 10-mile rural threshold).",
         },
       ];
 
