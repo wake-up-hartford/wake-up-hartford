@@ -88,14 +88,17 @@ export function ListenButton({ text, cacheKey, language = "en" }: Props) {
 
 
   const disabled = !text || status === "loading";
+  const labels = language === "es"
+    ? { loading: "Cargando…", pause: "Pausar", resume: "Reanudar", play: "Escuchar" }
+    : { loading: "Loading…", pause: "Pause", resume: "Resume", play: "Click to Listen" };
   const label =
     status === "loading"
-      ? "Loading…"
+      ? labels.loading
       : status === "playing"
-        ? "Pause"
+        ? labels.pause
         : status === "paused"
-          ? "Resume"
-          : "Click to Listen";
+          ? labels.resume
+          : labels.play;
   const Icon =
     status === "loading" ? Loader2 : status === "playing" ? Pause : status === "paused" ? Play : Volume2;
 
