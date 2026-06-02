@@ -93,17 +93,17 @@
   --input: oklch(0.9 0.02 80);
   --ring: oklch(0.36 0.19 300);
 
-  /* Step rows: warm cream-amber surface on the white card */
-  --step-surface: oklch(0.97 0.04 80);
-  --step-surface-foreground: oklch(0.25 0.04 60);
-  --step-surface-muted: oklch(0.45 0.04 60);
+  /* Step rows: warm tan surface on the white card — darker for visible contrast */
+  --step-surface: oklch(0.92 0.05 75);
+  --step-surface-foreground: oklch(0.22 0.04 60);
+  --step-surface-muted: oklch(0.42 0.04 60);
   /* Resource sub-card: brighter, near-white on the step surface */
   --step-resource: oklch(0.995 0.005 85);
   --step-resource-foreground: oklch(0.25 0.04 60);
   --step-resource-muted: oklch(0.5 0.04 60);
-  /* Domain pill: amber chip with dark text */
-  --pill: oklch(0.9 0.09 80);
-  --pill-foreground: oklch(0.3 0.08 60);
+  /* Domain pill: cool blue chip — complements the warm step surface */
+  --pill: oklch(0.78 0.11 230);
+  --pill-foreground: oklch(0.22 0.06 260);
 }
 
 .dark {
