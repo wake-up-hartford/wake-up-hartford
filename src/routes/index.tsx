@@ -6,6 +6,8 @@ import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
 import { listMyPlans } from "@/lib/stabilization-plan.functions";
+import { getPublicStats } from "@/lib/stats.functions";
+
 
 
 export const Route = createFileRoute("/")({
@@ -39,7 +41,14 @@ function HomePage() {
     enabled: !!user,
   });
   const planCount = plansData?.plans.length ?? 0;
+  const fetchStats = useServerFn(getPublicStats);
+  const { data: stats } = useQuery({
+    queryKey: ["public-stats"],
+    queryFn: () => fetchStats(),
+    staleTime: 5 * 60 * 1000,
+  });
   return (
+
     <AppShell>
       {firstName && (
         <p className="mb-2 text-sm text-foreground/70">Welcome back, {firstName}</p>
@@ -93,6 +102,19 @@ function HomePage() {
       </div>
 
       <EventCard />
+      {stats && (stats.assessmentsThisMonth > 0 || stats.plansThisMonth > 0 || stats.plansAllTime > 0) && (
+        <section
+          aria-label="Community usage"
+          className="mt-6 flex items-stretch justify-around gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-3 text-center"
+        >
+          <Stat value={stats.assessmentsThisMonth} label="self-assessments this month" />
+          <div className="w-px bg-border/70" aria-hidden />
+          <Stat value={stats.plansThisMonth} label="plans created this month" />
+          <div className="w-px bg-border/70" aria-hidden />
+          <Stat value={stats.plansAllTime} label="plans all-time" />
+        </section>
+      )}
+
       {user && planCount > 0 && (
         <Link
           to="/plans"
@@ -197,3 +219,15 @@ function Footer() {
     </footer>
   );
 }
+
+function Stat({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="flex-1 px-1">
+      <p className="font-display text-xl leading-none text-foreground tabular-nums">
+        {value.toLocaleString()}
+      </p>
+      <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
