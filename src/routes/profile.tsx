@@ -72,9 +72,13 @@ function ProfilePage() {
     e.preventDefault();
     setSavingPhone(true);
     try {
-      const { error } = await supabase.auth.updateUser({ phone: phone.trim() || undefined });
-      if (error) throw error;
-      toast.success(phone.trim() ? "Phone update sent — check for a verification code." : "Phone cleared.");
+      const [{ error: phoneError }] = await Promise.all([
+        supabase.auth.updateUser({ phone: phone.trim() || undefined }),
+        saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } }),
+      ]);
+      if (phoneError) throw phoneError;
+      await qc.invalidateQueries({ queryKey: ["my-profile"] });
+      toast.success(phone.trim() ? "Phone and alert preference saved." : "Phone cleared and preference saved.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't update phone.");
     } finally {
