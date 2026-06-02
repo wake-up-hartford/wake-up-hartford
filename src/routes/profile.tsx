@@ -252,16 +252,16 @@ function ProfilePage() {
           {/* Survey link */}
           <Link
             to="/survey"
-            className="mt-4 flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-card-foreground transition hover:border-accent/60"
+            className="mt-4 flex items-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 p-4 text-white shadow-soft transition-transform active:scale-[0.99]"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
               <MessageSquare className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-[15px] text-card-foreground">Quick 3-question survey</p>
-              <p className="text-[12px] text-card-foreground/70">Help us make this app more useful — about 30 seconds.</p>
+              <p className="font-display text-[15px] text-white">Quick 3-question survey</p>
+              <p className="text-[12px] text-white/85">Help us make this app more useful — about 30 seconds.</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-card-foreground/50" />
+            <ChevronRight className="h-4 w-4 text-white/80" />
           </Link>
         </>
       )}
