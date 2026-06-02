@@ -12,21 +12,88 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
-const PROGRESS_OPTIONS = [
-  { value: "better", label: "Better" },
-  { value: "same", label: "About the same" },
-  { value: "worse", label: "Worse" },
-  { value: "too_early", label: "Too early to tell" },
+const FREQUENCY_OPTIONS = [
+  { value: "daily", label: "Daily" },
+  { value: "few_week", label: "A few times a week" },
+  { value: "weekly", label: "About once a week" },
+  { value: "few_month", label: "A few times a month" },
+  { value: "first_time", label: "This is my first time" },
 ] as const;
 
-const BARRIER_OPTIONS = [
-  { value: "housing_money", label: "Housing / money" },
-  { value: "health_stress", label: "Health / stress" },
-  { value: "time", label: "Time" },
-  { value: "next_step", label: "Don't know what step to take next" },
-  { value: "on_track", label: "Nothing — I'm on track" },
-  { value: "other", label: "Other" },
+const DEVICE_OPTIONS = [
+  { value: "phone", label: "Phone" },
+  { value: "tablet", label: "Tablet" },
+  { value: "computer", label: "Computer" },
+  { value: "any", label: "It doesn't matter" },
 ] as const;
+
+const MOST_USED_OPTIONS = [
+  { value: "path", label: "Path / plan steps" },
+  { value: "find_help", label: "Find Help" },
+  { value: "take_action", label: "Take Action & surveys" },
+  { value: "home", label: "Home / dashboard" },
+  { value: "none", label: "Haven't explored much yet" },
+] as const;
+
+const TECH_OPTIONS = [
+  { value: "none", label: "Works fine" },
+  { value: "slow", label: "Slow loading" },
+  { value: "navigation", label: "Hard to navigate" },
+  { value: "errors", label: "Errors or crashes" },
+] as const;
+
+const PROMPT_OPTIONS = [
+  { value: "reminder", label: "Reminder notification" },
+  { value: "regular", label: "I use it regularly" },
+  { value: "referral", label: "Someone told me about it" },
+  { value: "social", label: "Social media" },
+  { value: "search", label: "Found it online" },
+] as const;
+
+const AWARENESS_OPTIONS = [
+  { value: "yes_use", label: "Yes — I already use those" },
+  { value: "yes_untried", label: "Yes, but I haven't tried them" },
+  { value: "no", label: "No, I didn't know" },
+] as const;
+
+type RadioOpt = { value: string; label: string };
+
+function RadioCard({
+  options,
+  value,
+  onChange,
+  name,
+}: {
+  options: readonly RadioOpt[];
+  value: string;
+  onChange: (v: string) => void;
+  name: string;
+}) {
+  return (
+    <div className="space-y-2 pt-1">
+      {options.map((opt) => (
+        <label
+          key={opt.value}
+          className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 text-[14px] ${
+            value === opt.value
+              ? "border-accent bg-accent/10"
+              : "border-card-foreground/20 bg-white hover:border-accent/60"
+          }`}
+        >
+          <input
+            type="radio"
+            name={name}
+            value={opt.value}
+            checked={value === opt.value}
+            onChange={(e) => onChange(e.target.value)}
+            className="h-4 w-4 text-accent focus:ring-accent"
+          />
+          <span className="text-card-foreground">{opt.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
 
 function SurveyPage() {
   const nav = useNavigate();
@@ -37,27 +104,38 @@ function SurveyPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
-  const [helpfulness, setHelpfulness] = useState<number | null>(null);
-  const [progress, setProgress] = useState<string>("");
-  const [barrier, setBarrier] = useState<string>("");
-  const [otherText, setOtherText] = useState("");
+  const [frequency, setFrequency] = useState("");
+  const [device, setDevice] = useState("");
+  const [mostUsed, setMostUsed] = useState("");
+  const [ease, setEase] = useState<number | null>(null);
+  const [techIssue, setTechIssue] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [awareness, setAwareness] = useState("");
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!helpfulness) return toast.error("Please rate how helpful your plan has been.");
-    if (!progress) return toast.error("Please tell us how things are going.");
-    if (!barrier) return toast.error("Please pick what's getting in the way most.");
+    if (!frequency) return toast.error("Please tell us how often you use the app.");
+    if (!device) return toast.error("Please tell us how you usually access it.");
+    if (!mostUsed) return toast.error("Please pick which part you use most.");
+    if (!ease) return toast.error("Please rate how easy it is to use.");
+    if (!techIssue) return toast.error("Please tell us if you've had technical issues.");
+    if (!prompt) return toast.error("Please tell us what brought you here today.");
     setSubmitting(true);
     try {
       await send({
         data: {
-          helpfulness,
-          progress: progress as (typeof PROGRESS_OPTIONS)[number]["value"],
-          barrier: barrier as (typeof BARRIER_OPTIONS)[number]["value"],
-          other_text: barrier === "other" ? otherText : null,
+          frequency: frequency as (typeof FREQUENCY_OPTIONS)[number]["value"],
+          device: device as (typeof DEVICE_OPTIONS)[number]["value"],
+          most_used: mostUsed as (typeof MOST_USED_OPTIONS)[number]["value"],
+          ease,
+          tech_issue: techIssue as (typeof TECH_OPTIONS)[number]["value"],
+          prompt: prompt as (typeof PROMPT_OPTIONS)[number]["value"],
+          feature_awareness: awareness
+            ? (awareness as (typeof AWARENESS_OPTIONS)[number]["value"])
+            : null,
           comment: comment || null,
         },
       });
@@ -98,103 +176,74 @@ function SurveyPage() {
         <ChevronLeft className="h-4 w-4" /> Account
       </Link>
       <h1 className="font-display text-3xl text-foreground">Quick survey</h1>
-      <p className="mt-2 text-[14px] text-muted-foreground">3 questions. About 30 seconds.</p>
+      <p className="mt-2 text-[14px] text-muted-foreground">
+        7 quick questions about how you use the app. About 1 minute.
+      </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         {/* Q1 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base">1. How often do you use Wake Up Wednesday?</h2>
+          <RadioCard options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} name="frequency" />
+        </div>
+
+        {/* Q2 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base">2. How do you usually access it?</h2>
+          <RadioCard options={DEVICE_OPTIONS} value={device} onChange={setDevice} name="device" />
+        </div>
+
+        {/* Q3 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base">3. Which part do you use most?</h2>
+          <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
+        </div>
+
+        {/* Q4 */}
         <div className="space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <h2 className="font-display text-base text-card-foreground">
-            1. How helpful has your plan been so far?
-          </h2>
+          <h2 className="font-display text-base">4. How easy is it to use?</h2>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
                 type="button"
                 key={n}
-                onClick={() => setHelpfulness(n)}
+                onClick={() => setEase(n)}
                 className={`flex h-11 flex-1 items-center justify-center rounded-lg border text-[15px] font-semibold transition ${
-                  helpfulness === n
+                  ease === n
                     ? "border-accent bg-accent text-accent-foreground"
                     : "border-card-foreground/20 bg-white text-card-foreground hover:border-accent/60"
                 }`}
-                aria-pressed={helpfulness === n}
+                aria-pressed={ease === n}
               >
                 {n}
               </button>
             ))}
           </div>
           <div className="flex justify-between text-[11px] text-card-foreground/60">
-            <span>Not helpful</span>
-            <span>Very helpful</span>
+            <span>Hard to use</span>
+            <span>Very easy</span>
           </div>
         </div>
 
-        {/* Q2 */}
+        {/* Q5 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <h2 className="font-display text-base text-card-foreground">
-            2. Since starting, how are things going overall?
-          </h2>
-          <div className="space-y-2 pt-1">
-            {PROGRESS_OPTIONS.map((opt) => (
-              <label
-                key={opt.value}
-                className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 text-[14px] ${
-                  progress === opt.value
-                    ? "border-accent bg-accent/10"
-                    : "border-card-foreground/20 bg-white hover:border-accent/60"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="progress"
-                  value={opt.value}
-                  checked={progress === opt.value}
-                  onChange={(e) => setProgress(e.target.value)}
-                  className="h-4 w-4 text-accent focus:ring-accent"
-                />
-                <span className="text-card-foreground">{opt.label}</span>
-              </label>
-            ))}
-          </div>
+          <h2 className="font-display text-base">5. Any technical problems?</h2>
+          <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
-        {/* Q3 */}
+        {/* Q6 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <h2 className="font-display text-base text-card-foreground">
-            3. What's getting in the way most right now?
+          <h2 className="font-display text-base">6. What brought you here today?</h2>
+          <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
+        </div>
+
+        {/* Q7 (optional) */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base">
+            7. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
           </h2>
-          <div className="space-y-2 pt-1">
-            {BARRIER_OPTIONS.map((opt) => (
-              <label
-                key={opt.value}
-                className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 text-[14px] ${
-                  barrier === opt.value
-                    ? "border-accent bg-accent/10"
-                    : "border-card-foreground/20 bg-white hover:border-accent/60"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="barrier"
-                  value={opt.value}
-                  checked={barrier === opt.value}
-                  onChange={(e) => setBarrier(e.target.value)}
-                  className="h-4 w-4 text-accent focus:ring-accent"
-                />
-                <span className="text-card-foreground">{opt.label}</span>
-              </label>
-            ))}
-          </div>
-          {barrier === "other" && (
-            <input
-              type="text"
-              value={otherText}
-              onChange={(e) => setOtherText(e.target.value)}
-              maxLength={500}
-              placeholder="Tell us more (optional)"
-              className="mt-2 w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
-            />
-          )}
+          <p className="text-[12px] text-card-foreground/60">Optional</p>
+          <RadioCard options={AWARENESS_OPTIONS} value={awareness} onChange={setAwareness} name="awareness" />
         </div>
 
         {/* Optional comment */}

@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_usage_survey_responses: {
+        Row: {
+          comment: string | null
+          created_at: string
+          device: string
+          ease: number
+          feature_awareness: string | null
+          frequency: string
+          id: string
+          most_used: string
+          prompt: string
+          tech_issue: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          device: string
+          ease: number
+          feature_awareness?: string | null
+          frequency: string
+          id?: string
+          most_used: string
+          prompt: string
+          tech_issue: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          device?: string
+          ease?: number
+          feature_awareness?: string | null
+          frequency?: string
+          id?: string
+          most_used?: string
+          prompt?: string
+          tech_issue?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       intake_responses: {
         Row: {
           created_at: string

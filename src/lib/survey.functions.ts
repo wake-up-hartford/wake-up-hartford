@@ -2,14 +2,21 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const PROGRESS = ["better", "same", "worse", "too_early"] as const;
-const BARRIER = ["housing_money", "health_stress", "time", "next_step", "on_track", "other"] as const;
+const FREQUENCY = ["daily", "few_week", "weekly", "few_month", "first_time"] as const;
+const DEVICE = ["phone", "tablet", "computer", "any"] as const;
+const MOST_USED = ["path", "find_help", "take_action", "home", "none"] as const;
+const TECH_ISSUE = ["slow", "navigation", "errors", "none"] as const;
+const PROMPT = ["reminder", "regular", "referral", "social", "search"] as const;
+const FEATURE_AWARENESS = ["yes_use", "yes_untried", "no"] as const;
 
 const SubmitInput = z.object({
-  helpfulness: z.number().int().min(1).max(5),
-  progress: z.enum(PROGRESS),
-  barrier: z.enum(BARRIER),
-  other_text: z.string().trim().max(500).optional().nullable(),
+  frequency: z.enum(FREQUENCY),
+  device: z.enum(DEVICE),
+  most_used: z.enum(MOST_USED),
+  ease: z.number().int().min(1).max(5),
+  tech_issue: z.enum(TECH_ISSUE),
+  prompt: z.enum(PROMPT),
+  feature_awareness: z.enum(FEATURE_AWARENESS).optional().nullable(),
   comment: z.string().trim().max(2000).optional().nullable(),
 });
 
@@ -18,12 +25,15 @@ export const submitSurvey = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => SubmitInput.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { error } = await supabase.from("survey_responses").insert({
+    const { error } = await supabase.from("app_usage_survey_responses").insert({
       user_id: userId,
-      helpfulness: data.helpfulness,
-      progress: data.progress,
-      barrier: data.barrier,
-      other_text: data.other_text?.trim() ? data.other_text.trim() : null,
+      frequency: data.frequency,
+      device: data.device,
+      most_used: data.most_used,
+      ease: data.ease,
+      tech_issue: data.tech_issue,
+      prompt: data.prompt,
+      feature_awareness: data.feature_awareness ?? null,
       comment: data.comment?.trim() ? data.comment.trim() : null,
     });
     if (error) throw new Error(error.message);
@@ -35,7 +45,7 @@ export const getLastSurvey = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const { data } = await supabase
-      .from("survey_responses")
+      .from("app_usage_survey_responses")
       .select("id, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
