@@ -34,6 +34,7 @@ function AdminSurveyResultsPage() {
   const { user, loading } = useAuth();
   const checkAdmin = useServerFn(checkIsAdmin);
   const fetchList = useServerFn(listSurveyResponses);
+  const fetchStats = useServerFn(getUsageStats);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
