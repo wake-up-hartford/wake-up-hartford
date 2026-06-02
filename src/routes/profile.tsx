@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
@@ -248,6 +248,21 @@ function ProfilePage() {
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save phone"}
             </button>
           </form>
+
+          {/* Survey link */}
+          <Link
+            to="/survey"
+            className="mt-4 flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-card-foreground transition hover:border-accent/60"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+              <MessageSquare className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-[15px] text-card-foreground">Quick 3-question survey</p>
+              <p className="text-[12px] text-card-foreground/70">Help us make this app more useful — about 30 seconds.</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-card-foreground/50" />
+          </Link>
         </>
       )}
     </AppShell>
