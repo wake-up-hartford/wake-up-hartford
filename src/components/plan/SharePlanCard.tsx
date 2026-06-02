@@ -29,8 +29,8 @@ export function SharePlanCard() {
         <Share2 className="h-4 w-4 text-accent" />
         <h3 className="text-[13px] font-semibold uppercase tracking-wider text-foreground">Share this plan</h3>
       </div>
-      <p className="mb-3 text-[12px] text-muted-foreground">
-        Send it to a case manager, family member, or advocate who can help you follow through.
+      <p className="mb-3 text-[14px] text-foreground">
+        Share your Plan with a family member, case manager or advocate who can help you follow through.
       </p>
       <div className="grid grid-cols-2 gap-2">
         <a
