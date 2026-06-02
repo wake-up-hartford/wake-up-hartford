@@ -1,47 +1,49 @@
+
 ## Goal
+Replace the current outcome-focused Quick Survey at `/survey` with one that asks only about how people use the app.
 
-Add a short, single-page, 3-question survey reachable from a link on the Account (`/profile`) page so we can learn whether the app is actually helping users meet their stabilization goals.
+## New questions (7)
+**Core usage**
+1. How often do you use Wake Up Wednesday? — Daily / A few times a week / About once a week / A few times a month / First time
+2. How do you usually access it? — Phone / Tablet / Computer / Doesn't matter
+3. Which part do you use most? — Path / plan steps / Find Help / Take Action & surveys / Home / dashboard / Haven't explored much
 
-## Suggested questions
+**Experience**
+4. How easy is it to use? — 1–5 scale
+5. Any technical problems? — Slow loading / Hard to navigate / Errors or crashes / Works fine
+6. What brought you here today? — Reminder notification / I use it regularly / Someone told me / Social media / Found it online
 
-Based on the app's purpose (intake → stabilization plan → weekly steps), I recommend these three. They're short, mobile-friendly, and map directly to outcomes we care about: **usefulness, progress, and barriers**.
+**Feature awareness (optional)**
+7. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help? — Yes, already use it / Yes, but haven't tried / No, didn't know
 
-1. **Usefulness (1–5 scale)**
-   "How helpful has your plan been so far?"
-   1 = Not helpful · 5 = Very helpful
+Plus optional free-text comment box.
 
-2. **Progress (single choice)**
-   "Since starting, how are things going overall?"
-   - Better
-   - About the same
-   - Worse
-   - Too early to tell
+## Data model
+The current `survey_responses` table uses fixed columns (helpfulness/progress/barrier) that don't match the new questions. Create a new table to keep historical data intact and avoid forcing nulls everywhere.
 
-3. **Biggest barrier (single choice + optional "other" text)**
-   "What's getting in the way most right now?"
-   - Housing / money
-   - Health / stress
-   - Time
-   - Don't know what step to take next
-   - Nothing — I'm on track
-   - Other: ___
+```sql
+CREATE TABLE public.app_usage_survey_responses (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  frequency text NOT NULL,        -- daily | few_week | weekly | few_month | first_time
+  device text NOT NULL,           -- phone | tablet | computer | any
+  most_used text NOT NULL,        -- path | find_help | take_action | home | none
+  ease integer NOT NULL CHECK (ease BETWEEN 1 AND 5),
+  tech_issue text NOT NULL,       -- slow | navigation | errors | none
+  prompt text NOT NULL,           -- reminder | regular | referral | social | search
+  feature_awareness text,         -- yes_use | yes_untried | no  (optional)
+  comment text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+```
+With grants + RLS scoped to `auth.uid() = user_id` (insert/select only).
 
-Optional 4th field (not counted as a question): a single free-text box "Anything else you want us to know?" — skippable.
-
-> If you'd rather frame the goals differently (e.g. focus on safety, family, employment, or NPS-style "would you recommend"), tell me and I'll swap the questions.
-
-## What I'll build
-
-1. **New route** `/survey` — one page, 3 questions stacked vertically, single Submit button, mobile-first to match the rest of the app. Shows a thank-you state after submit.
-2. **Link on `/profile`** — a clearly labeled card/row near the bottom: "Quick 3-question survey — help us improve" → navigates to `/survey`.
-3. **Storage** — new `survey_responses` table (user_id, helpfulness int, progress text, barrier text, other_text, comment text, created_at). RLS: users can insert/select their own rows; service_role full access. Allow multiple submissions over time (no unique constraint) so we can track changes.
-4. **Server function** `submitSurvey` in `src/lib/survey.functions.ts` using `requireSupabaseAuth`, validated with Zod.
-5. **Already-submitted UX** — if the user has submitted before, show their last response date and a "Take it again" button (not blocking).
+## Code changes
+- **Migration**: create the table above with grants, RLS, and policies.
+- **`src/lib/survey.functions.ts`**: replace `submitSurvey` input schema + insert to target the new table. Update `getLastSurvey` to read from it.
+- **`src/routes/survey.tsx`**: rebuild the form with the 7 questions using the existing card / radio-tile styling and the same emerald→teal→blue submit button. Update intro copy ("7 quick questions. About 1 minute."). Keep the success state and back-to-account link.
+- Keep `/profile` link/CTA wording as-is — it already says "Quick Survey".
 
 ## Out of scope
-
-- Admin dashboard to view results (we can query the DB directly for now).
-- Email/SMS nudges to take the survey.
-- Multi-page or branching survey logic.
-
-Confirm the question wording (or suggest edits) and I'll implement.
+- No outcome questions (those will live in a future emailed survey).
+- No changes to the legacy `survey_responses` table or any analytics that read it.
