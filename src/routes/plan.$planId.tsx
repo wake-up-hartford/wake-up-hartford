@@ -108,7 +108,7 @@ function PlanPage() {
       <div className="mb-5">
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
         {generatedAt && (
-          <p className="mt-1 text-[12px] text-muted-foreground">
+          <p className="mt-1 text-[12px] text-gold">
             Created on {new Date(generatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
         )}
