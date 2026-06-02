@@ -175,6 +175,8 @@ function AdminSurveyResultsPage() {
                 <BreakdownCard title="Top barriers" counts={stats.data.barrierCounts} />
               </div>
             )}
+
+            <FunnelCard steps={stats.data.funnel} />
           </>
         )}
 
@@ -313,6 +315,44 @@ function BreakdownCard({ title, counts }: { title: string; counts: Record<string
           </div>
         ))}
         {entries.length === 0 && <div className="text-sm text-muted-foreground">No data yet.</div>}
+      </div>
+    </Card>
+  );
+}
+
+function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> }) {
+  const top = steps[0]?.count ?? 0;
+  return (
+    <Card className="p-4">
+      <div className="text-sm font-medium mb-3">Conversion funnel</div>
+      <div className="space-y-2">
+        {steps.map((s, i) => {
+          const widthPct = top ? (s.count / top) * 100 : 0;
+          const prev = i > 0 ? steps[i - 1].count : null;
+          const stepPct = prev && prev > 0 ? (s.count / prev) * 100 : null;
+          const dropoff = prev != null ? prev - s.count : null;
+          return (
+            <div key={s.label}>
+              <div className="flex justify-between text-xs mb-1">
+                <span className="font-medium">{s.label}</span>
+                <span className="text-muted-foreground">
+                  {s.count}
+                  {stepPct != null && (
+                    <span className="ml-2">
+                      {stepPct.toFixed(0)}%{dropoff && dropoff > 0 ? ` (-${dropoff})` : ""}
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="h-3 bg-muted rounded overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded transition-all"
+                  style={{ width: `${widthPct}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </Card>
   );
