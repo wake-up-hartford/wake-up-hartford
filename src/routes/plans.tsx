@@ -91,7 +91,7 @@ function PlansPage() {
               {p.priority_domains.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {p.priority_domains.map((d) => (
-                    <span key={d} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent">
+                    <span key={d} className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium capitalize ${domainClass(d)}`}>
                       {d}
                     </span>
                   ))}
