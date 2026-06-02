@@ -159,7 +159,11 @@ function PlanPage() {
                   return (
                     <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
                       <button
-                        onClick={() => mut.mutate({ stepId: s.id, done: !isDone })}
+                        onClick={(e) => {
+                          const willComplete = !isDone;
+                          mut.mutate({ stepId: s.id, done: willComplete });
+                          if (willComplete) fireConfetti(e.currentTarget);
+                        }}
                         className="flex w-full items-start gap-3 text-left"
                       >
                         {isDone ? (
