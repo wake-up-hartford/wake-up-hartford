@@ -70,8 +70,8 @@ function HomePage() {
         href="#"
         className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary bg-primary/5 px-5 py-3 text-sm font-semibold text-primary shadow-soft hover:bg-primary/10"
       >
-        <Play className="h-4 w-4 fill-primary" />
-        Watch: How This Tool Can Help You and Your Neighborhood
+        <Play className="h-5 w-5 fill-primary" />
+        Watch how this app can help you and your community!
       </a>
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
