@@ -14,17 +14,15 @@ export const Route = createFileRoute("/plan/$planId")({
 });
 
 // Lazy-loaded confetti — module is fetched only on first task-complete click.
-let confettiPromise: Promise<typeof import("canvas-confetti").default> | null = null;
+let confettiPromise: Promise<typeof import("canvas-confetti")> | null = null;
 function fireConfetti(anchor: HTMLElement) {
   if (typeof window === "undefined") return;
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
   const rect = anchor.getBoundingClientRect();
   const x = (rect.left + rect.width / 2) / window.innerWidth;
   const y = (rect.top + rect.height / 2) / window.innerHeight;
-  if (!confettiPromise) {
-    confettiPromise = import("canvas-confetti").then((m) => m.default);
-  }
-  confettiPromise.then((confetti) => {
+  if (!confettiPromise) confettiPromise = import("canvas-confetti");
+  confettiPromise.then(({ default: confetti }) => {
     confetti({
       particleCount: 90,
       spread: 70,
