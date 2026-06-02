@@ -24,7 +24,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
     ]);
 
     return {
-      profile: profile ?? { id: userId, display_name: null, language_pref: "en" },
+      profile: profile ?? { id: userId, display_name: null, language_pref: "en", sms_alerts: false },
       stats: {
         plans: plansRes.count ?? 0,
         assessments: intakesRes.count ?? 0,
