@@ -194,6 +194,17 @@ function ActionCard({ action }: { action: Action }) {
             <ArrowRight className="h-4 w-4" />
           </a>
         )}
+        {action.href3 && action.cta3 && (
+          <a
+            href={action.href3}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            {action.cta3}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        )}
         {disabled && (
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             {action.cta}
