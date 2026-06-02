@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
