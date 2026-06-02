@@ -90,27 +90,6 @@ function PlanPage() {
     } catch { /* ignore */ }
   }, [planId, DUE_DATES_KEY]);
 
-  useEffect(() => {
-    if (!steps?.length) return;
-    setCollapsedWeeks((prev) => {
-      const next = new Set(prev);
-      for (const w of [1, 2, 3, 4]) {
-        const weekSteps = steps.filter((s: StepRow) => s.week === w);
-        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
-        if (allDone) next.add(w);
-      }
-      return next;
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [steps]);
-
-  const toggleWeekCollapse = (w: number) => {
-    setCollapsedWeeks((prev) => {
-      const next = new Set(prev);
-      if (next.has(w)) next.delete(w); else next.add(w);
-      return next;
-    });
-  };
 
   const toggleBookmark = () => {
     try {
