@@ -77,6 +77,7 @@ function PlanPage() {
   const DUE_DATES_KEY = `planDueDates:${planId}`;
   const [dueOverrides, setDueOverrides] = useState<Record<number, string>>({});
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
+  const [collapsedWeeks, setCollapsedWeeks] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (typeof window === "undefined") return;
