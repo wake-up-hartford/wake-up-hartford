@@ -144,6 +144,26 @@ function PlanPage() {
   const total = steps.length;
   const done = steps.filter((s) => s.completed_at).length;
 
+  useEffect(() => {
+    setCollapsedWeeks((prev) => {
+      const next = new Set(prev);
+      for (const w of [1, 2, 3, 4]) {
+        const weekSteps = stepsByWeek.get(w) ?? [];
+        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
+        if (allDone) next.add(w);
+      }
+      return next;
+    });
+  }, [stepsByWeek]);
+
+  const toggleWeekCollapse = (w: number) => {
+    setCollapsedWeeks((prev) => {
+      const next = new Set(prev);
+      if (next.has(w)) next.delete(w); else next.add(w);
+      return next;
+    });
+  };
+
   return (
     <AppShell>
       <Link to="/plans" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
