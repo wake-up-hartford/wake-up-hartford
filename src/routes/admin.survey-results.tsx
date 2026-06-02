@@ -283,3 +283,37 @@ function AdminSurveyResultsPage() {
     </AppShell>
   );
 }
+
+function StatCard({ label, value, sub }: { label: string; value: number | string; sub?: string }) {
+  return (
+    <Card className="p-3">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="text-2xl font-semibold mt-1">{value}</div>
+      {sub && <div className="text-xs text-muted-foreground mt-1">{sub}</div>}
+    </Card>
+  );
+}
+
+function BreakdownCard({ title, counts }: { title: string; counts: Record<string, number> }) {
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((a, [, n]) => a + n, 0);
+  return (
+    <Card className="p-3">
+      <div className="text-xs text-muted-foreground mb-2">{title}</div>
+      <div className="space-y-1.5">
+        {entries.map(([k, n]) => (
+          <div key={k}>
+            <div className="flex justify-between text-sm">
+              <span className="truncate">{k}</span>
+              <span className="text-muted-foreground">{n}</span>
+            </div>
+            <div className="h-1.5 bg-muted rounded">
+              <div className="h-full bg-primary rounded" style={{ width: `${total ? (n / total) * 100 : 0}%` }} />
+            </div>
+          </div>
+        ))}
+        {entries.length === 0 && <div className="text-sm text-muted-foreground">No data yet.</div>}
+      </div>
+    </Card>
+  );
+}
