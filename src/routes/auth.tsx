@@ -92,9 +92,13 @@ function AuthPage() {
   const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) nav({ to: "/plans" });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) nav({ to: "/plans", replace: true });
     });
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (!error && data.user) nav({ to: "/plans", replace: true });
+    });
+    return () => subscription.unsubscribe();
   }, [nav]);
 
   useEffect(() => {
