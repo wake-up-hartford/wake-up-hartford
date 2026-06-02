@@ -149,18 +149,6 @@ function ProfilePage() {
               </select>
             </Field>
 
-            <Field icon={MessageSquare} label="Text alerts" htmlFor="sms_alerts">
-              <label className="flex items-center gap-2.5">
-                <input
-                  id="sms_alerts"
-                  type="checkbox"
-                  checked={smsAlerts}
-                  onChange={(e) => setSmsAlerts(e.target.checked)}
-                  className="h-4 w-4 rounded border-card-foreground/30 text-accent focus:ring-accent"
-                />
-                <span className="text-[13px] text-card-foreground">Send me reminders and plan updates by text</span>
-              </label>
-            </Field>
 
             <button
               type="submit"
