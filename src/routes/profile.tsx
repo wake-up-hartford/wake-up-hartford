@@ -63,7 +63,7 @@ function ProfilePage() {
     }
     setSavingProfile(true);
     try {
-      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref } });
+      await saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile saved.");
     } catch (err) {
