@@ -22,6 +22,8 @@ type Action = {
   cta: string;
   href2?: string;
   cta2?: string;
+  href3?: string;
+  cta3?: string;
 };
 
 const ACTIONS: Action[] = [
