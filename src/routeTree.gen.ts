@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlansRouteImport } from './routes/plans'
 import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
 import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
@@ -25,6 +26,11 @@ import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlansRoute = PlansRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
+  '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/profile'
     | '/reset-password'
     | '/plan/$planId'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/profile'
     | '/reset-password'
     | '/plan/$planId'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
+    | '/profile'
     | '/reset-password'
     | '/plan/$planId'
   fileRoutesById: FileRoutesById
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   NeighborhoodRoute: typeof NeighborhoodRoute
   NeighborhoodActionsRoute: typeof NeighborhoodActionsRoute
   PlansRoute: typeof PlansRoute
+  ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plans': {
@@ -286,9 +306,20 @@ const rootRouteChildren: RootRouteChildren = {
   NeighborhoodRoute: NeighborhoodRoute,
   NeighborhoodActionsRoute: NeighborhoodActionsRoute,
   PlansRoute: PlansRoute,
+  ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
