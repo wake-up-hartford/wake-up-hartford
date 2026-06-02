@@ -51,7 +51,7 @@ export const getUsageStats = createServerFn({ method: "GET" })
 
     const [profiles, intake, plans, steps, survey, appSurvey] = await Promise.all([
       supabaseAdmin.from("profiles").select("id, created_at"),
-      supabaseAdmin.from("intake_responses").select("id, user_id, created_at"),
+      supabaseAdmin.from("intake_responses").select("id, user_id, created_at, tract_fips"),
       supabaseAdmin.from("stabilization_plans").select("id, user_id, generated_at, status"),
       supabaseAdmin.from("plan_steps").select("id, user_id, completed_at"),
       supabaseAdmin.from("survey_responses").select("id, user_id, helpfulness, progress, barrier, created_at"),
