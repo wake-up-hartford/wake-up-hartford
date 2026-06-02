@@ -70,6 +70,9 @@ export function WeekCard({
         </div>
         <div className="flex items-center gap-2">
           {focus && <span className="font-display text-[17px] leading-tight text-card-foreground">{focus}</span>}
+          <span className="text-[12px] font-medium text-muted-foreground">
+            {isCollapsed ? "Show" : "Hide"}
+          </span>
           <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />
         </div>
       </button>
