@@ -42,7 +42,7 @@ const ACTIONS: Action[] = [
     href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
     cta2: "Go to website",
     href3: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
-    cta3: "Know When & What to Report",
+    cta3: "Download 'Know When & What to Report'",
   },
   {
     title: "Get free legal help",
