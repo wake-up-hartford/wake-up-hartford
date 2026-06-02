@@ -21,6 +21,7 @@ function ProfilePage() {
   const { user, loading } = useAuth();
   const fetchProfile = useServerFn(getMyProfile);
   const saveProfile = useServerFn(updateMyProfile);
+  const checkAdmin = useServerFn(checkIsAdmin);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
