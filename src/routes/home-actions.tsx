@@ -160,7 +160,7 @@ function ActionCard({ action }: { action: Action }) {
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-2 self-start">
         {outerIsLink && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background">
             {action.cta}
             <ArrowRight className="h-3.5 w-3.5" />
           </span>
@@ -168,7 +168,7 @@ function ActionCard({ action }: { action: Action }) {
         {!outerIsLink && action.href && !disabled && (
           <a
             href={action.href}
-            className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85"
           >
             {action.cta}
             <ArrowRight className="h-3.5 w-3.5" />
@@ -177,7 +177,7 @@ function ActionCard({ action }: { action: Action }) {
         {!outerIsLink && action.to && !disabled && (
           <Link
             to={action.to}
-            className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85"
           >
             {action.cta}
             <ArrowRight className="h-3.5 w-3.5" />
@@ -188,7 +188,7 @@ function ActionCard({ action }: { action: Action }) {
             href={action.href2}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground hover:bg-secondary/80"
+            className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80"
           >
             {action.cta2}
             <ArrowRight className="h-3.5 w-3.5" />
@@ -199,14 +199,14 @@ function ActionCard({ action }: { action: Action }) {
             href={action.href3}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground hover:bg-secondary/80"
+            className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80"
           >
             {action.cta3}
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
         )}
         {disabled && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted/50 px-3 py-1.5 text-xs font-semibold text-muted-foreground/60">
             {action.cta}
           </span>
         )}
