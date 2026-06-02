@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
@@ -34,6 +34,7 @@ function ProfilePage() {
   const [displayName, setDisplayName] = useState("");
   const [languagePref, setLanguagePref] = useState("en");
   const [phone, setPhone] = useState("");
+  const [smsAlerts, setSmsAlerts] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
 
@@ -41,6 +42,7 @@ function ProfilePage() {
     if (data?.profile) {
       setDisplayName(data.profile.display_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
+      setSmsAlerts(data.profile.sms_alerts ?? false);
     }
   }, [data]);
 
@@ -56,7 +58,7 @@ function ProfilePage() {
     }
     setSavingProfile(true);
     try {
-      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref } });
+      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile saved.");
     } catch (err) {
@@ -145,6 +147,19 @@ function ProfilePage() {
                 <option value="pt">Português</option>
                 <option value="fr">Français</option>
               </select>
+            </Field>
+
+            <Field icon={MessageSquare} label="Text alerts" htmlFor="sms_alerts">
+              <label className="flex items-center gap-2.5">
+                <input
+                  id="sms_alerts"
+                  type="checkbox"
+                  checked={smsAlerts}
+                  onChange={(e) => setSmsAlerts(e.target.checked)}
+                  className="h-4 w-4 rounded border-card-foreground/30 text-accent focus:ring-accent"
+                />
+                <span className="text-[13px] text-card-foreground">Send me reminders and plan updates by text</span>
+              </label>
             </Field>
 
             <button

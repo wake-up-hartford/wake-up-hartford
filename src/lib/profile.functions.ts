@@ -8,7 +8,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id, display_name, language_pref")
+      .select("id, display_name, language_pref, sms_alerts")
       .eq("id", userId)
       .maybeSingle();
 
@@ -24,7 +24,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
     ]);
 
     return {
-      profile: profile ?? { id: userId, display_name: null, language_pref: "en" },
+      profile: profile ?? { id: userId, display_name: null, language_pref: "en", sms_alerts: false },
       stats: {
         plans: plansRes.count ?? 0,
         assessments: intakesRes.count ?? 0,
@@ -35,6 +35,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
 const UpdateInput = z.object({
   display_name: z.string().trim().min(1).max(100),
   language_pref: z.string().trim().min(2).max(10),
+  sms_alerts: z.boolean().optional(),
 });
 
 export const updateMyProfile = createServerFn({ method: "POST" })
@@ -48,6 +49,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
         id: userId,
         display_name: data.display_name,
         language_pref: data.language_pref,
+        sms_alerts: data.sms_alerts,
         updated_at: new Date().toISOString(),
       });
     if (error) throw new Error(error.message);
