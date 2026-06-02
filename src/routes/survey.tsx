@@ -70,11 +70,11 @@ function RadioCard({
   name: string;
 }) {
   return (
-    <div className="space-y-2 pt-1">
+    <div className="space-y-1 pt-1">
       {options.map((opt) => (
         <label
           key={opt.value}
-          className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 text-[14px] ${
+          className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-1.5 text-[14px] ${
             value === opt.value
               ? "border-accent bg-accent/10"
               : "border-card-foreground/20 bg-white hover:border-accent/60"
