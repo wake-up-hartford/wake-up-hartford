@@ -175,6 +175,8 @@ function AdminSurveyResultsPage() {
                 <BreakdownCard title="Top barriers" counts={stats.data.barrierCounts} />
               </div>
             )}
+
+            <FunnelCard steps={stats.data.funnel} />
           </>
         )}
 
