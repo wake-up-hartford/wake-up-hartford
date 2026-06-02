@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN sms_alerts boolean NOT NULL DEFAULT false;

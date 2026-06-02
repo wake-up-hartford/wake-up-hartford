@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Building2, Trees, HeartHandshake } from "lucide-react";
+import { Home, Building2, Trees, HeartHandshake, User } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import wuwLogo from "@/assets/wuw-logo.png";
 
