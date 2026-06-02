@@ -224,7 +224,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70">
         <Icon className="h-3.5 w-3.5" /> {label}
       </label>
       {children}
