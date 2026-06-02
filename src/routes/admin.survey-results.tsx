@@ -52,6 +52,12 @@ function AdminSurveyResultsPage() {
     enabled: !!user && admin.data?.isAdmin === true,
   });
 
+  const stats = useQuery({
+    queryKey: ["admin-usage-stats"],
+    queryFn: () => fetchStats({}),
+    enabled: !!user && admin.data?.isAdmin === true,
+  });
+
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [mostUsed, setMostUsed] = useState("all");
