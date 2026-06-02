@@ -42,6 +42,7 @@ function ProfilePage() {
     if (data?.profile) {
       setDisplayName(data.profile.display_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
+      setSmsAlerts(data.profile.sms_alerts ?? false);
     }
   }, [data]);
 
