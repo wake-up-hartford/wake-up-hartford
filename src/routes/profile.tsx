@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyProfile, updateMyProfile } from "@/lib/profile.functions";
+import { checkIsAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Your account" }] }),
@@ -20,6 +21,7 @@ function ProfilePage() {
   const { user, loading } = useAuth();
   const fetchProfile = useServerFn(getMyProfile);
   const saveProfile = useServerFn(updateMyProfile);
+  const checkAdmin = useServerFn(checkIsAdmin);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -28,6 +30,12 @@ function ProfilePage() {
   const { data, isLoading } = useQuery({
     queryKey: ["my-profile"],
     queryFn: () => fetchProfile({}),
+    enabled: !!user,
+  });
+
+  const admin = useQuery({
+    queryKey: ["is-admin"],
+    queryFn: () => checkAdmin({}),
     enabled: !!user,
   });
 
@@ -263,6 +271,23 @@ function ProfilePage() {
             </div>
             <ChevronRight className="h-4 w-4 text-white/80" />
           </Link>
+
+          {/* Admin link */}
+          {admin.data?.isAdmin && (
+            <Link
+              to="/admin/survey-results"
+              className="mt-4 flex items-center gap-3 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 text-foreground shadow-soft transition-transform active:scale-[0.99]"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <ShieldCheck className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-[15px] text-foreground">Admin</p>
+                <p className="text-[12px] text-muted-foreground">View survey results and analytics.</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          )}
         </>
       )}
     </AppShell>
