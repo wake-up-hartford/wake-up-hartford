@@ -266,16 +266,19 @@ function PlanPage() {
                 <div className="flex items-center gap-2">
                   <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
                   {dueDate && (
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setEditingWeek(editingWeek === w ? null : w); }}
+                      aria-label={`Edit due date for week ${w}`}
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
                         isCustom
-                          ? "bg-accent/15 text-accent"
-                          : "bg-amber-100 text-amber-700"
+                          ? "bg-accent/15 text-accent hover:bg-accent/25"
+                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
                       }`}
                     >
                       <Calendar className="h-3 w-3" />
                       by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
+                    </button>
                   )}
                   {weekTotal > 0 && (
                     <span className="text-[11px] font-semibold text-success">
