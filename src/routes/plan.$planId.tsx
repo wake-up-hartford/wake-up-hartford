@@ -86,10 +86,12 @@ function PlanPage() {
   const toggleBookmark = () => {
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
-      const next = list.includes(planId) ? list.filter((id) => id !== planId) : [...list, planId];
+      const willRemove = list.includes(planId);
+      const next = willRemove ? list.filter((id) => id !== planId) : [...list, planId];
       localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
       setIsBookmarked(next.includes(planId));
       setBookmarkCount(next.length);
+      toast(willRemove ? "Removed from saved plans" : "Plan saved");
     } catch { /* ignore */ }
   };
 
