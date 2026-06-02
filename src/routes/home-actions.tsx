@@ -140,6 +140,7 @@ function ActionCard({ action }: { action: Action }) {
   const Icon = action.icon;
   const disabled = action.cta === "Coming soon";
   const hasSecondary = Boolean(action.href2 && action.cta2);
+  const outerIsLink = !hasSecondary && !disabled && Boolean(action.to || action.href);
 
   const inner = (
     <>
@@ -153,7 +154,13 @@ function ActionCard({ action }: { action: Action }) {
         </div>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-3 self-start">
-        {action.href && !disabled && (
+        {outerIsLink && (
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            {action.cta}
+            <ArrowRight className="h-4 w-4" />
+          </span>
+        )}
+        {!outerIsLink && action.href && !disabled && (
           <a
             href={action.href}
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
@@ -162,7 +169,7 @@ function ActionCard({ action }: { action: Action }) {
             <ArrowRight className="h-4 w-4" />
           </a>
         )}
-        {action.to && !disabled && (
+        {!outerIsLink && action.to && !disabled && (
           <Link
             to={action.to}
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
@@ -194,7 +201,7 @@ function ActionCard({ action }: { action: Action }) {
   const cls =
     "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
 
-  if (hasSecondary || (!action.to && !action.href) || disabled) {
+  if (!outerIsLink) {
     return <div className={hasSecondary ? cls : `${cls} opacity-80`}>{inner}</div>;
   }
   if (action.to) {
