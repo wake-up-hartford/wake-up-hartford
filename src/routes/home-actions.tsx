@@ -46,6 +46,8 @@ const ACTIONS: Action[] = [
     icon: Scale,
     href: "tel:18604110050",
     cta: "Call legal aid",
+    href2: "https://www.ghla.org/",
+    cta2: "Go to website",
   },
   {
     title: "Call 211 for housing help",
@@ -53,6 +55,8 @@ const ACTIONS: Action[] = [
     icon: Phone,
     href: "tel:211",
     cta: "Dial 211",
+    href2: "https://www.211ct.org/",
+    cta2: "Go to website",
   },
   {
     title: "Document conditions with photos",
