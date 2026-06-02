@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight } from "lucide-react";
+import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight, Play } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
@@ -66,7 +66,13 @@ function HomePage() {
         Hartford residents deserve to know what's really going on in their homes and neighborhoods. Look up your address, see the facts, and find resources that can help.
       </p>
 
-      {/* Intro video CTA hidden until a real video URL is available. */}
+      <a
+        href="#"
+        className="mb-5 inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/5 px-4 py-3 text-sm font-medium text-foreground/80"
+      >
+        <Play className="h-4 w-4 text-primary" />
+        Watch how this app can help
+      </a>
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
