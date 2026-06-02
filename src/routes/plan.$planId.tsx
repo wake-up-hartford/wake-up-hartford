@@ -88,12 +88,14 @@ function PlanPage() {
       const overrides = JSON.parse(localStorage.getItem(DUE_DATES_KEY) ?? "{}") as Record<number, string>;
       setDueOverrides(overrides);
     } catch { /* ignore */ }
+  }, [planId, DUE_DATES_KEY]);
+
   useEffect(() => {
-    if (!steps.length) return;
+    if (!steps?.length) return;
     setCollapsedWeeks((prev) => {
       const next = new Set(prev);
       for (const w of [1, 2, 3, 4]) {
-        const weekSteps = stepsByWeek.get(w) ?? [];
+        const weekSteps = steps.filter((s: StepRow) => s.week === w);
         const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
         if (allDone) next.add(w);
       }
