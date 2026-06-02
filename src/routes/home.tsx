@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase } from "lucide-react";
+import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -419,13 +419,40 @@ function ShareSlideshow({ data }: { data: Data }) {
         </button>
       </div>
 
-      <Button onClick={handleShare} className="w-full" size="lg">
+      {(() => {
+        const text = `${data.address} — ${data.building.codeViolations.open} open code violations, ${data.building.evictions.filings12mo} evictions filed in the last year. See more on Wake Up Wednesday.`;
+        const url = typeof window !== "undefined" ? window.location.href : "";
+        const payload = `${text}\n${url}`;
+        const sms = `sms:?&body=${encodeURIComponent(payload)}`;
+        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + data.address)}&body=${encodeURIComponent(payload)}`;
+        return (
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={sms}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Text this
+            </a>
+            <a
+              href={mailto}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+            >
+              <Mail className="h-4 w-4" />
+              Email this
+            </a>
+          </div>
+        );
+      })()}
+
+      <Button onClick={handleShare} variant="outline" className="w-full" size="lg">
         <Share2 className="h-4 w-4" />
-        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "Share to social or text"}
+        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "More share options"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
       </p>
+
     </div>
   );
 }
