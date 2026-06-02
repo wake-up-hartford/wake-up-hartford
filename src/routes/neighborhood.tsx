@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight, ShieldCheck, AlertTriangle, AlertOctagon, Minus } from "lucide-react";
+import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight, ShieldCheck, AlertTriangle, AlertOctagon, Minus, Mail, MessageSquare } from "lucide-react";
 
 type SeverityIconProps = { severity: Indicator["severity"] | null; className?: string };
 function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
@@ -394,9 +394,36 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
         </button>
       </div>
 
-      <Button onClick={handleShare} className="w-full" size="lg">
+      {(() => {
+        const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
+        const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
+        const url = typeof window !== "undefined" ? window.location.href : "";
+        const payload = `${text}\n${url}`;
+        const sms = `sms:?&body=${encodeURIComponent(payload)}`;
+        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + (tract.neighborhood ?? tract.tractName))}&body=${encodeURIComponent(payload)}`;
+        return (
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={sms}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Text this
+            </a>
+            <a
+              href={mailto}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+            >
+              <Mail className="h-4 w-4" />
+              Email this
+            </a>
+          </div>
+        );
+      })()}
+
+      <Button onClick={handleShare} variant="outline" className="w-full" size="lg">
         <Share2 className="h-4 w-4" />
-        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "Share to social or text"}
+        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "More share options"}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
