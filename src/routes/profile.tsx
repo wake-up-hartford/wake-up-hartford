@@ -2,12 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyProfile, updateMyProfile } from "@/lib/profile.functions";
+import { checkIsAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Your account" }] }),
