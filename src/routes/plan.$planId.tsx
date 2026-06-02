@@ -206,10 +206,20 @@ function PlanPage() {
         {[1, 2, 3, 4].map((w) => {
           const weekMeta = plan.weeks.find((x) => x.week === w);
           const ws = stepsByWeek.get(w) ?? [];
+          const dueDate = generatedAt
+            ? new Date(new Date(generatedAt).getTime() + w * 7 * 24 * 60 * 60 * 1000)
+            : null;
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <div className="mb-3 flex items-baseline justify-between gap-3">
-                <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <div className="flex items-baseline gap-2">
+                  <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
+                  {dueDate && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                      by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  )}
+                </div>
                 {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
               </div>
               <ul className="space-y-3">
