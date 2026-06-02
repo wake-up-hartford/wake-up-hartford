@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { Progress } from "@/components/ui/progress";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
 import { getResource } from "@/lib/ct-resources";
 import { useAuth } from "@/hooks/use-auth";
