@@ -11,6 +11,7 @@ import {
   Scale,
   Shield,
   Users,
+  Lock,
   CheckCircle2,
   ArrowRight,
   Sparkles,
@@ -523,9 +524,16 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
             );
           })}
         </div>
-      </div>
+        </div>
 
-      <button
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-border bg-card/50 p-4">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            We take your privacy seriously. Your answers are private and secure. We will never share or sell your information.
+          </p>
+        </div>
+
+        <button
         onClick={onBegin}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
       >
