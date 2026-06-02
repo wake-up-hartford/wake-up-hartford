@@ -33,6 +33,12 @@ function ProfilePage() {
     enabled: !!user,
   });
 
+  const admin = useQuery({
+    queryKey: ["is-admin"],
+    queryFn: () => checkAdmin({}),
+    enabled: !!user,
+  });
+
   const [displayName, setDisplayName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
