@@ -262,13 +262,28 @@ export const listMyPlans = createServerFn({ method: "POST" })
       .select("id, generated_at, status, plan")
       .order("generated_at", { ascending: false });
     if (error) throw new Error("Couldn't load plans.");
+
+    const planIds = (data ?? []).map((p) => p.id);
+    const { data: stepsData } = planIds.length
+      ? await supabase
+          .from("plan_steps")
+          .select("plan_id, week, completed_at")
+          .in("plan_id", planIds)
+      : { data: [] as { plan_id: string; week: number; completed_at: string | null }[] };
+
+    const stepsByPlan = new Map<string, { week: number; completed_at: string | null }[]>();
+    for (const s of stepsData ?? []) {
+      const arr = stepsByPlan.get(s.plan_id) ?? [];
+      arr.push({ week: s.week, completed_at: s.completed_at });
+      stepsByPlan.set(s.plan_id, arr);
+    }
+
     return {
       plans: (data ?? []).map((p) => {
         const plan = p.plan as {
           priority_summary?: string;
-          weeks?: { steps?: { domain?: string }[] }[];
+          weeks?: { week?: number; steps?: { domain?: string }[] }[];
         };
-        // Extract top 3 unique domains by first appearance across weeks
         const domains: string[] = [];
         for (const w of plan?.weeks ?? []) {
           for (const s of w?.steps ?? []) {
@@ -278,12 +293,32 @@ export const listMyPlans = createServerFn({ method: "POST" })
           }
           if (domains.length >= 3) break;
         }
+
+        const planSteps = stepsByPlan.get(p.id) ?? [];
+        const totalSteps = planSteps.length;
+        const doneSteps = planSteps.filter((s) => s.completed_at).length;
+        const totalWeeks = plan?.weeks?.length ?? 0;
+
+        const weekNums = Array.from(new Set(planSteps.map((s) => s.week))).sort((a, b) => a - b);
+        let currentWeek = totalWeeks;
+        for (const w of weekNums) {
+          const wsteps = planSteps.filter((s) => s.week === w);
+          if (wsteps.some((s) => !s.completed_at)) {
+            currentWeek = w;
+            break;
+          }
+        }
+
         return {
           id: p.id,
           generated_at: p.generated_at,
           status: p.status,
           summary: plan?.priority_summary ?? "",
           priority_domains: domains,
+          totalSteps,
+          doneSteps,
+          totalWeeks,
+          currentWeek,
         };
       }),
     };
