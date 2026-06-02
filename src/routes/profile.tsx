@@ -32,6 +32,8 @@ function ProfilePage() {
   });
 
   const [displayName, setDisplayName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [languagePref, setLanguagePref] = useState("en");
   const [phone, setPhone] = useState("");
   const [smsAlerts, setSmsAlerts] = useState(false);
@@ -41,10 +43,13 @@ function ProfilePage() {
   useEffect(() => {
     if (data?.profile) {
       setDisplayName(data.profile.display_name ?? "");
+      setFirstName(data.profile.first_name ?? "");
+      setLastName(data.profile.last_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
       setSmsAlerts(data.profile.sms_alerts ?? false);
     }
   }, [data]);
+
 
   useEffect(() => {
     if (user?.phone) setPhone(user.phone);
@@ -58,7 +63,7 @@ function ProfilePage() {
     }
     setSavingProfile(true);
     try {
-      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref } });
+      await saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile saved.");
     } catch (err) {
@@ -74,7 +79,7 @@ function ProfilePage() {
     try {
       const [{ error: phoneError }] = await Promise.all([
         supabase.auth.updateUser({ phone: phone.trim() || undefined }),
-        saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } }),
+        saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts } }),
       ]);
       if (phoneError) throw phoneError;
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
@@ -138,6 +143,30 @@ function ProfilePage() {
                 placeholder="Your name"
               />
             </Field>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field icon={UserIcon} label="First name (optional)" htmlFor="first_name">
+                <input
+                  id="first_name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  maxLength={100}
+                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  placeholder="First"
+                />
+              </Field>
+              <Field icon={UserIcon} label="Last name (optional)" htmlFor="last_name">
+                <input
+                  id="last_name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  maxLength={100}
+                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  placeholder="Last"
+                />
+              </Field>
+            </div>
+
 
             <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
               <select
