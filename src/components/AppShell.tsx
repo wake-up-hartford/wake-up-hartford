@@ -69,11 +69,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 py-3 sm:px-5">
-          <Link to="/" className="flex items-center gap-3">
-            <img src={wuwLogo} alt="Wake Up Wednesday" className={pathname === "/" ? "h-14 w-auto" : "h-10 w-auto"} />
+        <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 py-2.5 sm:px-5">
+          <Link to="/" className="flex items-center">
+            <img
+              src={wuwLogo}
+              alt="Wake Up Wednesday"
+              className="h-10 w-auto flex-shrink-0"
+            />
           </Link>
-          <span className="text-[11px] uppercase tracking-wider text-muted-foreground leading-tight hidden sm:block text-right">
+          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
             Greater Hartford<br />Branch NAACP
           </span>
         </div>
