@@ -25,12 +25,9 @@ export function SharePlanCard() {
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-soft">
-      <div className="mb-2 flex items-center gap-2">
-        <Share2 className="h-4 w-4 text-accent" />
-        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-foreground">Share this plan</h3>
-      </div>
+      <h3 className="mb-1 text-[15px] font-semibold text-card-foreground">Share your plan</h3>
       <p className="mb-3 text-[14px] text-card-foreground">
-        Share your Plan with a family member, case manager or advocate who can help you follow through.
+        Share with a family member, case manager or advocate who can help you follow through.
       </p>
       <div className="grid grid-cols-2 gap-2">
         <a
