@@ -49,6 +49,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
         id: userId,
         display_name: data.display_name,
         language_pref: data.language_pref,
+        sms_alerts: data.sms_alerts,
         updated_at: new Date().toISOString(),
       });
     if (error) throw new Error(error.message);
