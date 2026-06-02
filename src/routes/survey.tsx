@@ -215,7 +215,7 @@ function SurveyPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-[15px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-4 py-3 text-[15px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99] disabled:opacity-60"
         >
           <Send className="h-4 w-4" /> {submitting ? "Submitting…" : "Submit"}
         </button>
