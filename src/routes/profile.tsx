@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
@@ -58,7 +58,7 @@ function ProfilePage() {
     }
     setSavingProfile(true);
     try {
-      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } });
+      await saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile saved.");
     } catch (err) {
@@ -72,9 +72,13 @@ function ProfilePage() {
     e.preventDefault();
     setSavingPhone(true);
     try {
-      const { error } = await supabase.auth.updateUser({ phone: phone.trim() || undefined });
-      if (error) throw error;
-      toast.success(phone.trim() ? "Phone update sent — check for a verification code." : "Phone cleared.");
+      const [{ error: phoneError }] = await Promise.all([
+        supabase.auth.updateUser({ phone: phone.trim() || undefined }),
+        saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } }),
+      ]);
+      if (phoneError) throw phoneError;
+      await qc.invalidateQueries({ queryKey: ["my-profile"] });
+      toast.success(phone.trim() ? "Phone and alert preference saved." : "Phone cleared and preference saved.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't update phone.");
     } finally {
@@ -149,18 +153,6 @@ function ProfilePage() {
               </select>
             </Field>
 
-            <Field icon={MessageSquare} label="Text alerts" htmlFor="sms_alerts">
-              <label className="flex items-center gap-2.5">
-                <input
-                  id="sms_alerts"
-                  type="checkbox"
-                  checked={smsAlerts}
-                  onChange={(e) => setSmsAlerts(e.target.checked)}
-                  className="h-4 w-4 rounded border-card-foreground/30 text-accent focus:ring-accent"
-                />
-                <span className="text-[13px] text-card-foreground">Send me reminders and plan updates by text</span>
-              </label>
-            </Field>
 
             <button
               type="submit"
@@ -209,6 +201,15 @@ function ProfilePage() {
                 className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
               />
             </Field>
+            <label className="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                checked={smsAlerts}
+                onChange={(e) => setSmsAlerts(e.target.checked)}
+                className="h-4 w-4 rounded border-card-foreground/30 text-accent focus:ring-accent"
+              />
+              <span className="text-[13px] text-card-foreground">Send me reminders and updates by text</span>
+            </label>
             <p className="text-[12px] text-card-foreground/70">
               Use international format (e.g. +1 for US). You'll receive a code to verify.
             </p>
