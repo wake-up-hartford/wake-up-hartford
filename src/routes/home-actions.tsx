@@ -54,6 +54,13 @@ const ACTIONS: Action[] = [
     cta2: "Go to website",
   },
   {
+    title: "Recover your security deposit",
+    desc: "Landlords must return your deposit, with interest, within 21 days of your written demand. Generate the letter.",
+    icon: DollarSign,
+    to: "/security-deposit-letter",
+    cta: "Start letter",
+  },
+  {
     title: "Call 211 for housing help",
     desc: "Connect to rental assistance, shelter, eviction prevention, and utility help any time, day or night.",
     icon: Phone,
@@ -85,13 +92,6 @@ const ACTIONS: Action[] = [
     icon: Landmark,
     href: "https://hartford.civicweb.net/portal/members.aspx?id=10",
     cta: "Find your council member",
-  },
-  {
-    title: "Recover your security deposit",
-    desc: "Landlords must return your deposit, with interest, within 21 days of your written demand. Generate the letter.",
-    icon: DollarSign,
-    to: "/security-deposit-letter",
-    cta: "Start letter",
   },
   {
     title: "Share your story",
