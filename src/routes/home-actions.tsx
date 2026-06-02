@@ -217,7 +217,7 @@ function ActionCard({ action }: { action: Action }) {
     "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
 
   if (!outerIsLink) {
-    return <div className={hasSecondary ? cls : `${cls} opacity-80`}>{inner}</div>;
+    return <div className={cls}>{inner}</div>;
   }
   if (action.to) {
     return (
