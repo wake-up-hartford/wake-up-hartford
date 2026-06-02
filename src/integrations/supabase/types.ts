@@ -156,6 +156,39 @@ export type Database = {
           },
         ]
       }
+      survey_responses: {
+        Row: {
+          barrier: string
+          comment: string | null
+          created_at: string
+          helpfulness: number
+          id: string
+          other_text: string | null
+          progress: string
+          user_id: string
+        }
+        Insert: {
+          barrier: string
+          comment?: string | null
+          created_at?: string
+          helpfulness: number
+          id?: string
+          other_text?: string | null
+          progress: string
+          user_id: string
+        }
+        Update: {
+          barrier?: string
+          comment?: string | null
+          created_at?: string
+          helpfulness?: number
+          id?: string
+          other_text?: string | null
+          progress?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
