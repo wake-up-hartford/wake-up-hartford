@@ -19,6 +19,8 @@ type Action = {
   to?: string;
   href?: string;
   cta: string;
+  href2?: string;
+  cta2?: string;
 };
 
 const ACTIONS: Action[] = [
@@ -35,6 +37,8 @@ const ACTIONS: Action[] = [
     icon: ClipboardList,
     href: "tel:311",
     cta: "Call 311",
+    href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
+    cta2: "Go to website",
   },
   {
     title: "Get free legal help",
@@ -131,6 +135,7 @@ function HomeActionsPage() {
 function ActionCard({ action }: { action: Action }) {
   const Icon = action.icon;
   const disabled = action.cta === "Coming soon";
+  const hasSecondary = Boolean(action.href2 && action.cta2);
 
   const inner = (
     <>
@@ -143,9 +148,41 @@ function ActionCard({ action }: { action: Action }) {
           <p className="mt-1 text-sm leading-relaxed text-card-foreground/80">{action.desc}</p>
         </div>
       </div>
-      <div className="mt-4 inline-flex items-center gap-2 self-start text-sm font-semibold text-primary">
-        {action.cta}
-        {!disabled && <ArrowRight className="h-4 w-4" />}
+      <div className="mt-4 flex flex-wrap items-center gap-3 self-start">
+        {action.href && !disabled && (
+          <a
+            href={action.href}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            {action.cta}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        )}
+        {action.to && !disabled && (
+          <Link
+            to={action.to}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            {action.cta}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        )}
+        {hasSecondary && (
+          <a
+            href={action.href2}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            {action.cta2}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        )}
+        {disabled && (
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            {action.cta}
+          </span>
+        )}
       </div>
     </>
   );
@@ -153,19 +190,19 @@ function ActionCard({ action }: { action: Action }) {
   const cls =
     "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
 
-  if (action.to && !disabled) {
+  if (hasSecondary || (!action.to && !action.href) || disabled) {
+    return <div className={hasSecondary ? cls : `${cls} opacity-80`}>{inner}</div>;
+  }
+  if (action.to) {
     return (
       <Link to={action.to} className={cls}>
         {inner}
       </Link>
     );
   }
-  if (action.href && !disabled) {
-    return (
-      <a href={action.href} className={cls}>
-        {inner}
-      </a>
-    );
-  }
-  return <div className={`${cls} opacity-80`}>{inner}</div>;
+  return (
+    <a href={action.href} className={cls}>
+      {inner}
+    </a>
+  );
 }
