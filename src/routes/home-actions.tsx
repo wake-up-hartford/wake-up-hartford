@@ -158,29 +158,29 @@ function ActionCard({ action }: { action: Action }) {
           <p className="mt-1 text-sm leading-relaxed text-card-foreground/80">{action.desc}</p>
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap items-center gap-3 self-start">
+      <div className="mt-4 flex flex-wrap items-center gap-2 self-start">
         {outerIsLink && (
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
             {action.cta}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </span>
         )}
         {!outerIsLink && action.href && !disabled && (
           <a
             href={action.href}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
           >
             {action.cta}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </a>
         )}
         {!outerIsLink && action.to && !disabled && (
           <Link
             to={action.to}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
           >
             {action.cta}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         )}
         {hasSecondary && (
@@ -188,10 +188,10 @@ function ActionCard({ action }: { action: Action }) {
             href={action.href2}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground hover:bg-secondary/80"
           >
             {action.cta2}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </a>
         )}
         {action.href3 && action.cta3 && (
@@ -199,14 +199,14 @@ function ActionCard({ action }: { action: Action }) {
             href={action.href3}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground hover:bg-secondary/80"
           >
             {action.cta3}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </a>
         )}
         {disabled && (
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground">
             {action.cta}
           </span>
         )}
