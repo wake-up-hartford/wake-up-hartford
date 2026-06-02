@@ -253,29 +253,41 @@ function PlanPage() {
           const dueIsoForInput = dueDate
             ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`
             : "";
+          const weekDone = ws.filter((s) => s.completed_at).length;
+          const weekTotal = ws.length;
+          const isCollapsed = collapsedWeeks.has(w);
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <div className="flex items-baseline gap-2">
+              <button
+                type="button"
+                onClick={() => toggleWeekCollapse(w)}
+                className="mb-3 flex w-full flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-left"
+              >
+                <div className="flex items-center gap-2">
                   <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
                   {dueDate && (
-                    <button
-                      type="button"
-                      onClick={() => setEditingWeek(editingWeek === w ? null : w)}
-                      aria-label={`Edit due date for week ${w}`}
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
                         isCustom
-                          ? "bg-accent/15 text-accent hover:bg-accent/25"
-                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                          ? "bg-accent/15 text-accent"
+                          : "bg-amber-100 text-amber-700"
                       }`}
                     >
                       <Calendar className="h-3 w-3" />
                       by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </button>
+                    </span>
+                  )}
+                  {weekTotal > 0 && (
+                    <span className="text-[11px] font-semibold text-success">
+                      {weekDone}/{weekTotal} done
+                    </span>
                   )}
                 </div>
-                {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
-              </div>
+                <div className="flex items-center gap-2">
+                  {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />
+                </div>
+              </button>
               {editingWeek === w && (
                 <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-secondary/40 p-2.5">
                   <label className="text-[12px] font-semibold text-foreground">Due date:</label>
