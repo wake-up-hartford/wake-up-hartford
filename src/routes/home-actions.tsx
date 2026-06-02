@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, FileText, Phone, Scale, Camera, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
+import housingEnforcementFlyer from "@/assets/housing-enforcement-flyer.pdf.asset.json";
 
 export const Route = createFileRoute("/home-actions")({
   head: () => ({
@@ -21,6 +22,8 @@ type Action = {
   cta: string;
   href2?: string;
   cta2?: string;
+  href3?: string;
+  cta3?: string;
 };
 
 const ACTIONS: Action[] = [
@@ -39,6 +42,8 @@ const ACTIONS: Action[] = [
     cta: "Call 311",
     href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
     cta2: "Go to website",
+    href3: housingEnforcementFlyer.url,
+    cta3: "Know When & What to Report",
   },
   {
     title: "Get free legal help",
@@ -186,6 +191,17 @@ function ActionCard({ action }: { action: Action }) {
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
           >
             {action.cta2}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        )}
+        {action.href3 && action.cta3 && (
+          <a
+            href={action.href3}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            {action.cta3}
             <ArrowRight className="h-4 w-4" />
           </a>
         )}
