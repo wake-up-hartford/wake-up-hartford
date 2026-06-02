@@ -271,6 +271,23 @@ function ProfilePage() {
             </div>
             <ChevronRight className="h-4 w-4 text-white/80" />
           </Link>
+
+          {/* Admin link */}
+          {admin.data?.isAdmin && (
+            <Link
+              to="/admin/survey-results"
+              className="mt-4 flex items-center gap-3 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 text-foreground shadow-soft transition-transform active:scale-[0.99]"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <ShieldCheck className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-[15px] text-foreground">Admin</p>
+                <p className="text-[12px] text-muted-foreground">View survey results and analytics.</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          )}
         </>
       )}
     </AppShell>
