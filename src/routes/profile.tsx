@@ -79,7 +79,7 @@ function ProfilePage() {
     try {
       const [{ error: phoneError }] = await Promise.all([
         supabase.auth.updateUser({ phone: phone.trim() || undefined }),
-        saveProfile({ data: { display_name: displayName.trim(), language_pref: languagePref, sms_alerts: smsAlerts } }),
+        saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts } }),
       ]);
       if (phoneError) throw phoneError;
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
