@@ -278,6 +278,16 @@ function PlanPage() {
       >
         <Printer className="h-4 w-4" /> Print this plan
       </button>
+
+      {bookmarkCount > 0 && (
+        <Link
+          to="/plans"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-gold bg-gold/10 px-5 py-3 text-[14px] font-semibold text-gold hover:bg-gold/20"
+        >
+          <Bookmark className="h-4 w-4 fill-current" />
+          {bookmarkCount} saved plan{bookmarkCount === 1 ? "" : "s"} — view all
+        </Link>
+      )}
     </AppShell>
   );
 }
