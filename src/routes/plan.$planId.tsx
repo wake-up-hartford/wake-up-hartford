@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark, Share2, Mail, MessageSquare, Copy } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark, Share2, Mail, MessageSquare, Copy, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Progress } from "@/components/ui/progress";
@@ -77,6 +77,7 @@ function PlanPage() {
   const DUE_DATES_KEY = `planDueDates:${planId}`;
   const [dueOverrides, setDueOverrides] = useState<Record<number, string>>({});
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
+  const [collapsedWeeks, setCollapsedWeeks] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -88,6 +89,7 @@ function PlanPage() {
       setDueOverrides(overrides);
     } catch { /* ignore */ }
   }, [planId, DUE_DATES_KEY]);
+
 
   const toggleBookmark = () => {
     try {
@@ -141,6 +143,26 @@ function PlanPage() {
   }
   const total = steps.length;
   const done = steps.filter((s) => s.completed_at).length;
+
+  useEffect(() => {
+    setCollapsedWeeks((prev) => {
+      const next = new Set(prev);
+      for (const w of [1, 2, 3, 4]) {
+        const weekSteps = stepsByWeek.get(w) ?? [];
+        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
+        if (allDone) next.add(w);
+      }
+      return next;
+    });
+  }, [stepsByWeek]);
+
+  const toggleWeekCollapse = (w: number) => {
+    setCollapsedWeeks((prev) => {
+      const next = new Set(prev);
+      if (next.has(w)) next.delete(w); else next.add(w);
+      return next;
+    });
+  };
 
   return (
     <AppShell>
@@ -231,15 +253,22 @@ function PlanPage() {
           const dueIsoForInput = dueDate
             ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`
             : "";
+          const weekDone = ws.filter((s) => s.completed_at).length;
+          const weekTotal = ws.length;
+          const isCollapsed = collapsedWeeks.has(w);
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <div className="flex items-baseline gap-2">
+              <button
+                type="button"
+                onClick={() => toggleWeekCollapse(w)}
+                className="mb-3 flex w-full flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-left"
+              >
+                <div className="flex items-center gap-2">
                   <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
                   {dueDate && (
                     <button
                       type="button"
-                      onClick={() => setEditingWeek(editingWeek === w ? null : w)}
+                      onClick={(e) => { e.stopPropagation(); setEditingWeek(editingWeek === w ? null : w); }}
                       aria-label={`Edit due date for week ${w}`}
                       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
                         isCustom
@@ -251,9 +280,17 @@ function PlanPage() {
                       by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </button>
                   )}
+                  {weekTotal > 0 && (
+                    <span className="text-[11px] font-semibold text-success">
+                      {weekDone}/{weekTotal} done
+                    </span>
+                  )}
                 </div>
-                {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
-              </div>
+                <div className="flex items-center gap-2">
+                  {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />
+                </div>
+              </button>
               {editingWeek === w && (
                 <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-secondary/40 p-2.5">
                   <label className="text-[12px] font-semibold text-foreground">Due date:</label>
@@ -281,60 +318,62 @@ function PlanPage() {
                   </button>
                 </div>
               )}
-              <ul className="space-y-3">
-                {ws.map((s) => {
-                  const r = getResource(s.resource_id);
-                  const isDone = !!s.completed_at;
-                  return (
-                    <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
-                      <button
-                        onClick={(e) => {
-                          const willComplete = !isDone;
-                          mut.mutate({ stepId: s.id, done: willComplete });
-                          if (willComplete) fireConfetti(e.currentTarget);
-                        }}
-                        className="flex w-full items-start gap-3 text-left"
-                      >
-                        {isDone ? (
-                          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
-                        ) : (
-                          <Circle className="mt-0.5 h-5 w-5 shrink-0 text-step-surface-muted" />
-                        )}
-                        <div className="flex-1">
-                          <p className={`text-[14px] font-semibold ${isDone ? "text-step-surface-muted line-through" : "text-step-surface-foreground"}`}>
-                            {s.title}
-                          </p>
-                          {s.detail && (
-                            <p className="mt-1 text-[13px] leading-relaxed text-step-surface-foreground/90">{s.detail}</p>
+              {!isCollapsed && (
+                <ul className="space-y-3">
+                  {ws.map((s) => {
+                    const r = getResource(s.resource_id);
+                    const isDone = !!s.completed_at;
+                    return (
+                      <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
+                        <button
+                          onClick={(e) => {
+                            const willComplete = !isDone;
+                            mut.mutate({ stepId: s.id, done: willComplete });
+                            if (willComplete) fireConfetti(e.currentTarget);
+                          }}
+                          className="flex w-full items-start gap-3 text-left"
+                        >
+                          {isDone ? (
+                            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+                          ) : (
+                            <Circle className="mt-0.5 h-5 w-5 shrink-0 text-step-surface-muted" />
                           )}
-                          <span className="mt-1 inline-block rounded-full bg-pill px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pill-foreground">
-                            {s.domain}
-                          </span>
-                        </div>
-                      </button>
-                      {r && (
-                        <div className="mt-3 rounded-lg border border-dashed border-border bg-step-resource p-3">
-                          <p className="text-[13px] font-semibold text-step-resource-foreground">{r.name}</p>
-                          <p className="text-[12px] text-step-resource-muted">{r.eligibility_notes}</p>
-                          <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
-                            {r.phone && r.phone !== "n/a" && (
-                              <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-success">
-                                <Phone className="h-3.5 w-3.5" /> {r.phone}
-                              </a>
+                          <div className="flex-1">
+                            <p className={`text-[14px] font-semibold ${isDone ? "text-step-surface-muted line-through" : "text-step-surface-foreground"}`}>
+                              {s.title}
+                            </p>
+                            {s.detail && (
+                              <p className="mt-1 text-[13px] leading-relaxed text-step-surface-foreground/90">{s.detail}</p>
                             )}
-                            {r.url && (
-                              <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent">
-                                <ExternalLink className="h-3.5 w-3.5" /> Website
-                              </a>
-                            )}
+                            <span className="mt-1 inline-block rounded-full bg-pill px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pill-foreground">
+                              {s.domain}
+                            </span>
                           </div>
-                          <p className="mt-1 text-[11px] text-step-resource-muted">{r.town} · {r.hours}</p>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+                        </button>
+                        {r && (
+                          <div className="mt-3 rounded-lg border border-dashed border-border bg-step-resource p-3">
+                            <p className="text-[13px] font-semibold text-step-resource-foreground">{r.name}</p>
+                            <p className="text-[12px] text-step-resource-muted">{r.eligibility_notes}</p>
+                            <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
+                              {r.phone && r.phone !== "n/a" && (
+                                <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-success">
+                                  <Phone className="h-3.5 w-3.5" /> {r.phone}
+                                </a>
+                              )}
+                              {r.url && (
+                                <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent">
+                                  <ExternalLink className="h-3.5 w-3.5" /> Website
+                                </a>
+                              )}
+                            </div>
+                            <p className="mt-1 text-[11px] text-step-resource-muted">{r.town} · {r.hours}</p>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
           );
         })}
