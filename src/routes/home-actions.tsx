@@ -71,7 +71,8 @@ const ACTIONS: Action[] = [
     title: "Know your rights as a tenant",
     desc: "A quick guide to repairs, security deposits, eviction notice rules, and retaliation protections in CT.",
     icon: ShieldCheck,
-    cta: "Coming soon",
+    href: "https://ctlawhelp.org/en/housing/landlord-tenant/renters-rights",
+    cta: "Learn your rights",
   },
   {
     title: "Organize with your neighbors",
