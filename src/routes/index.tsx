@@ -55,8 +55,8 @@ function HomePage() {
       )}
 
       <h1 className="font-display text-3xl leading-tight">
-        <span className="text-primary">See It.</span>{" "}
-        <span className="text-gold">Name It.</span>{" "}
+        <span className="text-primary">See It.</span>{" "}<br />
+        <span className="text-gold">Name It.</span>{" "}<br />
         <span className="text-accent">Fix It.</span>
       </h1>
       <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
