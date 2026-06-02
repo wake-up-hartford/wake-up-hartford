@@ -1,51 +1,26 @@
+# Add "My Plans" home card
+
 ## Goal
+On `/`, show a fourth card linking to `/plans` — but only when the user is signed in and has ≥1 stabilization plan. Returning users get a one-tap shortcut back to their plan(s).
 
-Refactor `src/routes/plan.$planId.tsx` (476 lines) into small, focused pieces. Zero behavior change — same UI, same interactions, same data flow.
+## Behavior
+- Signed out, or signed in with 0 plans → no card (home looks unchanged).
+- Signed in with ≥1 plan → card appears at the **top** of the cards grid (above Neighborhood/Home/Path), so the most likely next action is first.
+- Card copy:
+  - Title: "My Plans"
+  - Body (1 plan): "Resume your stabilization plan."
+  - Body (n>1): "You have N plans. Pick up where you left off."
+- Tapping the card goes to `/plans`.
 
-## New files
+## Implementation (technical)
+- In `src/routes/index.tsx`:
+  - Use `useServerFn(listMyPlans)` + `useQuery({ queryKey: ["my-plans"], enabled: !!user })` — same pattern as `/plans`.
+  - Render a new `MyPlansCard` above the existing `DashLink` grid when `user && data?.plans.length > 0`.
+- Style: reuse the existing `Card` + tone system. Add a new tone (e.g. `emerald`) or reuse `blue` so it visually reads as "yours" vs. the three exploratory cards. Icon: `ClipboardList` from lucide-react.
+- Widen `DashLink`'s `to` union (or create a small dedicated `MyPlansCard` component) to allow `/plans`.
+- No backend or schema changes. No new files strictly required — can live inline in `index.tsx`.
 
-**Hooks** (`src/hooks/`)
-- `use-bookmark-plan.ts` — `isBookmarked`, `bookmarkCount`, `toggleBookmark` (wraps the `bookmarkedPlans` localStorage logic)
-- `use-week-due-dates.ts` — `dueOverrides`, `setWeekDueDate`, plus a `getWeekDueDate(week, generatedAt)` helper (wraps `planDueDates:{planId}` localStorage logic)
-- `use-auto-collapse-weeks.ts` — owns `collapsedWeeks`, `toggleWeekCollapse`, and the auto-collapse `useEffect`
-
-**Components** (`src/components/plan/`)
-- `PlanHeader.tsx` — title, bookmark button, created date, greeting + summary, progress bar, sign-in CTA
-- `CrisisFlags.tsx` — the red "Right now" block
-- `WeekCard.tsx` — one week container: header (toggle, due-date pill, done counter), date editor row, steps list. Receives week meta, steps, due date, collapsed state, callbacks
-- `StepItem.tsx` — one checkbox row with confetti trigger + the resource sub-card
-- `DueDateEditor.tsx` — the inline date input + reset/done buttons
-- `SharePlanCard.tsx` — text/email/native share block (moves the IIFE out)
-- `PlanFooterActions.tsx` — print button + "view all saved plans" link
-
-**Utilities** (`src/lib/`)
-- `confetti.ts` — move `fireConfetti` + the lazy `confettiPromise` out of the route file
-
-## What stays in `plan.$planId.tsx`
-
-- `Route` definition + `head()`
-- Auth gate + redirect `useEffect`
-- `useQuery` for plan data + `useMutation` for toggleStep
-- Loading / error returns
-- Top-level layout: `<AppShell>`, back link, then composing the components above
-
-Target: route file under ~120 lines.
-
-## Types
-
-Shared types (`StepRow`, `PlanShape`) move to `src/lib/plan-types.ts` so both the route and the new components import from one place.
-
-## Implementation order
-
-1. Create `src/lib/plan-types.ts` and `src/lib/confetti.ts`
-2. Create the three hooks
-3. Create the leaf components (`StepItem`, `DueDateEditor`, `CrisisFlags`)
-4. Create the composite components (`WeekCard`, `PlanHeader`, `SharePlanCard`, `PlanFooterActions`)
-5. Rewrite `plan.$planId.tsx` to compose them
-6. Verify in preview: bookmark toggle, step completion + confetti, due-date editor, auto-collapse, share buttons, print
-
-## Non-goals
-
-- No styling/visual changes
-- No new features
-- No changes to server functions, queries, or storage keys
+## Out of scope
+- Plan progress bars (separate suggestion).
+- Changes to `/plans` itself.
+- Removing the `[[INTRO TEXT HERE]]` placeholder or fixing the broken "Watch" link (separate items).
