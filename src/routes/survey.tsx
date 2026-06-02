@@ -162,7 +162,7 @@ function SurveyPage() {
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {/* Q1 — ease of use */}
         <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">1. How easy is it to use?</h2>
+          <h2 className="font-display text-base">1. How easy is this app to use?</h2>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
