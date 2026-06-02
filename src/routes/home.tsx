@@ -343,9 +343,9 @@ function DetailedReport({ data }: { data: Data }) {
 function ShareSlideshow({ data }: { data: Data }) {
   const slides = [
     { eyebrow: "Wake Up Wednesday", title: data.address, body: `${data.neighborhood} · Hartford` },
-    { eyebrow: "Code violations", title: `${data.building.codeViolations.open} open`, body: "From city housing inspectors." },
-    { eyebrow: "Evictions filed", title: data.building.evictions.rate, body: data.building.evictions.note },
-    { eyebrow: "311 complaints", title: `${data.building.complaints311.count12mo}`, body: `Top issue: ${data.building.complaints311.topCategory}` },
+    { eyebrow: "Code violations", title: `${data.building.codeViolations.open} code violations open`, body: "From city housing inspectors." },
+    { eyebrow: "Evictions filed", title: `${data.building.evictions.filings12mo} evictions filed in the last 12 months`, body: data.building.evictions.note },
+    { eyebrow: "311 complaints", title: `${data.building.complaints311.count12mo} complaints to 311 in the last 12 months`, body: `Top issue: ${data.building.complaints311.topCategory}` },
   ];
   const [i, setI] = useState(0);
   const slide = slides[i];
