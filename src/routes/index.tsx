@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight } from "lucide-react";
+import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight, Play } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
@@ -68,8 +68,9 @@ function HomePage() {
 
       <a
         href="#"
-        className="mb-6 flex w-full items-center justify-center rounded-xl border-2 border-primary bg-primary/5 px-5 py-3 text-sm font-semibold text-primary shadow-soft hover:bg-primary/10"
+        className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary bg-primary/5 px-5 py-3 text-sm font-semibold text-primary shadow-soft hover:bg-primary/10"
       >
+        <Play className="h-4 w-4 fill-primary" />
         Watch: How This Tool Can Help You and Your Neighborhood
       </a>
 
