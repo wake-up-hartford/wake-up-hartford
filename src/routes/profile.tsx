@@ -144,6 +144,30 @@ function ProfilePage() {
               />
             </Field>
 
+            <div className="grid grid-cols-2 gap-3">
+              <Field icon={UserIcon} label="First name (optional)" htmlFor="first_name">
+                <input
+                  id="first_name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  maxLength={100}
+                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  placeholder="First"
+                />
+              </Field>
+              <Field icon={UserIcon} label="Last name (optional)" htmlFor="last_name">
+                <input
+                  id="last_name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  maxLength={100}
+                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  placeholder="Last"
+                />
+              </Field>
+            </div>
+
+
             <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
               <select
                 id="language_pref"
