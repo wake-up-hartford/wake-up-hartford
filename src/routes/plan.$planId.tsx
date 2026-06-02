@@ -74,6 +74,9 @@ function PlanPage() {
   const BOOKMARK_KEY = "bookmarkedPlans";
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkCount, setBookmarkCount] = useState(0);
+  const DUE_DATES_KEY = `planDueDates:${planId}`;
+  const [dueOverrides, setDueOverrides] = useState<Record<number, string>>({});
+  const [editingWeek, setEditingWeek] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -81,8 +84,10 @@ function PlanPage() {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       setIsBookmarked(list.includes(planId));
       setBookmarkCount(list.length);
+      const overrides = JSON.parse(localStorage.getItem(DUE_DATES_KEY) ?? "{}") as Record<number, string>;
+      setDueOverrides(overrides);
     } catch { /* ignore */ }
-  }, [planId]);
+  }, [planId, DUE_DATES_KEY]);
 
   const toggleBookmark = () => {
     try {
@@ -94,6 +99,17 @@ function PlanPage() {
       setBookmarkCount(next.length);
       toast(willRemove ? "Removed from saved plans" : "Plan saved");
     } catch { /* ignore */ }
+  };
+
+  const setWeekDueDate = (week: number, isoDate: string | null) => {
+    setDueOverrides((prev) => {
+      const next = { ...prev };
+      if (isoDate) next[week] = isoDate;
+      else delete next[week];
+      try { localStorage.setItem(DUE_DATES_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+    toast(isoDate ? "Due date updated" : "Due date reset");
   };
 
   const { data, isLoading, error } = useQuery({
@@ -206,22 +222,65 @@ function PlanPage() {
         {[1, 2, 3, 4].map((w) => {
           const weekMeta = plan.weeks.find((x) => x.week === w);
           const ws = stepsByWeek.get(w) ?? [];
-          const dueDate = generatedAt
+          const defaultDue = generatedAt
             ? new Date(new Date(generatedAt).getTime() + w * 7 * 24 * 60 * 60 * 1000)
             : null;
+          const overrideIso = dueOverrides[w];
+          const dueDate = overrideIso ? new Date(overrideIso + "T00:00:00") : defaultDue;
+          const isCustom = !!overrideIso;
+          const dueIsoForInput = dueDate
+            ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`
+            : "";
           return (
             <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <div className="flex items-baseline gap-2">
                   <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
                   {dueDate && (
-                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                    <button
+                      type="button"
+                      onClick={() => setEditingWeek(editingWeek === w ? null : w)}
+                      aria-label={`Edit due date for week ${w}`}
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
+                        isCustom
+                          ? "bg-accent/15 text-accent hover:bg-accent/25"
+                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                      }`}
+                    >
+                      <Calendar className="h-3 w-3" />
                       by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
+                    </button>
                   )}
                 </div>
                 {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
               </div>
+              {editingWeek === w && (
+                <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-secondary/40 p-2.5">
+                  <label className="text-[12px] font-semibold text-foreground">Due date:</label>
+                  <input
+                    type="date"
+                    value={dueIsoForInput}
+                    onChange={(e) => setWeekDueDate(w, e.target.value || null)}
+                    className="rounded-md border border-border bg-card px-2 py-1 text-[13px] text-foreground"
+                  />
+                  {isCustom && (
+                    <button
+                      type="button"
+                      onClick={() => setWeekDueDate(w, null)}
+                      className="text-[12px] font-semibold text-muted-foreground underline hover:text-foreground"
+                    >
+                      Reset
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setEditingWeek(null)}
+                    className="ml-auto text-[12px] font-semibold text-accent hover:underline"
+                  >
+                    Done
+                  </button>
+                </div>
+              )}
               <ul className="space-y-3">
                 {ws.map((s) => {
                   const r = getResource(s.resource_id);
