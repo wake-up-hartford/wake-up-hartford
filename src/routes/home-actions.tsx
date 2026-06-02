@@ -66,7 +66,6 @@ const ACTIONS: Action[] = [
     title: "Document conditions with photos",
     desc: "Take dated photos and videos of every problem. This evidence protects you in court and with inspectors.",
     icon: Camera,
-    cta: "Coming soon",
   },
   {
     title: "Know your rights as a tenant",
@@ -78,7 +77,6 @@ const ACTIONS: Action[] = [
     title: "Organize with your neighbors",
     desc: "Talk to neighbors facing the same landlord. A tenant association has more power than one tenant alone.",
     icon: Users,
-    cta: "Coming soon",
   },
   {
     title: "Contact your city council member",
