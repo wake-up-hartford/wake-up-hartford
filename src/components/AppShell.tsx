@@ -58,9 +58,10 @@ function RotatingMessages() {
 
 const NAV = [
   { to: "/", label: "Start", icon: Home },
-  { to: "/neighborhood", label: "Neighborhood", icon: Trees },
+  { to: "/neighborhood", label: "Area", icon: Trees },
   { to: "/home", label: "Home", icon: Building2 },
   { to: "/life", label: "Life", icon: HeartHandshake },
+  { to: "/profile", label: "Account", icon: User },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -82,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
-        <ul className="mx-auto grid w-full max-w-xl grid-cols-4 px-4 sm:px-5">
+        <ul className="mx-auto grid w-full max-w-xl grid-cols-5 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to;
             return (
