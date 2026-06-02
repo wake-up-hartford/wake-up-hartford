@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
@@ -108,7 +108,8 @@ function PlanPage() {
       <div className="mb-5">
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
         {generatedAt && (
-          <p className="mt-1 text-[12px] text-gold">
+          <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-gold">
+            <Calendar className="h-3 w-3" />
             Created on {new Date(generatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
         )}
