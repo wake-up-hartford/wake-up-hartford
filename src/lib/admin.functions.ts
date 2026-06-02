@@ -103,6 +103,39 @@ export const getUsageStats = createServerFn({ method: "GET" })
       },
       barrierCounts,
       progressCounts,
+      funnel: (() => {
+        const signedUp = new Set((profiles.data ?? []).map((p) => p.id));
+        const addressEntered = new Set(
+          (intake.data ?? []).filter((i) => i.tract_fips).map((i) => i.user_id),
+        );
+        const intakeCompleted = new Set((intake.data ?? []).map((i) => i.user_id));
+        const planGenerated = new Set((plans.data ?? []).map((p) => p.user_id));
+        const stepsByUser = new Map<string, { total: number; done: number }>();
+        for (const s of steps.data ?? []) {
+          const cur = stepsByUser.get(s.user_id) ?? { total: 0, done: 0 };
+          cur.total += 1;
+          if (s.completed_at) cur.done += 1;
+          stepsByUser.set(s.user_id, cur);
+        }
+        const startedStep = new Set(
+          Array.from(stepsByUser.entries()).filter(([, v]) => v.done > 0).map(([k]) => k),
+        );
+        const completedAll = new Set(
+          Array.from(stepsByUser.entries())
+            .filter(([, v]) => v.total > 0 && v.done === v.total)
+            .map(([k]) => k),
+        );
+        return [
+          { label: "Signed up", count: signedUp.size },
+          { label: "Entered address", count: addressEntered.size },
+          { label: "Completed intake", count: intakeCompleted.size },
+          { label: "Plan generated", count: planGenerated.size },
+          { label: "Started a step", count: startedStep.size },
+          { label: "Completed all steps", count: completedAll.size },
+        ];
+      })(),
     };
+  });
+
   });
 
