@@ -47,32 +47,51 @@ function PlansPage() {
         {data?.plans.length === 0 && (
           <p className="text-[14px] text-muted-foreground">No plans yet. Take the survey to create your first one.</p>
         )}
-        {data?.plans.map((p) => (
-          <Link
-            key={p.id}
-            to="/plan/$planId"
-            params={{ planId: p.id }}
-            className="flex flex-col gap-2 rounded-xl border border-border p-4 transition-colors bg-[oklch(0.23_0.06_295)] hover:bg-[oklch(0.30_0.06_295)]"
-          >
-            <p className="font-display text-[16px] leading-tight text-foreground">
-              Plan Created {new Date(p.generated_at).toLocaleDateString()}
-            </p>
-            {p.priority_domains.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {p.priority_domains.map((d) => (
-                  <span key={d} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent">
-                    {d}
-                  </span>
-                ))}
+        {data?.plans.map((p) => {
+          const pct = p.totalSteps > 0 ? Math.round((p.doneSteps / p.totalSteps) * 100) : 0;
+          return (
+            <Link
+              key={p.id}
+              to="/plan/$planId"
+              params={{ planId: p.id }}
+              className="flex flex-col gap-2 rounded-xl border border-border p-4 transition-colors bg-[oklch(0.23_0.06_295)] hover:bg-[oklch(0.30_0.06_295)]"
+            >
+              <p className="font-display text-[16px] leading-tight text-foreground">
+                Plan Created {new Date(p.generated_at).toLocaleDateString()}
+              </p>
+              {p.totalWeeks > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between text-[12px] text-muted-foreground">
+                    <span>
+                      Week {p.currentWeek} of {p.totalWeeks} · {p.doneSteps} of {p.totalSteps} steps done
+                    </span>
+                    <span className="font-medium text-foreground">{pct}%</span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-background/40">
+                    <div
+                      className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              {p.priority_domains.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {p.priority_domains.map((d) => (
+                    <span key={d} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="text-[13px] leading-snug text-muted-foreground line-clamp-2">{p.summary}</p>
+              <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                <span>View plan</span>
+                <ChevronRight className="h-3 w-3" />
               </div>
-            )}
-            <p className="text-[13px] leading-snug text-muted-foreground line-clamp-2">{p.summary}</p>
-            <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
-              <span>View plan</span>
-              <ChevronRight className="h-3 w-3" />
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
 
       {user && (
