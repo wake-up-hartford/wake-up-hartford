@@ -13,6 +13,33 @@ export const Route = createFileRoute("/plan/$planId")({
   component: PlanPage,
 });
 
+// Lazy-loaded confetti — module is fetched only on first task-complete click.
+let confettiPromise: Promise<(opts: Record<string, unknown>) => void> | null = null;
+function fireConfetti(anchor: HTMLElement) {
+  if (typeof window === "undefined") return;
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+  const rect = anchor.getBoundingClientRect();
+  const x = (rect.left + rect.width / 2) / window.innerWidth;
+  const y = (rect.top + rect.height / 2) / window.innerHeight;
+  if (!confettiPromise) {
+    confettiPromise = import("canvas-confetti").then(
+      (m) => (m as unknown as { default: (opts: Record<string, unknown>) => void }).default,
+    );
+  }
+  confettiPromise.then((confetti) => {
+    confetti({
+      particleCount: 90,
+      spread: 70,
+      startVelocity: 35,
+      ticks: 120,
+      origin: { x, y },
+      colors: ["#7b3fbf", "#3aa3d8", "#f4a73a", "#3fa86b", "#f5f0e0"],
+      disableForReducedMotion: true,
+    });
+  });
+}
+
+
 type StepRow = {
   id: string;
   week: number;
@@ -132,7 +159,11 @@ function PlanPage() {
                   return (
                     <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
                       <button
-                        onClick={() => mut.mutate({ stepId: s.id, done: !isDone })}
+                        onClick={(e) => {
+                          const willComplete = !isDone;
+                          mut.mutate({ stepId: s.id, done: willComplete });
+                          if (willComplete) fireConfetti(e.currentTarget);
+                        }}
                         className="flex w-full items-start gap-3 text-left"
                       >
                         {isDone ? (
