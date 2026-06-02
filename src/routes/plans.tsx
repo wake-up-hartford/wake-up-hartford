@@ -12,6 +12,19 @@ export const Route = createFileRoute("/plans")({
   component: PlansPage,
 });
 
+const DOMAIN_COLORS: Record<string, string> = {
+  housing: "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/30",
+  food: "bg-orange-500/20 text-orange-200 ring-1 ring-orange-400/30",
+  health: "bg-rose-500/20 text-rose-200 ring-1 ring-rose-400/30",
+  income: "bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/30",
+  debt: "bg-yellow-500/20 text-yellow-100 ring-1 ring-yellow-400/30",
+  legal: "bg-indigo-500/20 text-indigo-200 ring-1 ring-indigo-400/30",
+  safety: "bg-red-500/20 text-red-200 ring-1 ring-red-400/30",
+  support: "bg-sky-500/20 text-sky-200 ring-1 ring-sky-400/30",
+};
+const domainClass = (d: string) =>
+  DOMAIN_COLORS[d.toLowerCase()] ?? "bg-accent/15 text-accent ring-1 ring-accent/20";
+
 function PlansPage() {
   const nav = useNavigate();
   const { user, loading, signOut } = useAuth();
@@ -78,7 +91,7 @@ function PlansPage() {
               {p.priority_domains.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {p.priority_domains.map((d) => (
-                    <span key={d} className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-medium capitalize text-accent">
+                    <span key={d} className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium capitalize ${domainClass(d)}`}>
                       {d}
                     </span>
                   ))}
