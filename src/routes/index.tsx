@@ -66,19 +66,7 @@ function HomePage() {
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
-        {user && planCount > 0 && (
-          <DashLink
-            to="/plans"
-            icon={ClipboardList}
-            title="My Plans"
-            body={
-              planCount === 1
-                ? "Resume your stabilization plan."
-                : `You have ${planCount} plans. Pick up where you left off.`
-            }
-            tone="blue"
-          />
-        )}
+
 
         <DashLink
           to="/neighborhood"
@@ -105,7 +93,22 @@ function HomePage() {
       </div>
 
       <EventCard />
+      {user && planCount > 0 && (
+        <Link
+          to="/plans"
+          className="mt-6 flex w-full items-center justify-between gap-3 rounded-xl border border-accent/40 bg-transparent px-4 py-3 text-accent hover:bg-accent/10"
+        >
+          <span className="flex items-center gap-2">
+            <ClipboardList className="h-5 w-5" />
+            <span className="font-display text-[15px]">My Plans</span>
+          </span>
+          <span className="text-[13px] text-foreground/70">
+            {planCount === 1 ? "Resume your plan" : `${planCount} plans · resume`}
+          </span>
+        </Link>
+      )}
       {!user ? (
+
         <Link
           to="/auth"
           className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
