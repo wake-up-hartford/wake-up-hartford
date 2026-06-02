@@ -36,6 +36,16 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  /* On-card surfaces — always light-tinted with dark text, safe in both themes
+     because --card is light in both modes. */
+  --color-step-surface: var(--step-surface);
+  --color-step-surface-foreground: var(--step-surface-foreground);
+  --color-step-surface-muted: var(--step-surface-muted);
+  --color-step-resource: var(--step-resource);
+  --color-step-resource-foreground: var(--step-resource-foreground);
+  --color-step-resource-muted: var(--step-resource-muted);
+  --color-pill: var(--pill);
+  --color-pill-foreground: var(--pill-foreground);
   --font-display: "Unbounded", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 }
