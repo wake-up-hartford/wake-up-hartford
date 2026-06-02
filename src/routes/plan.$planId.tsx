@@ -395,7 +395,7 @@ function PlanPage() {
                 onClick={handleNativeShare}
                 className="col-span-2 flex items-center justify-center gap-1.5 rounded-xl bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-foreground hover:opacity-90"
               >
-                {typeof navigator !== "undefined" && navigator.share ? (
+                {typeof navigator !== "undefined" && "share" in navigator ? (
                   <><Share2 className="h-4 w-4" /> Share…</>
                 ) : (
                   <><Copy className="h-4 w-4" /> Copy link</>
