@@ -32,6 +32,8 @@ function ProfilePage() {
   });
 
   const [displayName, setDisplayName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [languagePref, setLanguagePref] = useState("en");
   const [phone, setPhone] = useState("");
   const [smsAlerts, setSmsAlerts] = useState(false);
@@ -41,10 +43,13 @@ function ProfilePage() {
   useEffect(() => {
     if (data?.profile) {
       setDisplayName(data.profile.display_name ?? "");
+      setFirstName(data.profile.first_name ?? "");
+      setLastName(data.profile.last_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
       setSmsAlerts(data.profile.sms_alerts ?? false);
     }
   }, [data]);
+
 
   useEffect(() => {
     if (user?.phone) setPhone(user.phone);
