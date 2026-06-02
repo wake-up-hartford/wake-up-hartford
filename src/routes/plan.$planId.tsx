@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { Progress } from "@/components/ui/progress";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
 import { getResource } from "@/lib/ct-resources";
 import { useAuth } from "@/hooks/use-auth";
@@ -173,9 +174,13 @@ function PlanPage() {
           )}
           {plan.priority_summary.charAt(0).toLowerCase() + plan.priority_summary.slice(1)}
         </p>
-        <p className="mt-3 text-right text-[12px] font-semibold uppercase tracking-wider text-emerald-600">
-          {done} of {total} steps completed
-        </p>
+        <div className="mt-3">
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-emerald-600">{done} of {total} steps completed</span>
+            <span className="text-[12px] font-semibold text-emerald-600">{Math.round((done / total) * 100)}%</span>
+          </div>
+          <Progress value={total ? (done / total) * 100 : 0} className="h-2.5 bg-emerald-100 [&>[role=progressbar]]:bg-emerald-500" />
+        </div>
       </div>
 
       {plan.crisis_flags?.length > 0 && (
