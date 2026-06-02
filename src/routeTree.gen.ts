@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SurveyRouteImport } from './routes/survey'
+import { Route as SecurityDepositLetterRouteImport } from './routes/security-deposit-letter'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlansRouteImport } from './routes/plans'
@@ -28,6 +29,11 @@ import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-re
 const SurveyRoute = SurveyRouteImport.update({
   id: '/survey',
   path: '/survey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityDepositLetterRoute = SecurityDepositLetterRouteImport.update({
+  id: '/security-deposit-letter',
+  path: '/security-deposit-letter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/plans': typeof PlansRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/survey': typeof SurveyRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/plans': typeof PlansRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/survey': typeof SurveyRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/plans': typeof PlansRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/survey': typeof SurveyRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/plans'
     | '/profile'
     | '/reset-password'
+    | '/security-deposit-letter'
     | '/survey'
     | '/admin/survey-results'
     | '/plan/$planId'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/plans'
     | '/profile'
     | '/reset-password'
+    | '/security-deposit-letter'
     | '/survey'
     | '/admin/survey-results'
     | '/plan/$planId'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/plans'
     | '/profile'
     | '/reset-password'
+    | '/security-deposit-letter'
     | '/survey'
     | '/admin/survey-results'
     | '/plan/$planId'
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   PlansRoute: typeof PlansRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
   SurveyRoute: typeof SurveyRoute
   AdminSurveyResultsRoute: typeof AdminSurveyResultsRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/survey'
       fullPath: '/survey'
       preLoaderRoute: typeof SurveyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security-deposit-letter': {
+      id: '/security-deposit-letter'
+      path: '/security-deposit-letter'
+      fullPath: '/security-deposit-letter'
+      preLoaderRoute: typeof SecurityDepositLetterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -348,6 +368,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlansRoute: PlansRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SecurityDepositLetterRoute: SecurityDepositLetterRoute,
   SurveyRoute: SurveyRoute,
   AdminSurveyResultsRoute: AdminSurveyResultsRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
@@ -355,13 +376,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

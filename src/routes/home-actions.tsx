@@ -88,9 +88,10 @@ const ACTIONS: Action[] = [
   },
   {
     title: "Recover your security deposit",
-    desc: "Landlords must return your deposit within 30 days. Learn how to demand it back with interest.",
+    desc: "Landlords must return your deposit, with interest, within 21 days of your written demand. Generate the letter.",
     icon: DollarSign,
-    cta: "Coming soon",
+    to: "/security-deposit-letter",
+    cta: "Start letter",
   },
   {
     title: "Share your story",
