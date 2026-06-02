@@ -105,9 +105,6 @@ function PlanPage() {
       </Link>
 
       <div className="mb-5">
-        <p className="mb-2 font-mono text-[13px] font-semibold uppercase tracking-wider text-emerald-600">
-          ▸ Your 30-day plan
-        </p>
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
         {!user && (
           <Link
