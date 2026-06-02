@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Building2, Trees, HeartHandshake, ChevronRight } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { Calendar, Building2, Trees, HeartHandshake, ClipboardList } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
+import { listMyPlans } from "@/lib/stabilization-plan.functions";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,11 +32,19 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 function HomePage() {
   const { user, signOut } = useAuth();
   const firstName = getFirstName(user);
+  const fetchPlans = useServerFn(listMyPlans);
+  const { data: plansData } = useQuery({
+    queryKey: ["my-plans"],
+    queryFn: () => fetchPlans({}),
+    enabled: !!user,
+  });
+  const planCount = plansData?.plans.length ?? 0;
   return (
     <AppShell>
       {firstName && (
         <p className="mb-2 text-sm text-foreground/70">Welcome back, {firstName}</p>
       )}
+
       <h1 className="font-display text-3xl leading-tight">
         <span className="text-primary">See It.</span>{" "}
         <span className="text-gold">Name It.</span>{" "}
@@ -54,6 +66,20 @@ function HomePage() {
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
+        {user && planCount > 0 && (
+          <DashLink
+            to="/plans"
+            icon={ClipboardList}
+            title="My Plans"
+            body={
+              planCount === 1
+                ? "Resume your stabilization plan."
+                : `You have ${planCount} plans. Pick up where you left off.`
+            }
+            tone="blue"
+          />
+        )}
+
         <DashLink
           to="/neighborhood"
           icon={Trees}
@@ -112,7 +138,7 @@ const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; ti
 function DashLink({
   to, icon: Icon, title, body, tone, badge,
 }: {
-  to:  "/home" | "/neighborhood" | "/life";
+  to:  "/home" | "/neighborhood" | "/life" | "/plans";
   icon: React.ComponentType<{ className?: string }>;
   title: string; body: string; tone: Tone; badge?: string;
 }) {
