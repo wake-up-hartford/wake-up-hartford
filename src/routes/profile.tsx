@@ -197,6 +197,15 @@ function ProfilePage() {
                 className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
               />
             </Field>
+            <label className="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                checked={smsAlerts}
+                onChange={(e) => setSmsAlerts(e.target.checked)}
+                className="h-4 w-4 rounded border-card-foreground/30 text-accent focus:ring-accent"
+              />
+              <span className="text-[13px] text-card-foreground">Send me reminders and updates by text</span>
+            </label>
             <p className="text-[12px] text-card-foreground/70">
               Use international format (e.g. +1 for US). You'll receive a code to verify.
             </p>
