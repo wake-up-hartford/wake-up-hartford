@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { checkIsAdmin, listSurveyResponses } from "@/lib/admin.functions";
+import { checkIsAdmin, getUsageStats, listSurveyResponses } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/survey-results")({
   head: () => ({ meta: [{ title: "Survey results — Admin" }] }),
@@ -34,6 +34,7 @@ function AdminSurveyResultsPage() {
   const { user, loading } = useAuth();
   const checkAdmin = useServerFn(checkIsAdmin);
   const fetchList = useServerFn(listSurveyResponses);
+  const fetchStats = useServerFn(getUsageStats);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -48,6 +49,12 @@ function AdminSurveyResultsPage() {
   const list = useQuery({
     queryKey: ["admin-survey-responses"],
     queryFn: () => fetchList({}),
+    enabled: !!user && admin.data?.isAdmin === true,
+  });
+
+  const stats = useQuery({
+    queryKey: ["admin-usage-stats"],
+    queryFn: () => fetchStats({}),
     enabled: !!user && admin.data?.isAdmin === true,
   });
 
@@ -138,6 +145,39 @@ function AdminSurveyResultsPage() {
             </Button>
           </div>
         </div>
+
+        {stats.data && (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <StatCard label="Users" value={stats.data.totals.users} sub={`+${stats.data.recent.newUsers7d} last 7d`} />
+              <StatCard label="Intake responses" value={stats.data.totals.intakeResponses} sub={`+${stats.data.recent.intake7d} last 7d`} />
+              <StatCard label="Plans generated" value={stats.data.totals.plansGenerated} sub={`${stats.data.totals.activePlans} active`} />
+              <StatCard
+                label="Step completion"
+                value={`${Math.round(stats.data.totals.stepCompletionRate * 100)}%`}
+                sub={`${stats.data.totals.completedSteps}/${stats.data.totals.totalSteps}`}
+              />
+              <StatCard
+                label="App survey"
+                value={stats.data.totals.appSurveyResponses}
+                sub={`${stats.data.totals.uniqueAppRespondents} unique`}
+              />
+              <StatCard
+                label="Avg helpfulness"
+                value={stats.data.totals.avgHelpfulness != null ? stats.data.totals.avgHelpfulness.toFixed(1) : "—"}
+                sub={`${stats.data.totals.progressSurveys} progress surveys`}
+              />
+            </div>
+
+            {(Object.keys(stats.data.progressCounts).length > 0 || Object.keys(stats.data.barrierCounts).length > 0) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <BreakdownCard title="Progress" counts={stats.data.progressCounts} />
+                <BreakdownCard title="Top barriers" counts={stats.data.barrierCounts} />
+              </div>
+            )}
+          </>
+        )}
+
 
         <Card className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <div>
@@ -241,5 +281,39 @@ function AdminSurveyResultsPage() {
         </Card>
       </div>
     </AppShell>
+  );
+}
+
+function StatCard({ label, value, sub }: { label: string; value: number | string; sub?: string }) {
+  return (
+    <Card className="p-3">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="text-2xl font-semibold mt-1">{value}</div>
+      {sub && <div className="text-xs text-muted-foreground mt-1">{sub}</div>}
+    </Card>
+  );
+}
+
+function BreakdownCard({ title, counts }: { title: string; counts: Record<string, number> }) {
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((a, [, n]) => a + n, 0);
+  return (
+    <Card className="p-3">
+      <div className="text-xs text-muted-foreground mb-2">{title}</div>
+      <div className="space-y-1.5">
+        {entries.map(([k, n]) => (
+          <div key={k}>
+            <div className="flex justify-between text-sm">
+              <span className="truncate">{k}</span>
+              <span className="text-muted-foreground">{n}</span>
+            </div>
+            <div className="h-1.5 bg-muted rounded">
+              <div className="h-full bg-primary rounded" style={{ width: `${total ? (n / total) * 100 : 0}%` }} />
+            </div>
+          </div>
+        ))}
+        {entries.length === 0 && <div className="text-sm text-muted-foreground">No data yet.</div>}
+      </div>
+    </Card>
   );
 }
