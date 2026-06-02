@@ -63,7 +63,7 @@ function HomePage() {
         Knowledge is where change begins.
       </p>
       <p className="mb-4 text-[15px] leading-relaxed text-foreground/80">
-        [[INTRO TEXT HERE]] Real data about your home, your neighborhood, and your life — in plain language, with a path forward.
+        Hartford residents deserve to know what's really going on in their homes and neighborhoods. Look up your address, see the facts, and find resources that can help.
       </p>
 
       <a
