@@ -181,27 +181,9 @@ function SurveyPage() {
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        {/* Q1 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">1. How often do you use Wake Up Wednesday?</h2>
-          <RadioCard options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} name="frequency" />
-        </div>
-
-        {/* Q2 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">2. How do you usually access it?</h2>
-          <RadioCard options={DEVICE_OPTIONS} value={device} onChange={setDevice} name="device" />
-        </div>
-
-        {/* Q3 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">3. Which part do you use most?</h2>
-          <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
-        </div>
-
-        {/* Q4 */}
+        {/* Q1 — ease of use */}
         <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">4. How easy is it to use?</h2>
+          <h2 className="font-display text-base">1. How easy is it to use?</h2>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -223,6 +205,24 @@ function SurveyPage() {
             <span>Hard to use</span>
             <span>Very easy</span>
           </div>
+        </div>
+
+        {/* Q2 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+          <h2 className="font-display text-base">2. How often do you use Wake Up Wednesday?</h2>
+          <RadioCard options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} name="frequency" />
+        </div>
+
+        {/* Q3 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+          <h2 className="font-display text-base">3. How do you usually access it?</h2>
+          <RadioCard options={DEVICE_OPTIONS} value={device} onChange={setDevice} name="device" />
+        </div>
+
+        {/* Q4 */}
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+          <h2 className="font-display text-base">4. Which part do you use most?</h2>
+          <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
         </div>
 
         {/* Q5 */}
