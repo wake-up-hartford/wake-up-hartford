@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, FileText, Phone, Scale, Camera, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
+import housingEnforcementFlyer from "@/assets/housing-enforcement-flyer.pdf.asset.json";
 
 export const Route = createFileRoute("/home-actions")({
   head: () => ({
