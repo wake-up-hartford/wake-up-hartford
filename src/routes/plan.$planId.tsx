@@ -120,8 +120,10 @@ function PlanPage() {
         <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
           {user && (
             <span className="font-semibold text-foreground">
-              {(user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend"},
-              {" "}
+              {(() => {
+                const raw = (user.user_metadata?.display_name as string) || (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend";
+                return raw.split(/\s+/)[0];
+              })()},{" "}
             </span>
           )}
           {plan.priority_summary}
