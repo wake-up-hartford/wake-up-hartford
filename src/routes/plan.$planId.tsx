@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
@@ -69,6 +69,24 @@ function PlanPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
+  const BOOKMARK_KEY = "bookmarkedPlans";
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
+      setIsBookmarked(list.includes(planId));
+    } catch { /* ignore */ }
+  }, [planId]);
+  const toggleBookmark = () => {
+    try {
+      const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
+      const next = list.includes(planId) ? list.filter((id) => id !== planId) : [...list, planId];
+      localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
+      setIsBookmarked(next.includes(planId));
+    } catch { /* ignore */ }
+  };
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["plan", planId],
     queryFn: () => fetchPlan({ data: { planId } }),
@@ -106,7 +124,22 @@ function PlanPage() {
       </Link>
 
       <div className="mb-5">
-        <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
+          <button
+            onClick={toggleBookmark}
+            aria-pressed={isBookmarked}
+            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this plan"}
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition ${
+              isBookmarked
+                ? "border-gold bg-gold/10 text-gold"
+                : "border-border bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? "fill-current" : ""}`} />
+            {isBookmarked ? "Saved" : "Save"}
+          </button>
+        </div>
         {generatedAt && (
           <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-gold">
             <Calendar className="h-3 w-3" />
