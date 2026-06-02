@@ -102,10 +102,10 @@ function SurveyPage() {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         {/* Q1 */}
-        <fieldset className="space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <legend className="font-display text-base text-card-foreground">
+        <div className="space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base text-card-foreground">
             1. How helpful has your plan been so far?
-          </legend>
+          </h2>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -127,13 +127,13 @@ function SurveyPage() {
             <span>Not helpful</span>
             <span>Very helpful</span>
           </div>
-        </fieldset>
+        </div>
 
         {/* Q2 */}
-        <fieldset className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <legend className="font-display text-base text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base text-card-foreground">
             2. Since starting, how are things going overall?
-          </legend>
+          </h2>
           <div className="space-y-2 pt-1">
             {PROGRESS_OPTIONS.map((opt) => (
               <label
@@ -156,13 +156,13 @@ function SurveyPage() {
               </label>
             ))}
           </div>
-        </fieldset>
+        </div>
 
         {/* Q3 */}
-        <fieldset className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
-          <legend className="font-display text-base text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+          <h2 className="font-display text-base text-card-foreground">
             3. What's getting in the way most right now?
-          </legend>
+          </h2>
           <div className="space-y-2 pt-1">
             {BARRIER_OPTIONS.map((opt) => (
               <label
@@ -195,7 +195,7 @@ function SurveyPage() {
               className="mt-2 w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
             />
           )}
-        </fieldset>
+        </div>
 
         {/* Optional comment */}
         <div className="rounded-xl border border-border bg-card p-4 text-card-foreground">
