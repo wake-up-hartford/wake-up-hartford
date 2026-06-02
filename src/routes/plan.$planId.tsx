@@ -180,12 +180,14 @@ function PlanPage() {
         })}
       </div>
 
-      <Link
-        to="/auth"
-        className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
-      >
-        Sign In to receive plan via text/email
-      </Link>
+      {!user && (
+        <Link
+          to="/auth"
+          className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+        >
+          Sign In to receive plan via text/email
+        </Link>
+      )}
 
       <button
         onClick={() => window.print()}
