@@ -126,7 +126,7 @@ function PlanPage() {
               })()},{" "}
             </span>
           )}
-          {plan.priority_summary}
+          {plan.priority_summary.charAt(0).toLowerCase() + plan.priority_summary.slice(1)}
         </p>
         <p className="mt-3 text-[12px] text-muted-foreground">
           {done} of {total} steps completed
