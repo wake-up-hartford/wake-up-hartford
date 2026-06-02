@@ -71,19 +71,24 @@ function PlanPage() {
 
   const BOOKMARK_KEY = "bookmarkedPlans";
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       setIsBookmarked(list.includes(planId));
+      setBookmarkCount(list.length);
     } catch { /* ignore */ }
   }, [planId]);
+
   const toggleBookmark = () => {
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       const next = list.includes(planId) ? list.filter((id) => id !== planId) : [...list, planId];
       localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
       setIsBookmarked(next.includes(planId));
+      setBookmarkCount(next.length);
     } catch { /* ignore */ }
   };
 
@@ -273,6 +278,16 @@ function PlanPage() {
       >
         <Printer className="h-4 w-4" /> Print this plan
       </button>
+
+      {bookmarkCount > 0 && (
+        <Link
+          to="/plans"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-gold bg-gold/10 px-5 py-3 text-[14px] font-semibold text-gold hover:bg-gold/20"
+        >
+          <Bookmark className="h-4 w-4 fill-current" />
+          {bookmarkCount} saved plan{bookmarkCount === 1 ? "" : "s"} — view all
+        </Link>
+      )}
     </AppShell>
   );
 }
