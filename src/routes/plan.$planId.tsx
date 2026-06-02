@@ -74,6 +74,9 @@ function PlanPage() {
   const BOOKMARK_KEY = "bookmarkedPlans";
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkCount, setBookmarkCount] = useState(0);
+  const DUE_DATES_KEY = `planDueDates:${planId}`;
+  const [dueOverrides, setDueOverrides] = useState<Record<number, string>>({});
+  const [editingWeek, setEditingWeek] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -81,8 +84,10 @@ function PlanPage() {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       setIsBookmarked(list.includes(planId));
       setBookmarkCount(list.length);
+      const overrides = JSON.parse(localStorage.getItem(DUE_DATES_KEY) ?? "{}") as Record<number, string>;
+      setDueOverrides(overrides);
     } catch { /* ignore */ }
-  }, [planId]);
+  }, [planId, DUE_DATES_KEY]);
 
   const toggleBookmark = () => {
     try {
@@ -94,6 +99,17 @@ function PlanPage() {
       setBookmarkCount(next.length);
       toast(willRemove ? "Removed from saved plans" : "Plan saved");
     } catch { /* ignore */ }
+  };
+
+  const setWeekDueDate = (week: number, isoDate: string | null) => {
+    setDueOverrides((prev) => {
+      const next = { ...prev };
+      if (isoDate) next[week] = isoDate;
+      else delete next[week];
+      try { localStorage.setItem(DUE_DATES_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+    toast(isoDate ? "Due date updated" : "Due date reset");
   };
 
   const { data, isLoading, error } = useQuery({
