@@ -125,16 +125,9 @@ function PlanPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["plan", planId] }),
   });
 
-  if (loading || isLoading) {
-    return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
-  }
-  if (error || !data) {
-    return <AppShell><p className="text-destructive">{(error as Error)?.message ?? "Couldn't load plan."}</p></AppShell>;
-  }
-
-  const plan = data.plan.plan as PlanShape;
-  const generatedAt = data.plan.generated_at as string | null;
-  const steps = data.steps as StepRow[];
+  const plan = (data?.plan?.plan ?? null) as PlanShape | null;
+  const generatedAt = (data?.plan?.generated_at ?? null) as string | null;
+  const steps = (data?.steps ?? []) as StepRow[];
   const stepsByWeek = new Map<number, StepRow[]>();
   for (const s of steps) {
     const arr = stepsByWeek.get(s.week) ?? [];
@@ -145,16 +138,26 @@ function PlanPage() {
   const done = steps.filter((s) => s.completed_at).length;
 
   useEffect(() => {
+    if (!steps.length) return;
     setCollapsedWeeks((prev) => {
       const next = new Set(prev);
-      for (const w of [1, 2, 3, 4]) {
-        const weekSteps = stepsByWeek.get(w) ?? [];
-        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
-        if (allDone) next.add(w);
+      let changed = false;
+      const byWeek = new Map<number, StepRow[]>();
+      for (const s of steps) {
+        const arr = byWeek.get(s.week) ?? [];
+        arr.push(s);
+        byWeek.set(s.week, arr);
       }
-      return next;
+      for (const [w, weekSteps] of byWeek) {
+        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
+        if (allDone && !next.has(w)) {
+          next.add(w);
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
     });
-  }, [stepsByWeek]);
+  }, [steps]);
 
   const toggleWeekCollapse = (w: number) => {
     setCollapsedWeeks((prev) => {
@@ -163,6 +166,13 @@ function PlanPage() {
       return next;
     });
   };
+
+  if (loading || isLoading) {
+    return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
+  }
+  if (error || !data || !plan) {
+    return <AppShell><p className="text-destructive">{(error as Error)?.message ?? "Couldn't load plan."}</p></AppShell>;
+  }
 
   return (
     <AppShell>
