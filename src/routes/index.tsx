@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, Building2, Trees, HeartHandshake, ChevronRight } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { Calendar, Building2, Trees, HeartHandshake, ClipboardList } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
+import { listMyPlans } from "@/lib/stabilization-plan.functions";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
