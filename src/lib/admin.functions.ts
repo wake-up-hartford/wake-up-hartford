@@ -137,5 +137,3 @@ export const getUsageStats = createServerFn({ method: "GET" })
     };
   });
 
-  });
-
