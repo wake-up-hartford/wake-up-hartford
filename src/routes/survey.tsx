@@ -180,27 +180,27 @@ function SurveyPage() {
         7 quick questions about how you use the app. About 1 minute.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {/* Q1 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">1. How often do you use Wake Up Wednesday?</h2>
           <RadioCard options={FREQUENCY_OPTIONS} value={frequency} onChange={setFrequency} name="frequency" />
         </div>
 
         {/* Q2 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">2. How do you usually access it?</h2>
           <RadioCard options={DEVICE_OPTIONS} value={device} onChange={setDevice} name="device" />
         </div>
 
         {/* Q3 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">3. Which part do you use most?</h2>
           <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
         </div>
 
         {/* Q4 */}
-        <div className="space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">4. How easy is it to use?</h2>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
@@ -208,7 +208,7 @@ function SurveyPage() {
                 type="button"
                 key={n}
                 onClick={() => setEase(n)}
-                className={`flex h-11 flex-1 items-center justify-center rounded-lg border text-[15px] font-semibold transition ${
+                className={`flex h-9 flex-1 items-center justify-center rounded-lg border text-[15px] font-semibold transition ${
                   ease === n
                     ? "border-accent bg-accent text-accent-foreground"
                     : "border-card-foreground/20 bg-white text-card-foreground hover:border-accent/60"
@@ -226,19 +226,19 @@ function SurveyPage() {
         </div>
 
         {/* Q5 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">5. Any technical problems?</h2>
           <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
         {/* Q6 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">6. What brought you here today?</h2>
           <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
         </div>
 
         {/* Q7 (optional) */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">
             7. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
           </h2>
@@ -247,7 +247,7 @@ function SurveyPage() {
         </div>
 
         {/* Optional comment */}
-        <div className="rounded-xl border border-border bg-card p-4 text-card-foreground">
+        <div className="rounded-xl border border-border bg-card p-3 text-card-foreground">
           <label htmlFor="comment" className="mb-1.5 block text-[12px] font-medium text-card-foreground/70">
             Anything else you want us to know? (optional)
           </label>
