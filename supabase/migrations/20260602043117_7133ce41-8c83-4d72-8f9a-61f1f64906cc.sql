@@ -1,0 +1,1 @@
+ALTER TABLE public.app_usage_survey_responses DROP COLUMN frequency, DROP COLUMN device;

@@ -18,10 +18,8 @@ export type Database = {
         Row: {
           comment: string | null
           created_at: string
-          device: string
           ease: number
           feature_awareness: string | null
-          frequency: string
           id: string
           most_used: string
           prompt: string
@@ -31,10 +29,8 @@ export type Database = {
         Insert: {
           comment?: string | null
           created_at?: string
-          device: string
           ease: number
           feature_awareness?: string | null
-          frequency: string
           id?: string
           most_used: string
           prompt: string
@@ -44,10 +40,8 @@ export type Database = {
         Update: {
           comment?: string | null
           created_at?: string
-          device?: string
           ease?: number
           feature_awareness?: string | null
-          frequency?: string
           id?: string
           most_used?: string
           prompt?: string
