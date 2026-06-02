@@ -96,15 +96,18 @@ function HomePage() {
       {user && planCount > 0 && (
         <Link
           to="/plans"
-          className="mt-6 flex min-h-[52px] w-full items-center justify-between gap-3 rounded-xl border-2 border-accent/50 bg-accent/5 px-4 py-3.5 text-accent hover:bg-accent/10"
+          className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
         >
-          <span className="flex items-center gap-3">
-            <ClipboardList className="h-5 w-5" />
-            <span className="font-display text-base">My Plans</span>
-          </span>
-          <span className="text-sm text-foreground/70">
-            {planCount === 1 ? "Resume your plan" : `${planCount} plans · resume`}
-          </span>
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
+            <p className="text-[12px] text-muted-foreground">
+              {planCount === 1 ? "Resume your stabilization plan." : `You have ${planCount} plans. Pick up where you left off.`}
+            </p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
       )}
       {!user ? (
