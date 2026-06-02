@@ -18,7 +18,7 @@ type Action = {
   icon: React.ComponentType<{ className?: string }>;
   to?: string;
   href?: string;
-  cta: string;
+  cta?: string;
   href2?: string;
   cta2?: string;
   href3?: string;
