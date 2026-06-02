@@ -6,6 +6,8 @@ import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
 import { listMyPlans } from "@/lib/stabilization-plan.functions";
+import { getPublicStats } from "@/lib/stats.functions";
+
 
 
 export const Route = createFileRoute("/")({
