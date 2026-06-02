@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { checkIsAdmin, listSurveyResponses } from "@/lib/admin.functions";
+import { checkIsAdmin, getUsageStats, listSurveyResponses } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/survey-results")({
   head: () => ({ meta: [{ title: "Survey results — Admin" }] }),
