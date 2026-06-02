@@ -32,11 +32,19 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 function HomePage() {
   const { user, signOut } = useAuth();
   const firstName = getFirstName(user);
+  const fetchPlans = useServerFn(listMyPlans);
+  const { data: plansData } = useQuery({
+    queryKey: ["my-plans"],
+    queryFn: () => fetchPlans({}),
+    enabled: !!user,
+  });
+  const planCount = plansData?.plans.length ?? 0;
   return (
     <AppShell>
       {firstName && (
         <p className="mb-2 text-sm text-foreground/70">Welcome back, {firstName}</p>
       )}
+
       <h1 className="font-display text-3xl leading-tight">
         <span className="text-primary">See It.</span>{" "}
         <span className="text-gold">Name It.</span>{" "}
