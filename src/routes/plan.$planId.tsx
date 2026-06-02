@@ -117,7 +117,15 @@ function PlanPage() {
             Sign In to receive plan via text/email
           </Link>
         )}
-        <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">{plan.priority_summary}</p>
+        <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
+          {user && (
+            <span className="font-semibold text-foreground">
+              {(user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend"},
+              {" "}
+            </span>
+          )}
+          {plan.priority_summary}
+        </p>
         <p className="mt-3 text-[12px] text-muted-foreground">
           {done} of {total} steps completed
         </p>
