@@ -130,7 +130,7 @@ function PlanPage() {
                   const r = getResource(s.resource_id);
                   const isDone = !!s.completed_at;
                   return (
-                    <li key={s.id} className="rounded-xl border border-border p-3">
+                    <li key={s.id} className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-3">
                       <button
                         onClick={() => mut.mutate({ stepId: s.id, done: !isDone })}
                         className="flex w-full items-start gap-3 text-left"
@@ -138,24 +138,24 @@ function PlanPage() {
                         {isDone ? (
                           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                         ) : (
-                          <Circle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                          <Circle className="mt-0.5 h-5 w-5 shrink-0 text-stone-500" />
                         )}
                         <div className="flex-1">
-                          <p className={`text-[14px] font-semibold ${isDone ? "text-muted-foreground line-through" : "text-card-foreground"}`}>
+                          <p className={`text-[14px] font-semibold ${isDone ? "text-stone-500 line-through" : "text-stone-900"}`}>
                             {s.title}
                           </p>
                           {s.detail && (
-                            <p className="mt-1 text-[13px] leading-relaxed text-card-foreground/90">{s.detail}</p>
+                            <p className="mt-1 text-[13px] leading-relaxed text-stone-800">{s.detail}</p>
                           )}
-                          <span className="mt-1 inline-block rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                          <span className="mt-1 inline-block rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900">
                             {s.domain}
                           </span>
                         </div>
                       </button>
                       {r && (
-                        <div className="mt-3 rounded-lg border border-dashed border-border bg-secondary/40 p-3">
-                          <p className="text-[13px] font-semibold text-card-foreground">{r.name}</p>
-                          <p className="text-[12px] text-muted-foreground">{r.eligibility_notes}</p>
+                        <div className="mt-3 rounded-lg border border-dashed border-amber-300 bg-white/80 p-3">
+                          <p className="text-[13px] font-semibold text-stone-900">{r.name}</p>
+                          <p className="text-[12px] text-stone-700">{r.eligibility_notes}</p>
                           <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
                             {r.phone && r.phone !== "n/a" && (
                               <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-emerald-700">
@@ -168,7 +168,7 @@ function PlanPage() {
                               </a>
                             )}
                           </div>
-                          <p className="mt-1 text-[11px] text-muted-foreground">{r.town} · {r.hours}</p>
+                          <p className="mt-1 text-[11px] text-stone-600">{r.town} · {r.hours}</p>
                         </div>
                       )}
                     </li>
