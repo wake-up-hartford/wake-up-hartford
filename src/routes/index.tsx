@@ -102,6 +102,19 @@ function HomePage() {
       </div>
 
       <EventCard />
+      {stats && (stats.assessmentsThisMonth > 0 || stats.plansThisMonth > 0 || stats.plansAllTime > 0) && (
+        <section
+          aria-label="Community usage"
+          className="mt-6 flex items-stretch justify-around gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-3 text-center"
+        >
+          <Stat value={stats.assessmentsThisMonth} label="self-assessments this month" />
+          <div className="w-px bg-border/70" aria-hidden />
+          <Stat value={stats.plansThisMonth} label="plans created this month" />
+          <div className="w-px bg-border/70" aria-hidden />
+          <Stat value={stats.plansAllTime} label="plans all-time" />
+        </section>
+      )}
+
       {user && planCount > 0 && (
         <Link
           to="/plans"
