@@ -23,6 +23,7 @@ import { Route as FindHelpRouteImport } from './routes/find-help'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
+import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
 
 const SurveyRoute = SurveyRouteImport.update({
   id: '/survey',
@@ -94,6 +95,11 @@ const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
   path: '/plan/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSurveyResultsRoute = AdminSurveyResultsRouteImport.update({
+  id: '/admin/survey-results',
+  path: '/admin/survey-results',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/survey': typeof SurveyRoute
+  '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/survey': typeof SurveyRoute
+  '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/survey': typeof SurveyRoute
+  '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/plan/$planId': typeof PlanPlanIdRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/survey'
+    | '/admin/survey-results'
     | '/plan/$planId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/survey'
+    | '/admin/survey-results'
     | '/plan/$planId'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/survey'
+    | '/admin/survey-results'
     | '/plan/$planId'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SurveyRoute: typeof SurveyRoute
+  AdminSurveyResultsRoute: typeof AdminSurveyResultsRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
 
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/survey-results': {
+      id: '/admin/survey-results'
+      path: '/admin/survey-results'
+      fullPath: '/admin/survey-results'
+      preLoaderRoute: typeof AdminSurveyResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -329,8 +349,19 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SurveyRoute: SurveyRoute,
+  AdminSurveyResultsRoute: AdminSurveyResultsRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
