@@ -318,60 +318,62 @@ function PlanPage() {
                   </button>
                 </div>
               )}
-              <ul className="space-y-3">
-                {ws.map((s) => {
-                  const r = getResource(s.resource_id);
-                  const isDone = !!s.completed_at;
-                  return (
-                    <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
-                      <button
-                        onClick={(e) => {
-                          const willComplete = !isDone;
-                          mut.mutate({ stepId: s.id, done: willComplete });
-                          if (willComplete) fireConfetti(e.currentTarget);
-                        }}
-                        className="flex w-full items-start gap-3 text-left"
-                      >
-                        {isDone ? (
-                          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
-                        ) : (
-                          <Circle className="mt-0.5 h-5 w-5 shrink-0 text-step-surface-muted" />
-                        )}
-                        <div className="flex-1">
-                          <p className={`text-[14px] font-semibold ${isDone ? "text-step-surface-muted line-through" : "text-step-surface-foreground"}`}>
-                            {s.title}
-                          </p>
-                          {s.detail && (
-                            <p className="mt-1 text-[13px] leading-relaxed text-step-surface-foreground/90">{s.detail}</p>
+              {!isCollapsed && (
+                <ul className="space-y-3">
+                  {ws.map((s) => {
+                    const r = getResource(s.resource_id);
+                    const isDone = !!s.completed_at;
+                    return (
+                      <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
+                        <button
+                          onClick={(e) => {
+                            const willComplete = !isDone;
+                            mut.mutate({ stepId: s.id, done: willComplete });
+                            if (willComplete) fireConfetti(e.currentTarget);
+                          }}
+                          className="flex w-full items-start gap-3 text-left"
+                        >
+                          {isDone ? (
+                            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+                          ) : (
+                            <Circle className="mt-0.5 h-5 w-5 shrink-0 text-step-surface-muted" />
                           )}
-                          <span className="mt-1 inline-block rounded-full bg-pill px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pill-foreground">
-                            {s.domain}
-                          </span>
-                        </div>
-                      </button>
-                      {r && (
-                        <div className="mt-3 rounded-lg border border-dashed border-border bg-step-resource p-3">
-                          <p className="text-[13px] font-semibold text-step-resource-foreground">{r.name}</p>
-                          <p className="text-[12px] text-step-resource-muted">{r.eligibility_notes}</p>
-                          <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
-                            {r.phone && r.phone !== "n/a" && (
-                              <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-success">
-                                <Phone className="h-3.5 w-3.5" /> {r.phone}
-                              </a>
+                          <div className="flex-1">
+                            <p className={`text-[14px] font-semibold ${isDone ? "text-step-surface-muted line-through" : "text-step-surface-foreground"}`}>
+                              {s.title}
+                            </p>
+                            {s.detail && (
+                              <p className="mt-1 text-[13px] leading-relaxed text-step-surface-foreground/90">{s.detail}</p>
                             )}
-                            {r.url && (
-                              <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent">
-                                <ExternalLink className="h-3.5 w-3.5" /> Website
-                              </a>
-                            )}
+                            <span className="mt-1 inline-block rounded-full bg-pill px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pill-foreground">
+                              {s.domain}
+                            </span>
                           </div>
-                          <p className="mt-1 text-[11px] text-step-resource-muted">{r.town} · {r.hours}</p>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+                        </button>
+                        {r && (
+                          <div className="mt-3 rounded-lg border border-dashed border-border bg-step-resource p-3">
+                            <p className="text-[13px] font-semibold text-step-resource-foreground">{r.name}</p>
+                            <p className="text-[12px] text-step-resource-muted">{r.eligibility_notes}</p>
+                            <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
+                              {r.phone && r.phone !== "n/a" && (
+                                <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-success">
+                                  <Phone className="h-3.5 w-3.5" /> {r.phone}
+                                </a>
+                              )}
+                              {r.url && (
+                                <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent">
+                                  <ExternalLink className="h-3.5 w-3.5" /> Website
+                                </a>
+                              )}
+                            </div>
+                            <p className="mt-1 text-[11px] text-step-resource-muted">{r.town} · {r.hours}</p>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
           );
         })}
