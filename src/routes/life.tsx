@@ -524,16 +524,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
             );
           })}
         </div>
-        </div>
+      </div>
 
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-border bg-card/50 p-4">
-          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            We take your privacy seriously. Your answers are private and secure. We will never share or sell your information.
-          </p>
-        </div>
-
-        <button
+      <button
         onClick={onBegin}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
       >
@@ -628,6 +621,22 @@ function SurveyScreen({
           </p>
         </div>
 
+        <div className="mb-5 space-y-3">
+          <div>
+            <h3 className="font-display text-[18px] font-semibold text-blue-50">
+              Sign in and stay connected <span className="text-[13px] font-normal text-blue-200/80">[optional]</span>
+            </h3>
+            <p className="mt-1 text-[13px] leading-relaxed text-blue-50/90">
+              We'll send your Action Plan by email. You'll also get updates on free resources and community action you can be part of — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
+            </p>
+          </div>
+          <div className="flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
+            <p className="text-[13px] leading-relaxed">
+              We know trust matters. Your answers are private and secure. We will never share or sell your information. You can unsubscribe any time.
+            </p>
+          </div>
+        </div>
 
         <button
           onClick={() => setStarted(true)}
