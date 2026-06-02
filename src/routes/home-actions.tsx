@@ -40,7 +40,7 @@ const ACTIONS: Action[] = [
     href: "tel:311",
     cta: "Call 311",
     href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
-    cta2: "Go to website",
+    cta2: "Website",
     href3: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
     cta3: "Download 'Know When & What to Report'",
   },
@@ -51,7 +51,7 @@ const ACTIONS: Action[] = [
     href: "tel:18604110050",
     cta: "Call legal aid",
     href2: "https://www.ghla.org/",
-    cta2: "Go to website",
+    cta2: "Website",
   },
   {
     title: "Recover your security deposit",
@@ -67,7 +67,7 @@ const ACTIONS: Action[] = [
     href: "tel:211",
     cta: "Dial 211",
     href2: "https://www.211ct.org/",
-    cta2: "Go to website",
+    cta2: "Website",
   },
   {
     title: "Document conditions with photos",
