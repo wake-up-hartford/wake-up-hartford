@@ -98,7 +98,7 @@ export const getUsageStats = createServerFn({ method: "GET" })
         newUsers7d: since(profiles.data, 7 * day),
         newUsers30d: since(profiles.data, 30 * day),
         intake7d: since(intake.data, 7 * day),
-        plans7d: since(plans.data, 7 * day),
+        plans7d: since((plans.data ?? []).map((p) => ({ created_at: p.generated_at })), 7 * day),
         appSurvey7d: since(appSurvey.data, 7 * day),
       },
       barrierCounts,
