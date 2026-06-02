@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, FileText, Phone, Scale, Camera, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
-import housingEnforcementFlyer from "@/assets/housing-enforcement-flyer.pdf.asset.json";
 
 export const Route = createFileRoute("/home-actions")({
   head: () => ({
@@ -42,7 +41,7 @@ const ACTIONS: Action[] = [
     cta: "Call 311",
     href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
     cta2: "Go to website",
-    href3: housingEnforcementFlyer.url,
+    href3: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
     cta3: "Know When & What to Report",
   },
   {
