@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -85,10 +86,12 @@ function PlanPage() {
   const toggleBookmark = () => {
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
-      const next = list.includes(planId) ? list.filter((id) => id !== planId) : [...list, planId];
+      const willRemove = list.includes(planId);
+      const next = willRemove ? list.filter((id) => id !== planId) : [...list, planId];
       localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
       setIsBookmarked(next.includes(planId));
       setBookmarkCount(next.length);
+      toast(willRemove ? "Removed from saved plans" : "Plan saved");
     } catch { /* ignore */ }
   };
 
