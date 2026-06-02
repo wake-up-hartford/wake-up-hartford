@@ -8,7 +8,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id, display_name, language_pref")
+      .select("id, display_name, language_pref, sms_alerts")
       .eq("id", userId)
       .maybeSingle();
 
