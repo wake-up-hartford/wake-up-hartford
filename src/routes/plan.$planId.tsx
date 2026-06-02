@@ -1,63 +1,25 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { ChevronLeft, CheckCircle2, Circle, Phone, ExternalLink, Printer, AlertTriangle, Calendar, Bookmark, Share2, Mail, MessageSquare, Copy, ChevronDown } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { Progress } from "@/components/ui/progress";
-import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
-import { getResource } from "@/lib/ct-resources";
+import { CrisisFlags } from "@/components/plan/CrisisFlags";
+import { PlanFooterActions } from "@/components/plan/PlanFooterActions";
+import { PlanHeader } from "@/components/plan/PlanHeader";
+import { SharePlanCard } from "@/components/plan/SharePlanCard";
+import { WeekCard } from "@/components/plan/WeekCard";
 import { useAuth } from "@/hooks/use-auth";
+import { useAutoCollapseWeeks } from "@/hooks/use-auto-collapse-weeks";
+import { useBookmarkPlan } from "@/hooks/use-bookmark-plan";
+import { useWeekDueDates } from "@/hooks/use-week-due-dates";
+import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
+import type { PlanShape, StepRow } from "@/lib/plan-types";
 
 export const Route = createFileRoute("/plan/$planId")({
   head: () => ({ meta: [{ title: "Your 30-day plan" }] }),
   component: PlanPage,
 });
-
-// Lazy-loaded confetti — module is fetched only on first task-complete click.
-let confettiPromise: Promise<(opts: Record<string, unknown>) => void> | null = null;
-function fireConfetti(anchor: HTMLElement) {
-  if (typeof window === "undefined") return;
-  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-  const rect = anchor.getBoundingClientRect();
-  const x = (rect.left + rect.width / 2) / window.innerWidth;
-  const y = (rect.top + rect.height / 2) / window.innerHeight;
-  if (!confettiPromise) {
-    confettiPromise = import("canvas-confetti").then(
-      (m) => (m as unknown as { default: (opts: Record<string, unknown>) => void }).default,
-    );
-  }
-  confettiPromise.then((confetti) => {
-    confetti({
-      particleCount: 90,
-      spread: 70,
-      startVelocity: 35,
-      ticks: 120,
-      origin: { x, y },
-      colors: ["#7b3fbf", "#3aa3d8", "#f4a73a", "#3fa86b", "#f5f0e0"],
-      disableForReducedMotion: true,
-    });
-  });
-}
-
-
-type StepRow = {
-  id: string;
-  week: number;
-  domain: string;
-  title: string;
-  detail: string | null;
-  resource_id: string | null;
-  step_order: number;
-  completed_at: string | null;
-};
-
-type PlanShape = {
-  priority_summary: string;
-  crisis_flags: { note: string; hotline: string }[];
-  weeks: { week: number; focus: string; steps: unknown[] }[];
-};
 
 function PlanPage() {
   const { planId } = Route.useParams();
@@ -71,48 +33,9 @@ function PlanPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
-  const BOOKMARK_KEY = "bookmarkedPlans";
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkCount, setBookmarkCount] = useState(0);
-  const DUE_DATES_KEY = `planDueDates:${planId}`;
-  const [dueOverrides, setDueOverrides] = useState<Record<number, string>>({});
+  const { isBookmarked, bookmarkCount, toggleBookmark } = useBookmarkPlan(planId);
+  const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
-  const [collapsedWeeks, setCollapsedWeeks] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
-      setIsBookmarked(list.includes(planId));
-      setBookmarkCount(list.length);
-      const overrides = JSON.parse(localStorage.getItem(DUE_DATES_KEY) ?? "{}") as Record<number, string>;
-      setDueOverrides(overrides);
-    } catch { /* ignore */ }
-  }, [planId, DUE_DATES_KEY]);
-
-
-  const toggleBookmark = () => {
-    try {
-      const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
-      const willRemove = list.includes(planId);
-      const next = willRemove ? list.filter((id) => id !== planId) : [...list, planId];
-      localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
-      setIsBookmarked(next.includes(planId));
-      setBookmarkCount(next.length);
-      toast(willRemove ? "Removed from saved plans" : "Plan saved");
-    } catch { /* ignore */ }
-  };
-
-  const setWeekDueDate = (week: number, isoDate: string | null) => {
-    setDueOverrides((prev) => {
-      const next = { ...prev };
-      if (isoDate) next[week] = isoDate;
-      else delete next[week];
-      try { localStorage.setItem(DUE_DATES_KEY, JSON.stringify(next)); } catch { /* ignore */ }
-      return next;
-    });
-    toast(isoDate ? "Due date updated" : "Due date reset");
-  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["plan", planId],
@@ -128,6 +51,15 @@ function PlanPage() {
   const plan = (data?.plan?.plan ?? null) as PlanShape | null;
   const generatedAt = (data?.plan?.generated_at ?? null) as string | null;
   const steps = (data?.steps ?? []) as StepRow[];
+  const { collapsedWeeks, toggleWeekCollapse } = useAutoCollapseWeeks(steps);
+
+  if (loading || isLoading) {
+    return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
+  }
+  if (error || !data || !plan) {
+    return <AppShell><p className="text-destructive">{(error as Error)?.message ?? "Couldn't load plan."}</p></AppShell>;
+  }
+
   const stepsByWeek = new Map<number, StepRow[]>();
   for (const s of steps) {
     const arr = stepsByWeek.get(s.week) ?? [];
@@ -137,42 +69,9 @@ function PlanPage() {
   const total = steps.length;
   const done = steps.filter((s) => s.completed_at).length;
 
-  useEffect(() => {
-    if (!steps.length) return;
-    setCollapsedWeeks((prev) => {
-      const next = new Set(prev);
-      let changed = false;
-      const byWeek = new Map<number, StepRow[]>();
-      for (const s of steps) {
-        const arr = byWeek.get(s.week) ?? [];
-        arr.push(s);
-        byWeek.set(s.week, arr);
-      }
-      for (const [w, weekSteps] of byWeek) {
-        const allDone = weekSteps.length > 0 && weekSteps.every((s) => s.completed_at);
-        if (allDone && !next.has(w)) {
-          next.add(w);
-          changed = true;
-        }
-      }
-      return changed ? next : prev;
-    });
-  }, [steps]);
-
-  const toggleWeekCollapse = (w: number) => {
-    setCollapsedWeeks((prev) => {
-      const next = new Set(prev);
-      if (next.has(w)) next.delete(w); else next.add(w);
-      return next;
-    });
+  const handleToggleStep = (stepId: string, isDone: boolean) => {
+    mut.mutate({ stepId, done: isDone });
   };
-
-  if (loading || isLoading) {
-    return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
-  }
-  if (error || !data || !plan) {
-    return <AppShell><p className="text-destructive">{(error as Error)?.message ?? "Couldn't load plan."}</p></AppShell>;
-  }
 
   return (
     <AppShell>
@@ -180,211 +79,39 @@ function PlanPage() {
         <ChevronLeft className="h-4 w-4" /> All plans
       </Link>
 
-      <div className="mb-5">
-        <div className="flex items-start justify-between gap-3">
-          <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
-          <button
-            onClick={toggleBookmark}
-            aria-pressed={isBookmarked}
-            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this plan"}
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition ${
-              isBookmarked
-                ? "border-gold bg-gold/10 text-gold"
-                : "border-border bg-card text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? "fill-current" : ""}`} />
-            {isBookmarked ? "Saved" : "Save"}
-          </button>
-        </div>
-        {generatedAt && (
-          <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-gold">
-            <Calendar className="h-3 w-3" />
-            Created on {new Date(generatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-          </p>
-        )}
-        {!user && (
-          <Link
-            to="/auth"
-            className="mt-3 inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-2.5 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
-          >
-            Sign In to receive plan via text/email
-          </Link>
-        )}
-        <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
-          {user && (
-            <span className="font-semibold text-foreground">
-              {(() => {
-                const raw = (user.user_metadata?.display_name as string) || (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend";
-                return raw.split(/\s+/)[0];
-              })()},{" "}
-            </span>
-          )}
-          {plan.priority_summary.charAt(0).toLowerCase() + plan.priority_summary.slice(1)}
-        </p>
-        <div className="mt-3">
-          <div className="mb-1 flex items-center justify-between">
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-emerald-600">{done} of {total} steps completed</span>
-            <span className="text-[12px] font-semibold text-emerald-600">{Math.round((done / total) * 100)}%</span>
-          </div>
-          <Progress value={total ? (done / total) * 100 : 0} className="h-2.5 bg-emerald-100 [&>[role=progressbar]]:bg-emerald-500" />
-        </div>
-      </div>
+      <PlanHeader
+        user={user}
+        isBookmarked={isBookmarked}
+        onToggleBookmark={toggleBookmark}
+        generatedAt={generatedAt}
+        prioritySummary={plan.priority_summary}
+        done={done}
+        total={total}
+      />
 
-      {plan.crisis_flags?.length > 0 && (
-        <div className="mb-5 rounded-2xl border-2 border-red-500/50 bg-red-50 p-4">
-          <div className="mb-2 flex items-center gap-2 text-red-700">
-            <AlertTriangle className="h-4 w-4" />
-            <span className="text-[12px] font-semibold uppercase tracking-wider">Right now</span>
-          </div>
-          <ul className="space-y-2">
-            {plan.crisis_flags.map((c, i) => (
-              <li key={i} className="text-[14px] text-red-900">
-                <p>{c.note}</p>
-                <a href={`tel:${c.hotline.replace(/[^\d]/g, "")}`} className="mt-1 inline-flex items-center gap-1 font-semibold text-red-700 underline">
-                  <Phone className="h-3.5 w-3.5" /> {c.hotline}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <CrisisFlags flags={plan.crisis_flags ?? []} />
 
       <div className="space-y-4">
         {[1, 2, 3, 4].map((w) => {
           const weekMeta = plan.weeks.find((x) => x.week === w);
           const ws = stepsByWeek.get(w) ?? [];
-          const defaultDue = generatedAt
-            ? new Date(new Date(generatedAt).getTime() + w * 7 * 24 * 60 * 60 * 1000)
-            : null;
-          const overrideIso = dueOverrides[w];
-          const dueDate = overrideIso ? new Date(overrideIso + "T00:00:00") : defaultDue;
-          const isCustom = !!overrideIso;
-          const dueIsoForInput = dueDate
-            ? `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`
-            : "";
-          const weekDone = ws.filter((s) => s.completed_at).length;
-          const weekTotal = ws.length;
-          const isCollapsed = collapsedWeeks.has(w);
+          const { dueDate, isCustom } = getWeekDueDate(w, generatedAt);
           return (
-            <div key={w} className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-              <button
-                type="button"
-                onClick={() => toggleWeekCollapse(w)}
-                className="mb-3 flex w-full flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-left"
-              >
-                <div className="flex items-center gap-2">
-                  <h2 className="font-display text-xl text-card-foreground">Week {w}</h2>
-                  {dueDate && (
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); setEditingWeek(editingWeek === w ? null : w); }}
-                      aria-label={`Edit due date for week ${w}`}
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
-                        isCustom
-                          ? "bg-accent/15 text-accent hover:bg-accent/25"
-                          : "bg-amber-100 text-amber-700 hover:bg-amber-200"
-                      }`}
-                    >
-                      <Calendar className="h-3 w-3" />
-                      by {dueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </button>
-                  )}
-                  {weekTotal > 0 && (
-                    <span className="text-[11px] font-semibold text-success">
-                      {weekDone}/{weekTotal} done
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {weekMeta && <span className="font-display text-[17px] leading-tight text-card-foreground">{weekMeta.focus}</span>}
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isCollapsed ? "-rotate-90" : ""}`} />
-                </div>
-              </button>
-              {editingWeek === w && (
-                <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-secondary/40 p-2.5">
-                  <label className="text-[12px] font-semibold text-foreground">Due date:</label>
-                  <input
-                    type="date"
-                    value={dueIsoForInput}
-                    onChange={(e) => setWeekDueDate(w, e.target.value || null)}
-                    className="rounded-md border border-border bg-card px-2 py-1 text-[13px] text-foreground"
-                  />
-                  {isCustom && (
-                    <button
-                      type="button"
-                      onClick={() => setWeekDueDate(w, null)}
-                      className="text-[12px] font-semibold text-muted-foreground underline hover:text-foreground"
-                    >
-                      Reset
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setEditingWeek(null)}
-                    className="ml-auto text-[12px] font-semibold text-accent hover:underline"
-                  >
-                    Done
-                  </button>
-                </div>
-              )}
-              {!isCollapsed && (
-                <ul className="space-y-3">
-                  {ws.map((s) => {
-                    const r = getResource(s.resource_id);
-                    const isDone = !!s.completed_at;
-                    return (
-                      <li key={s.id} className="rounded-xl border border-border/70 bg-step-surface p-3">
-                        <button
-                          onClick={(e) => {
-                            const willComplete = !isDone;
-                            mut.mutate({ stepId: s.id, done: willComplete });
-                            if (willComplete) fireConfetti(e.currentTarget);
-                          }}
-                          className="flex w-full items-start gap-3 text-left"
-                        >
-                          {isDone ? (
-                            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
-                          ) : (
-                            <Circle className="mt-0.5 h-5 w-5 shrink-0 text-step-surface-muted" />
-                          )}
-                          <div className="flex-1">
-                            <p className={`text-[14px] font-semibold ${isDone ? "text-step-surface-muted line-through" : "text-step-surface-foreground"}`}>
-                              {s.title}
-                            </p>
-                            {s.detail && (
-                              <p className="mt-1 text-[13px] leading-relaxed text-step-surface-foreground/90">{s.detail}</p>
-                            )}
-                            <span className="mt-1 inline-block rounded-full bg-pill px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pill-foreground">
-                              {s.domain}
-                            </span>
-                          </div>
-                        </button>
-                        {r && (
-                          <div className="mt-3 rounded-lg border border-dashed border-border bg-step-resource p-3">
-                            <p className="text-[13px] font-semibold text-step-resource-foreground">{r.name}</p>
-                            <p className="text-[12px] text-step-resource-muted">{r.eligibility_notes}</p>
-                            <div className="mt-2 flex flex-wrap gap-3 text-[12px]">
-                              {r.phone && r.phone !== "n/a" && (
-                                <a href={`tel:${r.phone.replace(/[^\d]/g, "")}`} className="inline-flex items-center gap-1 text-success">
-                                  <Phone className="h-3.5 w-3.5" /> {r.phone}
-                                </a>
-                              )}
-                              {r.url && (
-                                <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-accent">
-                                  <ExternalLink className="h-3.5 w-3.5" /> Website
-                                </a>
-                              )}
-                            </div>
-                            <p className="mt-1 text-[11px] text-step-resource-muted">{r.town} · {r.hours}</p>
-                          </div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
+            <WeekCard
+              key={w}
+              week={w}
+              focus={weekMeta?.focus}
+              steps={ws}
+              dueDate={dueDate}
+              isCustom={isCustom}
+              isCollapsed={collapsedWeeks.has(w)}
+              isEditing={editingWeek === w}
+              onToggleCollapse={toggleWeekCollapse}
+              onStartEdit={(week) => setEditingWeek(editingWeek === week ? null : week)}
+              onCloseEdit={() => setEditingWeek(null)}
+              onChangeDueDate={setWeekDueDate}
+              onToggleStep={handleToggleStep}
+            />
           );
         })}
       </div>
@@ -398,79 +125,8 @@ function PlanPage() {
         </Link>
       )}
 
-      {(() => {
-        const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-        const shareTitle = "My 30-day stabilization plan";
-        const shareText = `I'd like to share my 30-day plan with you so you can help me follow through. View it here: ${shareUrl}`;
-        const handleNativeShare = async () => {
-          if (typeof navigator !== "undefined" && navigator.share) {
-            try {
-              await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
-            } catch { /* user cancelled */ }
-          } else {
-            try {
-              await navigator.clipboard.writeText(shareUrl);
-              toast("Link copied — paste it to share");
-            } catch {
-              toast("Couldn't copy link");
-            }
-          }
-        };
-        const mailto = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText)}`;
-        const sms = `sms:?&body=${encodeURIComponent(shareText)}`;
-        return (
-          <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-soft">
-            <div className="mb-2 flex items-center gap-2">
-              <Share2 className="h-4 w-4 text-accent" />
-              <h3 className="text-[13px] font-semibold uppercase tracking-wider text-foreground">Share this plan</h3>
-            </div>
-            <p className="mb-3 text-[12px] text-muted-foreground">
-              Send it to a case manager, family member, or advocate who can help you follow through.
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <a
-                href={sms}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2.5 text-[13px] font-semibold text-card-foreground hover:bg-secondary/50"
-              >
-                <MessageSquare className="h-4 w-4" /> Text
-              </a>
-              <a
-                href={mailto}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2.5 text-[13px] font-semibold text-card-foreground hover:bg-secondary/50"
-              >
-                <Mail className="h-4 w-4" /> Email
-              </a>
-              <button
-                onClick={handleNativeShare}
-                className="col-span-2 flex items-center justify-center gap-1.5 rounded-xl bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-foreground hover:opacity-90"
-              >
-                {typeof navigator !== "undefined" && "share" in navigator ? (
-                  <><Share2 className="h-4 w-4" /> Share…</>
-                ) : (
-                  <><Copy className="h-4 w-4" /> Copy link</>
-                )}
-              </button>
-            </div>
-          </div>
-        );
-      })()}
-
-      <button
-        onClick={() => window.print()}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground hover:bg-secondary/50"
-      >
-        <Printer className="h-4 w-4" /> Print this plan
-      </button>
-
-      {bookmarkCount > 0 && (
-        <Link
-          to="/plans"
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-gold bg-gold/10 px-5 py-3 text-[14px] font-semibold text-gold hover:bg-gold/20"
-        >
-          <Bookmark className="h-4 w-4 fill-current" />
-          {bookmarkCount} saved plan{bookmarkCount === 1 ? "" : "s"} — view all
-        </Link>
-      )}
+      <SharePlanCard />
+      <PlanFooterActions bookmarkCount={bookmarkCount} />
     </AppShell>
   );
 }
