@@ -71,19 +71,24 @@ function PlanPage() {
 
   const BOOKMARK_KEY = "bookmarkedPlans";
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       setIsBookmarked(list.includes(planId));
+      setBookmarkCount(list.length);
     } catch { /* ignore */ }
   }, [planId]);
+
   const toggleBookmark = () => {
     try {
       const list = JSON.parse(localStorage.getItem(BOOKMARK_KEY) ?? "[]") as string[];
       const next = list.includes(planId) ? list.filter((id) => id !== planId) : [...list, planId];
       localStorage.setItem(BOOKMARK_KEY, JSON.stringify(next));
       setIsBookmarked(next.includes(planId));
+      setBookmarkCount(next.length);
     } catch { /* ignore */ }
   };
 
