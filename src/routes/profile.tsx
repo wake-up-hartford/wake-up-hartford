@@ -34,6 +34,7 @@ function ProfilePage() {
   const [displayName, setDisplayName] = useState("");
   const [languagePref, setLanguagePref] = useState("en");
   const [phone, setPhone] = useState("");
+  const [smsAlerts, setSmsAlerts] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
 
