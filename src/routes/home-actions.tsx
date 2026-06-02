@@ -84,7 +84,8 @@ const ACTIONS: Action[] = [
     title: "Contact your city council member",
     desc: "Tell elected officials about conditions in your building. Pressure works.",
     icon: Landmark,
-    cta: "Coming soon",
+    href: "https://hartford.civicweb.net/portal/members.aspx?id=10",
+    cta: "Find your council member",
   },
   {
     title: "Recover your security deposit",
