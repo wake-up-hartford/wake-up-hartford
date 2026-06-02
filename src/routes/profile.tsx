@@ -118,9 +118,9 @@ function ProfilePage() {
           {/* Profile form */}
           <form
             onSubmit={handleSaveProfile}
-            className="mt-6 space-y-4 rounded-xl border border-border bg-card p-4"
+            className="mt-6 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
           >
-            <h2 className="font-display text-lg text-foreground">Profile</h2>
+            <h2 className="font-display text-lg text-card-foreground">Profile</h2>
 
             <Field icon={UserIcon} label="Display name" htmlFor="display_name">
               <input
@@ -128,7 +128,7 @@ function ProfilePage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 maxLength={100}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px] text-foreground focus:border-accent focus:outline-none"
+                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
                 placeholder="Your name"
               />
             </Field>
@@ -138,7 +138,7 @@ function ProfilePage() {
                 id="language_pref"
                 value={languagePref}
                 onChange={(e) => setLanguagePref(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px] text-foreground focus:border-accent focus:outline-none"
+                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground focus:border-accent focus:outline-none"
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -157,21 +157,21 @@ function ProfilePage() {
           </form>
 
           {/* Email (read-only) */}
-          <div className="mt-4 space-y-3 rounded-xl border border-border bg-card p-4">
-            <h2 className="font-display text-lg text-foreground">Email</h2>
+          <div className="mt-4 space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
+            <h2 className="font-display text-lg text-card-foreground">Email</h2>
             <Field icon={Mail} label="Email address" htmlFor="email">
               <input
                 id="email"
                 type="email"
                 value={user?.email ?? ""}
                 readOnly
-                className="w-full rounded-lg border border-border bg-background/50 px-3 py-2 text-[14px] text-muted-foreground"
+                className="w-full rounded-lg border border-card-foreground/20 bg-white/60 px-3 py-2 text-[14px] text-card-foreground/70"
               />
             </Field>
             <button
               type="button"
               onClick={handleResetPassword}
-              className="text-[13px] font-medium text-accent hover:underline"
+              className="text-[13px] font-medium text-primary hover:underline"
             >
               Send password reset email
             </button>
@@ -180,9 +180,9 @@ function ProfilePage() {
           {/* Phone */}
           <form
             onSubmit={handleSavePhone}
-            className="mt-4 space-y-4 rounded-xl border border-border bg-card p-4"
+            className="mt-4 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
           >
-            <h2 className="font-display text-lg text-foreground">Phone</h2>
+            <h2 className="font-display text-lg text-card-foreground">Phone</h2>
             <Field icon={Phone} label="Phone number" htmlFor="phone">
               <input
                 id="phone"
@@ -191,10 +191,10 @@ function ProfilePage() {
                 onChange={(e) => setPhone(e.target.value)}
                 maxLength={20}
                 placeholder="+15551234567"
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px] text-foreground focus:border-accent focus:outline-none"
+                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
               />
             </Field>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-[12px] text-card-foreground/70">
               Use international format (e.g. +1 for US). You'll receive a code to verify.
             </p>
             <button
@@ -224,7 +224,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70">
         <Icon className="h-3.5 w-3.5" /> {label}
       </label>
       {children}
@@ -242,12 +242,12 @@ function StatCard({
   label: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3">
-      <div className="flex items-center gap-1.5 text-muted-foreground">
+    <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3 text-card-foreground">
+      <div className="flex items-center gap-1.5 text-card-foreground/70">
         <Icon className="h-3.5 w-3.5" />
         <span className="text-[11px] uppercase tracking-wide">{label}</span>
       </div>
-      <p className="font-display text-2xl text-foreground tabular-nums">{value.toLocaleString()}</p>
+      <p className="font-display text-2xl text-primary tabular-nums">{value.toLocaleString()}</p>
     </div>
   );
 }
