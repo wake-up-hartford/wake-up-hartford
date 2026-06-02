@@ -66,19 +66,7 @@ function HomePage() {
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
-        {user && planCount > 0 && (
-          <DashLink
-            to="/plans"
-            icon={ClipboardList}
-            title="My Plans"
-            body={
-              planCount === 1
-                ? "Resume your stabilization plan."
-                : `You have ${planCount} plans. Pick up where you left off.`
-            }
-            tone="blue"
-          />
-        )}
+
 
         <DashLink
           to="/neighborhood"
