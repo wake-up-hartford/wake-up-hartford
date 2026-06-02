@@ -138,7 +138,7 @@ const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; ti
 function DashLink({
   to, icon: Icon, title, body, tone, badge,
 }: {
-  to:  "/home" | "/neighborhood" | "/life";
+  to:  "/home" | "/neighborhood" | "/life" | "/plans";
   icon: React.ComponentType<{ className?: string }>;
   title: string; body: string; tone: Tone; badge?: string;
 }) {
