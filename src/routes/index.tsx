@@ -66,13 +66,7 @@ function HomePage() {
         Hartford residents deserve to know what's really going on in their homes and neighborhoods. Look up your address, see the facts, and find resources that can help.
       </p>
 
-      <a
-        href="#"
-        className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary bg-primary/5 px-5 py-3 text-sm font-semibold text-primary shadow-soft hover:bg-primary/10"
-      >
-        <Play className="h-5 w-5 fill-primary" />
-        Watch how this app can help you and your community! [add video link]
-      </a>
+      {/* Intro video CTA hidden until a real video URL is available. */}
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
