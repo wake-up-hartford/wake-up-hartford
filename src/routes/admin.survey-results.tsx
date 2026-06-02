@@ -146,6 +146,39 @@ function AdminSurveyResultsPage() {
           </div>
         </div>
 
+        {stats.data && (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <StatCard label="Users" value={stats.data.totals.users} sub={`+${stats.data.recent.newUsers7d} last 7d`} />
+              <StatCard label="Intake responses" value={stats.data.totals.intakeResponses} sub={`+${stats.data.recent.intake7d} last 7d`} />
+              <StatCard label="Plans generated" value={stats.data.totals.plansGenerated} sub={`${stats.data.totals.activePlans} active`} />
+              <StatCard
+                label="Step completion"
+                value={`${Math.round(stats.data.totals.stepCompletionRate * 100)}%`}
+                sub={`${stats.data.totals.completedSteps}/${stats.data.totals.totalSteps}`}
+              />
+              <StatCard
+                label="App survey"
+                value={stats.data.totals.appSurveyResponses}
+                sub={`${stats.data.totals.uniqueAppRespondents} unique`}
+              />
+              <StatCard
+                label="Avg helpfulness"
+                value={stats.data.totals.avgHelpfulness != null ? stats.data.totals.avgHelpfulness.toFixed(1) : "—"}
+                sub={`${stats.data.totals.progressSurveys} progress surveys`}
+              />
+            </div>
+
+            {(Object.keys(stats.data.progressCounts).length > 0 || Object.keys(stats.data.barrierCounts).length > 0) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <BreakdownCard title="Progress" counts={stats.data.progressCounts} />
+                <BreakdownCard title="Top barriers" counts={stats.data.barrierCounts} />
+              </div>
+            )}
+          </>
+        )}
+
+
         <Card className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <div>
             <Label className="text-xs">From</Label>
