@@ -88,6 +88,7 @@ function PlanPage() {
   }
 
   const plan = data.plan.plan as PlanShape;
+  const generatedAt = data.plan.generated_at as string | null;
   const steps = data.steps as StepRow[];
   const stepsByWeek = new Map<number, StepRow[]>();
   for (const s of steps) {
