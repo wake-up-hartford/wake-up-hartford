@@ -83,12 +83,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Wake Up Wednesday" },
       { property: "og:description", content: "A community guide from GREATER HARTFORD BRANCH NAACP." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Wake Up Wednesday" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preload", as: "image", href: logoUrl, fetchpriority: "high" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Wake Up Wednesday",
+          url: "https://wake-up-hartford-guide.lovable.app",
+          description: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT.",
+          publisher: {
+            "@type": "Organization",
+            name: "Greater Hartford Branch NAACP",
+            url: "https://www.naacphartford.org/",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Greater Hartford Branch NAACP",
+          url: "https://www.naacphartford.org/",
+          areaServed: "Hartford, Connecticut",
+          sameAs: ["https://www.naacphartford.org/"],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
