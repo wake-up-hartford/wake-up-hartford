@@ -2,6 +2,17 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
+async function assertAdmin(userId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Forbidden");
+}
+
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -19,15 +30,7 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
 export const listSurveyResponses = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { userId } = context;
-    const { data: roleRow } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!roleRow) throw new Error("Forbidden");
-
+    await assertAdmin(context.userId);
     const { data, error } = await supabaseAdmin
       .from("app_usage_survey_responses")
       .select("id, user_id, created_at, most_used, ease, tech_issue, prompt, feature_awareness, comment")
@@ -40,14 +43,7 @@ export const listSurveyResponses = createServerFn({ method: "GET" })
 export const getUsageStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { userId } = context;
-    const { data: roleRow } = await supabaseAdmin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!roleRow) throw new Error("Forbidden");
+    await assertAdmin(context.userId);
 
     const [profiles, intake, plans, steps, survey, appSurvey] = await Promise.all([
       supabaseAdmin.from("profiles").select("id, created_at"),
@@ -137,3 +133,210 @@ export const getUsageStats = createServerFn({ method: "GET" })
     };
   });
 
+// ----- Admin management -----
+
+async function findUserByEmail(email: string): Promise<{ id: string; email: string } | null> {
+  const target = email.trim().toLowerCase();
+  let page = 1;
+  const perPage = 1000;
+  while (page < 20) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (error) throw new Error(error.message);
+    const match = (data?.users ?? []).find((u) => (u.email ?? "").toLowerCase() === target);
+    if (match) return { id: match.id, email: match.email ?? "" };
+    if (!data || data.users.length < perPage) return null;
+    page += 1;
+  }
+  return null;
+}
+
+export const listAdmins = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.userId);
+    const { data: roles, error } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id, created_at")
+      .eq("role", "admin")
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+
+    const ids = (roles ?? []).map((r) => r.user_id);
+    const { data: profiles } = await supabaseAdmin
+      .from("profiles")
+      .select("id, display_name, first_name, last_name")
+      .in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
+
+    // Fetch emails via admin auth listing (single page for typical scale)
+    const emails = new Map<string, string>();
+    let page = 1;
+    while (page < 20) {
+      const { data: u } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+      for (const user of u?.users ?? []) emails.set(user.id, user.email ?? "");
+      if (!u || u.users.length < 1000) break;
+      page += 1;
+    }
+
+    const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+    return {
+      admins: (roles ?? []).map((r) => {
+        const p = profileMap.get(r.user_id);
+        const name =
+          [p?.first_name, p?.last_name].filter(Boolean).join(" ") ||
+          p?.display_name ||
+          "—";
+        return {
+          userId: r.user_id,
+          createdAt: r.created_at,
+          email: emails.get(r.user_id) ?? "",
+          name,
+          isSelf: r.user_id === context.userId,
+        };
+      }),
+    };
+  });
+
+export const grantAdminByEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { email: string }) => {
+    if (!data?.email || typeof data.email !== "string") throw new Error("Email required");
+    const email = data.email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
+    return { email };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const user = await findUserByEmail(data.email);
+    if (!user) {
+      throw new Error(
+        `No account found for ${data.email}. Ask them to sign up first, then invite again.`,
+      );
+    }
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: user.id, role: "admin" });
+    if (error && !/duplicate|unique/i.test(error.message)) {
+      throw new Error(error.message);
+    }
+    return { ok: true, userId: user.id, email: user.email };
+  });
+
+export const revokeAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string }) => {
+    if (!data?.userId) throw new Error("userId required");
+    return { userId: data.userId };
+  })
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    if (data.userId === context.userId) {
+      throw new Error("You can't revoke your own admin access.");
+    }
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .delete()
+      .eq("user_id", data.userId)
+      .eq("role", "admin");
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ----- Reporting -----
+
+export const getReportingData = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.userId);
+
+    const sinceDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [profiles, intake, plans, steps] = await Promise.all([
+      supabaseAdmin
+        .from("profiles")
+        .select("id, created_at, language_pref, sms_alerts"),
+      supabaseAdmin
+        .from("intake_responses")
+        .select("id, created_at, tract_fips"),
+      supabaseAdmin
+        .from("stabilization_plans")
+        .select("id, generated_at"),
+      supabaseAdmin
+        .from("plan_steps")
+        .select("id, completed_at, resource_id"),
+    ]);
+
+    const dayKey = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : null);
+    const bucket = (
+      rows: Array<{ created_at?: string | null; generated_at?: string | null; completed_at?: string | null }> | null,
+      field: "created_at" | "generated_at" | "completed_at",
+    ) => {
+      const m: Record<string, number> = {};
+      for (const r of rows ?? []) {
+        const v = (r as Record<string, string | null>)[field];
+        if (!v) continue;
+        if (new Date(v) < new Date(sinceDate)) continue;
+        const k = dayKey(v);
+        if (k) m[k] = (m[k] ?? 0) + 1;
+      }
+      return m;
+    };
+
+    const signups = bucket(profiles.data, "created_at");
+    const intakes = bucket(intake.data, "created_at");
+    const plansBucket = bucket(plans.data, "generated_at");
+    const stepsDone = bucket(steps.data, "completed_at");
+
+    const allDates = new Set<string>([
+      ...Object.keys(signups),
+      ...Object.keys(intakes),
+      ...Object.keys(plansBucket),
+      ...Object.keys(stepsDone),
+    ]);
+    const series = Array.from(allDates)
+      .sort()
+      .map((date) => ({
+        date,
+        signups: signups[date] ?? 0,
+        intakes: intakes[date] ?? 0,
+        plans: plansBucket[date] ?? 0,
+        stepsCompleted: stepsDone[date] ?? 0,
+      }));
+
+    // Geographic
+    const tractCounts: Record<string, number> = {};
+    for (const r of intake.data ?? []) {
+      if (!r.tract_fips) continue;
+      tractCounts[r.tract_fips] = (tractCounts[r.tract_fips] ?? 0) + 1;
+    }
+    const geo = Object.entries(tractCounts)
+      .map(([tract_fips, count]) => ({ tract_fips, count }))
+      .sort((a, b) => b.count - a.count);
+
+    // Language
+    const language: Record<string, number> = {};
+    let smsOptIn = 0;
+    for (const p of profiles.data ?? []) {
+      const lang = p.language_pref ?? "en";
+      language[lang] = (language[lang] ?? 0) + 1;
+      if (p.sms_alerts) smsOptIn += 1;
+    }
+
+    // Resource engagement
+    const resourceCounts: Record<string, number> = {};
+    for (const s of steps.data ?? []) {
+      if (!s.resource_id) continue;
+      resourceCounts[s.resource_id] = (resourceCounts[s.resource_id] ?? 0) + 1;
+    }
+    const resources = Object.entries(resourceCounts)
+      .map(([resource_id, count]) => ({ resource_id, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return {
+      series,
+      geo,
+      language,
+      smsOptIn,
+      totalProfiles: profiles.data?.length ?? 0,
+      resources,
+    };
+  });
