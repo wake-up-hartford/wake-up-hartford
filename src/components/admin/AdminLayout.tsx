@@ -8,12 +8,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { checkIsAdmin } from "@/lib/admin.functions";
 import { cn } from "@/lib/utils";
 
-const NAV = [
+const NAV: ReadonlyArray<{ to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }> = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/reporting", label: "Reporting", icon: BarChart3 },
   { to: "/admin/surveys", label: "Surveys", icon: ClipboardList },
   { to: "/admin/admins", label: "Admins", icon: Users },
-] as const;
+];
 
 export function AdminLayout({ children, title }: { children: ReactNode; title: string }) {
   const nav = useNavigate();
