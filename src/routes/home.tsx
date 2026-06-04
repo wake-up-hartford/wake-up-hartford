@@ -21,6 +21,13 @@ export const Route = createFileRoute("/home")({
     meta: [
       { title: "Your Home — Wake Up Wednesday" },
       { name: "description", content: "Look up any Hartford address. See code violations, evictions, utility shutoffs, and 311 complaints in plain language." },
+      { property: "og:title", content: "Your Home — Wake Up Wednesday" },
+      { property: "og:description", content: "Look up any Hartford address and see code violations, evictions, utility shutoffs, and 311 complaints in plain language." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/home" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/home" },
     ],
   }),
   component: HomePage,

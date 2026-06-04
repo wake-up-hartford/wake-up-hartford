@@ -8,7 +8,19 @@ import { listMyPlans } from "@/lib/stabilization-plan.functions";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/plans")({
-  head: () => ({ meta: [{ title: "My plans" }] }),
+  head: () => ({
+    meta: [
+      { title: "My Plans — Wake Up Wednesday" },
+      { name: "description", content: "View and manage your 30-day stabilization plans." },
+      { property: "og:title", content: "My Plans — Wake Up Wednesday" },
+      { property: "og:description", content: "View and manage your 30-day stabilization plans." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/plans" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/plans" },
+    ],
+  }),
   component: PlansPage,
 });
 

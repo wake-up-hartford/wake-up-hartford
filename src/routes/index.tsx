@@ -15,6 +15,13 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "See It. Name It. Fix It. — Wake Up Wednesday" },
       { name: "description", content: "Real data about your home, your neighborhood, and your life — in plain language, with a path forward. From GREATER HARTFORD BRANCH NAACP." },
+      { property: "og:title", content: "See It. Name It. Fix It. — Wake Up Wednesday" },
+      { property: "og:description", content: "Real data about your home, your neighborhood, and your life — in plain language, with a path forward." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/" },
     ],
   }),
   component: HomePage,

@@ -32,6 +32,13 @@ export const Route = createFileRoute("/life")({
         content:
           "A confidential first step toward building your personal stability plan.",
       },
+      { property: "og:title", content: "Your Life — Stabilization Survey" },
+      { property: "og:description", content: "A confidential first step toward building your personal stability plan." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/life" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/life" },
     ],
   }),
   component: LifePage,

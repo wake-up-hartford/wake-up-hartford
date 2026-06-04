@@ -39,6 +39,13 @@ export const Route = createFileRoute("/neighborhood-actions")({
         content:
           "Concrete actions you can take based on what the data shows about your neighborhood.",
       },
+      { property: "og:title", content: "Take Action — Wake Up Wednesday" },
+      { property: "og:description", content: "Concrete actions you can take based on what the data shows about your neighborhood." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood-actions" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/neighborhood-actions" },
     ],
   }),
   component: ActionsPage,

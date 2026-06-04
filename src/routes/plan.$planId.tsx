@@ -17,7 +17,19 @@ import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
 import type { PlanShape, StepRow } from "@/lib/plan-types";
 
 export const Route = createFileRoute("/plan/$planId")({
-  head: () => ({ meta: [{ title: "Your 30-day plan" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your 30-Day Plan — Wake Up Wednesday" },
+      { name: "description", content: "Your personalized 30-day stabilization plan with step-by-step actions." },
+      { property: "og:title", content: "Your 30-Day Plan — Wake Up Wednesday" },
+      { property: "og:description", content: "Your personalized 30-day stabilization plan with step-by-step actions." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/plan" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/plan" },
+    ],
+  }),
   component: PlanPage,
 });
 

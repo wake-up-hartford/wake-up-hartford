@@ -13,7 +13,16 @@ import { Card } from "@/components/ui/card";
 import { checkIsAdmin, getUsageStats, listSurveyResponses } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/survey-results")({
-  head: () => ({ meta: [{ title: "Survey results — Admin" }] }),
+  head: () => ({
+    meta: [
+      { title: "Survey Results — Admin" },
+      { name: "description", content: "Admin dashboard for Wake Up Wednesday survey responses." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/admin/survey-results" },
+    ],
+  }),
   component: AdminSurveyResultsPage,
 });
 

@@ -25,6 +25,13 @@ export const Route = createFileRoute("/find-help")({
         content:
           "Tell us what you need and we'll show vetted Connecticut organizations that can help.",
       },
+      { property: "og:title", content: "Find Help — Wake Up Wednesday" },
+      { property: "og:description", content: "Tell us what you need and we'll show vetted Connecticut organizations that can help." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/find-help" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/find-help" },
     ],
   }),
   component: FindHelpPage,

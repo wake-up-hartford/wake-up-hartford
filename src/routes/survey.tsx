@@ -8,7 +8,19 @@ import { useAuth } from "@/hooks/use-auth";
 import { submitSurvey } from "@/lib/survey.functions";
 
 export const Route = createFileRoute("/survey")({
-  head: () => ({ meta: [{ title: "Quick survey" }] }),
+  head: () => ({
+    meta: [
+      { title: "Quick Survey — Wake Up Wednesday" },
+      { name: "description", content: "Help us improve Wake Up Wednesday by sharing your feedback." },
+      { property: "og:title", content: "Quick Survey — Wake Up Wednesday" },
+      { property: "og:description", content: "Help us improve Wake Up Wednesday by sharing your feedback." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/survey" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/survey" },
+    ],
+  }),
   component: SurveyPage,
 });
 
