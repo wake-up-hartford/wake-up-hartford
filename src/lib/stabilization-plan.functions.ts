@@ -220,11 +220,12 @@ export const getPlan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ planId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const { data: plan, error } = await supabase
       .from("stabilization_plans")
       .select("id, plan, generated_at, status")
       .eq("id", data.planId)
+      .eq("user_id", userId)
       .single();
     if (error || !plan) throw new Error("Plan not found.");
 
@@ -232,6 +233,7 @@ export const getPlan = createServerFn({ method: "POST" })
       .from("plan_steps")
       .select("id, week, domain, title, detail, resource_id, step_order, completed_at")
       .eq("plan_id", data.planId)
+      .eq("user_id", userId)
       .order("week")
       .order("step_order");
 
@@ -244,11 +246,12 @@ export const toggleStep = createServerFn({ method: "POST" })
     z.object({ stepId: z.string().uuid(), done: z.boolean() }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const { error } = await supabase
       .from("plan_steps")
       .update({ completed_at: data.done ? new Date().toISOString() : null })
-      .eq("id", data.stepId);
+      .eq("id", data.stepId)
+      .eq("user_id", userId);
     if (error) throw new Error("Couldn't update step.");
     return { ok: true };
   });
