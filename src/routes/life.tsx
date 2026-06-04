@@ -500,7 +500,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
   return (
     <div>
       <h1 className="font-display text-3xl leading-tight text-foreground">
-        Your Path to Stability
+        Your Life to Stability
       </h1>
       <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
         Life can get hard. This short survey takes 5 minutes. Answer a few questions and we'll build you a free, personal 30-day plan — with real resources in Connecticut to help you move forward.
@@ -620,7 +620,7 @@ function SurveyScreen({
         <div className="mb-5 rounded-2xl border border-border bg-transparent p-5">
 
           <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
-            Your Path Survey
+            Your Life Survey
           </h1>
           <p className="text-[14px] leading-relaxed text-foreground">
             This survey takes <strong>5 to 8 minutes</strong> to complete. Your answers will be used to

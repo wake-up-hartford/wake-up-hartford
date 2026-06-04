@@ -58,7 +58,7 @@ function PlansPage() {
         <ChevronLeft className="h-4 w-4" /> Home
       </Link>
       <h1 className="font-display text-3xl text-foreground">Your plans</h1>
-      <p className="mt-2 text-[14px] text-muted-foreground">Plans you've generated from the Your Path Survey.</p>
+      <p className="mt-2 text-[14px] text-muted-foreground">Plans you've generated from the Your Life Survey.</p>
 
       <Link
         to="/life"
