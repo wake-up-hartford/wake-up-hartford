@@ -7,10 +7,12 @@ type Props = {
 };
 
 export function DueDateEditor({ week, dueIsoForInput, isCustom, onChange, onClose }: Props) {
+  const inputId = `due-date-week-${week}`;
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-border bg-secondary/40 p-2.5">
-      <label className="text-[12px] font-semibold text-foreground">Due date:</label>
+      <label htmlFor={inputId} className="text-[12px] font-semibold text-foreground">Due date:</label>
       <input
+        id={inputId}
         type="date"
         value={dueIsoForInput}
         onChange={(e) => onChange(week, e.target.value || null)}

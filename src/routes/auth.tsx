@@ -269,7 +269,9 @@ function AuthPage() {
           Enter the email for your account and we'll send you a link to set a new password.
         </p>
         <form onSubmit={handleForgot} className="mt-5 space-y-3">
+          <label htmlFor="forgot-email" className="sr-only">Email</label>
           <input
+            id="forgot-email"
             type="email"
             required
             value={email}
@@ -360,7 +362,9 @@ function AuthPage() {
         </div>
 
         <form onSubmit={handleEmail} className="space-y-3">
+          <label htmlFor="signin-email" className="sr-only">Email</label>
           <input
+            id="signin-email"
             type="email"
             required
             value={email}
@@ -368,7 +372,9 @@ function AuthPage() {
             placeholder="Email"
             className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
           />
+          <label htmlFor="signin-password" className="sr-only">Password</label>
           <input
+            id="signin-password"
             type="password"
             required
             value={password}
@@ -430,20 +436,26 @@ function AuthPage() {
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
+        <label htmlFor="signup-name" className="sr-only">Your name</label>
         <input
+          id="signup-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name (optional)"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-phone" className="sr-only">Cell phone</label>
         <input
+          id="signup-phone"
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="Cell phone (optional, for text alerts & plan link)"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-email" className="sr-only">Email</label>
         <input
+          id="signup-email"
           type="email"
           required
           value={email}
@@ -451,7 +463,9 @@ function AuthPage() {
           placeholder="Email"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-email-confirm" className="sr-only">Confirm email</label>
         <input
+          id="signup-email-confirm"
           type="email"
           required
           value={emailConfirm}
@@ -460,7 +474,9 @@ function AuthPage() {
           placeholder="Confirm email"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-password" className="sr-only">Password</label>
         <input
+          id="signup-password"
           type="password"
           required
           minLength={8}

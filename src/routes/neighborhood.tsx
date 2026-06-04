@@ -190,10 +190,11 @@ function dotClass(s: Indicator["severity"]) {
 function IndicatorRow({ ind }: { ind: Indicator }) {
   return (
     <li className="flex items-start gap-3 py-3.5">
-      <div
-        className={`mt-1.5 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
-        aria-label={severityLabel(ind.severity) ?? undefined}
-      />
+                <div
+                  role="img"
+                  className={`mt-1.5 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
+                  aria-label={severityLabel(ind.severity) ?? undefined}
+                />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-xl leading-none text-card-foreground">{ind.value}</span>
@@ -591,7 +592,9 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
         </div>
 
         <form onSubmit={handleLookup} className="flex flex-col gap-2">
+          <label htmlFor="lookup-street" className="sr-only">Street address</label>
           <input
+            id="lookup-street"
             type="text"
             value={street}
             onChange={(e) => setStreet(e.target.value)}
@@ -600,7 +603,9 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
             className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <div className="flex gap-2">
+            <label htmlFor="lookup-city" className="sr-only">City</label>
             <input
+              id="lookup-city"
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -608,7 +613,9 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
               autoComplete="address-level2"
               className="flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
+            <label htmlFor="lookup-state" className="sr-only">State</label>
             <input
+              id="lookup-state"
               type="text"
               value={state}
               onChange={(e) => setState(e.target.value.slice(0, 2))}
