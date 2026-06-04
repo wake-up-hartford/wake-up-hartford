@@ -160,7 +160,7 @@ function HomePage() {
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 opacity-80" />
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] uppercase tracking-wider opacity-70">Showing</p>
-                <p className="truncate font-display text-lg">{data.address}</p>
+                <h1 className="truncate font-display text-lg">{data.address}</h1>
                 <p className="text-sm opacity-80">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
               </div>
             </div>

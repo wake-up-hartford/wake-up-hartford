@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /reset-password
+Disallow: /profile
+Disallow: /plans
+Disallow: /plan/
+Disallow: /admin/
+
+Sitemap: https://wake-up-hartford-guide.lovable.app/sitemap.xml

@@ -67,7 +67,8 @@ function PlansPage() {
         <FilePlus className="h-4 w-4" /> Start a new survey
       </Link>
 
-      <div className="mt-5 space-y-3">
+      <h2 className="mt-6 font-display text-xl text-foreground">Saved stabilization plans</h2>
+      <div className="mt-3 space-y-3">
         {isLoading && <p className="text-muted-foreground">Loading…</p>}
         {data?.plans.length === 0 && (
           <p className="text-[14px] text-muted-foreground">No plans yet. Take the survey to create your first one.</p>

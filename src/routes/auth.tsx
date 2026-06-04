@@ -220,7 +220,7 @@ function AuthPage() {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
             <MailCheck className="h-7 w-7" />
           </div>
-          <h2 className="font-display text-3xl leading-tight text-foreground">Check your email</h2>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Check your email</h1>
           <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
             We sent a confirmation link to
           </p>
@@ -264,12 +264,14 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back to sign in
         </button>
-        <h2 className="font-display text-3xl leading-tight text-foreground">Reset your password</h2>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Reset your password</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
           Enter the email for your account and we'll send you a link to set a new password.
         </p>
         <form onSubmit={handleForgot} className="mt-5 space-y-3">
+          <label htmlFor="forgot-email" className="sr-only">Email</label>
           <input
+            id="forgot-email"
             type="email"
             required
             value={email}
@@ -304,7 +306,7 @@ function AuthPage() {
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <div className="mt-6 space-y-3">
-          <h2 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h2>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h1>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
             We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
           </p>
@@ -343,7 +345,7 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
-        <h2 className="font-display text-3xl leading-tight text-foreground">Sign in</h2>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Sign in</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
           Welcome back. Use Google or the email and password you signed up with.
         </p>
@@ -360,7 +362,9 @@ function AuthPage() {
         </div>
 
         <form onSubmit={handleEmail} className="space-y-3">
+          <label htmlFor="signin-email" className="sr-only">Email</label>
           <input
+            id="signin-email"
             type="email"
             required
             value={email}
@@ -368,7 +372,9 @@ function AuthPage() {
             placeholder="Email"
             className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
           />
+          <label htmlFor="signin-password" className="sr-only">Password</label>
           <input
+            id="signin-password"
             type="password"
             required
             value={password}
@@ -413,7 +419,7 @@ function AuthPage() {
       >
         <ChevronLeft className="h-4 w-4" /> Back
       </button>
-      <h2 className="font-display text-3xl leading-tight text-foreground">Create your account</h2>
+      <h1 className="font-display text-3xl leading-tight text-foreground">Create your account</h1>
       <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
         Sign up with Google for one-tap access, or create an account with your email and a password.
       </p>
@@ -430,20 +436,26 @@ function AuthPage() {
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
+        <label htmlFor="signup-name" className="sr-only">Your name</label>
         <input
+          id="signup-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name (optional)"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-phone" className="sr-only">Cell phone</label>
         <input
+          id="signup-phone"
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="Cell phone (optional, for text alerts & plan link)"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-email" className="sr-only">Email</label>
         <input
+          id="signup-email"
           type="email"
           required
           value={email}
@@ -451,7 +463,9 @@ function AuthPage() {
           placeholder="Email"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-email-confirm" className="sr-only">Confirm email</label>
         <input
+          id="signup-email-confirm"
           type="email"
           required
           value={emailConfirm}
@@ -460,7 +474,9 @@ function AuthPage() {
           placeholder="Confirm email"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
+        <label htmlFor="signup-password" className="sr-only">Password</label>
         <input
+          id="signup-password"
           type="password"
           required
           minLength={8}

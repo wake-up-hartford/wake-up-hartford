@@ -73,13 +73,14 @@ function HomePage() {
         Hartford residents deserve to know what's really going on in their homes and neighborhoods. Look up your address, see the facts, and find resources that can help.
       </p>
 
-      <a
-        href="#"
-        className="mb-5 inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/5 px-4 py-3 text-sm font-medium text-foreground/80"
+      <button
+        type="button"
+        disabled
+        className="mb-5 inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/5 px-4 py-3 text-sm font-medium text-foreground/80 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        <Play className="h-4 w-4 text-primary" />
-        Watch how this app can help
-      </a>
+        <Play className="h-4 w-4 text-primary" aria-hidden="true" />
+        Watch how this app can help (coming soon)
+      </button>
 
       <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
       <div className="grid gap-4">
@@ -190,7 +191,7 @@ function DashLink({
       <Card className={`flex items-center gap-4 border-l-4 py-3 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h3>
+            <h2 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h2>
             {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>

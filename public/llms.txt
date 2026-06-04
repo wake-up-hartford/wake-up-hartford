@@ -1,0 +1,17 @@
+# Wake Up Wednesday
+
+> A community guide from the Greater Hartford Branch NAACP. Plain-language information about your home, neighborhood, and life resources in Hartford, Connecticut.
+
+Wake Up Wednesday helps Hartford residents see real data about their housing and neighborhood, understand what it means, and take action — from writing a landlord letter to building a 30-day stabilization plan.
+
+## Pages
+
+- [Home](/): See it, name it, fix it — the entry point to the guide.
+- [Your Home](/home): Look up any Hartford address. See code violations, evictions, utility shutoffs, and 311 complaints in plain language.
+- [Take action on your home](/home-actions): Concrete steps to improve your housing situation.
+- [Your Neighborhood](/neighborhood): A report card for your block — air, schools, safety, access.
+- [Take action for your neighborhood](/neighborhood-actions): Concrete actions based on the neighborhood data.
+- [Your Path](/life): A short survey that builds a personal 30-day stabilization plan with real Connecticut resources.
+- [Find help near me](/find-help): Vetted Connecticut organizations for housing, food, health, legal, and jobs.
+- [Landlord complaint letter](/landlord-letter): Generate a formal habitability complaint letter citing Connecticut law.
+- [Security deposit demand letter](/security-deposit-letter): Generate a written demand to recover your security deposit.
