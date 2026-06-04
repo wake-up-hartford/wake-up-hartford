@@ -68,7 +68,7 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex items-center gap-3 mb-4">
           <Link
-            to="/dashboard"
+            to="/"
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
