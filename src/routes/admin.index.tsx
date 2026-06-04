@@ -100,7 +100,10 @@ function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> 
   const top = steps[0]?.count ?? 0;
   return (
     <Card className="p-4">
-      <div className="text-sm font-medium mb-3">Conversion funnel</div>
+      <div className="text-sm font-medium mb-1">Conversion funnel</div>
+      <p className="text-xs text-muted-foreground mb-3">
+        Shows how many users move through each stage — from sign-up to completing plan steps. Use this to spot drop-off points.
+      </p>
       <div className="space-y-2">
         {steps.map((s, i) => {
           const widthPct = top ? (s.count / top) * 100 : 0;
