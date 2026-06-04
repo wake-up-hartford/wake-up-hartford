@@ -74,8 +74,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <img
               src={wuwLogo}
               alt="Wake Up Wednesday"
+              width={160}
+              height={40}
+              fetchPriority="high"
+              decoding="async"
               className="h-10 w-auto flex-shrink-0"
             />
+
           </Link>
           <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
             Greater Hartford<br />Branch NAACP
