@@ -14,6 +14,13 @@ export const Route = createFileRoute("/landlord-letter")({
         content:
           "Generate a clear, written letter of complaint to your landlord about unsafe or unhealthy conditions in your home.",
       },
+      { property: "og:title", content: "Letter of Complaint to Your Landlord — Wake Up Wednesday" },
+      { property: "og:description", content: "Generate a clear, written letter of complaint to your landlord about unsafe or unhealthy conditions in your home." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/landlord-letter" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/landlord-letter" },
     ],
   }),
   component: LandlordLetterPage,

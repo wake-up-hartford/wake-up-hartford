@@ -31,6 +31,13 @@ export const Route = createFileRoute("/neighborhood")({
     meta: [
       { title: "Your Neighborhood — Wake Up Wednesday" },
       { name: "description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { property: "og:title", content: "Your Neighborhood — Wake Up Wednesday" },
+      { property: "og:description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
     ],
   }),
   component: NeighborhoodPage,
