@@ -1,8 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Printer, Copy, Mail } from "lucide-react";
-import { AppShell, Card } from "@/components/AppShell";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/AppShell";
+import { Field, LetterPage, letterInputClass } from "@/components/letter/LetterPage";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
 
@@ -33,7 +32,6 @@ function SecurityDepositLetterPage() {
   const [mailingAddress, setMailingAddress] = useState("");
   const [landlordName, setLandlordName] = useState(lookup?.landlord ?? "");
   const [landlordAddress, setLandlordAddress] = useState(lookupLandlordAddress);
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
 
   useEffect(() => {
     if (address && !rentalAddress) setRentalAddress(address);
@@ -88,57 +86,39 @@ ${today}
     landlordAddress,
   ]);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(letter);
-      setCopyStatus("copied");
-      setTimeout(() => setCopyStatus("idle"), 2000);
-    } catch {
-      setCopyStatus("error");
-      setTimeout(() => setCopyStatus("idle"), 2000);
-    }
-  };
-
-  const handlePrint = () => window.print();
-
-  const handleEmail = () => {
-    const subject = encodeURIComponent(
-      `Demand for return of security deposit — ${fullRentalAddress}`,
-    );
-    const body = encodeURIComponent(letter);
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  };
-
   return (
-    <AppShell>
-      <Link
-        to="/home-actions"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground print:hidden"
-      >
-        <ChevronLeft className="h-4 w-4" /> Back to Take Action
-      </Link>
-
-      <header className="mb-6 print:hidden">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Tenant tools
-        </p>
-        <h1 className="font-display text-3xl leading-tight text-foreground">
-          Security Deposit Demand Letter
-        </h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-          Under Connecticut law, your landlord must return your security deposit, plus
-          interest, within 21 days of receiving your written demand. Fill in the
-          details below to generate your letter.
-        </p>
-      </header>
-
+    <LetterPage
+      backTo="/home-actions"
+      backLabel="Back to Take Action"
+      eyebrow="Tenant tools"
+      title="Security Deposit Demand Letter"
+      intro="Under Connecticut law, your landlord must return your security deposit, plus interest, within 21 days of receiving your written demand. Fill in the details below to generate your letter."
+      letter={letter}
+      emailSubject={`Demand for return of security deposit — ${fullRentalAddress}`}
+      disclaimer={
+        <>
+          Send this letter by certified mail (return receipt requested) so you have
+          proof of when your landlord received it. Keep a copy for your records. Letter
+          language adapted from{" "}
+          <a
+            href="https://ctlawhelp.org/en/housing/landlord-tenant/security-deposits"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            CTLawHelp.org
+          </a>
+          . This is a template — it is not legal advice.
+        </>
+      }
+    >
       <Card className="mb-5 space-y-4 print:hidden">
         <h2 className="font-display text-lg">Your information</h2>
         <Field label="Your full name">
           <input
             value={tenantName}
             onChange={(e) => setTenantName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="Jane Doe"
           />
         </Field>
@@ -147,7 +127,7 @@ ${today}
             <input
               value={rentalAddress}
               onChange={(e) => setRentalAddress(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="123 Main St, Hartford, CT"
             />
           </Field>
@@ -155,7 +135,7 @@ ${today}
             <input
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="2B"
             />
           </Field>
@@ -165,7 +145,7 @@ ${today}
             <input
               value={moveOutDate}
               onChange={(e) => setMoveOutDate(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="e.g. May 31, 2026"
             />
           </Field>
@@ -173,7 +153,7 @@ ${today}
             <input
               value={depositAmount}
               onChange={(e) => setDepositAmount(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="e.g. 1500"
             />
           </Field>
@@ -183,7 +163,7 @@ ${today}
             value={mailingAddress}
             onChange={(e) => setMailingAddress(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="789 New St, Hartford, CT 06106"
           />
         </Field>
@@ -195,7 +175,7 @@ ${today}
           <input
             value={landlordName}
             onChange={(e) => setLandlordName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="ABC Property Management"
           />
         </Field>
@@ -204,68 +184,11 @@ ${today}
             value={landlordAddress}
             onChange={(e) => setLandlordAddress(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="456 Park Ave, Hartford, CT 06106"
           />
         </Field>
       </Card>
-
-      <Card className="mb-5">
-        <div className="mb-3 flex items-center justify-between print:hidden">
-          <h2 className="font-display text-lg">Your letter</h2>
-          <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            Preview
-          </span>
-        </div>
-        <pre className="whitespace-pre-wrap font-serif text-[13px] leading-relaxed text-foreground">
-{letter}
-        </pre>
-      </Card>
-
-      <pre id="print-letter" className="hidden">{letter}</pre>
-
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 print:hidden">
-        <Button onClick={handlePrint} size="lg" className="w-full">
-          <Printer className="h-4 w-4" /> Print
-        </Button>
-        <Button onClick={handleEmail} size="lg" variant="secondary" className="w-full">
-          <Mail className="h-4 w-4" /> Email
-        </Button>
-        <Button onClick={handleCopy} size="lg" variant="secondary" className="w-full">
-          <Copy className="h-4 w-4" />
-          {copyStatus === "copied"
-            ? "Copied!"
-            : copyStatus === "error"
-              ? "Couldn't copy"
-              : "Copy text"}
-        </Button>
-      </div>
-
-      <p className="mt-4 text-[12px] leading-relaxed text-muted-foreground print:hidden">
-        Send this letter by certified mail (return receipt requested) so you have
-        proof of when your landlord received it. Keep a copy for your records. Letter
-        language adapted from{" "}
-        <a
-          href="https://ctlawhelp.org/en/housing/landlord-tenant/security-deposits"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          CTLawHelp.org
-        </a>
-        . This is a template — it is not legal advice.
-      </p>
-    </AppShell>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
-      {children}
-    </label>
+    </LetterPage>
   );
 }
