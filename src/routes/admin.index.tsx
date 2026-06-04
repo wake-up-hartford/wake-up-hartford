@@ -64,7 +64,7 @@ function AdminOverviewPage() {
 
 function StatCard({ label, value, sub }: { label: string; value: number | string; sub?: string }) {
   return (
-    <Card className="p-3">
+    <Card className="p-3 text-center">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="text-2xl font-semibold mt-1">{value}</div>
       {sub && <div className="text-xs text-muted-foreground mt-1">{sub}</div>}
