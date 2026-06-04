@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Building2, Trees, HeartHandshake, User } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import wuwLogo from "@/assets/wuw-logo.png";
+import wuwLogo from "@/assets/wuw-logo.webp";
 
 const ROTATING_MESSAGES = [
   "Concentrated poverty is not natural. It is produced by policy choices.",
