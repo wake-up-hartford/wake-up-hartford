@@ -12,17 +12,24 @@ export const Route = createFileRoute("/home-actions")({
   component: HomeActionsPage,
 });
 
+/**
+ * A link inside an action card. Provide either `to` (internal route) or
+ * `href` (external URL / tel: / mailto:). The first link in `links` is
+ * rendered as the primary CTA, the rest as muted secondary buttons.
+ */
+type ActionLink = {
+  label: string;
+  to?: string;
+  href?: string;
+};
+
 type Action = {
   title: string;
   desc: string;
   icon: React.ComponentType<{ className?: string }>;
-  to?: string;
-  href?: string;
-  cta?: string;
-  href2?: string;
-  cta2?: string;
-  href3?: string;
-  cta3?: string;
+  links?: ActionLink[];
+  /** When true, render a disabled "Coming soon" pill instead of links. */
+  comingSoon?: boolean;
 };
 
 const ACTIONS: Action[] = [
@@ -30,44 +37,44 @@ const ACTIONS: Action[] = [
     title: "Write a complaint letter to your landlord",
     desc: "Auto-fill a formal letter citing Connecticut habitability law. Print, mail, or email it.",
     icon: FileText,
-    to: "/landlord-letter",
-    cta: "Start letter",
+    links: [{ label: "Start letter", to: "/landlord-letter" }],
   },
   {
     title: "Report a code violation",
     desc: "Call Hartford 311 or file online to request a housing inspection for unsafe conditions.",
     icon: ClipboardList,
-    href: "tel:311",
-    cta: "Call 311",
-    href2: "https://www.hartfordct.gov/Government/Departments/Hartford-311",
-    cta2: "Website",
-    href3: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
-    cta3: "Download 'Know When & What to Report'",
+    links: [
+      { label: "Call 311", href: "tel:311" },
+      { label: "Website", href: "https://www.hartfordct.gov/Government/Departments/Hartford-311" },
+      {
+        label: "Download 'Know When & What to Report'",
+        href: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
+      },
+    ],
   },
   {
     title: "Get free legal help",
     desc: "Greater Hartford Legal Aid and CT Fair Housing Center help tenants with evictions, repairs, and discrimination — at no cost.",
     icon: Scale,
-    href: "tel:18604110050",
-    cta: "Call legal aid",
-    href2: "https://www.ghla.org/",
-    cta2: "Website",
+    links: [
+      { label: "Call legal aid", href: "tel:18604110050" },
+      { label: "Website", href: "https://www.ghla.org/" },
+    ],
   },
   {
     title: "Recover your security deposit",
     desc: "Landlords must return your deposit, with interest, within 21 days of your written demand. Generate the letter.",
     icon: DollarSign,
-    to: "/security-deposit-letter",
-    cta: "Start letter",
+    links: [{ label: "Start letter", to: "/security-deposit-letter" }],
   },
   {
     title: "Call 211 for housing help",
     desc: "Connect to rental assistance, shelter, eviction prevention, and utility help any time, day or night.",
     icon: Phone,
-    href: "tel:211",
-    cta: "Dial 211",
-    href2: "https://www.211ct.org/",
-    cta2: "Website",
+    links: [
+      { label: "Dial 211", href: "tel:211" },
+      { label: "Website", href: "https://www.211ct.org/" },
+    ],
   },
   {
     title: "Document conditions with photos",
@@ -78,8 +85,7 @@ const ACTIONS: Action[] = [
     title: "Know your rights as a tenant",
     desc: "A quick guide to repairs, security deposits, eviction notice rules, and retaliation protections in CT.",
     icon: ShieldCheck,
-    href: "https://ctlawhelp.org/en/housing/landlord-tenant/renters-rights",
-    cta: "Learn your rights",
+    links: [{ label: "Learn your rights", href: "https://ctlawhelp.org/en/housing/landlord-tenant/renters-rights" }],
   },
   {
     title: "Organize with your neighbors",
@@ -90,14 +96,13 @@ const ACTIONS: Action[] = [
     title: "Contact your city council member",
     desc: "Tell elected officials about conditions in your building. Pressure works.",
     icon: Landmark,
-    href: "https://hartford.civicweb.net/portal/members.aspx?id=10",
-    cta: "Find your council member",
+    links: [{ label: "Find your council member", href: "https://hartford.civicweb.net/portal/members.aspx?id=10" }],
   },
   {
     title: "Share your story",
     desc: "Add your experience to the public record so the community can see patterns across landlords.",
     icon: Megaphone,
-    cta: "Coming soon",
+    comingSoon: true,
   },
 ];
 
@@ -141,11 +146,22 @@ function HomeActionsPage() {
   );
 }
 
+const cardClass =
+  "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
+
+const primaryPillClass =
+  "inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85";
+
+const secondaryPillClass =
+  "inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80";
+
 function ActionCard({ action }: { action: Action }) {
   const Icon = action.icon;
-  const disabled = action.cta === "Coming soon";
-  const hasSecondary = Boolean(action.href2 && action.cta2);
-  const outerIsLink = !hasSecondary && !disabled && Boolean(action.to || action.href);
+  const links = action.links ?? [];
+  // When there's exactly one link and no "coming soon" badge, the whole card
+  // becomes the link target — gives a bigger tap area on mobile.
+  const wholeCardIsLink = !action.comingSoon && links.length === 1;
+  const [primary, ...secondary] = links;
 
   const inner = (
     <>
@@ -159,77 +175,70 @@ function ActionCard({ action }: { action: Action }) {
         </div>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-2 self-start">
-        {outerIsLink && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background">
-            {action.cta}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </span>
-        )}
-        {!outerIsLink && action.href && !disabled && (
-          <a
-            href={action.href}
-            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85"
-          >
-            {action.cta}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-        )}
-        {!outerIsLink && action.to && !disabled && (
-          <Link
-            to={action.to}
-            className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85"
-          >
-            {action.cta}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        )}
-        {hasSecondary && (
-          <a
-            href={action.href2}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80"
-          >
-            {action.cta2}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-        )}
-        {action.href3 && action.cta3 && (
-          <a
-            href={action.href3}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80"
-          >
-            {action.cta3}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-        )}
-        {disabled && (
+        {action.comingSoon ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-muted/50 px-3 py-1.5 text-xs font-semibold text-muted-foreground/60">
-            {action.cta}
+            Coming soon
           </span>
+        ) : (
+          <>
+            {primary && (
+              wholeCardIsLink ? (
+                // Outer <a>/<Link> wraps the card; render the primary CTA as a non-interactive pill.
+                <span className={primaryPillClass.replace(" hover:bg-foreground/85", "")}>
+                  {primary.label}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              ) : (
+                <PillLink link={primary} className={primaryPillClass} />
+              )
+            )}
+            {secondary.map((link) => (
+              <PillLink key={link.label} link={link} className={secondaryPillClass} external />
+            ))}
+          </>
         )}
       </div>
     </>
   );
 
-  const cls =
-    "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
-
-  if (!outerIsLink) {
-    return <div className={cls}>{inner}</div>;
+  if (wholeCardIsLink && primary) {
+    if (primary.to) {
+      return <Link to={primary.to} className={cardClass}>{inner}</Link>;
+    }
+    return <a href={primary.href} className={cardClass}>{inner}</a>;
   }
-  if (action.to) {
+  return <div className={cardClass}>{inner}</div>;
+}
+
+function PillLink({
+  link,
+  className,
+  external = false,
+}: {
+  link: ActionLink;
+  className: string;
+  external?: boolean;
+}) {
+  const content = (
+    <>
+      {link.label}
+      <ArrowRight className="h-3.5 w-3.5" />
+    </>
+  );
+  if (link.to) {
     return (
-      <Link to={action.to} className={cls}>
-        {inner}
+      <Link to={link.to} className={className}>
+        {content}
       </Link>
     );
   }
   return (
-    <a href={action.href} className={cls}>
-      {inner}
+    <a
+      href={link.href}
+      className={className}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
+      {content}
     </a>
   );
 }
