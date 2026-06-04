@@ -1,57 +1,83 @@
-# Section 4: Platform Operations & Ongoing Data Management
+## Goal
 
-Append a new section to the App Manual Google Doc (`1qo5Tm9Xnri-EnIA-ngM0k9_z8HTUuVNElmk4nCuEdRc`), inserted after Section 3 and styled to match existing headings (Heading 1 for the section, Heading 2 for subsections, plain text + tables for body).
+Stand up a real Admin section so multiple people (not just the current admin) can view analytics, with richer reporting beyond the existing survey-results page.
 
-## Structure
+## 1. Admin layout & navigation
 
-**4.1 Purpose & scope**
-What this section covers (post-launch ops, data refresh, support, security, analytics) and what it does not (budget/contracts, fundraising).
+Create `src/routes/admin.tsx` as a layout route with a sidebar (shadcn `Sidebar`). All admin pages become children:
 
-**4.2 The three partners — who does what**
-Short narrative establishing the default split:
-- **NAACP Greater Hartford** — product owner, content authority, community voice, decisions on what ships, custodian of resident trust and the privacy promises in Section 3.
-- **CT Data Collaborative (CTDC)** — data steward: source indicators, validate methodology, refresh tract data, flag quality issues.
-- **Farnam Associates** — technical/platform lead **through launch**, supported by a tech professional advisor. **Post-launch, platform ownership transitions to NAACP**, who will retain or hire a platform developer to maintain, duplicate, and scale the app. Farnam's role narrows to handoff support and advisory.
+- `src/routes/admin.index.tsx` — Overview (current stat cards + funnel, lifted from `admin.survey-results.tsx`)
+- `src/routes/admin.reporting.tsx` — New reporting page (charts, geo, language, resources)
+- `src/routes/admin.surveys.tsx` — Existing survey table + filters (moved from `admin.survey-results.tsx`)
+- `src/routes/admin.admins.tsx` — Manage admin users
 
-Include a "Transition milestone" callout describing what handoff includes (repo access, credentials inventory, runbook walk-through, 60/90-day advisory window).
+The layout gates access via `checkIsAdmin`; non-admins see the existing "Admins only" message. Sidebar links: Overview, Reporting, Surveys, Admins. `noindex` on all admin routes. Keep `/admin/survey-results` as a redirect to `/admin/surveys` so existing bookmarks work.
 
-**4.3 Operating cadence**
-- **Monthly ops call** — all three orgs; review incidents, content updates, resident feedback themes, upcoming changes.
-- **Quarterly data refresh** — CTDC pushes refreshed indicators; NAACP reviews resident-facing copy; platform team deploys.
-- **Annual audit** — security review, privacy promise review against Section 3, vetted-resources sweep, accessibility check.
+## 2. Admin management (invite by email)
 
-**4.4 Domains (each with a short narrative + RACI table)**
+New server functions in `src/lib/admin.functions.ts`:
 
-For each domain below: 2–4 sentences of context, then a RACI table with rows for the key activities and columns **NAACP | CTDC | Farnam / Platform dev**. RACI = Responsible, Accountable, Consulted, Informed.
+- `listAdmins()` — returns admin users (joined with `profiles` for display name + `auth.users` email via `supabaseAdmin.auth.admin.listUsers()` or a single targeted lookup).
+- `grantAdminByEmail({ email })` — looks up user by email via `supabaseAdmin.auth.admin.listUsers` (paginated search), inserts into `user_roles` with role `admin`. Returns clear error if no user found ("Ask them to sign up first, then invite again").
+- `revokeAdmin({ userId })` — deletes the admin row. Block revoking yourself to prevent lockout.
 
-1. **Hosting, uptime & incident response** — where the app runs (Lovable Cloud), who watches it, how incidents are triaged and communicated.
-2. **Data refresh — tract indicators** — Census/ACS pulls, methodology notes, quarterly cadence, change log.
-3. **Vetted resources & content currency** — CT resources list, link checks, partner additions/removals.
-4. **Resident support & feedback intake** — feedback inbox triage, response SLAs, escalation to NAACP leadership.
-5. **Security, privacy & data requests** — access reviews, RLS/role audits, handling deletion requests and law-enforcement inquiries (ties back to Section 3 promises).
-6. **Analytics, reporting & evaluation** — what's measured, monthly dashboard, quarterly impact note to the board.
-7. **Accessibility & plain-language QA** — annual WCAG pass, Flesch-Kincaid spot-checks tied to Section 1.
+All three require existing admin (reuse the role check pattern already in `listSurveyResponses`). UI on `/admin/admins`: table of current admins (name, email, granted date, Revoke button) + email input form to grant.
 
-**4.5 Handoff checklist (launch → NAACP ownership)**
-Bulleted checklist Farnam completes at launch: repo + admin access transferred, secrets inventory, runbook, monitoring dashboards shared, vendor list, advisory window dates, escalation contacts.
+No schema changes needed — `user_roles` already exists with the `admin` enum value and unique `(user_id, role)`.
 
-**4.6 Contacts & access matrix**
-Small table: role → primary owner → backup → access level (admin, editor, viewer). Placeholders for named people NAACP can fill in.
+## 3. Reporting page (`/admin/reporting`)
 
-## Technical approach
+New server function `getReportingData()` (admin-only) returning aggregates from existing tables. Charts via Recharts (already common in shadcn stack — add if missing).
 
-- Use the Google Docs connector (`google_docs/v1/documents/{id}:batchUpdate`) to append content at end of document.
-- Two-pass insert: (1) `insertText` for the entire section as a single block with `\n`-separated paragraphs and `\t`-separated table cells marked with sentinels, then (2) `updateParagraphStyle` (HEADING_1/HEADING_2) and `createTable` requests for each RACI table.
-- Match existing doc style: Calibri, sentence-case headings, no ALL CAPS, plain language (Section 1 rules apply to this section too — short sentences, "you/we", active voice).
-- Headings get unique `headingId`s so they're linkable from the doc's outline.
-- Do not modify Sections 1–3.
+**Time-series** (last 90 days, daily buckets, toggle 7d/30d/90d):
+- Signups (`profiles.created_at`)
+- Intake responses (`intake_responses.created_at`)
+- Plans generated (`stabilization_plans.generated_at`)
+- Steps completed (`plan_steps.completed_at`)
+Rendered as a stacked/multi-line area chart.
 
-## What I will NOT include (per your answers)
+**Geographic breakdown**:
+- Group `intake_responses.tract_fips` counts; join against `src/data/hartford-target-tracts.ts` for human-readable tract/neighborhood names.
+- Horizontal bar chart of top tracts + "Other".
 
-- Financials, contracts, renewals, fundraising.
-- Specific staff names (leave placeholders for NAACP to fill).
-- Anything outside operations (no roadmap, no feature plans).
+**Language & accessibility**:
+- Pie/bar of `profiles.language_pref` distribution.
+- `profiles.sms_alerts` opt-in rate.
+- TTS usage: not currently logged. Plan notes this is a gap; if the user wants it tracked, we add a lightweight `tts_events` table in a follow-up (out of scope for this turn unless they want it now).
 
-## Deliverable
+**Resource engagement**:
+- Count of `plan_steps.resource_id` occurrences (which vetted resources show up most in generated plans).
+- Top 10 bar chart joined against `src/data/vetted-resources.ts` for titles.
+- Action-letter usage: count of plans whose steps reference landlord/security-deposit letter resources.
 
-The Google Doc updated in place. I'll confirm by reading back the new section's headings after the batch update completes.
+CSV export button per section.
+
+## 4. Files touched
+
+**New**
+- `src/routes/admin.tsx` (layout + auth gate + sidebar)
+- `src/routes/admin.index.tsx`
+- `src/routes/admin.reporting.tsx`
+- `src/routes/admin.surveys.tsx`
+- `src/routes/admin.admins.tsx`
+- `src/components/admin/AdminSidebar.tsx`
+- `src/components/admin/charts/*` (TimeSeriesChart, GeoBarChart, LanguagePieChart, ResourceBarChart)
+
+**Edited**
+- `src/lib/admin.functions.ts` — add `listAdmins`, `grantAdminByEmail`, `revokeAdmin`, `getReportingData`
+- `src/routes/admin.survey-results.tsx` — replace with redirect to `/admin/surveys` (keeps old URL working)
+
+**No DB migration required** (uses existing `user_roles`, `profiles`, `intake_responses`, `stabilization_plans`, `plan_steps`).
+
+## Technical notes
+
+- All new server fns use `requireSupabaseAuth` + role check via `has_role(auth.uid(), 'admin')` (matches existing pattern).
+- Email lookup for invites uses `supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 })` then in-memory email match — fine at current user counts.
+- Revoke self-protection: compare `userId` against `context.userId`.
+- Recharts: `bun add recharts` if not already installed.
+
+## Out of scope (flag for follow-up)
+
+- Logging TTS / Listen button usage (needs new table + client instrumentation).
+- Audit log of admin grants/revokes.
+- Per-resource click tracking on Find Help page.
