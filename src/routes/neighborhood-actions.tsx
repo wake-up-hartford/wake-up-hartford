@@ -9,7 +9,6 @@ import {
   ClipboardList,
   PenLine,
   Vote,
-  ShieldCheck,
   Megaphone,
   Users,
   MessageSquareWarning,
