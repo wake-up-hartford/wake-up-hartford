@@ -23,9 +23,14 @@ import { Route as HomeActionsRouteImport } from './routes/home-actions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as FindHelpRouteImport } from './routes/find-help'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
+import { Route as AdminSurveysRouteImport } from './routes/admin.surveys'
 import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
+import { Route as AdminReportingRouteImport } from './routes/admin.reporting'
+import { Route as AdminAdminsRouteImport } from './routes/admin.admins'
 
 const SurveyRoute = SurveyRouteImport.update({
   id: '/survey',
@@ -97,24 +102,50 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
   id: '/plan/$planId',
   path: '/plan/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSurveysRoute = AdminSurveysRouteImport.update({
+  id: '/surveys',
+  path: '/surveys',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSurveyResultsRoute = AdminSurveyResultsRouteImport.update({
-  id: '/admin/survey-results',
-  path: '/admin/survey-results',
-  getParentRoute: () => rootRouteImport,
+  id: '/survey-results',
+  path: '/survey-results',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportingRoute = AdminReportingRouteImport.update({
+  id: '/reporting',
+  path: '/reporting',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminsRoute = AdminAdminsRouteImport.update({
+  id: '/admins',
+  path: '/admins',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
@@ -129,8 +160,12 @@ export interface FileRoutesByFullPath {
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/survey': typeof SurveyRoute
+  '/admin/admins': typeof AdminAdminsRoute
+  '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
+  '/admin/surveys': typeof AdminSurveysRoute
   '/plan/$planId': typeof PlanPlanIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -148,12 +183,17 @@ export interface FileRoutesByTo {
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/survey': typeof SurveyRoute
+  '/admin/admins': typeof AdminAdminsRoute
+  '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
+  '/admin/surveys': typeof AdminSurveysRoute
   '/plan/$planId': typeof PlanPlanIdRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
@@ -168,13 +208,18 @@ export interface FileRoutesById {
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/survey': typeof SurveyRoute
+  '/admin/admins': typeof AdminAdminsRoute
+  '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
+  '/admin/surveys': typeof AdminSurveysRoute
   '/plan/$planId': typeof PlanPlanIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/find-help'
     | '/home'
@@ -189,8 +234,12 @@ export interface FileRouteTypes {
     | '/security-deposit-letter'
     | '/sitemap.xml'
     | '/survey'
+    | '/admin/admins'
+    | '/admin/reporting'
     | '/admin/survey-results'
+    | '/admin/surveys'
     | '/plan/$planId'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -208,11 +257,16 @@ export interface FileRouteTypes {
     | '/security-deposit-letter'
     | '/sitemap.xml'
     | '/survey'
+    | '/admin/admins'
+    | '/admin/reporting'
     | '/admin/survey-results'
+    | '/admin/surveys'
     | '/plan/$planId'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/find-help'
     | '/home'
@@ -227,12 +281,17 @@ export interface FileRouteTypes {
     | '/security-deposit-letter'
     | '/sitemap.xml'
     | '/survey'
+    | '/admin/admins'
+    | '/admin/reporting'
     | '/admin/survey-results'
+    | '/admin/surveys'
     | '/plan/$planId'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   FindHelpRoute: typeof FindHelpRoute
   HomeRoute: typeof HomeRoute
@@ -247,7 +306,6 @@ export interface RootRouteChildren {
   SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SurveyRoute: typeof SurveyRoute
-  AdminSurveyResultsRoute: typeof AdminSurveyResultsRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
 
@@ -351,12 +409,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/plan/$planId': {
       id: '/plan/$planId'
@@ -365,18 +437,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/surveys': {
+      id: '/admin/surveys'
+      path: '/surveys'
+      fullPath: '/admin/surveys'
+      preLoaderRoute: typeof AdminSurveysRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/survey-results': {
       id: '/admin/survey-results'
-      path: '/admin/survey-results'
+      path: '/survey-results'
       fullPath: '/admin/survey-results'
       preLoaderRoute: typeof AdminSurveyResultsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reporting': {
+      id: '/admin/reporting'
+      path: '/reporting'
+      fullPath: '/admin/reporting'
+      preLoaderRoute: typeof AdminReportingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/admins': {
+      id: '/admin/admins'
+      path: '/admins'
+      fullPath: '/admin/admins'
+      preLoaderRoute: typeof AdminAdminsRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
+interface AdminRouteChildren {
+  AdminAdminsRoute: typeof AdminAdminsRoute
+  AdminReportingRoute: typeof AdminReportingRoute
+  AdminSurveyResultsRoute: typeof AdminSurveyResultsRoute
+  AdminSurveysRoute: typeof AdminSurveysRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminsRoute: AdminAdminsRoute,
+  AdminReportingRoute: AdminReportingRoute,
+  AdminSurveyResultsRoute: AdminSurveyResultsRoute,
+  AdminSurveysRoute: AdminSurveysRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   FindHelpRoute: FindHelpRoute,
   HomeRoute: HomeRoute,
@@ -391,7 +503,6 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityDepositLetterRoute: SecurityDepositLetterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SurveyRoute: SurveyRoute,
-  AdminSurveyResultsRoute: AdminSurveyResultsRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport
