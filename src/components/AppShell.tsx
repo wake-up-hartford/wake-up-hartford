@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Building2, Trees, HeartHandshake, User } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import wuwLogo from "@/assets/wuw-logo.png";
+import wuwLogo from "@/assets/wuw-logo.webp";
 
 const ROTATING_MESSAGES = [
   "Concentrated poverty is not natural. It is produced by policy choices.",
@@ -74,8 +74,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <img
               src={wuwLogo}
               alt="Wake Up Wednesday"
+              width={160}
+              height={40}
+              fetchPriority="high"
+              decoding="async"
               className="h-10 w-auto flex-shrink-0"
             />
+
           </Link>
           <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
             Greater Hartford<br />Branch NAACP
