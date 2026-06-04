@@ -6,7 +6,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Set a new password — Wake Up Wednesday" }] }),
+  head: () => ({
+    meta: [
+      { title: "Set a new password — Wake Up Wednesday" },
+      { name: "description", content: "Reset your Wake Up Wednesday account password." },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/reset-password" },
+    ],
+  }),
   component: ResetPasswordPage,
 });
 

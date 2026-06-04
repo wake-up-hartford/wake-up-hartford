@@ -14,6 +14,13 @@ export const Route = createFileRoute("/security-deposit-letter")({
         content:
           "Generate a letter demanding the return of your security deposit, with interest, under Connecticut law.",
       },
+      { property: "og:title", content: "Security Deposit Demand Letter — Wake Up Wednesday" },
+      { property: "og:description", content: "Generate a letter demanding the return of your security deposit, with interest, under Connecticut law." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/security-deposit-letter" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/security-deposit-letter" },
     ],
   }),
   component: SecurityDepositLetterPage,
