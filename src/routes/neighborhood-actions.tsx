@@ -9,7 +9,6 @@ import {
   ClipboardList,
   PenLine,
   Vote,
-  ShieldCheck,
   Megaphone,
   Users,
   MessageSquareWarning,
@@ -178,23 +177,6 @@ function ActionsPage() {
         }
       />
 
-      <ActionCard
-        icon={ShieldCheck}
-        accent="emerald"
-        title="Know Your Rights card"
-        body={
-          concerns.length > 0
-            ? `A printable one-pager built around the top issues here: ${concerns.slice(0, 2).map((c) => c.label.toLowerCase()).join(" and ")}.`
-            : "A printable one-pager covering tenant rights, SNAP eligibility, and where to call if something goes wrong."
-        }
-        cta={
-          <Button size="sm" variant="outline" disabled>
-            Coming soon
-          </Button>
-        }
-      />
-
-      {/* Organizing */}
       <GroupHeader>Organize this block</GroupHeader>
 
       <ActionCard
