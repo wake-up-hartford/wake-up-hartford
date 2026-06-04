@@ -259,10 +259,11 @@ export const toggleStep = createServerFn({ method: "POST" })
 export const listMyPlans = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("stabilization_plans")
       .select("id, generated_at, status, plan")
+      .eq("user_id", userId)
       .order("generated_at", { ascending: false });
     if (error) throw new Error("Couldn't load plans.");
 
