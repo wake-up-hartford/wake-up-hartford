@@ -287,7 +287,7 @@ function ProfilePage() {
           {/* Admin link */}
           {admin.data?.isAdmin && (
             <Link
-              to="/admin/survey-results"
+              to="/admin"
               className="mt-4 flex items-center gap-3 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 text-foreground shadow-soft transition-transform active:scale-[0.99]"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
