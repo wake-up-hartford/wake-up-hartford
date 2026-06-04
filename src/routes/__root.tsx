@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import logoUrl from "@/assets/wuw-logo.webp?url";
 import {
   Outlet,
   Link,
