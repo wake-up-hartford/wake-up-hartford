@@ -2,11 +2,17 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, ReactNode } from "react";
-import { BarChart3, LayoutDashboard, ShieldAlert, Users, ClipboardList } from "lucide-react";
+import { BarChart3, LayoutDashboard, ShieldAlert, Users, ClipboardList, ChevronLeft } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { checkIsAdmin } from "@/lib/admin.functions";
-import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const NAV: ReadonlyArray<{ to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }> = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -46,42 +52,55 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
           <ShieldAlert className="mx-auto h-10 w-10 text-muted-foreground" />
           <h1 className="text-lg font-semibold">Admins only</h1>
           <p className="text-sm text-muted-foreground">
-            Your account doesn't have admin access.
+            Your account doesn&apos;t have admin access.
           </p>
         </div>
       </AppShell>
     );
   }
 
+  const activeItem = NAV.find((item) =>
+    item.exact ? pathname === item.to : pathname.startsWith(item.to)
+  );
+
   return (
     <AppShell>
       <div className="max-w-6xl mx-auto p-4">
-        <div className="mb-4">
-          <h1 className="text-xl font-semibold">{title}</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Dashboard
+          </Link>
+          <div className="h-4 w-px bg-border" />
+          <Select
+            value={activeItem?.to ?? "/admin"}
+            onValueChange={(value) => nav({ to: value })}
+          >
+            <SelectTrigger className="w-[200px] border-border bg-background">
+              <SelectValue placeholder="Select page" />
+            </SelectTrigger>
+            <SelectContent>
+              {NAV.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SelectItem key={item.to} value={item.to}>
+                    <span className="flex items-center gap-2">
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </span>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
         </div>
-        <nav className="flex gap-1 overflow-x-auto border-b border-border mb-4 -mx-1 px-1">
-          {NAV.map((item) => {
-            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap border-b-2 -mb-px transition-colors",
-                  active
-                    ? "border-primary text-foreground font-medium"
-                    : "border-transparent text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <h1 className="text-xl font-semibold mb-4">{title}</h1>
         {children}
       </div>
     </AppShell>
   );
 }
+
