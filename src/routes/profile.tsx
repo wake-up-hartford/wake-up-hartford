@@ -11,7 +11,19 @@ import { getMyProfile, updateMyProfile } from "@/lib/profile.functions";
 import { checkIsAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Your account" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your Account — Wake Up Wednesday" },
+      { name: "description", content: "Manage your Wake Up Wednesday profile and saved plans." },
+      { property: "og:title", content: "Your Account — Wake Up Wednesday" },
+      { property: "og:description", content: "Manage your Wake Up Wednesday profile and saved plans." },
+      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/profile" },
+      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/profile" },
+    ],
+  }),
   component: ProfilePage,
 });
 
