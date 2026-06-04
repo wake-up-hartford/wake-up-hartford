@@ -220,7 +220,7 @@ function AuthPage() {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
             <MailCheck className="h-7 w-7" />
           </div>
-          <h2 className="font-display text-3xl leading-tight text-foreground">Check your email</h2>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Check your email</h1>
           <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
             We sent a confirmation link to
           </p>
@@ -264,7 +264,7 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back to sign in
         </button>
-        <h2 className="font-display text-3xl leading-tight text-foreground">Reset your password</h2>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Reset your password</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
           Enter the email for your account and we'll send you a link to set a new password.
         </p>
@@ -304,7 +304,7 @@ function AuthPage() {
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <div className="mt-6 space-y-3">
-          <h2 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h2>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h1>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
             We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
           </p>
@@ -343,7 +343,7 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
-        <h2 className="font-display text-3xl leading-tight text-foreground">Sign in</h2>
+        <h1 className="font-display text-3xl leading-tight text-foreground">Sign in</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
           Welcome back. Use Google or the email and password you signed up with.
         </p>
@@ -413,7 +413,7 @@ function AuthPage() {
       >
         <ChevronLeft className="h-4 w-4" /> Back
       </button>
-      <h2 className="font-display text-3xl leading-tight text-foreground">Create your account</h2>
+      <h1 className="font-display text-3xl leading-tight text-foreground">Create your account</h1>
       <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
         Sign up with Google for one-tap access, or create an account with your email and a password.
       </p>

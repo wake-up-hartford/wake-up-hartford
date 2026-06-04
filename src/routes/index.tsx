@@ -190,7 +190,7 @@ function DashLink({
       <Card className={`flex items-center gap-4 border-l-4 py-3 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h3>
+            <h2 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h2>
             {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>
