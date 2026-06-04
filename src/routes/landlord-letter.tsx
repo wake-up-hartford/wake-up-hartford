@@ -1,8 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, Printer, Copy, Mail } from "lucide-react";
-import { AppShell, Card } from "@/components/AppShell";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/AppShell";
+import { Field, LetterPage, letterInputClass } from "@/components/letter/LetterPage";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
 
@@ -58,7 +57,6 @@ function LandlordLetterPage() {
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
   const [previouslyReported, setPreviouslyReported] = useState(false);
   const [previousReportNotes, setPreviousReportNotes] = useState("");
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
 
   const today = useMemo(
     () =>
@@ -153,56 +151,24 @@ ${tenantName || "[Your name]"}
     previousReportNotes,
   ]);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(letter);
-      setCopyStatus("copied");
-      setTimeout(() => setCopyStatus("idle"), 2000);
-    } catch {
-      setCopyStatus("error");
-      setTimeout(() => setCopyStatus("idle"), 2000);
-    }
-  };
-
-  const handlePrint = () => window.print();
-
-  const handleEmail = () => {
-    const subject = encodeURIComponent(
-      `Notice of unsafe / unhealthy conditions at ${fullTenantAddress}`,
-    );
-    const body = encodeURIComponent(letter);
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  };
-
   return (
-    <AppShell>
-      <Link
-        to="/home"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground print:hidden"
-      >
-        <ChevronLeft className="h-4 w-4" /> Back to Your Home
-      </Link>
-
-      <header className="mb-6 print:hidden">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Tenant tools
-        </p>
-        <h1 className="font-display text-3xl leading-tight text-foreground">
-          Letter of Complaint to Your Landlord
-        </h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-          A written letter creates a paper trail. Fill in the details below and we'll
-          generate a clear, formal letter you can print, email, or copy.
-        </p>
-      </header>
-
+    <LetterPage
+      backTo="/home"
+      backLabel="Back to Your Home"
+      eyebrow="Tenant tools"
+      title="Letter of Complaint to Your Landlord"
+      intro="A written letter creates a paper trail. Fill in the details below and we'll generate a clear, formal letter you can print, email, or copy."
+      letter={letter}
+      emailSubject={`Notice of unsafe / unhealthy conditions at ${fullTenantAddress}`}
+      disclaimer="Keep a copy for your records. For best results, send by certified mail (return receipt requested) or hand-deliver with a witness. This is a template — it is not legal advice. For free legal help, contact Connecticut Fair Housing Center or Statewide Legal Services of CT (211)."
+    >
       <Card className="mb-5 space-y-4 print:hidden">
         <h2 className="font-display text-lg">Your information</h2>
         <Field label="Your full name">
           <input
             value={tenantName}
             onChange={(e) => setTenantName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="Jane Doe"
           />
         </Field>
@@ -211,7 +177,7 @@ ${tenantName || "[Your name]"}
             <input
               value={tenantAddress}
               onChange={(e) => setTenantAddress(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="123 Main St"
             />
           </Field>
@@ -219,7 +185,7 @@ ${tenantName || "[Your name]"}
             <input
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="2B"
             />
           </Field>
@@ -230,7 +196,7 @@ ${tenantName || "[Your name]"}
               type="tel"
               value={tenantPhone}
               onChange={(e) => setTenantPhone(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="(860) 555-0100"
             />
           </Field>
@@ -239,7 +205,7 @@ ${tenantName || "[Your name]"}
               type="email"
               value={tenantEmail}
               onChange={(e) => setTenantEmail(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="you@example.com"
             />
           </Field>
@@ -252,7 +218,7 @@ ${tenantName || "[Your name]"}
           <input
             value={landlordName}
             onChange={(e) => setLandlordName(e.target.value)}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="ABC Property Management"
           />
         </Field>
@@ -261,7 +227,7 @@ ${tenantName || "[Your name]"}
             value={landlordAddress}
             onChange={(e) => setLandlordAddress(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="456 Park Ave, Hartford, CT 06106"
           />
         </Field>
@@ -288,7 +254,7 @@ ${tenantName || "[Your name]"}
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="Example: The radiator in the front bedroom has not produced heat since Nov 1. My children have been sleeping in coats."
           />
         </Field>
@@ -296,7 +262,7 @@ ${tenantName || "[Your name]"}
           <input
             value={firstNoticedDate}
             onChange={(e) => setFirstNoticedDate(e.target.value)}
-            className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+            className={letterInputClass}
             placeholder="e.g. early October 2025"
           />
         </Field>
@@ -314,61 +280,12 @@ ${tenantName || "[Your name]"}
             <input
               value={previousReportNotes}
               onChange={(e) => setPreviousReportNotes(e.target.value)}
-              className="w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]"
+              className={letterInputClass}
               placeholder="e.g. text message on 10/12 and phone call on 10/20"
             />
           </Field>
         )}
       </Card>
-
-      <Card className="mb-5">
-        <div className="mb-3 flex items-center justify-between print:hidden">
-          <h2 className="font-display text-lg">Your letter</h2>
-          <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            Preview
-          </span>
-        </div>
-        <pre className="whitespace-pre-wrap font-serif text-[13px] leading-relaxed text-foreground">
-{letter}
-        </pre>
-      </Card>
-
-      <pre id="print-letter" className="hidden">{letter}</pre>
-
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 print:hidden">
-        <Button onClick={handlePrint} size="lg" className="w-full">
-          <Printer className="h-4 w-4" /> Print
-        </Button>
-        <Button onClick={handleEmail} size="lg" variant="secondary" className="w-full">
-          <Mail className="h-4 w-4" /> Email
-        </Button>
-        <Button onClick={handleCopy} size="lg" variant="secondary" className="w-full">
-          <Copy className="h-4 w-4" />
-          {copyStatus === "copied"
-            ? "Copied!"
-            : copyStatus === "error"
-              ? "Couldn't copy"
-              : "Copy text"}
-        </Button>
-      </div>
-
-      <p className="mt-4 text-[12px] leading-relaxed text-muted-foreground print:hidden">
-        Keep a copy for your records. For best results, send by certified mail (return
-        receipt requested) or hand-deliver with a witness. This is a template — it is
-        not legal advice. For free legal help, contact Connecticut Fair Housing Center
-        or Statewide Legal Services of CT (211).
-      </p>
-    </AppShell>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
-      {children}
-    </label>
+    </LetterPage>
   );
 }
