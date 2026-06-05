@@ -104,15 +104,26 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
+  const consumePostAuthRedirect = (): "/life" | "/dashboard" => {
+    if (typeof window === "undefined") return "/dashboard";
+    const target = window.localStorage.getItem("wuw:postAuthRedirect");
+    if (target === "/life") {
+      window.localStorage.removeItem("wuw:postAuthRedirect");
+      return "/life";
+    }
+    return "/dashboard";
+  };
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) nav({ to: "/dashboard", replace: true });
+      if (session) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     supabase.auth.getUser().then(({ data, error }) => {
-      if (!error && data.user) nav({ to: "/dashboard", replace: true });
+      if (!error && data.user) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     return () => subscription.unsubscribe();
   }, [nav]);
+
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
