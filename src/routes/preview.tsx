@@ -285,7 +285,7 @@ function Circle({
       {active && (
         <div
           role="dialog"
-          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-base sm:text-lg font-medium leading-snug shadow-soft ${popupClassName}`}
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName}`}
         >
           {popup}
         </div>
