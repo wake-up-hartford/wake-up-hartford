@@ -94,8 +94,8 @@ function DashboardPage() {
           title="Your Life"
           body="Resources for stability, health, and safety."
           tone="blue"
-          
-      />
+        />
+
       </div>
       {stats && (stats.assessmentsThisMonth > 0 || stats.plansThisMonth > 0 || stats.plansAllTime > 0) && (
         <section
