@@ -105,14 +105,12 @@ function SurveyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ease) return toast.error("Please rate how easy it is to use.");
-    if (!mostUsed) return toast.error("Please pick which part you use most.");
     if (!techIssue) return toast.error("Please tell us if you've had technical issues.");
     if (!prompt) return toast.error("Please tell us what brought you here today.");
     setSubmitting(true);
     try {
       await send({
         data: {
-          most_used: mostUsed as (typeof MOST_USED_OPTIONS)[number]["value"],
           ease,
           tech_issue: techIssue as (typeof TECH_OPTIONS)[number]["value"],
           prompt: prompt as (typeof PROMPT_OPTIONS)[number]["value"],
