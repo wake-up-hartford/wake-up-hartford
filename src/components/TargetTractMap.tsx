@@ -147,6 +147,10 @@ export default function TargetTractMap({
         </p>
       )}
 
+      <p className="text-center text-[10px] text-muted-foreground">
+        Click +/- to zoom · Drag to pan
+      </p>
+
       <div
         role="region"
         aria-label="Map of Hartford target census tracts. Use the dropdown below to select a tract with the keyboard."
