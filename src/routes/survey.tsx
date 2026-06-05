@@ -190,21 +190,16 @@ function SurveyPage() {
 
         {/* Q2 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">2. Which part do you use most?</h2>
-          <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
+          <h2 className="font-display text-base">2. Any technical problems?</h2>
+          <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
         {/* Q3 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">3. Any technical problems?</h2>
-          <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
-        </div>
-
-        {/* Q4 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">4. What brought you here today?</h2>
+          <h2 className="font-display text-base">3. What brought you here today?</h2>
           <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
         </div>
+
 
         {/* Q5 (optional) */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
