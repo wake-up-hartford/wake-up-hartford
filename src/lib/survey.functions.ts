@@ -2,13 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const MOST_USED = ["path", "find_help", "take_action", "home", "none"] as const;
 const TECH_ISSUE = ["slow", "navigation", "errors", "none"] as const;
-const PROMPT = ["reminder", "regular", "referral", "social", "search"] as const;
+const PROMPT = ["reminder", "regular", "referral", "social", "search", "qr"] as const;
 const FEATURE_AWARENESS = ["yes_use", "yes_untried", "no"] as const;
 
 const SubmitInput = z.object({
-  most_used: z.enum(MOST_USED),
   ease: z.number().int().min(1).max(5),
   tech_issue: z.enum(TECH_ISSUE),
   prompt: z.enum(PROMPT),
@@ -23,7 +21,7 @@ export const submitSurvey = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { error } = await supabase.from("app_usage_survey_responses").insert({
       user_id: userId,
-      most_used: data.most_used,
+      most_used: "none",
       ease: data.ease,
       tech_issue: data.tech_issue,
       prompt: data.prompt,
