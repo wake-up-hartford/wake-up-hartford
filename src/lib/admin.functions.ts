@@ -111,6 +111,20 @@ export const getUsageStats = createServerFn({ method: "GET" })
       supabaseAdmin.from("app_usage_survey_responses").select("id, user_id, created_at"),
     ]);
 
+    const phoneUsers = new Set<string>();
+    {
+      let page = 1;
+      while (page < 20) {
+        const { data: u } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+        for (const user of u?.users ?? []) {
+          if (user.phone && user.phone.trim()) phoneUsers.add(user.id);
+        }
+        if (!u || u.users.length < 1000) break;
+        page += 1;
+      }
+    }
+
+
     const completedSteps = (steps.data ?? []).filter((s) => s.completed_at).length;
     const totalSteps = steps.data?.length ?? 0;
     const uniqueAppRespondents = new Set((appSurvey.data ?? []).map((r) => r.user_id)).size;
