@@ -67,7 +67,6 @@ function ActionsPage() {
   );
   const rentBurdenRed = concerns.some((i) => i.key === "rent_burden");
   const housingAgeRed = concerns.some((i) => i.key === "housing_age" || i.key === "age_of_housing");
-  const multipleRed = concerns.length >= 3;
 
   return (
     <AppShell>
