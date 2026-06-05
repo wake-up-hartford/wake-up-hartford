@@ -117,8 +117,12 @@ function ProfilePage() {
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (error) toast.error(error.message);
-    else toast.success("Password reset email sent.");
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Password reset email sent.");
+      setResetSent(true);
+    }
   };
 
   return (
