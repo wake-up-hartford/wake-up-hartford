@@ -44,10 +44,10 @@ function PreviewLanding() {
       {/* Triangle of pillar circles */}
       <section className="mx-auto flex max-w-md flex-col items-center px-6 py-8 sm:py-10">
         <div className="flex items-center justify-center gap-0">
-          <Circle label="Your Neighborhood" className="bg-gold text-gold-foreground" delay={300} />
-          <Circle label="Your Home" className="bg-primary text-primary-foreground -ml-4 sm:-ml-6" delay={1100} />
+          <Circle label="Your Neighborhood" className="bg-gold text-gold-foreground opacity-90 z-10" delay={300} />
+          <Circle label="Your Home" className="bg-primary text-primary-foreground -ml-4 sm:-ml-6 opacity-90" delay={1100} />
         </div>
-        <Circle label="Your Life" className="bg-accent text-accent-foreground -mt-6 sm:-mt-8" delay={1900} />
+        <Circle label="Your Life" className="bg-accent text-accent-foreground -mt-6 sm:-mt-8 opacity-90" delay={1900} />
       </section>
 
 
