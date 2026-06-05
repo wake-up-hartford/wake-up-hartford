@@ -14,7 +14,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SecurityDepositLetterRouteImport } from './routes/security-deposit-letter'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as PlansRouteImport } from './routes/plans'
 import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
 import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
@@ -23,6 +22,7 @@ import { Route as LandlordLetterRouteImport } from './routes/landlord-letter'
 import { Route as HomeActionsRouteImport } from './routes/home-actions'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as FindHelpRouteImport } from './routes/find-help'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -56,11 +56,6 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreviewRoute = PreviewRouteImport.update({
-  id: '/preview',
-  path: '/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlansRoute = PlansRouteImport.update({
@@ -101,6 +96,11 @@ const HomeRoute = HomeRouteImport.update({
 const FindHelpRoute = FindHelpRouteImport.update({
   id: '/find-help',
   path: '/find-help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -153,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
@@ -161,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -177,6 +177,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
@@ -185,7 +186,6 @@ export interface FileRoutesByTo {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -203,6 +203,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
   '/find-help': typeof FindHelpRoute
   '/home': typeof HomeRoute
   '/home-actions': typeof HomeActionsRoute
@@ -211,7 +212,6 @@ export interface FileRoutesById {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -230,6 +230,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/dashboard'
     | '/find-help'
     | '/home'
     | '/home-actions'
@@ -238,7 +239,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -254,6 +254,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/dashboard'
     | '/find-help'
     | '/home'
     | '/home-actions'
@@ -262,7 +263,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -279,6 +279,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/dashboard'
     | '/find-help'
     | '/home'
     | '/home-actions'
@@ -287,7 +288,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -305,6 +305,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
   FindHelpRoute: typeof FindHelpRoute
   HomeRoute: typeof HomeRoute
   HomeActionsRoute: typeof HomeActionsRoute
@@ -313,7 +314,6 @@ export interface RootRouteChildren {
   NeighborhoodRoute: typeof NeighborhoodRoute
   NeighborhoodActionsRoute: typeof NeighborhoodActionsRoute
   PlansRoute: typeof PlansRoute
-  PreviewRoute: typeof PreviewRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
@@ -357,13 +357,6 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preview': {
-      id: '/preview'
-      path: '/preview'
-      fullPath: '/preview'
-      preLoaderRoute: typeof PreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plans': {
@@ -420,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/find-help'
       fullPath: '/find-help'
       preLoaderRoute: typeof FindHelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -510,6 +510,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
   FindHelpRoute: FindHelpRoute,
   HomeRoute: HomeRoute,
   HomeActionsRoute: HomeActionsRoute,
@@ -518,7 +519,6 @@ const rootRouteChildren: RootRouteChildren = {
   NeighborhoodRoute: NeighborhoodRoute,
   NeighborhoodActionsRoute: NeighborhoodActionsRoute,
   PlansRoute: PlansRoute,
-  PreviewRoute: PreviewRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityDepositLetterRoute: SecurityDepositLetterRoute,

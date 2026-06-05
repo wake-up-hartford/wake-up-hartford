@@ -1,22 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
-import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight, Play } from "lucide-react";
-import { AppShell, Card } from "@/components/AppShell";
-import { SketchArrow } from "@/components/SketchArrow";
+import { ArrowRight, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { listMyPlans } from "@/lib/stabilization-plan.functions";
-import { getPublicStats } from "@/lib/stats.functions";
-
-
+import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "See It. Name It. Fix It. — Wake Up Wednesday" },
-      { name: "description", content: "Real data about your home, your neighborhood, and your life — in plain language, with a path forward. From GREATER HARTFORD BRANCH NAACP." },
-      { property: "og:title", content: "See It. Name It. Fix It. — Wake Up Wednesday" },
-      { property: "og:description", content: "Real data about your home, your neighborhood, and your life — in plain language, with a path forward." },
+      { title: "Wake Up Wednesday — Know Your Home. Know Your Block." },
+      {
+        name: "description",
+        content:
+          "A community guide from the Greater Hartford Branch NAACP. Plain-language data about your home, your neighborhood, and your life.",
+      },
+      { property: "og:title", content: "Wake Up Wednesday — Know Your Home. Know Your Block." },
+      {
+        property: "og:description",
+        content: "See the facts. Find the resources. Build the plan.",
+      },
       { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/" },
       { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
     ],
@@ -24,225 +25,161 @@ export const Route = createFileRoute("/")({
       { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/" },
     ],
   }),
-  component: HomePage,
+  component: Landing,
 });
 
-function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
-  if (!user) return null;
-  const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
-  const candidates = [meta.first_name, meta.given_name, meta.full_name, meta.name];
-  for (const c of candidates) {
-    if (typeof c === "string" && c.trim()) return c.trim().split(/\s+/)[0];
-  }
-  if (user.email) return user.email.split("@")[0];
-  return null;
+function Landing() {
+  const { user } = useAuth();
+  const [activeCircle, setActiveCircle] = useState<string | null>(null);
+
+  const toggle = (id: string) =>
+    setActiveCircle((cur) => (cur === id ? null : id));
+
+  return (
+    <main className="min-h-dvh bg-background text-foreground">
+      <div className="w-full px-4 pt-4 text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-sm">
+          Greater Hartford NAACP presents
+        </p>
+      </div>
+      <img
+        src={wakeUpLogo.url}
+        alt="Wake Up Hartford"
+        className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
+      />
+      <p className="mx-auto max-w-md px-6 pb-0 text-center text-base font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
+        A tool for residents to learn the facts about your neighborhood, your home and&nbsp;get the tools to stabilize your life.{"\n"}
+        {"\n"}
+        <em>Click a circle to see what we can do here:</em>
+      </p>
+
+      {/* Triangle of pillar circles */}
+      <section className="mx-auto flex max-w-md flex-col items-center px-6 py-4 sm:py-6">
+        <div className="flex items-center justify-center gap-0">
+          <Circle
+            id="neighborhood"
+            label="Your Neighborhood"
+            popup="Your block has a story. See the data behind it."
+            className="bg-gold text-gold-foreground opacity-90"
+            popupClassName="bg-gold-popup text-gold-foreground"
+            delay={300}
+            active={activeCircle === "neighborhood"}
+            onToggle={toggle}
+            stackClass="z-10"
+          />
+          <Circle
+            id="home"
+            label="Your Home"
+            popup="Look up your address; Learn your rights."
+            className="bg-primary text-primary-foreground opacity-90"
+            popupClassName="bg-primary-popup text-primary-foreground"
+            delay={1100}
+            active={activeCircle === "home"}
+            onToggle={toggle}
+            stackClass="-ml-4 sm:-ml-6"
+          />
+        </div>
+        <Circle
+          id="life"
+          label="Your Life"
+          popup="Tell us what you're facing. Get a plan that's built for you."
+          className="bg-accent text-accent-foreground opacity-90"
+            popupClassName="bg-accent-popup text-accent-foreground"
+          delay={1900}
+          active={activeCircle === "life"}
+          onToggle={toggle}
+          stackClass="-mt-6 sm:-mt-8"
+        />
+        <Link
+          to={user ? "/dashboard" : "/auth"}
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
+        >
+          {user ? "To my dashboard" : "Sign up to get started"}
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* Event strip */}
+      <section className="border-y border-gold/30 bg-gold/10">
+        <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+              <Calendar className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/85">
+                Join us
+              </p>
+              <h3 className="font-display text-xl leading-tight">Every Wednesday</h3>
+              <p className="text-sm text-foreground/80">
+                Unity Plaza · Barbour Street · Hartford. Coffee, conversation,
+                and your neighbors.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <footer className="border-t border-border/60 px-6 py-8 text-center text-[13px] text-foreground/70">
+        Presented by{" "}
+        <strong className="font-semibold text-foreground">
+          GREATER HARTFORD BRANCH NAACP
+        </strong>
+      </footer>
+    </main>
+  );
 }
 
-function HomePage() {
-  const { user, signOut } = useAuth();
-  const firstName = getFirstName(user);
-  const fetchPlans = useServerFn(listMyPlans);
-  const { data: plansData } = useQuery({
-    queryKey: ["my-plans"],
-    queryFn: () => fetchPlans({}),
-    enabled: !!user,
-  });
-  const planCount = plansData?.plans.length ?? 0;
-  const fetchStats = useServerFn(getPublicStats);
-  const { data: stats } = useQuery({
-    queryKey: ["public-stats"],
-    queryFn: () => fetchStats(),
-    staleTime: 5 * 60 * 1000,
-  });
+
+function Circle({
+  id,
+  label,
+  popup,
+  className,
+  popupClassName,
+  delay,
+  active,
+  onToggle,
+  stackClass = "",
+}: {
+  id: string;
+  label: string;
+  popup: string;
+  className: string;
+  popupClassName: string;
+  delay: number;
+  active: boolean;
+  onToggle: (id: string) => void;
+  stackClass?: string;
+}) {
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => onToggle(id), 6000);
+    return () => clearTimeout(t);
+  }, [active, id, onToggle]);
+
   return (
-
-    <AppShell>
-      {firstName && (
-        <p className="mb-2 text-sm text-foreground/70">Welcome back, {firstName}</p>
-      )}
-
-      <h1 className="font-display text-3xl leading-tight">
-        <span className="text-primary">See It.</span>{" "}<br />
-        <span className="text-gold">Name It.</span>{" "}<br />
-        <span className="text-accent">Fix It.</span>
-      </h1>
-      <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
-        Knowledge is where change begins.
-      </p>
-      <p className="mb-4 text-[15px] leading-relaxed text-foreground/80">
-        Hartford residents deserve to know what's really going on in their homes and neighborhoods. Look up your address, see the facts, and find resources that can help.
-      </p>
-
+    <div className={`relative ${stackClass} ${active ? "z-20" : ""}`}>
       <button
         type="button"
-        disabled
-        className="mb-5 inline-flex items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/5 px-4 py-3 text-sm font-medium text-foreground/80 disabled:cursor-not-allowed disabled:opacity-70"
+        onClick={() => onToggle(id)}
+        aria-expanded={active}
+        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
+        style={{ animationDelay: `${delay}ms` }}
       >
-        <Play className="h-4 w-4 text-primary" aria-hidden="true" />
-        Watch how this app can help (coming soon)
+        <span className="font-display text-[13px] sm:text-base font-bold leading-[1.1] text-center px-2">
+          {label}
+        </span>
       </button>
-
-      <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
-      <div className="grid gap-4">
-
-
-        <DashLink
-          to="/neighborhood"
-          icon={Trees}
-          title="Your Neighborhood"
-          body="A report card for your block — air, schools, safety, access."
-          tone="gold"
-        />
-        <DashLink
-          to="/home"
-          icon={Building2}
-          title="Your Home"
-          body="Look up any Hartford address. Code issues, evictions, utilities."
-          tone="purple"
-        />
-        <DashLink
-          to="/life"
-          icon={HeartHandshake}
-          title="Your Life"
-          body="Resources for stability, health, and safety."
-          tone="blue"
-          
-      />
-      </div>
-
-      <EventCard />
-      {stats && (stats.assessmentsThisMonth > 0 || stats.plansThisMonth > 0 || stats.plansAllTime > 0) && (
-        <section
-          aria-label="Community usage"
-          className="mt-6 flex items-stretch justify-around gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-3 text-center"
+      {active && (
+        <div
+          role="dialog"
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName}`}
         >
-          <Stat value={stats.assessmentsThisMonth} label="self-assessments this month" />
-          <div className="w-px bg-border/70" aria-hidden />
-          <Stat value={stats.plansThisMonth} label="plans created this month" />
-          <div className="w-px bg-border/70" aria-hidden />
-          <Stat value={stats.plansAllTime} label="plans all-time" />
-        </section>
-      )}
-
-      {user && planCount > 0 && (
-        <Link
-          to="/plans"
-          className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
-        >
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
-            <FileText className="h-5 w-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
-            <p className="text-[12px] text-muted-foreground">
-              {planCount === 1 ? "Resume your stabilization plan." : `You have ${planCount} plans. Pick up where you left off.`}
-            </p>
-          </div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        </Link>
-      )}
-      {!user ? (
-
-        <Link
-          to="/auth"
-          className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
-        >
-          Sign In
-        </Link>
-      ) : (
-        <div className="mt-8 flex flex-col items-center gap-2">
-          <Link
-            to="/profile"
-            className="text-[13px] font-medium text-accent hover:underline"
-          >
-            Your account
-          </Link>
-          <button
-            onClick={() => signOut()}
-            className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-5 py-2.5 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
-          >
-            Log Out
-          </button>
+          {popup}
         </div>
       )}
-      <Footer />
-    </AppShell>
-  );
-}
-
-type Tone = "gold" | "purple" | "blue";
-
-const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; title: string; shadow: string }> = {
-  gold:   { border: "border-l-gold",    iconBg: "bg-gold/20",    iconText: "text-gold-foreground", title: "text-gold",    shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--gold)_55%,transparent)]" },
-  purple: { border: "border-l-primary", iconBg: "bg-primary/15", iconText: "text-primary",         title: "text-primary", shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--primary)_55%,transparent)]" },
-  blue:   { border: "border-l-accent",  iconBg: "bg-accent/15",  iconText: "text-accent",          title: "text-accent",  shadow: "shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--accent)_55%,transparent)]" },
-};
-
-function DashLink({
-  to, icon: Icon, title, body, tone, badge,
-}: {
-  to:  "/home" | "/neighborhood" | "/life" | "/plans";
-  icon: React.ComponentType<{ className?: string }>;
-  title: string; body: string; tone: Tone; badge?: string;
-}) {
-  const t = TONES[tone];
-  return (
-    <Link to={to} className="block">
-      <Card className={`flex items-center gap-4 border-l-4 py-3 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h2 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h2>
-            {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
-          </div>
-          <p className="text-sm text-card-foreground/80">{body}</p>
-        </div>
-        <div className="flex shrink-0 flex-col items-center gap-0.5">
-          <div className={`grid h-10 w-10 place-items-center rounded-xl ${t.iconBg} ${t.iconText}`}>
-            <Icon className="h-6 w-6" />
-          </div>
-          <SketchArrow className={`h-5 w-7 -rotate-6 ${t.title}`} />
-        </div>
-      </Card>
-    </Link>
-  );
-}
-
-function EventCard() {
-  return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15">
-      <div className="flex items-start gap-3 p-5">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
-          <Calendar className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/85">Join us</p>
-          <h3 className="font-display text-xl leading-tight text-foreground">Every Wednesday</h3>
-          <p className="mt-1 text-sm text-foreground/85">
-            Unity Plaza · Barbour Street · Hartford. Coffee, conversation, and your neighbors.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
-
-function Footer() {
-  return (
-    <footer className="mt-12 space-y-3 text-center text-[13px] text-foreground/70">
-      <p>Presented by <strong className="font-semibold text-foreground">GREATER HARTFORD BRANCH NAACP</strong></p>
-      <p>Data partnership with CT Data Collaborative</p>
-    </footer>
-  );
-}
-
-function Stat({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="flex-1 px-1">
-      <p className="font-display text-xl leading-none text-foreground tabular-nums">
-        {value.toLocaleString()}
-      </p>
-      <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{label}</p>
-    </div>
-  );
-}
-
