@@ -14,7 +14,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SecurityDepositLetterRouteImport } from './routes/security-deposit-letter'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as PlansRouteImport } from './routes/plans'
 import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
 import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
@@ -57,11 +56,6 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreviewRoute = PreviewRouteImport.update({
-  id: '/preview',
-  path: '/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlansRoute = PlansRouteImport.update({
@@ -168,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -193,7 +186,6 @@ export interface FileRoutesByTo {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -220,7 +212,6 @@ export interface FileRoutesById {
   '/neighborhood': typeof NeighborhoodRoute
   '/neighborhood-actions': typeof NeighborhoodActionsRoute
   '/plans': typeof PlansRoute
-  '/preview': typeof PreviewRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security-deposit-letter': typeof SecurityDepositLetterRoute
@@ -248,7 +239,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -273,7 +263,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -299,7 +288,6 @@ export interface FileRouteTypes {
     | '/neighborhood'
     | '/neighborhood-actions'
     | '/plans'
-    | '/preview'
     | '/profile'
     | '/reset-password'
     | '/security-deposit-letter'
@@ -326,7 +314,6 @@ export interface RootRouteChildren {
   NeighborhoodRoute: typeof NeighborhoodRoute
   NeighborhoodActionsRoute: typeof NeighborhoodActionsRoute
   PlansRoute: typeof PlansRoute
-  PreviewRoute: typeof PreviewRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
@@ -370,13 +357,6 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preview': {
-      id: '/preview'
-      path: '/preview'
-      fullPath: '/preview'
-      preLoaderRoute: typeof PreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plans': {
@@ -539,7 +519,6 @@ const rootRouteChildren: RootRouteChildren = {
   NeighborhoodRoute: NeighborhoodRoute,
   NeighborhoodActionsRoute: NeighborhoodActionsRoute,
   PlansRoute: PlansRoute,
-  PreviewRoute: PreviewRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityDepositLetterRoute: SecurityDepositLetterRoute,
@@ -550,3 +529,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
