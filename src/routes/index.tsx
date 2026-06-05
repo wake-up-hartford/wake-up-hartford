@@ -129,10 +129,13 @@ function Landing() {
 
 
       <footer className="border-t border-border/60 px-6 py-8 text-center text-[13px] text-foreground/70">
-        Presented by{" "}
-        <strong className="font-semibold text-foreground">
+        <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Developed by</p>
+        <p className="mt-1 font-semibold text-foreground">
           GREATER HARTFORD BRANCH NAACP
-        </strong>
+        </p>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          in collaboration with CT Data Collaborative and Farnam Associates, LLC.
+        </p>
       </footer>
     </main>
   );
