@@ -1,23 +1,26 @@
-## Combine Report Card + Detailed into one expandable view on /home
+## Goal
+Remove the helper text under the phone field and add inline validation/formatting so users can't enter a malformed number.
 
-The /home page currently has 4 tabs: **Report Card**, **Detailed**, **Share**, **Print**. Report Card shows a compact 2×2 grid of the four indicators (Code violations, Evictions, Utility shutoffs, 311 complaints) with value + severity pill. Detailed shows the same four indicators as full cards with icon, description, item lists, and a "Plain Language" callout.
+## Context
+- The line "Use international format (e.g. +1 for US). You'll receive a code to verify." is misleading — there is no SMS verification step wired up in the profile, and the project is Hartford-focused (US numbers).
+- The current `<input type="tel">` accepts any string up to 20 chars with placeholder `+15551234567`.
 
-### Changes (all in `src/routes/home.tsx`)
+## Changes (src/routes/profile.tsx only)
 
-1. **Remove the Report Card tab.** Drop the `<TabsTrigger value="card">` and `<TabsContent value="card">`. Update `TabsList` to `grid-cols-3`, change `defaultValue` to `"story"`, and update the heading to "3 ways to view Home data".
+1. **Delete** the `<p>` helper text on lines 214–216.
 
-2. **Rebuild `DetailedReport`** as a list of collapsible cards. Each card's collapsed header shows the same compact summary the old Report Card showed (big value, label, sub-line, severity pill) plus a chevron. Expanding reveals the existing detail content (icon + description, list of violations/complaints, `PlainLanguage` callout, etc.).
+2. **Auto-format as US phone** as the user types:
+   - Strip non-digits, take last 10 digits, render as `(555) 123-4567`.
+   - Change placeholder to `(555) 123-4567`.
+   - Store the formatted display value in local state; on save, normalize to E.164 (`+1XXXXXXXXXX`) before writing to the DB so existing downstream code keeps working.
 
-3. **Delete the now-unused `ReportCard` component.**
+3. **Inline validation:**
+   - Show a red error message under the field when the value is non-empty and digit count ≠ 10.
+   - Disable the Save button (or block submit + toast) when phone is invalid.
+   - Mark the field with `aria-invalid` and `aria-describedby` pointing at the error for accessibility.
 
-### Technical details
+4. **Keep scope tight:** no schema changes, no Twilio/verification flow, no country picker. US-only formatting matches the audience; if international support is needed later it can be added behind a toggle.
 
-- Use shadcn's existing `Collapsible` primitive (`@/components/ui/collapsible`, already in the project via Radix); add it to the project if not present. Each indicator becomes one `<Collapsible>` wrapping a `<Card>`, with `<CollapsibleTrigger asChild>` on the header row and `<CollapsibleContent>` for the detail body.
-- Header row layout: left = value + label + sub (same typography as today's ReportCard tiles), right = `SeverityPill` + `ChevronDown` that rotates 180° when open (`data-[state=open]:rotate-180 transition-transform`).
-- First card (Code violations) defaults to open so users immediately see one expanded example; others start collapsed.
-- Keep the existing severity logic, copy, icons, and PlainLanguage blocks exactly as they are — only the wrapper/layout changes.
-- Share and Print tabs are not modified.
-
-### Out of scope
-
-- `/neighborhood` also has a "Report Card" tab but its content already is the detailed view (single tab labeled "Report Card"), so no change there unless you also want it restructured — let me know.
+## Out of scope
+- Real SMS code verification (would need a backend + Twilio/Supabase Auth phone provider).
+- International number support / country selector.

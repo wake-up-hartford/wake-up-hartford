@@ -27,6 +27,17 @@ export const Route = createFileRoute("/profile")({
   component: ProfilePage,
 });
 
+function formatUSPhone(input: string): string {
+  let d = input.replace(/\D/g, "");
+  if (d.startsWith("1")) d = d.slice(1);
+  d = d.slice(0, 10);
+  if (d.length === 0) return "";
+  if (d.length < 4) return `(${d}`;
+  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+
+
 function ProfilePage() {
   const nav = useNavigate();
   const qc = useQueryClient();
@@ -73,8 +84,11 @@ function ProfilePage() {
 
 
   useEffect(() => {
-    if (user?.phone) setPhone(user.phone);
+    if (user?.phone) setPhone(formatUSPhone(user.phone));
   }, [user]);
+
+  const phoneDigits = phone.replace(/\D/g, "").replace(/^1/, "");
+  const phoneValid = phoneDigits.length === 0 || phoneDigits.length === 10;
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,10 +110,15 @@ function ProfilePage() {
 
   const handleSavePhone = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!phoneValid) {
+      toast.error("Please enter a 10-digit US phone number.");
+      return;
+    }
+    const e164Phone = phoneDigits.length === 10 ? `+1${phoneDigits}` : undefined;
     setSavingPhone(true);
     try {
       const [{ error: phoneError }] = await Promise.all([
-        supabase.auth.updateUser({ phone: phone.trim() || undefined }),
+        supabase.auth.updateUser({ phone: e164Phone }),
         saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts } }),
       ]);
       if (phoneError) throw phoneError;
@@ -195,13 +214,24 @@ function ProfilePage() {
               <input
                 id="phone"
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel-national"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                maxLength={20}
-                placeholder="+15551234567"
-                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                onChange={(e) => setPhone(formatUSPhone(e.target.value))}
+                maxLength={14}
+                placeholder="(555) 123-4567"
+                aria-invalid={!phoneValid}
+                aria-describedby={!phoneValid ? "phone-error" : undefined}
+                className={`w-full rounded-lg border bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:outline-none ${
+                  phoneValid ? "border-card-foreground/20 focus:border-accent" : "border-destructive focus:border-destructive"
+                }`}
               />
             </Field>
+            {!phoneValid && (
+              <p id="phone-error" className="text-[12px] text-destructive">
+                Please enter a 10-digit US phone number.
+              </p>
+            )}
             <label className="flex items-center gap-2.5">
               <input
                 type="checkbox"
@@ -211,9 +241,6 @@ function ProfilePage() {
               />
               <span className="text-[13px] text-card-foreground">Send me reminders and updates by text</span>
             </label>
-            <p className="text-[12px] text-card-foreground/70">
-              Use international format (e.g. +1 for US). You'll receive a code to verify.
-            </p>
 
             <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
               <select
@@ -229,7 +256,7 @@ function ProfilePage() {
 
             <button
               type="submit"
-              disabled={savingPhone}
+              disabled={savingPhone || !phoneValid}
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
