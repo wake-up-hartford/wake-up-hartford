@@ -54,7 +54,7 @@ function PreviewLanding() {
             label="Your Neighborhood"
             popup="Your block has a story. See the data behind it."
             className="bg-gold text-gold-foreground opacity-90"
-            popupClassName="bg-gold/70 text-gold-foreground"
+            popupClassName="bg-gold-popup text-gold-foreground"
             delay={300}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
@@ -63,9 +63,9 @@ function PreviewLanding() {
           <Circle
             id="home"
             label="Your Home"
-            popup="Look up your address. See your building's history, your landlord's record, and your rights as a tenant."
+            popup="Look up your address. See your building's history, landlord's record, and rights as a tenant."
             className="bg-primary text-primary-foreground opacity-90"
-            popupClassName="bg-primary/70 text-primary-foreground"
+            popupClassName="bg-primary-popup text-primary-foreground"
             delay={1100}
             active={activeCircle === "home"}
             onToggle={toggle}
@@ -77,7 +77,7 @@ function PreviewLanding() {
           label="Your Life"
           popup="Tell us what you're facing. Get a plan that's built for you."
           className="bg-accent text-accent-foreground opacity-90"
-          popupClassName="bg-accent/70 text-accent-foreground"
+            popupClassName="bg-accent-popup text-accent-foreground"
           delay={1900}
           active={activeCircle === "life"}
           onToggle={toggle}
