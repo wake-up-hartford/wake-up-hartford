@@ -30,7 +30,7 @@ function PreviewLanding() {
       <img
         src={wakeUpLogo.url}
         alt="Wake Up Hartford"
-        className="block w-full h-auto"
+        className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
 
       {/* Hero */}
