@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight, Play } from "lucide-react";
+import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
