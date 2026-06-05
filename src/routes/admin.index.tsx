@@ -199,37 +199,73 @@ function BreakdownCard({ title, counts }: { title: string; counts: Record<string
 
 function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> }) {
   const top = steps[0]?.count ?? 0;
+
+  const sectionFor = (label: string): "Users" | "Your Neighborhood" | "Your Home" | "Your Life" => {
+    if (label.includes("Neighborhood")) return "Your Neighborhood";
+    if (label.includes("Your Home")) return "Your Home";
+    if (
+      label.includes("Life Survey") ||
+      label.includes("Plan generated") ||
+      label.includes("step")
+    )
+      return "Your Life";
+    return "Users";
+  };
+
+  const order: Array<"Users" | "Your Neighborhood" | "Your Home" | "Your Life"> = [
+    "Users",
+    "Your Neighborhood",
+    "Your Home",
+    "Your Life",
+  ];
+  const grouped = order
+    .map((section) => ({
+      section,
+      items: steps.filter((s) => sectionFor(s.label) === section),
+    }))
+    .filter((g) => g.items.length > 0);
+
   return (
     <Card className="p-4">
       <div className="text-sm font-medium mb-1">Conversion funnel</div>
       <p className="text-xs text-muted-foreground mb-3">
         Shows how many users move through each stage — from sign-up to completing plan steps. Use this to spot drop-off points.
       </p>
-      <div className="space-y-2">
-        {steps.map((s, i) => {
-          const widthPct = top ? (s.count / top) * 100 : 0;
-          const prev = i > 0 ? steps[i - 1].count : null;
-          const stepPct = prev && prev > 0 ? (s.count / prev) * 100 : null;
-          const dropoff = prev != null ? prev - s.count : null;
-          return (
-            <div key={s.label}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="font-medium">{s.label}</span>
-                <span className="text-muted-foreground">
-                  {s.count}
-                  {stepPct != null && (
-                    <span className="ml-2">
-                      {stepPct.toFixed(0)}%{dropoff && dropoff > 0 ? ` (-${dropoff})` : ""}
-                    </span>
-                  )}
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded overflow-hidden">
-                <div className="h-full bg-primary rounded transition-all" style={{ width: `${widthPct}%` }} />
-              </div>
+      <div className="space-y-5">
+        {grouped.map((group) => (
+          <div key={group.section}>
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {group.section}
             </div>
-          );
-        })}
+            <div className="space-y-2">
+              {group.items.map((s) => {
+                const idx = steps.indexOf(s);
+                const widthPct = top ? (s.count / top) * 100 : 0;
+                const prev = idx > 0 ? steps[idx - 1].count : null;
+                const stepPct = prev && prev > 0 ? (s.count / prev) * 100 : null;
+                const dropoff = prev != null ? prev - s.count : null;
+                return (
+                  <div key={s.label}>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="font-medium">{s.label}</span>
+                      <span className="text-muted-foreground">
+                        {s.count}
+                        {stepPct != null && (
+                          <span className="ml-2">
+                            {stepPct.toFixed(0)}%{dropoff && dropoff > 0 ? ` (-${dropoff})` : ""}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="h-3 bg-muted rounded overflow-hidden">
+                      <div className="h-full bg-primary rounded transition-all" style={{ width: `${widthPct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </Card>
   );
