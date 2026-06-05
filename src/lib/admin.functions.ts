@@ -71,6 +71,19 @@ export const listSignedUpUsers = createServerFn({ method: "GET" })
     };
   });
 
+export const deleteUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => DeleteUserInput.parse(data))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    if (data.userId === context.userId) {
+      throw new Error("You can't delete your own account.");
+    }
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const listSurveyResponses = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
