@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Trees, HeartHandshake, ArrowRight, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
 
@@ -54,6 +54,7 @@ function PreviewLanding() {
             label="Your Neighborhood"
             popup="Your block has a story. See the data behind it."
             className="bg-gold text-gold-foreground opacity-90"
+            popupClassName="bg-gold/70 text-gold-foreground"
             delay={300}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
@@ -64,6 +65,7 @@ function PreviewLanding() {
             label="Your Home"
             popup="Look up your address. See your building's history, your landlord's record, and your rights as a tenant."
             className="bg-primary text-primary-foreground opacity-90"
+            popupClassName="bg-primary/70 text-primary-foreground"
             delay={1100}
             active={activeCircle === "home"}
             onToggle={toggle}
@@ -75,6 +77,7 @@ function PreviewLanding() {
           label="Your Life"
           popup="Tell us what you're facing. Get a plan that's built for you."
           className="bg-accent text-accent-foreground opacity-90"
+          popupClassName="bg-accent/70 text-accent-foreground"
           delay={1900}
           active={activeCircle === "life"}
           onToggle={toggle}
@@ -242,6 +245,7 @@ function Circle({
   label,
   popup,
   className,
+  popupClassName,
   delay,
   active,
   onToggle,
@@ -251,20 +255,25 @@ function Circle({
   label: string;
   popup: string;
   className: string;
+  popupClassName: string;
   delay: number;
   active: boolean;
   onToggle: (id: string) => void;
   stackClass?: string;
 }) {
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => onToggle(id), 6000);
+    return () => clearTimeout(t);
+  }, [active, id, onToggle]);
+
   return (
     <div className={`relative ${stackClass} ${active ? "z-20" : ""}`}>
       <button
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={active}
-        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${
-          active ? "scale-110" : ""
-        } ${className}`}
+        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
         <span className="font-display text-sm sm:text-base font-bold leading-tight text-center px-3">
@@ -274,7 +283,7 @@ function Circle({
       {active && (
         <div
           role="dialog"
-          className="absolute left-1/2 top-full z-30 mt-3 w-56 -translate-x-1/2 rounded-xl border border-border bg-card px-4 py-3 text-center text-sm text-card-foreground shadow-soft animate-fade-in"
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium shadow-soft ${popupClassName}`}
         >
           {popup}
         </div>
