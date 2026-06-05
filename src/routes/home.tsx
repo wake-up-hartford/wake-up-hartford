@@ -234,12 +234,14 @@ function ExpandableIndicator({
               <span className="text-xs font-semibold text-foreground sm:text-sm">{label}</span>
             </div>
             <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">{sub}</p>
-            <p className="mt-0.5 text-[10px] text-muted-foreground/70 group-data-[state=open]:hidden">Tap to expand</p>
-            <p className="mt-0.5 hidden text-[10px] text-muted-foreground/70 group-data-[state=open]:block">Tap to collapse</p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 flex-col items-end gap-1">
             <SeverityPill severity={severity}>{pillText ?? severity}</SeverityPill>
-            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+            <span className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground/80">
+              <span className="group-data-[state=open]:hidden">Expand</span>
+              <span className="hidden group-data-[state=open]:inline">Collapse</span>
+              <ChevronDown className="h-3 w-3 transition-transform group-data-[state=open]:rotate-180" />
+            </span>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
