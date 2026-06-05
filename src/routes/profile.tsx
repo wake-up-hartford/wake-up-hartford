@@ -325,11 +325,11 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70">
+    <div className="sm:flex sm:items-center sm:gap-3">
+      <label htmlFor={htmlFor} className="mb-1 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70 sm:mb-0 sm:w-40 sm:shrink-0">
         <Icon className="h-3.5 w-3.5" /> {label}
       </label>
-      {children}
+      <div className="sm:flex-1">{children}</div>
     </div>
   );
 }
