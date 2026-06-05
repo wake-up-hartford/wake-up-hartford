@@ -9,8 +9,6 @@ import {
   ClipboardList,
   PenLine,
   Vote,
-  Megaphone,
-  Users,
   MessageSquareWarning,
   ArrowRight,
   ExternalLink,
