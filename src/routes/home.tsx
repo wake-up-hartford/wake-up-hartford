@@ -230,10 +230,10 @@ function ExpandableIndicator({
         <CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-1.5 text-left sm:px-4 sm:py-1.5">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
-              <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{value}</span>
+              <span className="font-display text-xl leading-none text-foreground sm:text-2xl">{value}</span>
               <span className="text-xs font-semibold text-foreground sm:text-sm">{label}</span>
             </div>
-            <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">{sub}</p>
+            <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground sm:text-xs">{sub}</p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
             <SeverityPill severity={severity}>{pillText ?? severity}</SeverityPill>
