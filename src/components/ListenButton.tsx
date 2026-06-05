@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Pause, Play, Volume2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { Loader2, Pause, Play, Volume2, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { synthesizeStory } from "@/lib/tts.functions";
 
 type Props = {
