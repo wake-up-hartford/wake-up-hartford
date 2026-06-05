@@ -6,7 +6,9 @@ export type TrackedEventName =
   | "home_address_submit"
   | "home_map_address_click";
 
-export function trackEvent(eventName: TrackedEventName, metadata: Record<string, unknown> = {}): void {
+type JsonMetadata = Record<string, string | number | boolean | null>;
+
+export function trackEvent(eventName: TrackedEventName, metadata: JsonMetadata = {}): void {
   // Fire-and-forget; never block UI.
   void (async () => {
     try {
