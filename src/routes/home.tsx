@@ -10,6 +10,7 @@ import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
 import { shareOrCopy } from "@/lib/share";
+import { trackEvent } from "@/lib/track-event";
 
 const PickAddressMap = lazy(() =>
   import("@/components/BuildingAddressMap").then((m) => ({ default: m.PickAddressMap })),
@@ -56,6 +57,7 @@ function HomePage() {
     e.preventDefault();
     const v = query.trim();
     if (!v) return;
+    trackEvent("home_address_submit", { address: v });
     setActive(v);
     save(v);
   };
@@ -135,6 +137,7 @@ function HomePage() {
                 <Suspense fallback={<div className="h-[320px] rounded-xl bg-secondary/40 animate-pulse" />}>
                   <PickAddressMap
                     onPick={(addr) => {
+                      trackEvent("home_map_address_click", { address: addr });
                       setQuery(addr);
                       setActive(addr);
                       save(addr);

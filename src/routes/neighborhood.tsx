@@ -18,6 +18,7 @@ import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
 import { shareOrCopy } from "@/lib/share";
+import { trackEvent } from "@/lib/track-event";
 
 const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
 
@@ -93,11 +94,11 @@ function NeighborhoodPage() {
               </TabsList>
               <TabsContent value="map" className="mt-3">
                 <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
-                  <TargetTractMap selectedTract={null} onSelect={handleResolved} />
+                  <TargetTractMap selectedTract={null} onSelect={(t) => { trackEvent("neighborhood_map_tract_click", { tract: t.tract }); handleResolved(t); }} />
                 </Suspense>
               </TabsContent>
               <TabsContent value="address" className="mt-3">
-                <CensusTractLookup onResolved={handleResolved} />
+                <CensusTractLookup onResolved={(t) => { trackEvent("neighborhood_address_submit", { tract: t.tract }); handleResolved(t); }} />
               </TabsContent>
             </Tabs>
           </Card>
