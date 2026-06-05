@@ -182,24 +182,8 @@ function dotClass(s: Indicator["severity"]) {
     : "bg-muted-foreground/40";
 }
 
-function IndicatorRow({ ind }: { ind: Indicator }) {
-  return (
-    <li className="flex items-start gap-3 py-3.5">
-                <div
-                  role="img"
-                  className={`mt-1.5 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
-                  aria-label={severityLabel(ind.severity) ?? undefined}
-                />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
-          <span className="font-display text-xl leading-none text-card-foreground">{ind.value}</span>
-          <p className="font-medium text-card-foreground">{ind.label}</p>
-        </div>
-        <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
-      </div>
-    </li>
-  );
-}
+
+
 
 
 function cardStyle(s: Indicator["severity"]): { className: string; style?: React.CSSProperties } {
