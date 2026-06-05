@@ -35,6 +35,39 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
     return { isAdmin: !!data };
   });
 
+export const listSignedUpUsers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.userId);
+    const { data: profiles, error } = await supabaseAdmin
+      .from("profiles")
+      .select("id, display_name, first_name, last_name, created_at")
+      .order("created_at", { ascending: false })
+      .limit(1000);
+    if (error) throw new Error(error.message);
+
+    const emails = new Map<string, string>();
+    let page = 1;
+    while (page < 20) {
+      const { data: u } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+      for (const user of u?.users ?? []) emails.set(user.id, user.email ?? "");
+      if (!u || u.users.length < 1000) break;
+      page += 1;
+    }
+
+    return {
+      users: (profiles ?? []).map((p) => ({
+        id: p.id,
+        name:
+          [p.first_name, p.last_name].filter(Boolean).join(" ") ||
+          p.display_name ||
+          "—",
+        email: emails.get(p.id) ?? "",
+        createdAt: p.created_at,
+      })),
+    };
+  });
+
 export const listSurveyResponses = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
