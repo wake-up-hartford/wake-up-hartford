@@ -85,6 +85,13 @@ function PreviewLanding() {
           onToggle={toggle}
           stackClass="-mt-6 sm:-mt-8"
         />
+        <Link
+          to="/auth"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
+        >
+          Sign up to get started
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </section>
 
 
