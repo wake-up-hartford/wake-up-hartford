@@ -25,14 +25,6 @@ export const Route = createFileRoute("/survey")({
 });
 
 const MOST_USED_OPTIONS = [
-  { value: "path", label: "Path / plan steps" },
-  { value: "find_help", label: "Find Help" },
-  { value: "take_action", label: "Take Action & surveys" },
-  { value: "home", label: "Home / dashboard" },
-  { value: "none", label: "Haven't explored much yet" },
-] as const;
-
-const TECH_OPTIONS = [
   { value: "none", label: "Works fine" },
   { value: "slow", label: "Slow loading" },
   { value: "navigation", label: "Hard to navigate" },
@@ -40,11 +32,11 @@ const TECH_OPTIONS = [
 ] as const;
 
 const PROMPT_OPTIONS = [
+  { value: "referral", label: "Someone told me about it" },
+  { value: "qr", label: "Scanned a QR code" },
+  { value: "social", label: "Social media" },
   { value: "reminder", label: "Reminder notification" },
   { value: "regular", label: "I use it regularly" },
-  { value: "referral", label: "Someone told me about it" },
-  { value: "social", label: "Social media" },
-  { value: "search", label: "Found it online" },
 ] as const;
 
 const AWARENESS_OPTIONS = [
