@@ -59,7 +59,7 @@ function ProfilePage() {
   const [smsAlerts, setSmsAlerts] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
+  
 
   useEffect(() => {
     if (data?.profile) {
