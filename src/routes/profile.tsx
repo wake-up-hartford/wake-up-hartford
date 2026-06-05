@@ -6,7 +6,6 @@ import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, Clip
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
 import { getMyProfile, updateMyProfile } from "@/lib/profile.functions";
 import { checkIsAdmin } from "@/lib/admin.functions";
 
@@ -79,13 +78,9 @@ function ProfilePage() {
       setLastName(data.profile.last_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
       setSmsAlerts(data.profile.sms_alerts ?? false);
+      if (data.profile.phone) setPhone(formatUSPhone(data.profile.phone));
     }
   }, [data]);
-
-
-  useEffect(() => {
-    if (user?.phone) setPhone(formatUSPhone(user.phone));
-  }, [user]);
 
   const phoneDigits = phone.replace(/\D/g, "").replace(/^1/, "");
   const phoneValid = phoneDigits.length === 0 || phoneDigits.length === 10;
@@ -114,18 +109,14 @@ function ProfilePage() {
       toast.error("Please enter a 10-digit US phone number.");
       return;
     }
-    const e164Phone = phoneDigits.length === 10 ? `+1${phoneDigits}` : undefined;
+    const e164Phone = phoneDigits.length === 10 ? `+1${phoneDigits}` : null;
     setSavingPhone(true);
     try {
-      const [{ error: phoneError }] = await Promise.all([
-        supabase.auth.updateUser({ phone: e164Phone }),
-        saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts } }),
-      ]);
-      if (phoneError) throw phoneError;
+      await saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts, phone: e164Phone } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile and contact info saved.");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Couldn't update phone.");
+      toast.error(err instanceof Error ? err.message : "Couldn't update profile.");
     } finally {
       setSavingPhone(false);
     }
@@ -221,12 +212,15 @@ function ProfilePage() {
                 maxLength={14}
                 placeholder="(555) 123-4567"
                 aria-invalid={!phoneValid}
-                aria-describedby={!phoneValid ? "phone-error" : undefined}
+                aria-describedby={!phoneValid ? "phone-error" : "phone-dev-note"}
                 className={`w-full rounded-lg border bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:outline-none ${
                   phoneValid ? "border-card-foreground/20 focus:border-accent" : "border-destructive focus:border-destructive"
                 }`}
               />
             </Field>
+            <p id="phone-dev-note" className="text-[12px] italic text-muted-foreground">
+              development note: SMS provider needs to be connected
+            </p>
             {!phoneValid && (
               <p id="phone-error" className="text-[12px] text-destructive">
                 Please enter a 10-digit US phone number.

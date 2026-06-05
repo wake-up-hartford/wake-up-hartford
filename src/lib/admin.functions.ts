@@ -103,7 +103,7 @@ export const getUsageStats = createServerFn({ method: "GET" })
     await assertAdmin(context.userId);
 
     const [profiles, intake, plans, steps, survey, appSurvey, events] = await Promise.all([
-      supabaseAdmin.from("profiles").select("id, created_at"),
+      supabaseAdmin.from("profiles").select("id, created_at, phone"),
       supabaseAdmin.from("intake_responses").select("id, user_id, created_at, tract_fips"),
       supabaseAdmin.from("stabilization_plans").select("id, user_id, generated_at, status"),
       supabaseAdmin.from("plan_steps").select("id, user_id, completed_at"),
@@ -112,18 +112,9 @@ export const getUsageStats = createServerFn({ method: "GET" })
       supabaseAdmin.from("user_events").select("user_id, event_name"),
     ]);
 
-    const phoneUsers = new Set<string>();
-    {
-      let page = 1;
-      while (page < 20) {
-        const { data: u } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
-        for (const user of u?.users ?? []) {
-          if (user.phone && user.phone.trim()) phoneUsers.add(user.id);
-        }
-        if (!u || u.users.length < 1000) break;
-        page += 1;
-      }
-    }
+    const phoneUsers = new Set<string>(
+      (profiles.data ?? []).filter((p) => p.phone && p.phone.trim()).map((p) => p.id),
+    );
 
 
     const completedSteps = (steps.data ?? []).filter((s) => s.completed_at).length;
