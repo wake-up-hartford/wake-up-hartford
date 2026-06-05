@@ -242,7 +242,7 @@ function ProfilePage() {
               <span className="text-[13px] text-card-foreground">Send me reminders and updates by text</span>
             </label>
 
-            <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
+            <Field icon={Globe} label="Preferred language (Spanish coming soon)" htmlFor="language_pref">
               <select
                 id="language_pref"
                 value={languagePref}
