@@ -1,6 +1,8 @@
-import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Building2, Trees, HeartHandshake, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Home, Building2, Trees, HeartHandshake, User, LogOut } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { useQueryClient } from "@tanstack/react-query";
 import wuwLogo from "@/assets/wuw-logo.webp";
 
 const ROTATING_MESSAGES = [
@@ -82,9 +84,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             />
 
           </Link>
-          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
-            Greater Hartford<br />Branch NAACP
-          </span>
+          <div className="flex items-center gap-3">
+            <LogoutButton />
+            <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
+              Greater Hartford<br />Branch NAACP
+            </span>
+          </div>
         </div>
         {pathname !== "/" && <RotatingMessages />}
       </header>
@@ -112,6 +117,32 @@ export function AppShell({ children }: { children: ReactNode }) {
         </ul>
       </nav>
     </div>
+  );
+}
+
+function LogoutButton() {
+  const { user, signOut } = useAuth();
+  const qc = useQueryClient();
+  const nav = useNavigate();
+
+  if (!user) return null;
+
+  const handleSignOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await signOut();
+    nav({ to: "/auth", replace: true });
+  };
+
+  return (
+    <button
+      onClick={handleSignOut}
+      className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+      aria-label="Log out"
+    >
+      <LogOut className="h-3.5 w-3.5" />
+      <span className="hidden sm:inline">Log Out</span>
+    </button>
   );
 }
 
