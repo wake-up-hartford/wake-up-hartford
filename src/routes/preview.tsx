@@ -65,7 +65,7 @@ function PreviewLanding() {
           <Circle
             id="home"
             label="Your Home"
-            popup="Look up your address — see your building, your landlord, your rights."
+            popup="Look up your address; Learn your rights."
             className="bg-primary text-primary-foreground opacity-90"
             popupClassName="bg-primary-popup text-primary-foreground"
             delay={1100}
