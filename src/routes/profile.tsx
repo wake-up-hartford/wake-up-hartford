@@ -210,9 +210,13 @@ function ProfilePage() {
             </button>
           </form>
 
-          {/* Email (read-only) */}
-          <div className="mt-4 space-y-3 rounded-xl border border-border bg-card p-4 text-card-foreground">
-            <h2 className="font-display text-lg text-card-foreground">Email</h2>
+          {/* Contact (email + phone) */}
+          <form
+            onSubmit={handleSavePhone}
+            className="mt-4 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
+          >
+            <h2 className="font-display text-lg text-card-foreground">Contact</h2>
+
             <Field icon={Mail} label="Email address" htmlFor="email">
               <input
                 id="email"
@@ -229,14 +233,7 @@ function ProfilePage() {
             >
               Send password reset email
             </button>
-          </div>
 
-          {/* Phone */}
-          <form
-            onSubmit={handleSavePhone}
-            className="mt-4 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
-          >
-            <h2 className="font-display text-lg text-card-foreground">Phone</h2>
             <Field icon={Phone} label="Phone number" htmlFor="phone">
               <input
                 id="phone"
@@ -265,7 +262,7 @@ function ProfilePage() {
               disabled={savingPhone}
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
-              <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save phone"}
+              <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save contact"}
             </button>
           </form>
 
