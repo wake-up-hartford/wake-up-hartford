@@ -59,7 +59,6 @@ function AdminOverviewPage() {
 
           <FunnelCard steps={stats.data.funnel} />
           <UsersListCard />
-          <FunnelInsightsCard />
         </div>
       )}
     </AdminLayout>
@@ -236,97 +235,3 @@ function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> 
   );
 }
 
-function FunnelInsightsCard() {
-  const insights = [
-    {
-      stage: "Sign up → Address",
-      reasons: [
-        "Users don't see value before being asked for personal info.",
-        "Sign-up form feels too long or asks for too much upfront.",
-        "No clear explanation of what happens next.",
-      ],
-      fixes: [
-        "Add a brief 'What to expect' preview before sign-up.",
-        "Allow browsing the platform before requiring an address.",
-        "Reduce sign-up fields to the absolute minimum (email + password).",
-      ],
-    },
-    {
-      stage: "Address → Intake completed",
-      reasons: [
-        "Intake survey is long or repetitive.",
-        "Users aren't sure why the questions matter.",
-        "Technical issues or confusion about tract selection.",
-      ],
-      fixes: [
-        "Show progress bar and estimated time to complete.",
-        "Explain how answers shape their personalized plan.",
-        "Add tooltips or examples for census tract lookup.",
-      ],
-    },
-    {
-      stage: "Intake → Plan generated",
-      reasons: [
-        "Users don't understand what a 'plan' is or why it helps.",
-        "The generate step feels like a dead end or takes too long.",
-        "Users want to explore resources before committing to a plan.",
-      ],
-      fixes: [
-        "Add a short explainer: 'We'll build a step-by-step action plan for you.'",
-        "Show a loading state with helpful tips while the plan generates.",
-        "Offer a 'Browse resources' option alongside plan generation.",
-      ],
-    },
-    {
-      stage: "Plan generated → Steps completed",
-      reasons: [
-        "Steps feel overwhelming or not actionable enough.",
-        "Users lose motivation without reminders or check-ins.",
-        "Barriers (childcare, transport, documentation) block progress.",
-      ],
-      fixes: [
-        "Break steps into smaller, concrete micro-actions.",
-        "Enable SMS/email reminders for upcoming steps.",
-        "Surface local support resources for common barriers.",
-      ],
-    },
-  ];
-
-  return (
-    <Card className="p-4">
-      <div className="text-sm font-medium mb-1">Why drop-off happens</div>
-      <p className="text-xs text-muted-foreground mb-3">
-        Common reasons users leave at each stage and suggested fixes. Prioritize the stages with the biggest gaps above.
-      </p>
-      <div className="space-y-4">
-        {insights.map((item) => (
-          <div key={item.stage}>
-            <div className="text-xs font-semibold text-primary mb-1.5">{item.stage}</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium mb-1">Likely reasons</div>
-                <ul className="space-y-1">
-                  {item.reasons.map((r, i) => (
-                    <li key={i} className="text-xs text-muted-foreground pl-3 relative before:content-['•'] before:absolute before:left-0 before:text-muted-foreground">
-                      {r}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium mb-1">Suggested fixes</div>
-                <ul className="space-y-1">
-                  {item.fixes.map((f, i) => (
-                    <li key={i} className="text-xs text-muted-foreground pl-3 relative before:content-['→'] before:absolute before:left-0 before:text-primary">
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
