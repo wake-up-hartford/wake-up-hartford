@@ -94,7 +94,7 @@ function Landing() {
           to={user ? "/dashboard" : "/auth"}
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
         >
-          {user ? "To my dashboard" : "Sign up to get started"}
+          {user ? "Get Started" : "Sign up to get started"}
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
