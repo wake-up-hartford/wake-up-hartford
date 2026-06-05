@@ -245,6 +245,7 @@ function Circle({
   label,
   popup,
   className,
+  popupClassName,
   delay,
   active,
   onToggle,
@@ -254,20 +255,25 @@ function Circle({
   label: string;
   popup: string;
   className: string;
+  popupClassName: string;
   delay: number;
   active: boolean;
   onToggle: (id: string) => void;
   stackClass?: string;
 }) {
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => onToggle(id), 6000);
+    return () => clearTimeout(t);
+  }, [active, id, onToggle]);
+
   return (
     <div className={`relative ${stackClass} ${active ? "z-20" : ""}`}>
       <button
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={active}
-        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${
-          active ? "scale-110" : ""
-        } ${className}`}
+        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
         <span className="font-display text-sm sm:text-base font-bold leading-tight text-center px-3">
@@ -277,7 +283,7 @@ function Circle({
       {active && (
         <div
           role="dialog"
-          className="absolute left-1/2 top-full z-30 mt-3 w-56 -translate-x-1/2 rounded-xl border border-border bg-card px-4 py-3 text-center text-sm text-card-foreground shadow-soft animate-fade-in"
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium shadow-soft ${popupClassName}`}
         >
           {popup}
         </div>
