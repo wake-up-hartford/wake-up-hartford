@@ -33,7 +33,7 @@ function PreviewLanding() {
   return (
     <main className="min-h-dvh bg-background text-foreground">
       <div className="w-full px-4 pt-4 text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-sm">
           Greater Hartford NAACP presents
         </p>
       </div>
@@ -42,10 +42,10 @@ function PreviewLanding() {
         alt="Wake Up Hartford"
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
-      <p className="mx-auto max-w-md px-6 pb-2 text-center text-base font-medium text-foreground/80 sm:max-w-lg sm:text-sm whitespace-pre-line">
-        A tool for residents to learn the facts about{"\n"}
-        your neighborhood, your home and{"\n"}
-        get the tools to stabilize their lives.{"\n"}
+      <p className="mx-auto max-w-md px-6 pb-2 text-center text-base font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
+        A tool for residents to learn the facts about your neighborhood, your home and&nbsp;get the tools to stabilize their lives.{"\n"}
+        {"\n"}
+        {"\n"}
         Click a circle to see what we can do here:
       </p>
 
