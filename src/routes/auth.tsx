@@ -228,8 +228,8 @@ function AuthPage() {
       <AppShell>
         <button
           onClick={() => {
-            if (typeof window !== "undefined" && window.history.length > 1) window.history.back();
-            else nav({ to: "/life" });
+            const target = peekPostAuthRedirect();
+            nav({ to: target });
           }}
           className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
