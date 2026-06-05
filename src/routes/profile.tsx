@@ -151,12 +151,12 @@ function ProfilePage() {
         <p className="mt-6 text-muted-foreground">Loading…</p>
       ) : (
         <>
-          {/* Profile form */}
+          {/* Combined Profile + Contact form */}
           <form
-            onSubmit={handleSaveProfile}
+            onSubmit={handleSavePhone}
             className="mt-6 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
           >
-            <h2 className="font-display text-lg text-card-foreground">Profile</h2>
+            <h2 className="font-display text-lg text-card-foreground">Profile & contact</h2>
 
             <Field icon={UserIcon} label="Display name" htmlFor="display_name">
               <input
@@ -192,7 +192,6 @@ function ProfilePage() {
               </Field>
             </div>
 
-
             <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
               <select
                 id="language_pref"
@@ -204,23 +203,6 @@ function ProfilePage() {
                 <option value="es" disabled>Español — coming soon</option>
               </select>
             </Field>
-
-
-            <button
-              type="submit"
-              disabled={savingProfile}
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
-            >
-              <Save className="h-4 w-4" /> {savingProfile ? "Saving…" : "Save profile"}
-            </button>
-          </form>
-
-          {/* Contact (email + phone) */}
-          <form
-            onSubmit={handleSavePhone}
-            className="mt-4 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
-          >
-            <h2 className="font-display text-lg text-card-foreground">Contact</h2>
 
             <Field icon={Mail} label="Email address" htmlFor="email">
               <input
@@ -255,12 +237,13 @@ function ProfilePage() {
             <p className="text-[12px] text-card-foreground/70">
               Use international format (e.g. +1 for US). You'll receive a code to verify.
             </p>
+
             <button
               type="submit"
               disabled={savingPhone}
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
-              <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save contact"}
+              <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
             </button>
             <button
               type="button"
@@ -275,6 +258,7 @@ function ProfilePage() {
               </p>
             )}
           </form>
+
 
           {/* Survey link */}
           <Link
