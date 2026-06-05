@@ -1,11 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { checkIsAdmin, deleteUser, getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
+import { checkIsAdmin, getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -68,8 +66,6 @@ function AdminOverviewPage() {
 function UsersListCard() {
   const fetchUsers = useServerFn(listSignedUpUsers);
   const fetchIsAdmin = useServerFn(checkIsAdmin);
-  const removeUser = useServerFn(deleteUser);
-  const qc = useQueryClient();
 
   const q = useQuery({
     queryKey: ["admin-signed-up-users"],
@@ -80,23 +76,6 @@ function UsersListCard() {
     queryFn: () => fetchIsAdmin({}),
   });
 
-  const del = useMutation({
-    mutationFn: (userId: string) => removeUser({ data: { userId } }),
-    onSuccess: () => {
-      toast.success("User deleted");
-      qc.invalidateQueries({ queryKey: ["admin-signed-up-users"] });
-      qc.invalidateQueries({ queryKey: ["admin-usage-stats"] });
-    },
-    onError: (err) => toast.error(err instanceof Error ? err.message : "Couldn't delete user."),
-  });
-
-  const meId = me.data?.userId;
-
-  const handleDelete = (id: string, label: string) => {
-    if (!confirm(`Permanently delete ${label}? This removes their account and all related data.`)) return;
-    del.mutate(id);
-  };
-
   return (
     <Card className="p-4">
       <div className="flex items-baseline justify-between mb-1">
@@ -106,7 +85,7 @@ function UsersListCard() {
         </div>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
-        Most recent sign-ups first. Scroll for more. Deleting a user is permanent.
+        Most recent sign-ups first. Scroll for more.
       </p>
       {q.isLoading && <div className="text-sm text-muted-foreground">Loading…</div>}
       {q.error && (
@@ -125,36 +104,18 @@ function UsersListCard() {
                 <th className="text-left font-medium px-3 py-2">Name</th>
                 <th className="text-left font-medium px-3 py-2">Email</th>
                 <th className="text-left font-medium px-3 py-2 whitespace-nowrap">Joined</th>
-                <th className="px-3 py-2"></th>
               </tr>
             </thead>
             <tbody>
-              {q.data.users.map((u) => {
-                const isSelf = meId === u.id;
-                const label = u.email || u.name || u.id;
-                const isPending = del.isPending && del.variables === u.id;
-                return (
-                  <tr key={u.id} className="border-t border-border">
-                    <td className="px-3 py-2">{u.name}</td>
-                    <td className="px-3 py-2 text-muted-foreground truncate max-w-[260px]">{u.email || "—"}</td>
-                    <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
-                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
-                    </td>
-                    <td className="px-3 py-2 text-right whitespace-nowrap">
-                      <button
-                        type="button"
-                        disabled={isSelf || isPending}
-                        onClick={() => handleDelete(u.id, label)}
-                        title={isSelf ? "You can't delete your own account" : "Delete user"}
-                        className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-destructive hover:bg-destructive/10 disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        {isPending ? "Deleting…" : "Delete"}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {q.data.users.map((u) => (
+                <tr key={u.id} className="border-t border-border">
+                  <td className="px-3 py-2">{u.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground truncate max-w-[260px]">{u.email || "—"}</td>
+                  <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
+                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
