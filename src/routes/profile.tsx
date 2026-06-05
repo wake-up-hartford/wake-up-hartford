@@ -104,7 +104,7 @@ function ProfilePage() {
       ]);
       if (phoneError) throw phoneError;
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
-      toast.success(phone.trim() ? "Phone and alert preference saved." : "Phone cleared and preference saved.");
+      toast.success("Profile and contact info saved.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't update phone.");
     } finally {
