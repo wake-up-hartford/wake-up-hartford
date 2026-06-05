@@ -86,10 +86,10 @@ function NeighborhoodPage() {
             subtitle="Tap a tract on the map, or look up any US address. The highlighted tracts are GREATER HARTFORD BRANCH NAACP's primary focus — Northeast, Blue Hills, Upper Albany, and adjacent North End neighborhoods."
           />
           <Card className="mb-5">
-            <Tabs defaultValue="map">
+            <Tabs defaultValue="address">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Map</TabsTrigger>
                 <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Enter Address</TabsTrigger>
+                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Click from Map</TabsTrigger>
               </TabsList>
               <TabsContent value="map" className="mt-3">
                 <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
