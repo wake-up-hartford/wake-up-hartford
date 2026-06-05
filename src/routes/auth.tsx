@@ -104,12 +104,12 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const consumePostAuthRedirect = (): "/life" | "/dashboard" => {
+  const consumePostAuthRedirect = (): "/life" | "/plans" | "/dashboard" => {
     if (typeof window === "undefined") return "/dashboard";
     const target = window.localStorage.getItem("wuw:postAuthRedirect");
-    if (target === "/life") {
+    if (target === "/life" || target === "/plans") {
       window.localStorage.removeItem("wuw:postAuthRedirect");
-      return "/life";
+      return target;
     }
     return "/dashboard";
   };
@@ -131,9 +131,11 @@ function AuthPage() {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
-  const peekPostAuthRedirect = (): "/life" | "/dashboard" => {
+  const peekPostAuthRedirect = (): "/life" | "/plans" | "/dashboard" => {
     if (typeof window === "undefined") return "/dashboard";
-    return window.localStorage.getItem("wuw:postAuthRedirect") === "/life" ? "/life" : "/dashboard";
+    const target = window.localStorage.getItem("wuw:postAuthRedirect");
+    if (target === "/life" || target === "/plans") return target;
+    return "/dashboard";
   };
 
   const handleGoogle = async () => {
