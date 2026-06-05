@@ -279,14 +279,14 @@ function Circle({
         className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
-        <span className="font-display text-base sm:text-lg font-bold leading-tight text-center px-3">
+        <span className="font-display text-[13px] sm:text-base font-bold leading-[1.1] text-center px-2">
           {label}
         </span>
       </button>
       {active && (
         <div
           role="dialog"
-          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-base sm:text-lg font-medium shadow-soft ${popupClassName}`}
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-base sm:text-lg font-medium leading-snug shadow-soft ${popupClassName}`}
         >
           {popup}
         </div>
