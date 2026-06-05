@@ -306,11 +306,32 @@ function AuthPage() {
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <div className="mt-6 space-y-3">
-          <h1 className="font-display text-3xl leading-tight text-foreground">Stay Connected</h1>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Sign In</h1>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
-            We'll send your Action Plan by email. You can also opt-in for updates on free resources and community action — GREATER HARTFORD BRANCH NAACP campaigns working to change the systems that affect your life.
+            We'll send your Action Plan by email. Let us know if you'd also like updates from the GREATER HARTFORD BRANCH NAACP on free resources and community action.
           </p>
+          <div className="space-y-2 pt-1">
+            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+              <input
+                type="checkbox"
+                checked={optIn}
+                onChange={() => setOptIn(true)}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+              />
+              <span>Send me free resources and community updates.</span>
+            </label>
+            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+              <input
+                type="checkbox"
+                checked={!optIn}
+                onChange={() => setOptIn(false)}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+              />
+              <span>Action Plan only — no other emails.</span>
+            </label>
+          </div>
         </div>
+
         <div className="mt-6 space-y-3">
           <button
             onClick={() => { setView("signup"); setError(null); }}
