@@ -25,6 +25,10 @@ export const Route = createFileRoute("/preview")({
 
 function PreviewLanding() {
   const { user } = useAuth();
+  const [activeCircle, setActiveCircle] = useState<string | null>(null);
+
+  const toggle = (id: string) =>
+    setActiveCircle((cur) => (cur === id ? null : id));
 
   return (
     <main className="min-h-dvh bg-background text-foreground">
@@ -45,11 +49,39 @@ function PreviewLanding() {
       {/* Triangle of pillar circles */}
       <section className="mx-auto flex max-w-md flex-col items-center px-6 py-8 sm:py-10">
         <div className="flex items-center justify-center gap-0">
-          <Circle label="Your Neighborhood" className="bg-gold text-gold-foreground opacity-90 z-10" delay={300} />
-          <Circle label="Your Home" className="bg-primary text-primary-foreground -ml-4 sm:-ml-6 opacity-90" delay={1100} />
+          <Circle
+            id="neighborhood"
+            label="Your Neighborhood"
+            popup="Your block has a story. See the data behind it."
+            className="bg-gold text-gold-foreground opacity-90"
+            delay={300}
+            active={activeCircle === "neighborhood"}
+            onToggle={toggle}
+            stackClass="z-10"
+          />
+          <Circle
+            id="home"
+            label="Your Home"
+            popup="Your Home"
+            className="bg-primary text-primary-foreground opacity-90"
+            delay={1100}
+            active={activeCircle === "home"}
+            onToggle={toggle}
+            stackClass="-ml-4 sm:-ml-6"
+          />
         </div>
-        <Circle label="Your Life" className="bg-accent text-accent-foreground -mt-6 sm:-mt-8 opacity-90" delay={1900} />
+        <Circle
+          id="life"
+          label="Your Life"
+          popup="Your Life"
+          className="bg-accent text-accent-foreground opacity-90"
+          delay={1900}
+          active={activeCircle === "life"}
+          onToggle={toggle}
+          stackClass="-mt-6 sm:-mt-8"
+        />
       </section>
+
 
 
 
