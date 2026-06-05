@@ -207,7 +207,7 @@ function Pillar({
 function Circle({ label, className, delay }: { label: string; className: string; delay: number }) {
   return (
     <div
-      className={`flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft opacity-0 animate-[fade-in_0.6s_ease-out_forwards,scale-in_0.6s_ease-out_forwards] ${className}`}
+      className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft ${className}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <span className="font-display text-sm sm:text-base font-bold leading-tight text-center px-3">
