@@ -430,7 +430,7 @@ function LifePage() {
           to="/dashboard"
           className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-4 w-4" /> Back to Start
+          <ChevronLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
       )}
       {stage === "summary" && (
