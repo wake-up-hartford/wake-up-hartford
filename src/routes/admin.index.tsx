@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
+import { checkIsAdmin, deleteUser, getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
