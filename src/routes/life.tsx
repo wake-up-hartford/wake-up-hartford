@@ -503,7 +503,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Build Your Path to Stability
       </h1>
       <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-        Life can get hard. This short survey takes 5 minutes. Answer a few questions and we'll build you a free, personal 30-day plan — with real resources in Connecticut to help you move forward.
+        Life can get hard. This short survey takes 5-8 minutes. Answer a few questions and we'll build you a free, personal AI-generated 30-day <span className="text-emerald-600 font-semibold">ACTION PLAN</span> — with real resources in Connecticut to help you move forward.
       </p>
 
 
