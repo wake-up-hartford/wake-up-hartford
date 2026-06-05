@@ -101,7 +101,7 @@ function Landing() {
 
       {/* Event strip */}
       <section className="border-y border-gold/30 bg-gold/10">
-        <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
               <Calendar className="h-5 w-5" />
