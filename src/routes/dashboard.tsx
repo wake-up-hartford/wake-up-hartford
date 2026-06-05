@@ -97,8 +97,7 @@ function DashboardPage() {
           
       />
       </div>
-
-      <EventCard />
+      </div>
       {stats && (stats.assessmentsThisMonth > 0 || stats.plansThisMonth > 0 || stats.plansAllTime > 0) && (
         <section
           aria-label="Community usage"
