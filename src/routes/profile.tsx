@@ -73,8 +73,11 @@ function ProfilePage() {
 
 
   useEffect(() => {
-    if (user?.phone) setPhone(user.phone);
+    if (user?.phone) setPhone(formatUSPhone(user.phone));
   }, [user]);
+
+  const phoneDigits = phone.replace(/\D/g, "").replace(/^1/, "");
+  const phoneValid = phoneDigits.length === 0 || phoneDigits.length === 10;
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,10 +99,15 @@ function ProfilePage() {
 
   const handleSavePhone = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!phoneValid) {
+      toast.error("Please enter a 10-digit US phone number.");
+      return;
+    }
+    const e164Phone = phoneDigits.length === 10 ? `+1${phoneDigits}` : undefined;
     setSavingPhone(true);
     try {
       const [{ error: phoneError }] = await Promise.all([
-        supabase.auth.updateUser({ phone: phone.trim() || undefined }),
+        supabase.auth.updateUser({ phone: e164Phone }),
         saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts } }),
       ]);
       if (phoneError) throw phoneError;
