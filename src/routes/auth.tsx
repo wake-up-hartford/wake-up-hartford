@@ -337,7 +337,7 @@ function AuthPage() {
                 onChange={() => setOptIn(true)}
                 className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
               />
-              <span>Send me free resources and community updates.</span>
+              <span>Send me free resources and updates.</span>
             </label>
           </div>
         </div>
