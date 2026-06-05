@@ -93,6 +93,20 @@ function ActionsPage() {
       <GroupHeader>For you & your neighbors</GroupHeader>
 
       <ActionCard
+        icon={ClipboardList}
+        accent="sky"
+        title="Start my 30-Day Plan"
+        body="A short survey turns YOUR top concerns into a personal stabilization plan — housing, income, food, health."
+        cta={
+          <Link to="/life">
+            <Button size="sm">
+              Begin survey <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        }
+      />
+
+      <ActionCard
         icon={HandHeart}
         accent="emerald"
         title="Find help near me"
@@ -104,20 +118,6 @@ function ActionsPage() {
           >
             <Button size="sm">
               Start checklist <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-            </Button>
-          </Link>
-        }
-      />
-
-      <ActionCard
-        icon={ClipboardList}
-        accent="sky"
-        title="Start my 30-Day Plan"
-        body="A short survey turns YOUR top concerns into a personal stabilization plan — housing, income, food, health."
-        cta={
-          <Link to="/life">
-            <Button size="sm">
-              Begin survey <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Button>
           </Link>
         }
