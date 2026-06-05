@@ -506,32 +506,13 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Life can get hard. This short survey takes 5-8 minutes. Answer a few questions and we'll build you a free, personal AI-generated 30-day <span className="text-emerald-600 font-semibold">ACTION PLAN</span> — with real resources in Connecticut to help you move forward.
       </p>
 
-
-
-      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="font-display text-lg leading-tight text-card-foreground">
-          8 areas of life
-        </h2>
-        <p className="mt-1 text-[13px] leading-relaxed text-card-foreground">
-          The survey covers eight areas that affect day-to-day stability.
-        </p>
-        <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
-          {SECTIONS.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div key={s.id} className="flex flex-col items-center gap-1.5">
-                <span
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
-                  style={{ backgroundColor: s.color }}
-                >
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="text-[12px] font-semibold text-card-foreground">
-                  {s.name}
-                </span>
-              </div>
-            );
-          })}
+      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
+        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
+        <div>
+          <h2 className="text-[14px] font-semibold leading-tight text-blue-100">Trust</h2>
+          <p className="mt-1 text-[13px] leading-relaxed">
+            We know trust matters. Your answers are private and secure. We will never share or sell your information. You can unsubscribe any time.
+          </p>
         </div>
       </div>
 
@@ -541,9 +522,6 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       >
         Enter Here <ArrowRight className="h-5 w-5" />
       </button>
-
-
-
     </div>
   );
 }
