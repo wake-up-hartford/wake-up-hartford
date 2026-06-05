@@ -104,15 +104,26 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
+  const consumePostAuthRedirect = (): "/life" | "/dashboard" => {
+    if (typeof window === "undefined") return "/dashboard";
+    const target = window.localStorage.getItem("wuw:postAuthRedirect");
+    if (target === "/life") {
+      window.localStorage.removeItem("wuw:postAuthRedirect");
+      return "/life";
+    }
+    return "/dashboard";
+  };
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) nav({ to: "/dashboard", replace: true });
+      if (session) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     supabase.auth.getUser().then(({ data, error }) => {
-      if (!error && data.user) nav({ to: "/dashboard", replace: true });
+      if (!error && data.user) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     return () => subscription.unsubscribe();
   }, [nav]);
+
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -120,13 +131,19 @@ function AuthPage() {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
+  const peekPostAuthRedirect = (): "/life" | "/dashboard" => {
+    if (typeof window === "undefined") return "/dashboard";
+    return window.localStorage.getItem("wuw:postAuthRedirect") === "/life" ? "/life" : "/dashboard";
+  };
+
   const handleGoogle = async () => {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/dashboard",
+      redirect_uri: window.location.origin + peekPostAuthRedirect(),
     });
     if (result.error) setError(result.error.message);
   };
+
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,7 +165,7 @@ function AuthPage() {
               phone: phone || null,
               opt_in_updates: optIn,
             },
-            emailRedirectTo: window.location.origin + "/dashboard",
+            emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
           },
         });
         if (error) throw error;
