@@ -93,7 +93,7 @@ function SurveyPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
-  const [mostUsed, setMostUsed] = useState("");
+  
   const [ease, setEase] = useState<number | null>(null);
   const [techIssue, setTechIssue] = useState("");
   const [prompt, setPrompt] = useState("");
