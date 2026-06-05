@@ -43,7 +43,12 @@ function PlansPage() {
   const fetchPlans = useServerFn(listMyPlans);
 
   useEffect(() => {
-    if (!loading && !user) nav({ to: "/auth" });
+    if (!loading && !user) {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("wuw:postAuthRedirect", "/plans");
+      }
+      nav({ to: "/auth" });
+    }
   }, [user, loading, nav]);
 
   const { data, isLoading } = useQuery({
