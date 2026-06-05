@@ -17,9 +17,11 @@ const audioCache = new Map<string, string>(); // cacheKey -> object URL
 
 export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const synth = useServerFn(synthesizeStory);
+  const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">("idle");
   const [errMsg, setErrMsg] = useState<string | null>(null);
+  const { user, loading: authLoading } = useAuth();
 
   // Stop & reset whenever the underlying text changes
   useEffect(() => {
