@@ -10,12 +10,6 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-function _severityColorClass(s: Indicator["severity"] | null): string {
-  if (s === "good") return "text-success";
-  if (s === "watch") return "text-warning";
-  if (s === "concern") return "text-destructive";
-  return "text-muted-foreground";
-}
 import { lazy, Suspense, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
+import { shareOrCopy } from "@/lib/share";
 
 const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
 
@@ -173,54 +168,10 @@ function NeighborhoodPage() {
   );
 }
 
-function severityLabel(s: Indicator["severity"]) {
-  return s === "good" ? "OK" : s === "watch" ? "Watch" : s === "concern" ? "Concern" : null;
-}
 
-function dotClass(s: Indicator["severity"]) {
-  return s === "good"
-    ? "bg-success"
-    : s === "watch"
-    ? "bg-warning"
-    : s === "concern"
-    ? "bg-destructive"
-    : "bg-muted-foreground/40";
-}
 
-function IndicatorRow({ ind }: { ind: Indicator }) {
-  return (
-    <li className="flex items-start gap-3 py-3.5">
-                <div
-                  role="img"
-                  className={`mt-1.5 h-4 w-4 shrink-0 rounded-full ${dotClass(ind.severity)}`}
-                  aria-label={severityLabel(ind.severity) ?? undefined}
-                />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
-          <span className="font-display text-xl leading-none text-card-foreground">{ind.value}</span>
-          <p className="font-medium text-card-foreground">{ind.label}</p>
-        </div>
-        <p className="mt-1 text-sm text-muted-foreground">{ind.note}</p>
-      </div>
-    </li>
-  );
-}
 
-function NeighborhoodReportCard({ indicators, loading, error }: { indicators: Indicator[]; loading: boolean; error: boolean }) {
-  return (
-    <Card className="mb-4">
-      <h2 className="mb-1 font-display text-xl text-card-foreground">Neighborhood report card</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Ten indicators that shape daily life in this census tract.</p>
-      {loading && <p className="py-6 text-center text-sm text-muted-foreground">Loading live Census data…</p>}
-      {error && !loading && <p className="py-6 text-center text-sm text-destructive">Couldn't load indicators.</p>}
-      {!loading && !error && (
-        <ul className="divide-y divide-border">
-          {indicators.map((ind) => <IndicatorRow key={ind.key} ind={ind} />)}
-        </ul>
-      )}
-    </Card>
-  );
-}
+
 
 function cardStyle(s: Indicator["severity"]): { className: string; style?: React.CSSProperties } {
   if (s === "good") return { className: "bg-success border-success text-success-foreground" };
@@ -318,36 +269,11 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
   const handleShare = async () => {
     const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
     const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
-    const url = window.location.href;
-    const payload = `${text}\n${url}`;
-
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        await navigator.share({ title: "Wake Up Wednesday", text, url });
-        return;
-      } catch (err) {
-        if ((err as Error)?.name === "AbortError") return;
-      }
+    const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
+    if (result) {
+      setShareStatus(result);
+      setTimeout(() => setShareStatus(null), 2500);
     }
-
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(payload);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = payload;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setShareStatus("copied");
-    } catch {
-      setShareStatus("error");
-    }
-    setTimeout(() => setShareStatus(null), 2500);
   };
 
   const tintStyle = slideBg(slide.severity);

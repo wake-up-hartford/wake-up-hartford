@@ -110,10 +110,3 @@ export function lookupAddress(query: string): AddressLookup {
   };
 }
 
-
-export const RESOURCES = [
-  { title: "Rental assistance", body: "UniteCT and Hartford emergency rental help.", phone: "211" },
-  { title: "Eviction defense", body: "Free legal help if you've received a notice.", phone: "(860) 541-5000" },
-  { title: "Heat & utility help", body: "CEAP winter heating assistance — apply Sep–May.", phone: "211" },
-  { title: "Lead paint testing", body: "Free home inspection for kids under 6.", phone: "(860) 757-4760" },
-];

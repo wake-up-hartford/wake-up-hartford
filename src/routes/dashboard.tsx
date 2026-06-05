@@ -41,6 +41,7 @@ function DashboardPage() {
     queryKey: ["my-plans"],
     queryFn: () => fetchPlans({}),
     enabled: !!user,
+    staleTime: 60 * 1000,
   });
   const planCount = plansData?.plans.length ?? 0;
   const fetchStats = useServerFn(getPublicStats);

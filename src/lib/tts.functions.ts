@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const InputSchema = z.object({
   text: z.string().min(1).max(5000),
@@ -78,6 +79,7 @@ function spokenifyNumbers(text: string): string {
 }
 
 export const synthesizeStory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }): Promise<{ audioBase64: string; mimeType: string } | { error: string }> => {
     const apiKey = process.env.ELEVENLABS_API_KEY;
