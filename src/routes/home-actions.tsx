@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, FileText, Phone, Scale, Camera, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
+import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
 
 export const Route = createFileRoute("/home-actions")({
@@ -75,11 +75,6 @@ const ACTIONS: Action[] = [
       { label: "Dial 211", href: "tel:211" },
       { label: "Website", href: "https://www.211ct.org/" },
     ],
-  },
-  {
-    title: "Document conditions with photos",
-    desc: "Take dated photos and videos of every problem. This evidence protects you in court and with inspectors.",
-    icon: Camera,
   },
   {
     title: "Know your rights as a tenant",
