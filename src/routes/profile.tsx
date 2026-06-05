@@ -226,13 +226,6 @@ function ProfilePage() {
                 className="w-full rounded-lg border border-card-foreground/20 bg-white/60 px-3 py-2 text-[14px] text-card-foreground/70"
               />
             </Field>
-            <button
-              type="button"
-              onClick={handleResetPassword}
-              className="text-[13px] font-medium text-primary hover:underline"
-            >
-              Send password reset email
-            </button>
 
             <Field icon={Phone} label="Phone number" htmlFor="phone">
               <input
@@ -263,6 +256,13 @@ function ProfilePage() {
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save contact"}
+            </button>
+            <button
+              type="button"
+              onClick={handleResetPassword}
+              className="block text-[13px] font-medium text-primary hover:underline"
+            >
+              Send password reset email
             </button>
           </form>
 
