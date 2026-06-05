@@ -145,37 +145,6 @@ function PreviewLanding() {
   );
 }
 
-function Pillar({
-  to,
-  icon: Icon,
-  title,
-  body,
-  accent,
-  ring,
-}: {
-  to: "/home" | "/neighborhood" | "/life";
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  body: string;
-  accent: string;
-  ring: string;
-}) {
-  return (
-    <Link
-      to={to}
-      className={`group flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 ring-1 ${ring} transition hover:-translate-y-0.5 hover:shadow-soft`}
-    >
-      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-muted ${accent}`}>
-        <Icon className="h-5 w-5" />
-      </div>
-      <h3 className={`font-display text-lg leading-tight ${accent}`}>{title}</h3>
-      <p className="text-sm text-card-foreground/80">{body}</p>
-      <span className={`mt-auto inline-flex items-center gap-1 text-xs font-semibold ${accent}`}>
-        Explore <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-      </span>
-    </Link>
-  );
-}
 
 function Circle({
   id,
