@@ -227,6 +227,18 @@ function ProfilePage() {
               Use international format (e.g. +1 for US). You'll receive a code to verify.
             </p>
 
+            <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
+              <select
+                id="language_pref"
+                value={languagePref}
+                onChange={(e) => setLanguagePref(e.target.value)}
+                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground focus:border-accent focus:outline-none"
+              >
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </Field>
+
             <button
               type="submit"
               disabled={savingPhone}
