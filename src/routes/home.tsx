@@ -266,7 +266,6 @@ function DetailedReport({ data }: { data: Data }) {
         sub={`${cv.closed12mo} closed in last year`}
         severity={cvSeverity}
         pillText={`${cv.open} open`}
-        defaultOpen
       >
         <div className="mb-2 flex items-start gap-3">
           <FileWarning className="mt-0.5 h-5 w-5 text-warning-foreground" />
