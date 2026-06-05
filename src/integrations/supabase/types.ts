@@ -132,6 +132,7 @@ export type Database = {
           id: string
           language_pref: string | null
           last_name: string | null
+          phone: string | null
           sms_alerts: boolean
           updated_at: string
         }
@@ -142,6 +143,7 @@ export type Database = {
           id: string
           language_pref?: string | null
           last_name?: string | null
+          phone?: string | null
           sms_alerts?: boolean
           updated_at?: string
         }
@@ -152,6 +154,7 @@ export type Database = {
           id?: string
           language_pref?: string | null
           last_name?: string | null
+          phone?: string | null
           sms_alerts?: boolean
           updated_at?: string
         }
