@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupAddress } from "@/lib/mock-data";
+import { shareOrCopy } from "@/lib/share";
 
 const PickAddressMap = lazy(() =>
   import("@/components/BuildingAddressMap").then((m) => ({ default: m.PickAddressMap })),
@@ -360,39 +361,11 @@ function ShareSlideshow({ data }: { data: Data }) {
   const [shareStatus, setShareStatus] = useState<null | "copied" | "error">(null);
   const handleShare = async () => {
     const text = `${data.address} — ${data.building.codeViolations.open} open code violations, ${data.building.evictions.filings12mo} evictions filed in the last year. See more on Wake Up Wednesday.`;
-    const url = window.location.href;
-    const payload = `${text}\n${url}`;
-
-    // Try Web Share API first (works on most mobile browsers, often blocked in iframes)
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      try {
-        await navigator.share({ title: "Wake Up Wednesday", text, url });
-        return;
-      } catch (err) {
-        // User cancelled or iframe blocked it — fall through to clipboard
-        if ((err as Error)?.name === "AbortError") return;
-      }
+    const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
+    if (result) {
+      setShareStatus(result);
+      setTimeout(() => setShareStatus(null), 2500);
     }
-
-    // Clipboard fallback
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(payload);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = payload;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setShareStatus("copied");
-    } catch {
-      setShareStatus("error");
-    }
-    setTimeout(() => setShareStatus(null), 2500);
   };
 
   return (

@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { VersionSwitcher } from "@/components/VersionSwitcher";
+
 
 function NotFoundComponent() {
   return (
@@ -149,7 +149,7 @@ function RootComponent() {
       <AuthListener />
       <ThemeToggle />
       <Outlet />
-      <VersionSwitcher />
+      
       <Toaster />
     </QueryClientProvider>
   );

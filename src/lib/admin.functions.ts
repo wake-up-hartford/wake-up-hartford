@@ -1,6 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+
+const GrantAdminInput = z.object({
+  email: z.string().trim().toLowerCase().email("Invalid email").max(320),
+});
+const RevokeAdminInput = z.object({
+  userId: z.string().uuid("userId must be a UUID"),
+});
 
 async function assertAdmin(userId: string) {
   const { data, error } = await supabaseAdmin
@@ -198,12 +206,7 @@ export const listAdmins = createServerFn({ method: "GET" })
 
 export const grantAdminByEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { email: string }) => {
-    if (!data?.email || typeof data.email !== "string") throw new Error("Email required");
-    const email = data.email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
-    return { email };
-  })
+  .inputValidator((data: unknown) => GrantAdminInput.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     const user = await findUserByEmail(data.email);
@@ -223,10 +226,7 @@ export const grantAdminByEmail = createServerFn({ method: "POST" })
 
 export const revokeAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { userId: string }) => {
-    if (!data?.userId) throw new Error("userId required");
-    return { userId: data.userId };
-  })
+  .inputValidator((data: unknown) => RevokeAdminInput.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     if (data.userId === context.userId) {
