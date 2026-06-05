@@ -115,25 +115,6 @@ function PreviewLanding() {
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="mx-auto max-w-3xl px-6 py-20 text-center">
-        <h2 className="font-display text-3xl sm:text-4xl">
-          Knowledge is where change begins.
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-foreground/75">
-          Sign in to save your plan, track your block, and pick up where you
-          left off.
-        </p>
-        <div className="mt-6 flex justify-center">
-          <Link
-            to={user ? "/profile" : "/auth"}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            {user ? "Go to your account" : "Create your account"}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
 
       <footer className="border-t border-border/60 px-6 py-8 text-center text-[13px] text-foreground/70">
         Presented by{" "}
