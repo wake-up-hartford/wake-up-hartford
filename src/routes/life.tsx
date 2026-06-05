@@ -957,13 +957,18 @@ function PlanGenerator({
     return (
       <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <h3 className="font-display text-[18px] leading-tight text-card-foreground">
-          Sign in to receive your plan
+          Register to receive your plan
         </h3>
         <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
           Create a free account so this plan can be saved, let you check off steps, and come back later.
         </p>
         <Link
           to="/auth"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem("wuw:postAuthRedirect", "/life");
+            }
+          }}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
         >
           <LogIn className="h-4 w-4" /> Sign in / sign up
@@ -971,6 +976,7 @@ function PlanGenerator({
       </div>
     );
   }
+
 
   const toggleBenefit = (b: string) => {
     setBenefits((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
