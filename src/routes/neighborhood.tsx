@@ -505,17 +505,9 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
   return (
     <div id="census-lookup">
       <Card className="mb-5">
-        <div className="mb-3 flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <MapPin className="h-4 w-4" />
-          </span>
-          <div>
-            <h2 className="font-display text-lg leading-tight text-card-foreground">Find your census tract</h2>
-            <p className="mt-0.5 text-[12px] text-muted-foreground">
-              Enter a real US street address (no PO boxes, intersections, or place names).
-            </p>
-          </div>
-        </div>
+        <p className="mb-3 text-[12px] text-muted-foreground">
+          Enter a real US street address (no PO boxes, intersections, or place names).
+        </p>
 
         <form onSubmit={handleLookup} className="flex flex-col gap-2">
           <label htmlFor="lookup-street" className="sr-only">Street address</label>
