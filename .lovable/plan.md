@@ -1,31 +1,27 @@
-## Goal
-Build an alternative landing-page version of the homepage at `/preview` and add a small in-app switcher so you can toggle between `/` (current) and `/preview` (new landing) without breaking navigation.
+## Add animated triangle of 3 colored circles on /preview
 
-## What gets built
+Insert a new section directly under the tagline (between line 42 and the Hero section) showing 3 equal-size circles that fly in one after another and settle into a triangle arrangement.
 
-1. **New route `src/routes/preview.tsx`**
-   - A landing-page styled version of the homepage: hero with headline + subhead + primary CTA, a few feature/value sections, social proof / closing CTA.
-   - Reuses existing design tokens from `src/styles.css` (no new color system).
-   - Own `head()` meta (title/description) so it's a real, indexable page.
-   - Does NOT touch `src/routes/index.tsx` — current homepage keeps working exactly as-is.
+### Layout
+- Triangle: two circles on top row (Your Neighborhood = gold left, Your Home = purple right), one circle centered below (Your Life = blue).
+- Equal sizes: ~9rem (w-36 h-36) on mobile, ~11rem on sm+ screens.
+- Centered horizontally, with appropriate vertical/horizontal spacing so they read as a triangle.
+- Each circle: solid brand color background, white bold display-font label centered, soft shadow.
 
-2. **Version switcher component `src/components/VersionSwitcher.tsx`**
-   - Small floating pill in the bottom-right corner, fixed position, low-key styling.
-   - Two segments: "v1" (links to `/`) and "v2" (links to `/preview`), with the active one highlighted based on current route.
-   - Uses TanStack `<Link>` so navigation stays type-safe and preloaded.
-   - Only renders in development OR for everyone until you remove it — see question below.
+### Colors (from existing tokens in styles.css)
+- Gold → `bg-gold text-gold-foreground` → "Your Neighborhood"
+- Purple → `bg-primary text-primary-foreground` → "Your Home"
+- Blue → `bg-accent text-accent-foreground` → "Your Life"
 
-3. **Mount the switcher**
-   - Add `<VersionSwitcher />` once in `src/routes/__root.tsx` so it appears on both `/` and `/preview` (and anywhere else, if we keep it global).
-   - No changes to existing nav, header, or routes.
+### Animation
+- Use Tailwind's existing `animate-fade-in` and `animate-scale-in` keyframes (already defined in the project) combined with staggered `animation-delay` inline styles via `style={{ animationDelay: "Xms" }}`.
+- Circle 1 (Your Neighborhood): 100ms delay
+- Circle 2 (Your Home): 400ms delay
+- Circle 3 (Your Life): 700ms delay
+- Each starts hidden (`opacity-0`) and animates in with a combined fade + scale effect (`animate-[fade-in_0.5s_ease-out_forwards,scale-in_0.5s_ease-out_forwards]`).
 
-## What does NOT change
-- `/` homepage content and behavior
-- Auth, profile, admin routes
-- Any existing links or buttons
-
-## Removing it later
-When you pick a winner: either delete `src/routes/preview.tsx` (keep `/`), or copy its contents into `src/routes/index.tsx` and delete `preview.tsx`. Then remove `VersionSwitcher`. Clean and reversible.
-
-## One thing to confirm
-Should the switcher be **visible to everyone** (fine for a pre-launch preview), or **only visible to you / admins** (so real visitors never see it)? I'll default to visible-to-everyone unless you say otherwise, since you're not published yet.
+### Technical notes
+- Implement as a small inline `<section>` in `src/routes/preview.tsx`; no new files, no new dependencies.
+- Use flex layout: outer column, top row = flex with gap between two circles, bottom row = centered single circle slightly overlapping/below.
+- Text inside circles uses `font-display` and `text-center` with small/medium sizes that fit (e.g., `text-sm sm:text-base font-semibold leading-tight px-3`).
+- No changes to business logic, routes, or any other section.
