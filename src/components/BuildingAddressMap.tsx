@@ -109,6 +109,9 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
 
   return (
     <div className="space-y-2">
+      <p className="text-center text-xs text-muted-foreground" aria-live="polite">
+        {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}
+      </p>
       <div
         role="region"
         aria-label="Map of Hartford. Click to drop a pin and look up an address, or use the text field below to type an address."
@@ -129,13 +132,7 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
           <ClickHandler onClick={handleClick} />
           {pin && <Marker position={[pin.lat, pin.lng]} />}
         </MapContainer>
-        <p className="px-3 py-1.5 text-center text-[10px] text-muted-foreground">
-          Scroll to zoom · Drag to pan · Click to drop pin
-        </p>
       </div>
-      <p className="text-center text-xs text-muted-foreground" aria-live="polite">
-        {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}
-      </p>
 
       {/* Keyboard / screen-reader accessible alternative to clicking the map */}
       <form onSubmit={handleTypedSubmit} className="flex flex-col gap-1.5">
