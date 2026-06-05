@@ -129,6 +129,9 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
           <ClickHandler onClick={handleClick} />
           {pin && <Marker position={[pin.lat, pin.lng]} />}
         </MapContainer>
+        <p className="px-3 py-1.5 text-center text-[10px] text-muted-foreground">
+          Scroll to zoom · Drag to pan · Click to drop pin
+        </p>
       </div>
       <p className="text-center text-xs text-muted-foreground" aria-live="polite">
         {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}

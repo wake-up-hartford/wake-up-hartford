@@ -174,6 +174,9 @@ export default function TargetTractMap({
             }}
           />
         </MapContainer>
+        <p className="px-3 py-1.5 text-center text-[10px] text-muted-foreground">
+          Scroll to zoom · Drag to pan
+        </p>
       </div>
 
       {/* Keyboard / screen-reader accessible alternative to clicking the map */}
