@@ -106,10 +106,10 @@ function AuthPage() {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) nav({ to: "/plans", replace: true });
+      if (session) nav({ to: "/dashboard", replace: true });
     });
     supabase.auth.getUser().then(({ data, error }) => {
-      if (!error && data.user) nav({ to: "/plans", replace: true });
+      if (!error && data.user) nav({ to: "/dashboard", replace: true });
     });
     return () => subscription.unsubscribe();
   }, [nav]);
@@ -123,7 +123,7 @@ function AuthPage() {
   const handleGoogle = async () => {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/plans",
+      redirect_uri: window.location.origin + "/dashboard",
     });
     if (result.error) setError(result.error.message);
   };
@@ -148,7 +148,7 @@ function AuthPage() {
               phone: phone || null,
               opt_in_updates: optIn,
             },
-            emailRedirectTo: window.location.origin + "/plans",
+            emailRedirectTo: window.location.origin + "/dashboard",
           },
         });
         if (error) throw error;
@@ -158,7 +158,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        nav({ to: "/plans" });
+        nav({ to: "/dashboard" });
       }
     } catch (err) {
       setError(friendlyAuthError(err, view === "signup" ? "signup" : "signin"));
