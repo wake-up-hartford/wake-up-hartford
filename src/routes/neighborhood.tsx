@@ -82,7 +82,7 @@ function NeighborhoodPage() {
       {!tract && (
         <>
           <SectionHeader
-            title="Choose Your Neighborhood"
+            title="Learn About Your Neighborhood"
             subtitle="Enter an address or tap a tract on the map. Highlighted tracts are GREATER HARTFORD BRANCH NAACP's primary focus. (FYI: You can look up any address in USA!)"
           />
           <Card className="mb-5">
