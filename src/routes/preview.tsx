@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Trees, HeartHandshake, ArrowRight, Calendar } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
 
 export const Route = createFileRoute("/preview")({
   head: () => ({
@@ -26,6 +27,12 @@ function PreviewLanding() {
 
   return (
     <main className="min-h-dvh bg-background text-foreground">
+      <img
+        src={wakeUpLogo.url}
+        alt="Wake Up Hartford"
+        className="block w-full h-auto"
+      />
+
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
