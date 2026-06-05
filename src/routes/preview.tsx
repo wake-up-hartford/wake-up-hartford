@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Trees, HeartHandshake, ArrowRight, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
 
