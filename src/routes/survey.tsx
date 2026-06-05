@@ -204,7 +204,7 @@ function SurveyPage() {
         {/* Q5 (optional) */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">
-            5. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
+            4. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
           </h2>
           <p className="text-[12px] text-card-foreground/60">Optional</p>
           <RadioCard options={AWARENESS_OPTIONS} value={awareness} onChange={setAwareness} name="awareness" />
