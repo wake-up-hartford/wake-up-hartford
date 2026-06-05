@@ -347,11 +347,8 @@ function AuthPage() {
             onClick={() => { setView("signup"); setError(null); }}
             className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[15px] font-semibold text-white shadow-soft hover:bg-amber-600"
           >
-            Register Here
+            Sign up with Google or email + password
           </button>
-          <p className="text-center text-[12px] text-muted-foreground">
-            Sign up with Google or with email + password
-          </p>
           <div className="my-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-muted-foreground">
             <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
           </div>
