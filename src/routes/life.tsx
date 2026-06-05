@@ -448,6 +448,7 @@ function LifePage() {
         <SurveyScreen
           answers={answers}
           setAnswers={setAnswers}
+          onBack={() => setStage("intro")}
           onFinish={() => setStage("summary")}
         />
       )}
@@ -553,10 +554,12 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 function SurveyScreen({
   answers,
   setAnswers,
+  onBack,
   onFinish,
 }: {
   answers: Answers;
   setAnswers: (fn: (prev: Answers) => Answers) => void;
+  onBack: () => void;
   onFinish: () => void;
 }) {
   const [sectionIdx, setSectionIdx] = useState(0);
@@ -617,25 +620,23 @@ function SurveyScreen({
   if (!started) {
     return (
       <div>
-        <div className="mb-5 rounded-2xl border border-border bg-transparent p-5">
-
-          <h1 className="mb-3 font-display text-[20px] leading-tight text-foreground">
-            Your Life Survey
-          </h1>
-          <p className="text-[14px] leading-relaxed text-foreground">
-            This survey takes <strong>5 to 8 minutes</strong> to complete. Your answers will be used to
-            create an AI-generated, prioritized{" "}
-            <strong className="font-extrabold tracking-wide text-emerald-400">ACTION PLAN</strong>{" "}
-            tailored to your situation. There are no wrong answers — be as honest as you can.
-          </p>
-        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back to Your Life
+        </button>
 
         <div className="mb-5 space-y-3">
           <div className="flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
-            <p className="text-[13px] leading-relaxed">
-              We know trust matters. Your answers are private and secure. We will never share or sell your information. You can unsubscribe any time.
-            </p>
+            <div>
+              <h2 className="mb-1 font-display text-[16px] font-semibold text-white">Trust</h2>
+              <p className="text-[13px] leading-relaxed">
+                We know trust matters. Your answers are private and secure. We will never share or sell your information. You can unsubscribe any time.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -643,7 +644,7 @@ function SurveyScreen({
           onClick={() => setStarted(true)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
         >
-          Start Survey <ArrowRight className="h-5 w-5" />
+          Start Life Survey <ArrowRight className="h-5 w-5" />
         </button>
       </div>
     );
