@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import { Sparkles, Loader2, Copy, Check, RefreshCw } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check, RefreshCw, LogIn } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/lib/language";
+import { useAuth } from "@/hooks/use-auth";
 import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
 import type { Indicator } from "@/lib/tract-indicators.functions";
 
