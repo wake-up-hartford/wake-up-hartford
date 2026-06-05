@@ -66,7 +66,7 @@ function NeighborhoodPage() {
     <AppShell>
       <div className="mb-4 flex items-center gap-4">
         <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <ChevronLeft className="h-4 w-4" /> Back to Start
+          <ChevronLeft className="h-4 w-4" /> Dashboard
         </Link>
         {tract && (
           <button
