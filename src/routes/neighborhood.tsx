@@ -537,7 +537,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
               onChange={(e) => setCity(e.target.value)}
               placeholder="City"
               autoComplete="address-level2"
-              className="flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="min-w-0 flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
             <label htmlFor="lookup-state" className="sr-only">State</label>
             <input
@@ -548,7 +548,7 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
               placeholder="ST"
               maxLength={2}
               autoComplete="address-level1"
-              className="w-16 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] uppercase text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-14 shrink-0 rounded-lg border border-border bg-card px-2 py-2.5 text-center text-[14px] uppercase text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <Button type="submit" disabled={loading || !canSubmit} size="lg">
