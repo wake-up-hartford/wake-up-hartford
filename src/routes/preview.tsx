@@ -42,8 +42,11 @@ function PreviewLanding() {
         alt="Wake Up Hartford"
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
-      <p className="mx-auto max-w-md px-6 pb-2 text-center text-base font-medium text-foreground/80 sm:max-w-lg sm:text-lg">
-        A tool for residents to learn the facts about their neighborhood, their home and get the tools to stabilize their lives.
+      <p className="mx-auto max-w-md px-6 pb-2 text-center text-base font-medium text-foreground/80 sm:max-w-lg sm:text-sm whitespace-pre-line">
+        A tool for residents to learn the facts about{"\n"}
+        your neighborhood, your home and{"\n"}
+        get the tools to stabilize their lives.{"\n"}
+        Click a circle to see what we can do here:
       </p>
 
       {/* Triangle of pillar circles */}
