@@ -158,7 +158,7 @@ function SurveyPage() {
       </Link>
       <h1 className="font-display text-3xl text-foreground">Quick survey</h1>
       <p className="mt-2 text-[14px] text-muted-foreground">
-        5 quick questions about how you use the app. Under 1 minute.
+        4 quick questions about how you use the app. Under 1 minute.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
