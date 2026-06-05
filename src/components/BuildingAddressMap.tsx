@@ -112,6 +112,9 @@ export function PickAddressMap({ onPick }: { onPick: (address: string) => void }
       <p className="text-center text-xs text-muted-foreground" aria-live="polite">
         {loading ? "Looking up address…" : "Click and hold anywhere on map to drop a pin."}
       </p>
+      <p className="text-center text-[10px] text-muted-foreground">
+        Click +/- to zoom · Drag to pan
+      </p>
       <div
         role="region"
         aria-label="Map of Hartford. Click to drop a pin and look up an address, or use the text field below to type an address."
