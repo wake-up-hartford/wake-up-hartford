@@ -154,7 +154,7 @@ function ProfilePage() {
           {/* Profile form */}
           <form
             onSubmit={handleSaveProfile}
-            className="mt-6 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
+            className="mt-6 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
           >
             <h2 className="font-display text-lg text-card-foreground">Profile</h2>
 
