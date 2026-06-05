@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import { Sparkles, Loader2, Copy, Check } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check, LogIn } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ListenButton } from "@/components/ListenButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/lib/language";
+import { useAuth } from "@/hooks/use-auth";
 import { generateBuildingStory } from "@/lib/building-story.functions";
 import type { AddressLookup } from "@/lib/mock-data";
 
@@ -22,6 +24,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [language] = useLanguage();
+  const { user, loading: authLoading } = useAuth();
   const generate = useServerFn(generateBuildingStory);
 
   const mutation = useMutation({
@@ -59,7 +62,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next && !mutation.data && !mutation.isPending) mutation.mutate();
+    if (next && user && !mutation.data && !mutation.isPending) mutation.mutate();
     if (!next) setCopied(false);
   };
 
@@ -109,6 +112,28 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
         </div>
 
         <div className="-mx-1 max-h-[55vh] overflow-y-auto px-1 py-2">
+          {authLoading && (
+            <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <p className="text-sm">Loading…</p>
+            </div>
+          )}
+
+          {!authLoading && !user && (
+            <div className="flex flex-col items-center gap-4 py-12 text-center">
+              <Sparkles className="h-8 w-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">
+                Sign in to generate an AI-written story for this building.
+              </p>
+              <Button asChild size="sm">
+                <Link to="/auth">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign in to generate
+                </Link>
+              </Button>
+            </div>
+          )}
+
           {mutation.isPending && (
             <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
               <Loader2 className="h-6 w-6 animate-spin" />
