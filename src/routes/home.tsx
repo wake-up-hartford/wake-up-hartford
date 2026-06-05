@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare } from "lucide-react";
+import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -172,18 +173,14 @@ function HomePage() {
             </div>
           </Card>
 
-          <Tabs defaultValue="card" className="w-full">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
-            <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="card" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
-              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
+          <Tabs defaultValue="story" className="w-full">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">3 ways to view Home data</p>
+            <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
+              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
               <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
               <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="card" className="mt-4">
-              <ReportCard data={data} />
-            </TabsContent>
             <TabsContent value="story" className="mt-4">
               <DetailedReport data={data} />
             </TabsContent>
@@ -208,69 +205,73 @@ function HomePage() {
 
 type Data = ReturnType<typeof lookupAddress>;
 
-function ReportCard({ data }: { data: Data }) {
-  const items = [
-    {
-      label: "Code violations",
-      value: data.building.codeViolations.open,
-      sub: `${data.building.codeViolations.closed12mo} closed in last year`,
-      severity: data.building.codeViolations.open > 2 ? "concern" : data.building.codeViolations.open > 0 ? "watch" : "good",
-    },
-    {
-      label: "Evictions filed",
-      value: data.building.evictions.filings12mo,
-      sub: `${data.building.evictions.rate} of units`,
-      severity: "concern" as const,
-    },
-    {
-      label: "Utility shutoffs",
-      value: data.building.utilityShutoffs.count12mo,
-      sub: "last 12 months",
-      severity: data.building.utilityShutoffs.count12mo > 0 ? "watch" : "good",
-    },
-    {
-      label: "311 complaints",
-      value: data.building.complaints311.count12mo,
-      sub: data.building.complaints311.topCategory,
-      severity: "watch" as const,
-    },
-  ];
+type Severity = "good" | "watch" | "concern";
+
+function ExpandableIndicator({
+  value,
+  label,
+  sub,
+  severity,
+  pillText,
+  defaultOpen = false,
+  children,
+}: {
+  value: React.ReactNode;
+  label: string;
+  sub: string;
+  severity: Severity;
+  pillText?: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-      {items.map((it) => (
-        <Card key={it.label} className="p-3 sm:p-4">
-          <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
-            <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{it.value}</span>
-            <span className="text-xs font-semibold text-foreground sm:text-sm">{it.label}</span>
+    <Collapsible defaultOpen={defaultOpen} asChild>
+      <Card className="p-0 overflow-hidden">
+        <CollapsibleTrigger className="group flex w-full items-center gap-3 p-3 text-left sm:p-4">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
+              <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{value}</span>
+              <span className="text-xs font-semibold text-foreground sm:text-sm">{label}</span>
+            </div>
+            <p className="mt-1 text-[11px] text-muted-foreground sm:text-xs">{sub}</p>
           </div>
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[11px] text-muted-foreground sm:text-xs">{it.sub}</p>
-            <SeverityPill severity={it.severity as "good" | "watch" | "concern"}>{it.severity}</SeverityPill>
+          <div className="flex shrink-0 items-center gap-2">
+            <SeverityPill severity={severity}>{pillText ?? severity}</SeverityPill>
+            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
           </div>
-        </Card>
-      ))}
-    </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="border-t border-border px-3 pb-4 pt-3 sm:px-4">{children}</div>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 }
 
 function DetailedReport({ data }: { data: Data }) {
+  const cv = data.building.codeViolations;
+  const ev = data.building.evictions;
+  const us = data.building.utilityShutoffs;
+  const c311 = data.building.complaints311;
+  const cvSeverity: Severity = cv.open > 2 ? "concern" : cv.open > 0 ? "watch" : "good";
+  const usSeverity: Severity = us.count12mo > 0 ? "watch" : "good";
+
   return (
-    <div className="space-y-4">
-      <Card>
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <FileWarning className="mt-0.5 h-5 w-5 text-warning-foreground" />
-            <div>
-              <h2 className="font-display text-xl leading-tight">Code violations</h2>
-              <p className="text-sm text-muted-foreground">From Hartford Housing Code Enforcement.</p>
-            </div>
-          </div>
-          <SeverityPill severity={data.building.codeViolations.open > 0 ? "watch" : "good"}>
-            {data.building.codeViolations.open} open
-          </SeverityPill>
+    <div className="space-y-3">
+      <ExpandableIndicator
+        value={cv.open}
+        label="Code violations"
+        sub={`${cv.closed12mo} closed in last year`}
+        severity={cvSeverity}
+        pillText={`${cv.open} open`}
+        defaultOpen
+      >
+        <div className="mb-2 flex items-start gap-3">
+          <FileWarning className="mt-0.5 h-5 w-5 text-warning-foreground" />
+          <p className="text-sm text-muted-foreground">From Hartford Housing Code Enforcement.</p>
         </div>
         <ul className="divide-y divide-border">
-          {data.building.codeViolations.recent.map((v) => (
+          {cv.recent.map((v) => (
             <li key={v.date} className="flex items-start justify-between gap-3 py-3">
               <div>
                 <p className="text-sm font-medium text-foreground">{v.description}</p>
@@ -286,54 +287,55 @@ function DetailedReport({ data }: { data: Data }) {
           Open violations mean the city has asked your landlord to fix something. You can call <strong>311</strong> if a problem hasn't been fixed.
           {" "}Across <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties this owner has <strong>{data.landlordPortfolio.totalOpenCodeViolations}</strong> open violations in total.
         </PlainLanguage>
-      </Card>
+      </ExpandableIndicator>
 
-      <Card>
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-destructive" />
-            <div>
-              <h2 className="font-display text-xl leading-tight">Evictions filed</h2>
-              <p className="text-sm text-muted-foreground">Court records, last 12 months.</p>
-            </div>
-          </div>
-          <SeverityPill severity="concern">{data.building.evictions.filings12mo} filings</SeverityPill>
+      <ExpandableIndicator
+        value={ev.filings12mo}
+        label="Evictions filed"
+        sub={`${ev.rate} of units`}
+        severity="concern"
+        pillText={`${ev.filings12mo} filings`}
+      >
+        <div className="mb-2 flex items-start gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 text-destructive" />
+          <p className="text-sm text-muted-foreground">Court records, last 12 months.</p>
         </div>
-        <p className="text-2xl font-display">{data.building.evictions.rate} <span className="text-sm font-sans text-muted-foreground">of units</span></p>
-        <p className="mt-1 text-sm text-muted-foreground">{data.building.evictions.note}</p>
+        <p className="text-2xl font-display">{ev.rate} <span className="text-sm font-sans text-muted-foreground">of units</span></p>
+        <p className="mt-1 text-sm text-muted-foreground">{ev.note}</p>
         <PlainLanguage>
           If you receive a notice to quit, <strong>you have rights</strong>. Free legal help: call <strong>(860) 541-5000</strong>.
           {" "}This owner filed <strong>{data.landlordPortfolio.totalEvictions12mo}</strong> evictions across their <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties in the last year.
         </PlainLanguage>
-      </Card>
+      </ExpandableIndicator>
 
-      <Card>
-        <div className="mb-3 flex items-start gap-3">
+      <ExpandableIndicator
+        value={us.count12mo}
+        label="Utility shutoffs"
+        sub="last 12 months"
+        severity={usSeverity}
+      >
+        <div className="mb-2 flex items-start gap-3">
           <Zap className="mt-0.5 h-5 w-5 text-warning-foreground" />
-          <div>
-            <h2 className="font-display text-xl leading-tight">Utility shutoffs</h2>
-            <p className="text-sm text-muted-foreground">Reported by Eversource and CNG.</p>
-          </div>
+          <p className="text-sm text-muted-foreground">Reported by Eversource and CNG.</p>
         </div>
-        <p className="text-sm">{data.building.utilityShutoffs.note}</p>
+        <p className="text-sm">{us.note}</p>
         <PlainLanguage>
           Cold months (Nov–Apr) have shutoff protections if you qualify. Dial <strong>211</strong> for help.
         </PlainLanguage>
-      </Card>
+      </ExpandableIndicator>
 
-      <Card>
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <Phone className="mt-0.5 h-5 w-5 text-primary" />
-            <div>
-              <h2 className="font-display text-xl leading-tight">311 complaints nearby</h2>
-              <p className="text-sm text-muted-foreground">Most reported: {data.building.complaints311.topCategory}</p>
-            </div>
-          </div>
-          <SeverityPill severity="watch">{data.building.complaints311.count12mo}</SeverityPill>
+      <ExpandableIndicator
+        value={c311.count12mo}
+        label="311 complaints"
+        sub={c311.topCategory}
+        severity="watch"
+      >
+        <div className="mb-2 flex items-start gap-3">
+          <Phone className="mt-0.5 h-5 w-5 text-primary" />
+          <p className="text-sm text-muted-foreground">Most reported: {c311.topCategory}</p>
         </div>
         <ul className="space-y-2">
-          {data.building.complaints311.recent.map((c) => (
+          {c311.recent.map((c) => (
             <li key={c.date} className="flex items-center justify-between text-sm">
               <span className="text-foreground">{c.type}</span>
               <span className="text-xs text-muted-foreground">{c.date}</span>
@@ -343,7 +345,7 @@ function DetailedReport({ data }: { data: Data }) {
         <PlainLanguage>
           Across all <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties owned by {data.landlord}, residents and neighbors have filed <strong>{data.landlordPortfolio.totalComplaints311_12mo}</strong> 311 complaints in the last 12 months.
         </PlainLanguage>
-      </Card>
+      </ExpandableIndicator>
     </div>
   );
 }
