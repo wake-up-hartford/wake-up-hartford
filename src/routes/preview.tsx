@@ -45,8 +45,7 @@ function PreviewLanding() {
       <p className="mx-auto max-w-md px-6 pb-2 text-center text-base font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
         A tool for residents to learn the facts about your neighborhood, your home and&nbsp;get the tools to stabilize their lives.{"\n"}
         {"\n"}
-        {"\n"}
-        Click a circle to see what we can do here:
+        <em>Click a circle to see what we can do here:</em>
       </p>
 
       {/* Triangle of pillar circles */}
