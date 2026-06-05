@@ -102,13 +102,14 @@ export const getUsageStats = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context.userId);
 
-    const [profiles, intake, plans, steps, survey, appSurvey] = await Promise.all([
+    const [profiles, intake, plans, steps, survey, appSurvey, events] = await Promise.all([
       supabaseAdmin.from("profiles").select("id, created_at"),
       supabaseAdmin.from("intake_responses").select("id, user_id, created_at, tract_fips"),
       supabaseAdmin.from("stabilization_plans").select("id, user_id, generated_at, status"),
       supabaseAdmin.from("plan_steps").select("id, user_id, completed_at"),
       supabaseAdmin.from("survey_responses").select("id, user_id, helpfulness, progress, barrier, created_at"),
       supabaseAdmin.from("app_usage_survey_responses").select("id, user_id, created_at"),
+      supabaseAdmin.from("user_events").select("user_id, event_name"),
     ]);
 
     const phoneUsers = new Set<string>();
@@ -172,9 +173,12 @@ export const getUsageStats = createServerFn({ method: "GET" })
       progressCounts,
       funnel: (() => {
         const signedUp = new Set((profiles.data ?? []).map((p) => p.id));
-        const addressEntered = new Set(
-          (intake.data ?? []).filter((i) => i.tract_fips).map((i) => i.user_id),
-        );
+        const uniqueByEvent = (name: string) =>
+          new Set((events.data ?? []).filter((e) => e.event_name === name).map((e) => e.user_id));
+        const neighborhoodAddress = uniqueByEvent("neighborhood_address_submit");
+        const neighborhoodMap = uniqueByEvent("neighborhood_map_tract_click");
+        const homeAddress = uniqueByEvent("home_address_submit");
+        const homeMap = uniqueByEvent("home_map_address_click");
         const intakeCompleted = new Set((intake.data ?? []).map((i) => i.user_id));
         const planGenerated = new Set((plans.data ?? []).map((p) => p.user_id));
         const stepsByUser = new Map<string, { total: number; done: number }>();
@@ -195,7 +199,10 @@ export const getUsageStats = createServerFn({ method: "GET" })
         return [
           { label: "Signed up", count: signedUp.size },
           { label: "Entered Phone # in profile", count: Array.from(phoneUsers).filter((id) => signedUp.has(id)).length },
-          { label: "Entered address", count: addressEntered.size },
+          { label: "Entered address in Neighborhood Lookup", count: neighborhoodAddress.size },
+          { label: "Clicked a tract on Neighborhood map", count: neighborhoodMap.size },
+          { label: "Entered address in Your Home Lookup", count: homeAddress.size },
+          { label: "Clicked an address on Your Home map", count: homeMap.size },
           { label: "Completed Life Survey", count: intakeCompleted.size },
           { label: "Plan generated", count: planGenerated.size },
           { label: "Started a step", count: startedStep.size },
