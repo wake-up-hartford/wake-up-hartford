@@ -41,6 +41,17 @@ function PreviewLanding() {
         A tool for residents to learn the facts about their neighborhood, their home and get the tools to stabilize their lives.
       </p>
 
+      {/* Triangle of pillar circles */}
+      <section className="mx-auto flex max-w-md flex-col items-center gap-3 px-6 py-8 sm:py-10">
+        <div className="flex items-center justify-center gap-4 sm:gap-8">
+          <Circle label="Your Neighborhood" className="bg-gold text-gold-foreground" delay={100} />
+          <Circle label="Your Home" className="bg-primary text-primary-foreground" delay={400} />
+        </div>
+        <Circle label="Your Life" className="bg-accent text-accent-foreground" delay={700} />
+      </section>
+
+
+
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/15 via-background to-accent/10" />
@@ -192,3 +203,17 @@ function Pillar({
     </Link>
   );
 }
+
+function Circle({ label, className, delay }: { label: string; className: string; delay: number }) {
+  return (
+    <div
+      className={`flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft opacity-0 animate-[fade-in_0.6s_ease-out_forwards,scale-in_0.6s_ease-out_forwards] ${className}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <span className="font-display text-sm sm:text-base font-bold leading-tight text-center px-3">
+        {label}
+      </span>
+    </div>
+  );
+}
+
