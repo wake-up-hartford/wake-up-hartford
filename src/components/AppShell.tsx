@@ -84,17 +84,17 @@ export function AppShell({ children }: { children: ReactNode }) {
             />
 
           </Link>
-          <div className="flex items-center gap-3">
-            <LogoutButton />
-            <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
-              Greater Hartford<br />Branch NAACP
-            </span>
-          </div>
+          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right">
+            Greater Hartford<br />Branch NAACP
+          </span>
         </div>
         {pathname !== "/" && <RotatingMessages />}
       </header>
 
-      <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">{children}</main>
+      <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">
+        {children}
+        <LogoutButton />
+      </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
         <ul className="mx-auto grid w-full max-w-xl grid-cols-5 px-4 sm:px-5">
@@ -135,14 +135,16 @@ function LogoutButton() {
   };
 
   return (
-    <button
-      onClick={handleSignOut}
-      className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors"
-      aria-label="Log out"
-    >
-      <LogOut className="h-3.5 w-3.5" />
-      <span className="hidden sm:inline">Log Out</span>
-    </button>
+    <div className="mt-10 flex justify-center">
+      <button
+        onClick={handleSignOut}
+        className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        aria-label="Log out"
+      >
+        <LogOut className="h-4 w-4" />
+        Log Out
+      </button>
+    </div>
   );
 }
 
