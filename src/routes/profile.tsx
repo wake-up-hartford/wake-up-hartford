@@ -112,18 +112,6 @@ function ProfilePage() {
     }
   };
 
-  const handleResetPassword = async () => {
-    if (!user?.email) return;
-    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Password reset email sent.");
-      setResetSent(true);
-    }
-  };
 
   return (
     <AppShell>
@@ -246,18 +234,6 @@ function ProfilePage() {
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
             </button>
-            <button
-              type="button"
-              onClick={handleResetPassword}
-              className="block text-[13px] font-medium text-primary hover:underline"
-            >
-              Send password reset email
-            </button>
-            {resetSent && (
-              <p className="text-[13px] text-success font-medium">
-                Check your inbox — a reset link has been sent.
-              </p>
-            )}
           </form>
 
 
