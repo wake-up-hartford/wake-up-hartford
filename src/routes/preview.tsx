@@ -27,6 +27,11 @@ function PreviewLanding() {
 
   return (
     <main className="min-h-dvh bg-background text-foreground">
+      <div className="w-full px-4 pt-4 text-center">
+        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Greater Hartford NAACP presents
+        </p>
+      </div>
       <img
         src={wakeUpLogo.url}
         alt="Wake Up Hartford"
