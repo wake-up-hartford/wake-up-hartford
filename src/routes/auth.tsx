@@ -177,7 +177,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        nav({ to: "/dashboard" });
+        nav({ to: consumePostAuthRedirect(), replace: true });
       }
     } catch (err) {
       setError(friendlyAuthError(err, view === "signup" ? "signup" : "signin"));
