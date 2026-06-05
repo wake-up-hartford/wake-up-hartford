@@ -227,13 +227,15 @@ function ExpandableIndicator({
   return (
     <Collapsible defaultOpen={defaultOpen} asChild>
       <Card className="p-0 overflow-hidden">
-        <CollapsibleTrigger className="group flex w-full items-center gap-3 p-3 text-left sm:p-4">
+        <CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-2 text-left sm:px-4 sm:py-2.5">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
               <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{value}</span>
               <span className="text-xs font-semibold text-foreground sm:text-sm">{label}</span>
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground sm:text-xs">{sub}</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">{sub}</p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground/70 group-data-[state=open]:hidden">Tap to expand</p>
+            <p className="mt-0.5 hidden text-[10px] text-muted-foreground/70 group-data-[state=open]:block">Tap to collapse</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <SeverityPill severity={severity}>{pillText ?? severity}</SeverityPill>
@@ -241,7 +243,7 @@ function ExpandableIndicator({
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="border-t border-border px-3 pb-4 pt-3 sm:px-4">{children}</div>
+          <div className="border-t border-border px-3 pb-3 pt-2 sm:px-4">{children}</div>
         </CollapsibleContent>
       </Card>
     </Collapsible>
