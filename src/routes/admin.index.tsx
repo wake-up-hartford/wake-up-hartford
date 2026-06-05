@@ -91,7 +91,7 @@ function UsersListCard() {
     onError: (err) => toast.error(err instanceof Error ? err.message : "Couldn't delete user."),
   });
 
-  const meId = (me.data as { isAdmin: boolean; userId?: string } | undefined)?.userId;
+  const meId = me.data?.userId;
 
   const handleDelete = (id: string, label: string) => {
     if (!confirm(`Permanently delete ${label}? This removes their account and all related data.`)) return;
