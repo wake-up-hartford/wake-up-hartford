@@ -62,7 +62,7 @@ function PreviewLanding() {
           <Circle
             id="home"
             label="Your Home"
-            popup="Your Home"
+            popup="Look up your address. See your building's history, your landlord's record, and your rights as a tenant."
             className="bg-primary text-primary-foreground opacity-90"
             delay={1100}
             active={activeCircle === "home"}
@@ -73,7 +73,7 @@ function PreviewLanding() {
         <Circle
           id="life"
           label="Your Life"
-          popup="Your Life"
+          popup="Tell us what you're facing. Get a plan that's built for you."
           className="bg-accent text-accent-foreground opacity-90"
           delay={1900}
           active={activeCircle === "life"}
