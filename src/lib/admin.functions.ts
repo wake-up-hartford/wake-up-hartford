@@ -35,7 +35,7 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
       .eq("role", "admin")
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return { isAdmin: !!data };
+    return { isAdmin: !!data, userId };
   });
 
 export const listSignedUpUsers = createServerFn({ method: "GET" })
