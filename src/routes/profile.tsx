@@ -226,13 +226,6 @@ function ProfilePage() {
                 className="w-full rounded-lg border border-card-foreground/20 bg-white/60 px-3 py-2 text-[14px] text-card-foreground/70"
               />
             </Field>
-            <button
-              type="button"
-              onClick={handleResetPassword}
-              className="text-[13px] font-medium text-primary hover:underline"
-            >
-              Send password reset email
-            </button>
 
             <Field icon={Phone} label="Phone number" htmlFor="phone">
               <input
@@ -264,6 +257,13 @@ function ProfilePage() {
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save contact"}
             </button>
+            <button
+              type="button"
+              onClick={handleResetPassword}
+              className="block text-[13px] font-medium text-primary hover:underline"
+            >
+              Send password reset email
+            </button>
           </form>
 
           {/* Survey link */}
@@ -276,7 +276,7 @@ function ProfilePage() {
             </div>
             <div className="min-w-0 flex-1">
               <p className="font-display text-[15px] text-white">Quick 5-question survey</p>
-              <p className="text-[12px] text-white/85">Help us make this app more useful — about 30 seconds.</p>
+              <p className="text-[12px] text-white/85">Help us make this app better. Takes about 30 seconds.</p>
             </div>
             <ChevronRight className="h-4 w-4 text-white/80" />
           </Link>
