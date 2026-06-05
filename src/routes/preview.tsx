@@ -279,7 +279,7 @@ function Circle({
         className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
-        <span className="font-display text-sm sm:text-base font-bold leading-tight text-center px-3">
+        <span className="font-display text-base sm:text-lg font-bold leading-tight text-center px-3">
           {label}
         </span>
       </button>
