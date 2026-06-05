@@ -154,7 +154,7 @@ function ProfilePage() {
           {/* Profile form */}
           <form
             onSubmit={handleSaveProfile}
-            className="mt-6 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
+            className="mt-6 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
           >
             <h2 className="font-display text-lg text-card-foreground">Profile</h2>
 
@@ -218,7 +218,7 @@ function ProfilePage() {
           {/* Contact (email + phone) */}
           <form
             onSubmit={handleSavePhone}
-            className="mt-4 space-y-4 rounded-xl border border-border bg-card p-4 text-card-foreground"
+            className="mt-4 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
           >
             <h2 className="font-display text-lg text-card-foreground">Contact</h2>
 
@@ -325,11 +325,11 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label htmlFor={htmlFor} className="mb-1.5 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70">
+    <div className="sm:flex sm:items-center sm:gap-3">
+      <label htmlFor={htmlFor} className="mb-1 flex items-center gap-1.5 text-[12px] font-medium text-card-foreground/70 sm:mb-0 sm:w-40 sm:shrink-0">
         <Icon className="h-3.5 w-3.5" /> {label}
       </label>
-      {children}
+      <div className="sm:flex-1">{children}</div>
     </div>
   );
 }
