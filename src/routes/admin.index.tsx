@@ -56,10 +56,66 @@ function AdminOverviewPage() {
           )}
 
           <FunnelCard steps={stats.data.funnel} />
+          <UsersListCard />
           <FunnelInsightsCard />
         </div>
       )}
     </AdminLayout>
+  );
+}
+
+function UsersListCard() {
+  const fetchUsers = useServerFn(listSignedUpUsers);
+  const q = useQuery({
+    queryKey: ["admin-signed-up-users"],
+    queryFn: () => fetchUsers({}),
+  });
+
+  return (
+    <Card className="p-4">
+      <div className="flex items-baseline justify-between mb-1">
+        <div className="text-sm font-medium">Signed-up users</div>
+        <div className="text-xs text-muted-foreground">
+          {q.data ? `${q.data.users.length} total` : ""}
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground mb-3">
+        Most recent sign-ups first. Scroll for more.
+      </p>
+      {q.isLoading && <div className="text-sm text-muted-foreground">Loading…</div>}
+      {q.error && (
+        <div className="text-sm text-destructive">
+          {q.error instanceof Error ? q.error.message : "Couldn't load users."}
+        </div>
+      )}
+      {q.data && q.data.users.length === 0 && (
+        <div className="text-sm text-muted-foreground">No users yet.</div>
+      )}
+      {q.data && q.data.users.length > 0 && (
+        <div className="max-h-80 overflow-y-auto rounded-md border border-border">
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 bg-muted text-xs text-muted-foreground">
+              <tr>
+                <th className="text-left font-medium px-3 py-2">Name</th>
+                <th className="text-left font-medium px-3 py-2">Email</th>
+                <th className="text-left font-medium px-3 py-2 whitespace-nowrap">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {q.data.users.map((u) => (
+                <tr key={u.id} className="border-t border-border">
+                  <td className="px-3 py-2">{u.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground truncate max-w-[260px]">{u.email || "—"}</td>
+                  <td className="px-3 py-2 text-muted-foreground whitespace-nowrap">
+                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Card>
   );
 }
 
