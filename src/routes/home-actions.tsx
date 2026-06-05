@@ -77,11 +77,6 @@ const ACTIONS: Action[] = [
     ],
   },
   {
-    title: "Document conditions with photos",
-    desc: "Take dated photos and videos of every problem. This evidence protects you in court and with inspectors.",
-    icon: Camera,
-  },
-  {
     title: "Know your rights as a tenant",
     desc: "A quick guide to repairs, security deposits, eviction notice rules, and retaliation protections in CT.",
     icon: ShieldCheck,
