@@ -9,8 +9,6 @@ import {
   ClipboardList,
   PenLine,
   Vote,
-  Megaphone,
-  Users,
   MessageSquareWarning,
   ArrowRight,
   ExternalLink,
@@ -69,7 +67,6 @@ function ActionsPage() {
   );
   const rentBurdenRed = concerns.some((i) => i.key === "rent_burden");
   const housingAgeRed = concerns.some((i) => i.key === "housing_age" || i.key === "age_of_housing");
-  const multipleRed = concerns.length >= 3;
 
   return (
     <AppShell>
@@ -177,40 +174,6 @@ function ActionsPage() {
         }
       />
 
-      <GroupHeader>Organize this block</GroupHeader>
-
-      <ActionCard
-        icon={Megaphone}
-        accent="gold"
-        title="Host a Wake Up Wednesday here"
-        body={
-          multipleRed
-            ? "Multiple indicators are red in this tract — it's a strong candidate for an in-person meeting. We'll help you find a space and bring the right partners."
-            : "Bring neighbors together for a one-hour conversation. We'll help you find a space and bring the right partners."
-        }
-        cta={
-          <a href="mailto:hello@wakeupwednesday.org?subject=Host%20a%20Wake%20Up%20Wednesday">
-            <Button size="sm">
-              Volunteer to host <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-            </Button>
-          </a>
-        }
-        tag={multipleRed ? "Suggested for this tract" : undefined}
-      />
-
-      <ActionCard
-        icon={Users}
-        accent="indigo"
-        title="Become a Block Captain"
-        body="Be the trusted point person for your block — share what you see, connect neighbors to resources, and help us keep the data honest."
-        cta={
-          <a href="mailto:hello@wakeupwednesday.org?subject=Block%20Captain%20interest">
-            <Button size="sm">
-              Sign up <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-            </Button>
-          </a>
-        }
-      />
 
       <ActionCard
         icon={MessageSquareWarning}
