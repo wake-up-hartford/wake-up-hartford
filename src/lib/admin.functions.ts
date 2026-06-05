@@ -196,7 +196,7 @@ export const getUsageStats = createServerFn({ method: "GET" })
           { label: "Signed up", count: signedUp.size },
           { label: "Entered Phone # in profile", count: Array.from(phoneUsers).filter((id) => signedUp.has(id)).length },
           { label: "Entered address", count: addressEntered.size },
-          { label: "Completed intake", count: intakeCompleted.size },
+          { label: "Completed Life Survey", count: intakeCompleted.size },
           { label: "Plan generated", count: planGenerated.size },
           { label: "Started a step", count: startedStep.size },
           { label: "Completed all steps", count: completedAll.size },
