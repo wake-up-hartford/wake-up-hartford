@@ -24,7 +24,7 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
-const MOST_USED_OPTIONS = [
+const TECH_OPTIONS = [
   { value: "none", label: "Works fine" },
   { value: "slow", label: "Slow loading" },
   { value: "navigation", label: "Hard to navigate" },
