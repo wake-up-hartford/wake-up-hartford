@@ -123,7 +123,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next) loadForCurrentKey();
+    if (next && user) loadForCurrentKey();
     if (!next) setCopied(false);
   };
 
