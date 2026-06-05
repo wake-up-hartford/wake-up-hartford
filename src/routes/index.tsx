@@ -54,7 +54,7 @@ function Landing() {
       </p>
 
       {/* Triangle of pillar circles */}
-      <section className="mx-auto flex max-w-md flex-col items-center px-6 py-4 sm:py-6">
+      <section className="mx-auto flex max-w-md flex-col items-center px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
         <div className="flex items-center justify-center gap-0">
           <Circle
             id="neighborhood"
@@ -92,7 +92,7 @@ function Landing() {
         />
         <Link
           to={user ? "/dashboard" : "/auth"}
-          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
         >
           {user ? "To my dashboard" : "Sign up to get started"}
           <ArrowRight className="h-4 w-4" />
