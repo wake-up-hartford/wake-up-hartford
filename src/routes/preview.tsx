@@ -115,13 +115,6 @@ function PreviewLanding() {
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              to={user ? "/home" : "/auth"}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
-            >
-              {user ? "Open your dashboard" : "Get started"}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
               to="/"
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-semibold text-card-foreground hover:bg-secondary/50"
             >
