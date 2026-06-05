@@ -24,14 +24,6 @@ export const Route = createFileRoute("/survey")({
   component: SurveyPage,
 });
 
-const MOST_USED_OPTIONS = [
-  { value: "path", label: "Path / plan steps" },
-  { value: "find_help", label: "Find Help" },
-  { value: "take_action", label: "Take Action & surveys" },
-  { value: "home", label: "Home / dashboard" },
-  { value: "none", label: "Haven't explored much yet" },
-] as const;
-
 const TECH_OPTIONS = [
   { value: "none", label: "Works fine" },
   { value: "slow", label: "Slow loading" },
@@ -40,11 +32,11 @@ const TECH_OPTIONS = [
 ] as const;
 
 const PROMPT_OPTIONS = [
+  { value: "referral", label: "Someone told me about it" },
+  { value: "qr", label: "Scanned a QR code" },
+  { value: "social", label: "Social media" },
   { value: "reminder", label: "Reminder notification" },
   { value: "regular", label: "I use it regularly" },
-  { value: "referral", label: "Someone told me about it" },
-  { value: "social", label: "Social media" },
-  { value: "search", label: "Found it online" },
 ] as const;
 
 const AWARENESS_OPTIONS = [
@@ -101,7 +93,7 @@ function SurveyPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
-  const [mostUsed, setMostUsed] = useState("");
+  
   const [ease, setEase] = useState<number | null>(null);
   const [techIssue, setTechIssue] = useState("");
   const [prompt, setPrompt] = useState("");
@@ -113,14 +105,12 @@ function SurveyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ease) return toast.error("Please rate how easy it is to use.");
-    if (!mostUsed) return toast.error("Please pick which part you use most.");
     if (!techIssue) return toast.error("Please tell us if you've had technical issues.");
     if (!prompt) return toast.error("Please tell us what brought you here today.");
     setSubmitting(true);
     try {
       await send({
         data: {
-          most_used: mostUsed as (typeof MOST_USED_OPTIONS)[number]["value"],
           ease,
           tech_issue: techIssue as (typeof TECH_OPTIONS)[number]["value"],
           prompt: prompt as (typeof PROMPT_OPTIONS)[number]["value"],
@@ -168,7 +158,7 @@ function SurveyPage() {
       </Link>
       <h1 className="font-display text-3xl text-foreground">Quick survey</h1>
       <p className="mt-2 text-[14px] text-muted-foreground">
-        5 quick questions about how you use the app. Under 1 minute.
+        4 quick questions about how you use the app. Under 1 minute.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -200,26 +190,21 @@ function SurveyPage() {
 
         {/* Q2 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">2. Which part do you use most?</h2>
-          <RadioCard options={MOST_USED_OPTIONS} value={mostUsed} onChange={setMostUsed} name="most_used" />
+          <h2 className="font-display text-base">2. Any technical problems?</h2>
+          <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
         {/* Q3 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">3. Any technical problems?</h2>
-          <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
-        </div>
-
-        {/* Q4 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">4. What brought you here today?</h2>
+          <h2 className="font-display text-base">3. What brought you here today?</h2>
           <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
         </div>
+
 
         {/* Q5 (optional) */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">
-            5. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
+            4. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
           </h2>
           <p className="text-[12px] text-card-foreground/60">Optional</p>
           <RadioCard options={AWARENESS_OPTIONS} value={awareness} onChange={setAwareness} name="awareness" />
