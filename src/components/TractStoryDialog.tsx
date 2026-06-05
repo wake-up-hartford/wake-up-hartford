@@ -69,6 +69,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
   const [cachedStory, setCachedStory] = useState<string | null>(null);
   const [language] = useLanguage();
   const tone: Tone = TONE;
+  const { user, loading: authLoading } = useAuth();
   const generate = useServerFn(generateTractStory);
 
   // Cache key includes tract + state + tone + language + a fingerprint of the
