@@ -24,6 +24,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [language] = useLanguage();
+  const { user, loading: authLoading } = useAuth();
   const generate = useServerFn(generateBuildingStory);
 
   const mutation = useMutation({
