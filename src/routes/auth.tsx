@@ -131,13 +131,19 @@ function AuthPage() {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
+  const peekPostAuthRedirect = (): "/life" | "/dashboard" => {
+    if (typeof window === "undefined") return "/dashboard";
+    return window.localStorage.getItem("wuw:postAuthRedirect") === "/life" ? "/life" : "/dashboard";
+  };
+
   const handleGoogle = async () => {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/dashboard",
+      redirect_uri: window.location.origin + peekPostAuthRedirect(),
     });
     if (result.error) setError(result.error.message);
   };
+
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
