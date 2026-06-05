@@ -1,27 +1,23 @@
-## Add animated triangle of 3 colored circles on /preview
+## Combine Report Card + Detailed into one expandable view on /home
 
-Insert a new section directly under the tagline (between line 42 and the Hero section) showing 3 equal-size circles that fly in one after another and settle into a triangle arrangement.
+The /home page currently has 4 tabs: **Report Card**, **Detailed**, **Share**, **Print**. Report Card shows a compact 2×2 grid of the four indicators (Code violations, Evictions, Utility shutoffs, 311 complaints) with value + severity pill. Detailed shows the same four indicators as full cards with icon, description, item lists, and a "Plain Language" callout.
 
-### Layout
-- Triangle: two circles on top row (Your Neighborhood = gold left, Your Home = purple right), one circle centered below (Your Life = blue).
-- Equal sizes: ~9rem (w-36 h-36) on mobile, ~11rem on sm+ screens.
-- Centered horizontally, with appropriate vertical/horizontal spacing so they read as a triangle.
-- Each circle: solid brand color background, white bold display-font label centered, soft shadow.
+### Changes (all in `src/routes/home.tsx`)
 
-### Colors (from existing tokens in styles.css)
-- Gold → `bg-gold text-gold-foreground` → "Your Neighborhood"
-- Purple → `bg-primary text-primary-foreground` → "Your Home"
-- Blue → `bg-accent text-accent-foreground` → "Your Life"
+1. **Remove the Report Card tab.** Drop the `<TabsTrigger value="card">` and `<TabsContent value="card">`. Update `TabsList` to `grid-cols-3`, change `defaultValue` to `"story"`, and update the heading to "3 ways to view Home data".
 
-### Animation
-- Use Tailwind's existing `animate-fade-in` and `animate-scale-in` keyframes (already defined in the project) combined with staggered `animation-delay` inline styles via `style={{ animationDelay: "Xms" }}`.
-- Circle 1 (Your Neighborhood): 100ms delay
-- Circle 2 (Your Home): 400ms delay
-- Circle 3 (Your Life): 700ms delay
-- Each starts hidden (`opacity-0`) and animates in with a combined fade + scale effect (`animate-[fade-in_0.5s_ease-out_forwards,scale-in_0.5s_ease-out_forwards]`).
+2. **Rebuild `DetailedReport`** as a list of collapsible cards. Each card's collapsed header shows the same compact summary the old Report Card showed (big value, label, sub-line, severity pill) plus a chevron. Expanding reveals the existing detail content (icon + description, list of violations/complaints, `PlainLanguage` callout, etc.).
 
-### Technical notes
-- Implement as a small inline `<section>` in `src/routes/preview.tsx`; no new files, no new dependencies.
-- Use flex layout: outer column, top row = flex with gap between two circles, bottom row = centered single circle slightly overlapping/below.
-- Text inside circles uses `font-display` and `text-center` with small/medium sizes that fit (e.g., `text-sm sm:text-base font-semibold leading-tight px-3`).
-- No changes to business logic, routes, or any other section.
+3. **Delete the now-unused `ReportCard` component.**
+
+### Technical details
+
+- Use shadcn's existing `Collapsible` primitive (`@/components/ui/collapsible`, already in the project via Radix); add it to the project if not present. Each indicator becomes one `<Collapsible>` wrapping a `<Card>`, with `<CollapsibleTrigger asChild>` on the header row and `<CollapsibleContent>` for the detail body.
+- Header row layout: left = value + label + sub (same typography as today's ReportCard tiles), right = `SeverityPill` + `ChevronDown` that rotates 180° when open (`data-[state=open]:rotate-180 transition-transform`).
+- First card (Code violations) defaults to open so users immediately see one expanded example; others start collapsed.
+- Keep the existing severity logic, copy, icons, and PlainLanguage blocks exactly as they are — only the wrapper/layout changes.
+- Share and Print tabs are not modified.
+
+### Out of scope
+
+- `/neighborhood` also has a "Report Card" tab but its content already is the detailed view (single tab labeled "Report Card"), so no change there unless you also want it restructured — let me know.
