@@ -59,6 +59,7 @@ function ProfilePage() {
   const [smsAlerts, setSmsAlerts] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   useEffect(() => {
     if (data?.profile) {
@@ -116,8 +117,12 @@ function ProfilePage() {
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (error) toast.error(error.message);
-    else toast.success("Password reset email sent.");
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Password reset email sent.");
+      setResetSent(true);
+    }
   };
 
   return (
@@ -264,6 +269,11 @@ function ProfilePage() {
             >
               Send password reset email
             </button>
+            {resetSent && (
+              <p className="text-[13px] text-success font-medium">
+                Check your inbox — a reset link has been sent.
+              </p>
+            )}
           </form>
 
           {/* Survey link */}
