@@ -112,8 +112,15 @@ function Landing() {
               </p>
               <h3 className="font-display text-xl leading-tight">Every Wednesday</h3>
               <p className="text-sm text-foreground/80">
-                Unity Plaza · Barbour Street · Hartford. Coffee, conversation,
-                and your neighbors.
+                <a
+                  href="https://www.google.com/maps/place/Unity+Plaza/data=!4m2!3m1!1s0x0:0xcee017a08e0cd643?sa=X&ved=1t:2428&ictx=111"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-foreground"
+                >
+                  Unity Plaza · Barbour Street · Hartford
+                </a>
+                . Coffee, conversation, and your neighbors.
               </p>
             </div>
           </div>
