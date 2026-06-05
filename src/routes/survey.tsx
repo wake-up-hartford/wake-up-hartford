@@ -175,6 +175,10 @@ function SurveyPage() {
         {/* Q1 — ease of use */}
         <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">1. How easy is this app to use?</h2>
+          <div className="flex justify-between text-[11px] text-card-foreground/60">
+            <span>Hard to use</span>
+            <span>Very easy</span>
+          </div>
           <div className="flex items-center justify-between gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -191,10 +195,6 @@ function SurveyPage() {
                 {n}
               </button>
             ))}
-          </div>
-          <div className="flex justify-between text-[11px] text-card-foreground/60">
-            <span>Hard to use</span>
-            <span>Very easy</span>
           </div>
         </div>
 
