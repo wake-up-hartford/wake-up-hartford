@@ -62,7 +62,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next && !mutation.data && !mutation.isPending) mutation.mutate();
+    if (next && user && !mutation.data && !mutation.isPending) mutation.mutate();
     if (!next) setCopied(false);
   };
 
