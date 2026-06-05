@@ -173,18 +173,14 @@ function HomePage() {
             </div>
           </Card>
 
-          <Tabs defaultValue="card" className="w-full">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">4 ways to view Home data</p>
-            <TabsList className="grid w-full grid-cols-4 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="card" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
-              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Detailed</TabsTrigger>
+          <Tabs defaultValue="story" className="w-full">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">3 ways to view Home data</p>
+            <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
+              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
               <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
               <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="card" className="mt-4">
-              <ReportCard data={data} />
-            </TabsContent>
             <TabsContent value="story" className="mt-4">
               <DetailedReport data={data} />
             </TabsContent>
