@@ -28,6 +28,19 @@ function AdminOverviewPage() {
       {stats.isLoading && <div className="text-muted-foreground">Loading…</div>}
       {stats.data && (
         <div className="space-y-4">
+          <Link
+            to="/admin/admins"
+            className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-4 hover:bg-accent/40 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Users className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <div className="text-sm font-medium">Manage admins</div>
+                <div className="text-xs text-muted-foreground">Grant or revoke admin access by email</div>
+              </div>
+            </div>
+            <span className="text-sm text-muted-foreground">Open →</span>
+          </Link>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <StatCard label="Users" value={stats.data.totals.users} sub={`+${stats.data.recent.newUsers7d} last 7d`} />
             <StatCard label="Intake responses" value={stats.data.totals.intakeResponses} sub={`+${stats.data.recent.intake7d} last 7d`} />
