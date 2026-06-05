@@ -256,7 +256,7 @@ function ProfilePage() {
 
             <button
               type="submit"
-              disabled={savingPhone}
+              disabled={savingPhone || !phoneValid}
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
