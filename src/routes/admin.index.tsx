@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { getUsageStats } from "@/lib/admin.functions";
+import { getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
