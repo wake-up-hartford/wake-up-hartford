@@ -203,13 +203,24 @@ function ProfilePage() {
               <input
                 id="phone"
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel-national"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                maxLength={20}
-                placeholder="+15551234567"
-                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                onChange={(e) => setPhone(formatUSPhone(e.target.value))}
+                maxLength={14}
+                placeholder="(555) 123-4567"
+                aria-invalid={!phoneValid}
+                aria-describedby={!phoneValid ? "phone-error" : undefined}
+                className={`w-full rounded-lg border bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:outline-none ${
+                  phoneValid ? "border-card-foreground/20 focus:border-accent" : "border-destructive focus:border-destructive"
+                }`}
               />
             </Field>
+            {!phoneValid && (
+              <p id="phone-error" className="text-[12px] text-destructive">
+                Please enter a 10-digit US phone number.
+              </p>
+            )}
             <label className="flex items-center gap-2.5">
               <input
                 type="checkbox"
@@ -219,9 +230,6 @@ function ProfilePage() {
               />
               <span className="text-[13px] text-card-foreground">Send me reminders and updates by text</span>
             </label>
-            <p className="text-[12px] text-card-foreground/70">
-              Use international format (e.g. +1 for US). You'll receive a code to verify.
-            </p>
 
             <Field icon={Globe} label="Preferred language" htmlFor="language_pref">
               <select
