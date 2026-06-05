@@ -165,7 +165,7 @@ function AuthPage() {
               phone: phone || null,
               opt_in_updates: optIn,
             },
-            emailRedirectTo: window.location.origin + "/dashboard",
+            emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
           },
         });
         if (error) throw error;
