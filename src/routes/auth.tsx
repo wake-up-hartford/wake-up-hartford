@@ -327,7 +327,7 @@ function AuthPage() {
         <div className="mt-6 space-y-3">
           <h1 className="font-display text-3xl leading-tight text-foreground">Sign In</h1>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
-            We'll send your Action Plan by email. Let us know if you'd also like updates from the GREATER HARTFORD BRANCH NAACP on free resources and community action.
+            Your email connects you to free help and to a movement that's changing what's possible in Hartford.
           </p>
           <div className="space-y-2 pt-1">
             <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
