@@ -83,7 +83,7 @@ function NeighborhoodPage() {
         <>
           <SectionHeader
             title="Choose Your Neighborhood"
-            subtitle="Tap a tract on the map, or look up any US address. The highlighted tracts are GREATER HARTFORD BRANCH NAACP's primary focus — Northeast, Blue Hills, Upper Albany, and adjacent North End neighborhoods."
+            subtitle="Enter an address or tap a tract on the map. Highlighted tracts are GREATER HARTFORD BRANCH NAACP's primary focus. (FYI: You can look up any address in USA!)"
           />
           <Card className="mb-5">
             <Tabs defaultValue="address">
