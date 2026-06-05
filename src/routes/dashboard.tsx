@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Building2, Trees, HeartHandshake, FileText, ChevronRight } from "lucide-react";
+import { Building2, Trees, HeartHandshake, FileText, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { SketchArrow } from "@/components/SketchArrow";
 import { useAuth } from "@/hooks/use-auth";
@@ -195,24 +195,6 @@ function DashLink({
   );
 }
 
-function EventCard() {
-  return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15">
-      <div className="flex items-start gap-3 p-5">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
-          <Calendar className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/85">Join us</p>
-          <h3 className="font-display text-xl leading-tight text-foreground">Every Wednesday</h3>
-          <p className="mt-1 text-sm text-foreground/85">
-            Unity Plaza · Barbour Street · Hartford. Coffee, conversation, and your neighbors.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function Footer() {
   return (
