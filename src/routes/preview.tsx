@@ -65,7 +65,7 @@ function PreviewLanding() {
           <Circle
             id="home"
             label="Your Home"
-            popup="Look up your address — see your building, your landlord, your rights."
+            popup="Look up your address; Learn your rights."
             className="bg-primary text-primary-foreground opacity-90"
             popupClassName="bg-primary-popup text-primary-foreground"
             delay={1100}
@@ -285,7 +285,7 @@ function Circle({
       {active && (
         <div
           role="dialog"
-          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-base sm:text-lg font-medium leading-snug shadow-soft ${popupClassName}`}
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName}`}
         >
           {popup}
         </div>
