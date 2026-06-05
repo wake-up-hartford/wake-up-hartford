@@ -269,6 +269,11 @@ function ProfilePage() {
             >
               Send password reset email
             </button>
+            {resetSent && (
+              <p className="text-[13px] text-success font-medium">
+                Check your inbox — a reset link has been sent.
+              </p>
+            )}
           </form>
 
           {/* Survey link */}
