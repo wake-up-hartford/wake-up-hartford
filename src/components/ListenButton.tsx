@@ -106,6 +106,19 @@ export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const Icon =
     status === "loading" ? Loader2 : status === "playing" ? Pause : status === "paused" ? Play : Volume2;
 
+  if (!authLoading && !user) {
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => navigate({ to: "/auth" })}
+      >
+        <LogIn className="mr-2 h-4 w-4" />
+        Sign in to listen
+      </Button>
+    );
+  }
+
   return (
     <div className="flex items-center gap-2">
       <Button variant="outline" size="sm" onClick={handleClick} disabled={disabled}>
