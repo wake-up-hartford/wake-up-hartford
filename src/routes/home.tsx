@@ -227,10 +227,10 @@ function ExpandableIndicator({
   return (
     <Collapsible defaultOpen={defaultOpen} asChild>
       <Card className="p-0 overflow-hidden">
-        <CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-1.5 text-left sm:px-4 sm:py-1.5">
+        <CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-1 text-left sm:px-4 sm:py-1">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
-              <span className="font-display text-xl leading-none text-foreground sm:text-2xl">{value}</span>
+              <span className="font-display text-2xl leading-none text-foreground sm:text-3xl">{value}</span>
               <span className="text-xs font-semibold text-foreground sm:text-sm">{label}</span>
             </div>
             <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground sm:text-xs">{sub}</p>
@@ -245,7 +245,7 @@ function ExpandableIndicator({
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="border-t border-border px-3 pb-3 pt-2 sm:px-4">{children}</div>
+          <div className="border-t border-border px-3 pb-2 pt-1.5 sm:px-4">{children}</div>
         </CollapsibleContent>
       </Card>
     </Collapsible>
