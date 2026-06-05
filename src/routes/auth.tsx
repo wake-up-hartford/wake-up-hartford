@@ -337,7 +337,7 @@ function AuthPage() {
             onClick={() => { setView("signup"); setError(null); }}
             className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[15px] font-semibold text-white shadow-soft hover:bg-amber-600"
           >
-            Create Account
+            Register Here
           </button>
           <p className="text-center text-[12px] text-muted-foreground">
             Sign up with Google or with email + password
@@ -350,6 +350,12 @@ function AuthPage() {
             className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
           >
             Already Registered? Sign In
+          </button>
+          <button
+            onClick={() => nav({ to: "/" })}
+            className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:bg-secondary/50"
+          >
+            Explore without creating an account
           </button>
         </div>
       </AppShell>
