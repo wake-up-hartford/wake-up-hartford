@@ -168,19 +168,6 @@ function NeighborhoodPage() {
   );
 }
 
-function severityLabel(s: Indicator["severity"]) {
-  return s === "good" ? "OK" : s === "watch" ? "Watch" : s === "concern" ? "Concern" : null;
-}
-
-function dotClass(s: Indicator["severity"]) {
-  return s === "good"
-    ? "bg-success"
-    : s === "watch"
-    ? "bg-warning"
-    : s === "concern"
-    ? "bg-destructive"
-    : "bg-muted-foreground/40";
-}
 
 
 
