@@ -1,26 +1,17 @@
-## Goal
-Remove the helper text under the phone field and add inline validation/formatting so users can't enter a malformed number.
+## What
+Add a visible link from the admin overview (`/admin`) to the existing admin management page (`/admin/admins`). This makes the page easier to discover and use.
 
-## Context
-- The line "Use international format (e.g. +1 for US). You'll receive a code to verify." is misleading — there is no SMS verification step wired up in the profile, and the project is Hartford-focused (US numbers).
-- The current `<input type="tel">` accepts any string up to 20 chars with placeholder `+15551234567`.
+## Why
+The admin designation system already works (roles table + server functions + /admin/admins UI), but there is no navigation from the main admin dashboard to the admin manager.
 
-## Changes (src/routes/profile.tsx only)
+## How
+1. In `src/routes/admin.index.tsx`, add a `<Link to="/admin/admins">` (e.g. as a button or card) near the top of the page content.
+2. Add the `Link` import from `@tanstack/react-router` if not already present.
+3. Optionally add an icon (e.g. `Shield` or `Users` from `lucide-react`) for affordance.
 
-1. **Delete** the `<p>` helper text on lines 214–216.
+## Files changed
+- `src/routes/admin.index.tsx`
 
-2. **Auto-format as US phone** as the user types:
-   - Strip non-digits, take last 10 digits, render as `(555) 123-4567`.
-   - Change placeholder to `(555) 123-4567`.
-   - Store the formatted display value in local state; on save, normalize to E.164 (`+1XXXXXXXXXX`) before writing to the DB so existing downstream code keeps working.
-
-3. **Inline validation:**
-   - Show a red error message under the field when the value is non-empty and digit count ≠ 10.
-   - Disable the Save button (or block submit + toast) when phone is invalid.
-   - Mark the field with `aria-invalid` and `aria-describedby` pointing at the error for accessibility.
-
-4. **Keep scope tight:** no schema changes, no Twilio/verification flow, no country picker. US-only formatting matches the audience; if international support is needed later it can be added behind a toggle.
-
-## Out of scope
-- Real SMS code verification (would need a backend + Twilio/Supabase Auth phone provider).
-- International number support / country selector.
+## Not included
+- No database or server-function changes.
+- No changes to how roles are stored or checked.
