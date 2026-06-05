@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import { Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { checkIsAdmin, getUsageStats, listSignedUpUsers } from "@/lib/admin.functions";
