@@ -417,10 +417,41 @@ type Answers = Record<string, string[]>;
 
 /* ---------- Top component ---------- */
 
+const LIFE_STATE_KEY = "wuw:life:pendingSurvey";
+
 function LifePage() {
   const [stage, setStage] = useState<"intro" | "survey" | "summary">("intro");
   const [answers, setAnswers] = useState<Answers>({});
   const { user, loading: authLoading } = useAuth();
+  const [restored, setRestored] = useState(false);
+
+  // Restore in-progress survey after returning from /auth.
+  useEffect(() => {
+    if (restored) return;
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(LIFE_STATE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { answers?: Answers; stage?: "intro" | "survey" | "summary" };
+        if (parsed.answers) setAnswers(parsed.answers);
+        if (parsed.stage) setStage(parsed.stage);
+      }
+    } catch {
+      // ignore
+    }
+    setRestored(true);
+  }, [restored]);
+
+  // Persist survey state so auth round-trips don't lose progress.
+  useEffect(() => {
+    if (!restored || typeof window === "undefined") return;
+    if (stage === "intro" && Object.keys(answers).length === 0) {
+      window.localStorage.removeItem(LIFE_STATE_KEY);
+      return;
+    }
+    window.localStorage.setItem(LIFE_STATE_KEY, JSON.stringify({ answers, stage }));
+  }, [answers, stage, restored]);
+
 
 
   return (
