@@ -9,6 +9,9 @@ const GrantAdminInput = z.object({
 const RevokeAdminInput = z.object({
   userId: z.string().uuid("userId must be a UUID"),
 });
+const DeleteUserInput = z.object({
+  userId: z.string().uuid("userId must be a UUID"),
+});
 
 async function assertAdmin(userId: string) {
   const { data, error } = await supabaseAdmin
