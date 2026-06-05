@@ -320,15 +320,6 @@ function AuthPage() {
               />
               <span>Send me free resources and community updates.</span>
             </label>
-            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
-              <input
-                type="checkbox"
-                checked={!optIn}
-                onChange={() => setOptIn(false)}
-                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
-              />
-              <span>Action Plan only — no other emails.</span>
-            </label>
           </div>
         </div>
 
