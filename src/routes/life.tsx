@@ -22,6 +22,7 @@ import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
 import { generateStabilizationPlan } from "@/lib/stabilization-plan.functions";
+import { trackEvent } from "@/lib/track-event";
 
 export const Route = createFileRoute("/life")({
   head: () => ({
