@@ -673,7 +673,7 @@ function SurveyScreen({
         </div>
 
         <button
-          onClick={() => setStarted(true)}
+          onClick={() => { trackEvent("life_survey_start"); setStarted(true); }}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
         >
           Start Life Survey <ArrowRight className="h-5 w-5" />
