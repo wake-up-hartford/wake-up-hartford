@@ -172,7 +172,7 @@ function BreakdownCard({ title, counts }: { title: string; counts: Record<string
   );
 }
 
-function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> }) {
+function FunnelCard({ steps }: { steps: Array<{ label: string; count: number; baseLabel?: string }> }) {
   const top = steps[0]?.count ?? 0;
 
   const sectionFor = (label: string): "Users" | "Your Neighborhood" | "Your Home" | "Your Life" => {
@@ -216,7 +216,12 @@ function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> 
               {group.items.map((s) => {
                 const idx = steps.indexOf(s);
                 const widthPct = top ? (s.count / top) * 100 : 0;
-                const prev = idx > 0 ? steps[idx - 1].count : null;
+                const baseStep = s.baseLabel
+                  ? steps.find((x) => x.label === s.baseLabel)
+                  : idx > 0
+                    ? steps[idx - 1]
+                    : null;
+                const prev = baseStep ? baseStep.count : null;
                 const stepPct = prev && prev > 0 ? (s.count / prev) * 100 : null;
                 const dropoff = prev != null ? prev - s.count : null;
                 return (
@@ -227,7 +232,9 @@ function FunnelCard({ steps }: { steps: Array<{ label: string; count: number }> 
                         {s.count}
                         {stepPct != null && (
                           <span className="ml-2">
-                            {stepPct.toFixed(0)}%{dropoff && dropoff > 0 ? ` (-${dropoff})` : ""}
+                            {stepPct.toFixed(0)}%
+                            {s.baseLabel ? ` of ${s.baseLabel}` : ""}
+                            {dropoff && dropoff > 0 ? ` (-${dropoff})` : ""}
                           </span>
                         )}
                       </span>

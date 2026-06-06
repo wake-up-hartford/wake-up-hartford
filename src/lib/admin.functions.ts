@@ -170,6 +170,7 @@ export const getUsageStats = createServerFn({ method: "GET" })
         const neighborhoodMap = uniqueByEvent("neighborhood_map_tract_click");
         const homeAddress = uniqueByEvent("home_address_submit");
         const homeMap = uniqueByEvent("home_map_address_click");
+        const lifeSurveyStart = uniqueByEvent("life_survey_start");
         const intakeCompleted = new Set((intake.data ?? []).map((i) => i.user_id));
         const planGenerated = new Set((plans.data ?? []).map((p) => p.user_id));
         const stepsByUser = new Map<string, { total: number; done: number }>();
@@ -194,10 +195,11 @@ export const getUsageStats = createServerFn({ method: "GET" })
           { label: "Clicked a tract on Neighborhood map", count: neighborhoodMap.size },
           { label: "Entered address in Your Home Lookup", count: homeAddress.size },
           { label: "Clicked an address on Your Home map", count: homeMap.size },
+          { label: "Started Life Survey", count: lifeSurveyStart.size },
           { label: "Completed Life Survey", count: intakeCompleted.size },
-          { label: "Plan generated", count: planGenerated.size },
-          { label: "Started a step", count: startedStep.size },
-          { label: "Completed all steps", count: completedAll.size },
+          { label: "Plan generated", count: planGenerated.size, baseLabel: "Completed Life Survey" },
+          { label: "Started a step", count: startedStep.size, baseLabel: "Completed Life Survey" },
+          { label: "Completed all steps", count: completedAll.size, baseLabel: "Completed Life Survey" },
         ];
 
       })(),
