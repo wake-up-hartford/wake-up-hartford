@@ -4,7 +4,8 @@ export type TrackedEventName =
   | "neighborhood_address_submit"
   | "neighborhood_map_tract_click"
   | "home_address_submit"
-  | "home_map_address_click";
+  | "home_map_address_click"
+  | "life_survey_start";
 
 type JsonMetadata = Record<string, string | number | boolean | null>;
 
