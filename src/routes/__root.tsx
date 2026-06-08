@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { InstallPrompt } from "@/components/InstallPrompt";
+
 
 
 function NotFoundComponent() {
