@@ -163,6 +163,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthListener />
       <ThemeToggle />
+      <InstallPrompt />
+
       <Outlet />
       
       <Toaster />
