@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, Download, Share } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>;
