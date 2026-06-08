@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, Download, Share } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>;
@@ -36,11 +37,13 @@ function isIos(): boolean {
 }
 
 export function InstallPrompt() {
+  const { user, loading } = useAuth();
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
   const [show, setShow] = useState(false);
   const [iosMode, setIosMode] = useState(false);
 
   useEffect(() => {
+    if (loading || !user) return;
     if (isStandalone() || recentlyDismissed()) return;
 
     const onPrompt = (e: Event) => {
@@ -67,7 +70,7 @@ export function InstallPrompt() {
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
     };
-  }, []);
+  }, [loading, user]);
 
   const dismiss = () => {
     try {
@@ -98,8 +101,11 @@ export function InstallPrompt() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 sm:left-auto sm:right-4 sm:bottom-4 sm:max-w-sm">
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 pr-10 shadow-soft">
+    <div
+      className="fixed inset-x-0 bottom-0 z-40 px-4 sm:left-auto sm:right-4 sm:bottom-4 sm:max-w-sm"
+      style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+    >
+      <div className="relative rounded-2xl border border-border bg-card p-4 pr-10 shadow-soft">
         <button
           type="button"
           onClick={dismiss}
@@ -112,13 +118,13 @@ export function InstallPrompt() {
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
             {iosMode ? <Share className="h-5 w-5" /> : <Download className="h-5 w-5" />}
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="font-display text-sm font-semibold text-foreground">
               Add Wake Up Wednesday to your home screen
             </p>
             {iosMode ? (
-              <p className="mt-1 text-xs text-muted-foreground">
-                Tap the <Share className="inline h-3 w-3 align-[-2px]" /> Share button, then{" "}
+              <p className="mt-1 text-[13px] leading-snug text-muted-foreground break-words">
+                Tap the <Share className="inline h-3.5 w-3.5 align-[-2px]" /> Share button at the bottom of Safari, then choose{" "}
                 <strong className="text-foreground">Add to Home Screen</strong>.
               </p>
             ) : (
