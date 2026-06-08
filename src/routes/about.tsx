@@ -31,7 +31,7 @@ const SECTIONS = [
 
 function Toc({ onJump }: { onJump: (id: string) => void }) {
   return (
-    <nav className="mt-6 rounded-xl border border-border bg-card p-4 shadow-soft">
+    <nav className="mt-6 rounded-xl border border-border p-4">
       <p className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
         Jump to a section
       </p>
