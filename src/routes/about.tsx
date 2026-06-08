@@ -68,7 +68,7 @@ function CollapsibleSection({
     <div id={id} className="scroll-mt-24">
       <Collapsible open={open} onOpenChange={onOpenChange}>
         <CollapsibleTrigger asChild>
-          <button className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-left shadow-soft transition-colors hover:bg-muted/30">
+          <button className="flex w-full items-center justify-between rounded-xl border border-border px-4 py-3 text-left transition-colors hover:bg-muted/20">
             <h2 className="font-display text-[16px] tracking-tight text-foreground">{title}</h2>
             <ChevronDown
               className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -76,7 +76,7 @@ function CollapsibleSection({
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="mt-2 space-y-3 rounded-xl border border-border/60 bg-card/50 px-4 py-4 text-[15px] leading-relaxed text-foreground/80">
+          <div className="mt-2 space-y-3 rounded-xl border border-border/60 px-4 py-4 text-[15px] leading-relaxed text-foreground/80">
             {children}
           </div>
         </CollapsibleContent>
