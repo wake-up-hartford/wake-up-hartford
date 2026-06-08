@@ -136,6 +136,12 @@ function Landing() {
         <p className="mt-1 text-[11px] text-muted-foreground">
           in collaboration with CT Data Collaborative and Farnam Associates, LLC.
         </p>
+        <Link
+          to="/about"
+          className="mt-4 inline-block text-[13px] text-muted-foreground underline hover:text-foreground"
+        >
+          About This Tool
+        </Link>
       </footer>
     </main>
   );

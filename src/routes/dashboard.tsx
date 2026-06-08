@@ -145,6 +145,12 @@ function DashboardPage() {
         </div>
       )}
       <Footer />
+      <Link
+        to="/about"
+        className="mt-4 block text-center text-[13px] text-muted-foreground underline hover:text-foreground"
+      >
+        About This Tool
+      </Link>
     </AppShell>
   );
 }
