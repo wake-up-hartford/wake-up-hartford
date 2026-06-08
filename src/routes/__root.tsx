@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { InstallPrompt } from "@/components/InstallPrompt";
+
 
 
 function NotFoundComponent() {
@@ -81,10 +83,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Wake Up Wednesday — GREATER HARTFORD BRANCH NAACP" },
       { name: "description", content: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT." },
       { name: "theme-color", content: "#2a2a5c" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Wake Up Wed" },
       { property: "og:title", content: "Wake Up Wednesday — GREATER HARTFORD BRANCH NAACP" },
       { property: "og:description", content: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Wake Up Wednesday" },
+
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Wake Up Wednesday — GREATER HARTFORD BRANCH NAACP" },
       { name: "twitter:description", content: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT." },
@@ -94,8 +101,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
       { rel: "preload", as: "image", href: logoUrl, fetchpriority: "high" },
     ],
+
     scripts: [
       {
         type: "application/ld+json",
@@ -152,6 +163,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthListener />
       <ThemeToggle />
+      <InstallPrompt />
+
       <Outlet />
       
       <Toaster />
