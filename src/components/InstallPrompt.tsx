@@ -70,7 +70,7 @@ export function InstallPrompt() {
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
     };
-  }, []);
+  }, [loading, user]);
 
   const dismiss = () => {
     try {
