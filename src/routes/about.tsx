@@ -31,22 +31,21 @@ const SECTIONS = [
 
 function Toc({ onJump }: { onJump: (id: string) => void }) {
   return (
-    <nav className="mt-6 rounded-xl border border-border p-4">
-      <p className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <nav className="mt-5 rounded-xl border border-border p-3">
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         Jump to a section
       </p>
-      <ul className="space-y-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {SECTIONS.map(({ id, title }) => (
-          <li key={id}>
-            <button
-              onClick={() => onJump(id)}
-              className="w-full rounded-lg px-2.5 py-1.5 text-left text-[14px] text-foreground transition-colors hover:bg-muted/50"
-            >
-              {title}
-            </button>
-          </li>
+          <button
+            key={id}
+            onClick={() => onJump(id)}
+            className="rounded-lg border border-border/80 px-2.5 py-1 text-[12px] text-foreground transition-colors hover:bg-muted/40"
+          >
+            {title}
+          </button>
         ))}
-      </ul>
+      </div>
     </nav>
   );
 }
