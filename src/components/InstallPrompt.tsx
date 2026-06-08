@@ -37,11 +37,13 @@ function isIos(): boolean {
 }
 
 export function InstallPrompt() {
+  const { user, loading } = useAuth();
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
   const [show, setShow] = useState(false);
   const [iosMode, setIosMode] = useState(false);
 
   useEffect(() => {
+    if (loading || !user) return;
     if (isStandalone() || recentlyDismissed()) return;
 
     const onPrompt = (e: Event) => {
