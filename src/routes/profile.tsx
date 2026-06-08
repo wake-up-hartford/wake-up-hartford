@@ -291,6 +291,13 @@ function ProfilePage() {
           )}
         </>
       )}
+      )}
+      <Link
+        to="/about"
+        className="mt-6 block text-center text-[13px] text-muted-foreground underline hover:text-foreground"
+      >
+        About This Tool
+      </Link>
     </AppShell>
   );
 }
