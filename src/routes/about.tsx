@@ -142,8 +142,8 @@ function AboutPage() {
         </CollapsibleSection>
 
         <CollapsibleSection id="credits" title="Credits" open={!!openSections["credits"]} onOpenChange={(open) => handleOpenChange("credits", open)}>
+          <p>Built for and with NAACP Greater Hartford Branch</p>
           <p>Designed and developed by Joanne Sciulli, Farnam Associates, LLC</p>
-          <p>Built for and with Wake Up Wednesday, NAACP Greater Hartford Branch</p>
           <p className="mt-2 text-[13px] text-muted-foreground">
             Data sourced from:
           </p>
