@@ -12,7 +12,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
       .eq("id", userId)
       .maybeSingle();
 
-    const [plansRes, intakesRes, stepsRes] = await Promise.all([
+    const [plansRes, intakesRes, stepsRes, recentPlanRes] = await Promise.all([
       supabase
         .from("stabilization_plans")
         .select("id", { count: "exact", head: true })
@@ -26,6 +26,13 @@ export const getMyProfile = createServerFn({ method: "POST" })
         .select("id", { count: "exact", head: true })
         .eq("user_id", userId)
         .not("completed_at", "is", null),
+      supabase
+        .from("stabilization_plans")
+        .select("id")
+        .eq("user_id", userId)
+        .order("generated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
 
     return {
@@ -34,6 +41,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
         plans: plansRes.count ?? 0,
         assessments: intakesRes.count ?? 0,
         completedSteps: stepsRes.count ?? 0,
+        mostRecentPlanId: recentPlanRes.data?.id ?? null,
       },
     };
   });
