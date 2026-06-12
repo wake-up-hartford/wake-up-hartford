@@ -58,7 +58,7 @@ export function PlanHeader({
         {user && (
           <span className="font-semibold text-foreground">
             {(() => {
-              const raw = (user.user_metadata?.display_name as string) || (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend";
+              const raw = (user.user_metadata?.first_name as string) || (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email?.split("@")[0] || "Friend";
               return raw.split(/\s+/)[0];
             })()},{" "}
           </span>

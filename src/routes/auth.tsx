@@ -165,7 +165,6 @@ function AuthPage() {
           password,
           options: {
             data: {
-              display_name: [firstName, lastName].filter(Boolean).join(" ").trim() || email.split("@")[0],
               first_name: firstName || null,
               last_name: lastName || null,
               phone: phone || null,

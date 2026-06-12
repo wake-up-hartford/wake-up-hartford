@@ -44,7 +44,7 @@ export const listSignedUpUsers = createServerFn({ method: "GET" })
     await assertAdmin(context.userId);
     const { data: profiles, error } = await supabaseAdmin
       .from("profiles")
-      .select("id, display_name, first_name, last_name, created_at")
+      .select("id, first_name, last_name, created_at")
       .order("created_at", { ascending: false })
       .limit(1000);
     if (error) throw new Error(error.message);
@@ -62,9 +62,7 @@ export const listSignedUpUsers = createServerFn({ method: "GET" })
       users: (profiles ?? []).map((p) => ({
         id: p.id,
         name:
-          [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-          p.display_name ||
-          "—",
+          [p.first_name, p.last_name].filter(Boolean).join(" ") || "—",
         email: emails.get(p.id) ?? "",
         createdAt: p.created_at,
       })),
@@ -237,7 +235,7 @@ export const listAdmins = createServerFn({ method: "GET" })
     const ids = (roles ?? []).map((r) => r.user_id);
     const { data: profiles } = await supabaseAdmin
       .from("profiles")
-      .select("id, display_name, first_name, last_name")
+      .select("id, first_name, last_name")
       .in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
 
     // Fetch emails via admin auth listing (single page for typical scale)
@@ -255,9 +253,7 @@ export const listAdmins = createServerFn({ method: "GET" })
       admins: (roles ?? []).map((r) => {
         const p = profileMap.get(r.user_id);
         const name =
-          [p?.first_name, p?.last_name].filter(Boolean).join(" ") ||
-          p?.display_name ||
-          "—";
+          [p?.first_name, p?.last_name].filter(Boolean).join(" ") || "—";
         return {
           userId: r.user_id,
           createdAt: r.created_at,
