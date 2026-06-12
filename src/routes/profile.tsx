@@ -61,19 +61,16 @@ function ProfilePage() {
     enabled: !!user,
   });
 
-  const [displayName, setDisplayName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [languagePref, setLanguagePref] = useState("en");
   const [phone, setPhone] = useState("");
   const [smsAlerts, setSmsAlerts] = useState(false);
-  const [savingProfile, setSavingProfile] = useState(false);
   const [savingPhone, setSavingPhone] = useState(false);
   
 
   useEffect(() => {
     if (data?.profile) {
-      setDisplayName(data.profile.display_name ?? "");
       setFirstName(data.profile.first_name ?? "");
       setLastName(data.profile.last_name ?? "");
       setLanguagePref(data.profile.language_pref ?? "en");
@@ -85,26 +82,12 @@ function ProfilePage() {
   const phoneDigits = phone.replace(/\D/g, "").replace(/^1/, "");
   const phoneValid = phoneDigits.length === 0 || phoneDigits.length === 10;
 
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!displayName.trim()) {
-      toast.error("Name can't be empty.");
-      return;
-    }
-    setSavingProfile(true);
-    try {
-      await saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref } });
-      await qc.invalidateQueries({ queryKey: ["my-profile"] });
-      toast.success("Profile saved.");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Couldn't save profile.");
-    } finally {
-      setSavingProfile(false);
-    }
-  };
-
   const handleSavePhone = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firstName.trim()) {
+      toast.error("First name can't be empty.");
+      return;
+    }
     if (!phoneValid) {
       toast.error("Please enter a 10-digit US phone number.");
       return;
@@ -112,7 +95,7 @@ function ProfilePage() {
     const e164Phone = phoneDigits.length === 10 ? `+1${phoneDigits}` : null;
     setSavingPhone(true);
     try {
-      await saveProfile({ data: { display_name: displayName.trim(), first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts, phone: e164Phone } });
+      await saveProfile({ data: { first_name: firstName.trim() || null, last_name: lastName.trim() || null, language_pref: languagePref, sms_alerts: smsAlerts, phone: e164Phone } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Profile and contact info saved.");
     } catch (err) {
@@ -121,6 +104,7 @@ function ProfilePage() {
       setSavingPhone(false);
     }
   };
+
 
 
   return (
@@ -156,19 +140,8 @@ function ProfilePage() {
           >
             <h2 className="font-display text-lg text-card-foreground">Profile & contact</h2>
 
-            <Field icon={UserIcon} label="Display name" htmlFor="display_name">
-              <input
-                id="display_name"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                maxLength={100}
-                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
-                placeholder="Your name"
-              />
-            </Field>
-
             <div className="grid grid-cols-2 gap-3">
-              <Field icon={UserIcon} label="First name (optional)" htmlFor="first_name">
+              <Field icon={UserIcon} label="First name" htmlFor="first_name">
                 <input
                   id="first_name"
                   value={firstName}
@@ -189,6 +162,7 @@ function ProfilePage() {
                 />
               </Field>
             </div>
+
 
 
             <Field icon={Mail} label="Email address" htmlFor="email">
