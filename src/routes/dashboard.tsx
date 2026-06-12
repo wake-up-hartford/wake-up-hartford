@@ -126,12 +126,14 @@ function DashboardPage() {
         </Link>
       )}
       {!user ? (
-        <Link
-          to="/auth"
-          className="mt-8 flex w-auto items-center justify-center rounded-xl bg-amber-500 px-8 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
-        >
-          Register to stay in touch
-        </Link>
+        <div className="mt-8 flex justify-center">
+          <Link
+            to="/auth"
+            className="inline-flex items-center justify-center rounded-xl bg-amber-500 px-8 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+          >
+            Register to stay in touch
+          </Link>
+        </div>
       ) : (
         <div className="mt-8 flex justify-center">
           <Link
