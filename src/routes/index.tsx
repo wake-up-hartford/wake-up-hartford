@@ -55,18 +55,18 @@ function Landing() {
 
       {/* Triangle of pillar circles */}
       <section className="mx-auto flex max-w-md flex-col items-center px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
-        <div className="flex items-center justify-center gap-0">
-          <Circle
-            id="neighborhood"
-            label="Your Neighborhood"
-            popup="Your block has a story. See the data behind it."
-            className="bg-gold text-gold-foreground opacity-90"
-            popupClassName="bg-gold-popup text-gold-foreground"
-            delay={300}
-            active={activeCircle === "neighborhood"}
-            onToggle={toggle}
-            stackClass="z-10"
-          />
+        <Circle
+          id="life"
+          label="Your Life"
+          popup="Tell us what you're facing. Get a plan that's built for you."
+          className="bg-accent text-accent-foreground opacity-90"
+          popupClassName="bg-accent-popup text-accent-foreground"
+          delay={300}
+          active={activeCircle === "life"}
+          onToggle={toggle}
+          stackClass="z-10"
+        />
+        <div className="flex items-center justify-center gap-0 -mt-6 sm:-mt-8">
           <Circle
             id="home"
             label="Your Home"
@@ -76,20 +76,20 @@ function Landing() {
             delay={1100}
             active={activeCircle === "home"}
             onToggle={toggle}
+            stackClass="z-10"
+          />
+          <Circle
+            id="neighborhood"
+            label="Your Neighborhood"
+            popup="Your block has a story. See the data behind it."
+            className="bg-gold text-gold-foreground opacity-90"
+            popupClassName="bg-gold-popup text-gold-foreground"
+            delay={1900}
+            active={activeCircle === "neighborhood"}
+            onToggle={toggle}
             stackClass="-ml-4 sm:-ml-6"
           />
         </div>
-        <Circle
-          id="life"
-          label="Your Life"
-          popup="Tell us what you're facing. Get a plan that's built for you."
-          className="bg-accent text-accent-foreground opacity-90"
-            popupClassName="bg-accent-popup text-accent-foreground"
-          delay={1900}
-          active={activeCircle === "life"}
-          onToggle={toggle}
-          stackClass="-mt-6 sm:-mt-8"
-        />
         <Link
           to={user ? "/dashboard" : "/auth"}
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
