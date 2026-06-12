@@ -165,9 +165,12 @@ function AuthPage() {
           password,
           options: {
             data: {
-              display_name: name || email.split("@")[0],
+              display_name: [firstName, lastName].filter(Boolean).join(" ").trim() || email.split("@")[0],
+              first_name: firstName || null,
+              last_name: lastName || null,
               phone: phone || null,
               opt_in_updates: optIn,
+              sms_alerts: smsOptIn && !!phone.trim(),
             },
             emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
           },
