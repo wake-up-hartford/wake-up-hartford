@@ -184,7 +184,7 @@ function AdminSurveysPage() {
                   <td className="p-2">{r.most_used}</td>
                   <td className="p-2">{r.tech_issue}</td>
                   <td className="p-2">{r.prompt}</td>
-                  <td className="p-2">{r.feature_awareness ?? "—"}</td>
+                  <td className="p-2">{r.features_used?.length ? r.features_used.join(", ") : "—"}</td>
                   <td className="p-2 max-w-[24rem] truncate" title={r.comment ?? ""}>{r.comment ?? "—"}</td>
                 </tr>
               ))}
