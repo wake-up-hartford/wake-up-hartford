@@ -66,7 +66,7 @@ function Landing() {
           onToggle={toggle}
           stackClass="z-10"
         />
-        <div className="flex items-center justify-center gap-0 -mt-6 sm:-mt-8">
+        <div className="flex items-center justify-center gap-0 -mt-4 sm:-mt-5">
           <Circle
             id="home"
             label="Your Home"
@@ -87,7 +87,7 @@ function Landing() {
             delay={1900}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
-            stackClass="-ml-4 sm:-ml-6 z-10"
+            stackClass="-ml-2 sm:-ml-3 z-10"
           />
         </div>
         <Link
