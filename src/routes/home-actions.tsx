@@ -35,7 +35,7 @@ type Action = {
 const ACTIONS: Action[] = [
   {
     title: "Write a complaint letter to your landlord",
-    desc: "Auto-fill a formal letter citing Connecticut habitability law. Print, mail, or email it.",
+    desc: "Fill in your information and get a formal letter based on Connecticut tenant law. Print, mail, or email it.",
     icon: FileText,
     links: [{ label: "Start letter", to: "/landlord-letter" }],
   },
@@ -47,14 +47,14 @@ const ACTIONS: Action[] = [
       { label: "Call 311", href: "tel:311" },
       { label: "Website", href: "https://www.hartfordct.gov/Government/Departments/Hartford-311" },
       {
-        label: "Download 'Know When & What to Report'",
+        label: "Download: What to Report and When",
         href: "https://www.hartfordct.gov/files/assets/public/v/1/hartford-311/hartford-311-documents/housing-enforcement-flyer.pdf",
       },
     ],
   },
   {
     title: "Get free legal help",
-    desc: "Greater Hartford Legal Aid and CT Fair Housing Center help tenants with evictions, repairs, and discrimination — at no cost.",
+    desc: "Greater Hartford Legal Aid and CT Fair Housing Center help tenants with evictions, repairs, and discrimination — free.",
     icon: Scale,
     links: [
       { label: "Call legal aid", href: "tel:18604110050" },
@@ -63,13 +63,13 @@ const ACTIONS: Action[] = [
   },
   {
     title: "Recover your security deposit",
-    desc: "Landlords must return your deposit, with interest, within 21 days of your written demand. Generate the letter.",
+    desc: "Your landlord must return your deposit — with interest — within 21 days of your written request. We'll generate the letter.",
     icon: DollarSign,
     links: [{ label: "Start letter", to: "/security-deposit-letter" }],
   },
   {
     title: "Call 211 for housing help",
-    desc: "Connect to rental assistance, shelter, eviction prevention, and utility help any time, day or night.",
+    desc: "Rental assistance, shelter, eviction prevention, utility help — any time, day or night.",
     icon: Phone,
     links: [
       { label: "Dial 211", href: "tel:211" },
@@ -78,24 +78,24 @@ const ACTIONS: Action[] = [
   },
   {
     title: "Know your rights as a tenant",
-    desc: "A quick guide to repairs, security deposits, eviction notice rules, and retaliation protections in CT.",
+    desc: "Plain-language guide to repairs, deposits, eviction rules, and your right to complain without retaliation.",
     icon: ShieldCheck,
     links: [{ label: "Learn your rights", href: "https://ctlawhelp.org/en/housing/landlord-tenant/renters-rights" }],
   },
   {
     title: "Organize with your neighbors",
-    desc: "Talk to neighbors facing the same landlord. A tenant association has more power than one tenant alone.",
+    desc: "Tenants who organize have more power than one person alone. Talk to neighbors — especially those with the same landlord.",
     icon: Users,
   },
   {
     title: "Contact your city council member",
-    desc: "Tell elected officials about conditions in your building. Pressure works.",
+    desc: "Tell your elected official what's happening in your building. Find yours by address.",
     icon: Landmark,
     links: [{ label: "Find your council member", href: "https://hartford.civicweb.net/portal/members.aspx?id=10" }],
   },
   {
     title: "Share your story",
-    desc: "Add your experience to the public record so the community can see patterns across landlords.",
+    desc: "Your experience becomes part of the public record — helping the community see patterns across landlords.",
     icon: Megaphone,
     comingSoon: true,
   },
