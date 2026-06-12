@@ -3,14 +3,14 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const TECH_ISSUE = ["slow", "navigation", "errors", "none"] as const;
-const PROMPT = ["reminder", "regular", "referral", "social", "search", "qr"] as const;
-const FEATURE_AWARENESS = ["yes_use", "yes_untried", "no"] as const;
+const PROMPT = ["reminder", "regular", "referral", "social", "search", "qr", "other"] as const;
+const FEATURE = ["plan", "address", "neighborhood", "resource", "none"] as const;
 
 const SubmitInput = z.object({
   ease: z.number().int().min(1).max(5),
   tech_issue: z.enum(TECH_ISSUE),
   prompt: z.enum(PROMPT),
-  feature_awareness: z.enum(FEATURE_AWARENESS).optional().nullable(),
+  features_used: z.array(z.enum(FEATURE)).default([]),
   comment: z.string().trim().max(2000).optional().nullable(),
 });
 
@@ -25,7 +25,7 @@ export const submitSurvey = createServerFn({ method: "POST" })
       ease: data.ease,
       tech_issue: data.tech_issue,
       prompt: data.prompt,
-      feature_awareness: data.feature_awareness ?? null,
+      features_used: data.features_used,
       comment: data.comment?.trim() ? data.comment.trim() : null,
     });
     if (error) throw new Error(error.message);
