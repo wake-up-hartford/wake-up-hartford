@@ -654,8 +654,8 @@ function SurveyScreen({
             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
             <div>
               <h2 className="mb-1 font-display text-[16px] font-semibold text-white">Trust</h2>
-              <p className="text-[13px] leading-relaxed">
-                We know trust matters. Your answers are private and secure. We will never share or sell your information. You can unsubscribe any time.
+              <p className="text-[15px] leading-relaxed">
+                We know trust matters. Your answers are private and secure. We will never share or sell your information.
               </p>
             </div>
           </div>
