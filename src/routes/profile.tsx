@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, MessageSquare, ChevronRight, ShieldCheck, CheckCircle } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, MessageSquare, ChevronRight, ShieldCheck, CheckCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
@@ -128,6 +128,17 @@ function ProfilePage() {
           label="Steps completed"
         />
       </section>
+
+      {data?.stats.mostRecentPlanId && (
+        <Link
+          to="/plan/$planId"
+          params={{ planId: data.stats.mostRecentPlanId }}
+          className="mt-3 flex items-center justify-between rounded-xl border border-border bg-card p-3 text-card-foreground shadow-soft transition-colors hover:bg-muted/50"
+        >
+          <span className="text-[14px] font-medium text-card-foreground">Back to your most recent plan</span>
+          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      )}
 
       {isLoading ? (
         <p className="mt-6 text-muted-foreground">Loading…</p>
