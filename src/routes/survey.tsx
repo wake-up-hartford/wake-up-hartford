@@ -25,24 +25,26 @@ export const Route = createFileRoute("/survey")({
 });
 
 const TECH_OPTIONS = [
-  { value: "none", label: "Works fine" },
+  { value: "none", label: "No problems" },
   { value: "slow", label: "Slow loading" },
   { value: "navigation", label: "Hard to navigate" },
   { value: "errors", label: "Errors or crashes" },
 ] as const;
 
 const PROMPT_OPTIONS = [
-  { value: "referral", label: "Someone told me about it" },
-  { value: "qr", label: "Scanned a QR code" },
+  { value: "referral", label: "Someone told me" },
+  { value: "qr", label: "QR code" },
   { value: "social", label: "Social media" },
-  { value: "reminder", label: "Reminder notification" },
-  { value: "regular", label: "I use it regularly" },
+  { value: "reminder", label: "Notification" },
+  { value: "other", label: "Other" },
 ] as const;
 
-const AWARENESS_OPTIONS = [
-  { value: "yes_use", label: "Yes — I already use those" },
-  { value: "yes_untried", label: "Yes, but I haven't tried them" },
-  { value: "no", label: "No, I didn't know" },
+const FEATURE_OPTIONS = [
+  { value: "plan", label: "Got an AI-generated plan" },
+  { value: "address", label: "Looked up a Hartford address" },
+  { value: "neighborhood", label: "Read about my neighborhood" },
+  { value: "resource", label: "Found a local resource" },
+  { value: "none", label: "None yet" },
 ] as const;
 
 type RadioOpt = { value: string; label: string };
@@ -84,6 +86,42 @@ function RadioCard({
   );
 }
 
+function CheckboxCard({
+  options,
+  values,
+  onToggle,
+}: {
+  options: readonly RadioOpt[];
+  values: string[];
+  onToggle: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-1 pt-1">
+      {options.map((opt) => {
+        const checked = values.includes(opt.value);
+        return (
+          <label
+            key={opt.value}
+            className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-1.5 text-[14px] ${
+              checked
+                ? "border-accent bg-accent/10"
+                : "border-card-foreground/20 bg-white hover:border-accent/60"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={() => onToggle(opt.value)}
+              className="h-4 w-4 text-accent focus:ring-accent"
+            />
+            <span className="text-card-foreground">{opt.label}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 function SurveyPage() {
   const nav = useNavigate();
   const { user, loading } = useAuth();
@@ -93,20 +131,27 @@ function SurveyPage() {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
 
-  
   const [ease, setEase] = useState<number | null>(null);
   const [techIssue, setTechIssue] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [awareness, setAwareness] = useState("");
+  const [features, setFeatures] = useState<string[]>([]);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
+  const toggleFeature = (v: string) => {
+    setFeatures((prev) => {
+      if (v === "none") return prev.includes("none") ? [] : ["none"];
+      const without = prev.filter((p) => p !== "none");
+      return without.includes(v) ? without.filter((p) => p !== v) : [...without, v];
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ease) return toast.error("Please rate how easy it is to use.");
     if (!techIssue) return toast.error("Please tell us if you've had technical issues.");
-    if (!prompt) return toast.error("Please tell us what brought you here today.");
+    if (!prompt) return toast.error("Please tell us how you first heard about the app.");
     setSubmitting(true);
     try {
       await send({
@@ -114,9 +159,7 @@ function SurveyPage() {
           ease,
           tech_issue: techIssue as (typeof TECH_OPTIONS)[number]["value"],
           prompt: prompt as (typeof PROMPT_OPTIONS)[number]["value"],
-          feature_awareness: awareness
-            ? (awareness as (typeof AWARENESS_OPTIONS)[number]["value"])
-            : null,
+          features_used: features as (typeof FEATURE_OPTIONS)[number]["value"][],
           comment: comment || null,
         },
       });
@@ -158,15 +201,15 @@ function SurveyPage() {
       </Link>
       <h1 className="font-display text-3xl text-foreground">Quick survey</h1>
       <p className="mt-2 text-[14px] text-muted-foreground">
-        4 quick questions about how you use the app. Under 1 minute.
+        4 questions, under 1 minute. Your feedback shapes this app.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        {/* Q1 — ease of use */}
+        {/* Q1 */}
         <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
           <h2 className="font-display text-base">1. How easy is this app to use?</h2>
           <div className="flex justify-between text-[11px] text-card-foreground/60">
-            <span>Hard to use</span>
+            <span>Very hard</span>
             <span>Very easy</span>
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -190,30 +233,26 @@ function SurveyPage() {
 
         {/* Q2 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">2. Any technical problems?</h2>
+          <h2 className="font-display text-base">2. Did you run into any technical problems?</h2>
           <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
         {/* Q3 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">3. What brought you here today?</h2>
+          <h2 className="font-display text-base">3. How did you first hear about this app?</h2>
           <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
         </div>
 
-
-        {/* Q5 (optional) */}
+        {/* Q4 */}
         <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
-          <h2 className="font-display text-base">
-            4. Did you know Wake Up Wednesday can send you a plan, show local resources, and connect you to help?
-          </h2>
-          <p className="text-[12px] text-card-foreground/60">Optional</p>
-          <RadioCard options={AWARENESS_OPTIONS} value={awareness} onChange={setAwareness} name="awareness" />
+          <h2 className="font-display text-base">4. Which of these have you used? (check all that apply)</h2>
+          <CheckboxCard options={FEATURE_OPTIONS} values={features} onToggle={toggleFeature} />
         </div>
 
         {/* Optional comment */}
         <div className="rounded-xl border border-border bg-card p-3 text-card-foreground">
           <label htmlFor="comment" className="mb-1.5 block text-[12px] font-medium text-card-foreground/70">
-            Anything else you want us to know? (optional)
+            Anything else? (optional)
           </label>
           <textarea
             id="comment"
