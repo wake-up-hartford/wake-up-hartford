@@ -87,7 +87,7 @@ function Landing() {
             delay={1900}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
-            stackClass="-ml-2 sm:-ml-3 z-10"
+            stackClass="-ml-4 sm:-ml-5 z-10"
           />
         </div>
         <Link
