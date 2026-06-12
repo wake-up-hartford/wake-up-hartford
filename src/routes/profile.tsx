@@ -306,7 +306,7 @@ function StatCard({
   label: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3 text-card-foreground">
+    <div className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-card-foreground">
       <div className="flex items-center gap-1.5 text-card-foreground/70">
         <Icon className="h-3.5 w-3.5" />
         <span className="text-[11px] uppercase tracking-wide">{label}</span>
