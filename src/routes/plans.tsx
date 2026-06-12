@@ -40,6 +40,7 @@ const domainClass = (d: string) =>
 
 function PlansPage() {
   const nav = useNavigate();
+  const router = useRouter();
   const { user, loading, signOut } = useAuth();
   const fetchPlans = useServerFn(listMyPlans);
   const removePlan = useServerFn(deletePlan);
