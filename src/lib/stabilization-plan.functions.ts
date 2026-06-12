@@ -256,6 +256,26 @@ export const toggleStep = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const deletePlan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ planId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { error: stepsErr } = await supabase
+      .from("plan_steps")
+      .delete()
+      .eq("plan_id", data.planId)
+      .eq("user_id", userId);
+    if (stepsErr) throw new Error("Couldn't delete plan steps.");
+    const { error } = await supabase
+      .from("stabilization_plans")
+      .delete()
+      .eq("id", data.planId)
+      .eq("user_id", userId);
+    if (error) throw new Error("Couldn't delete plan.");
+    return { ok: true };
+  });
+
 export const listMyPlans = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
