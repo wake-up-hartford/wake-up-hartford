@@ -63,7 +63,7 @@ function DashboardPage() {
         <span className="text-accent">Fix It.</span>
       </h1>
       <p className="mt-5 mb-4 text-[15px] leading-relaxed text-foreground/80">
-        This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
+        This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. <strong>Then take ACTION to make change.</strong>
       </p>
 
 
@@ -128,7 +128,7 @@ function DashboardPage() {
       {!user ? (
         <Link
           to="/auth"
-          className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+          className="mt-8 flex w-auto items-center justify-center rounded-xl bg-amber-500 px-8 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
         >
           Register to stay in touch
         </Link>
