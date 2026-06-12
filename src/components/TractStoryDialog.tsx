@@ -233,7 +233,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
         </div>
 
         <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-          AI-generated from public ACS census data and USDA food-access flags. Saved locally and reused next time you open this tract. May contain errors — verify before citing.
+          AI-generated from public ACS census data. Saved locally and reused next time you open this tract. May contain errors — verify before citing.
         </p>
 
         <DialogFooter className="gap-2 sm:gap-2">
