@@ -80,9 +80,19 @@ function PlansPage() {
 
   return (
     <AppShell>
-      <Link to="/dashboard" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="h-4 w-4" /> Home
-      </Link>
+      <button
+        type="button"
+        onClick={() => {
+          if (typeof window !== "undefined" && window.history.length > 1) {
+            router.history.back();
+          } else {
+            nav({ to: "/dashboard" });
+          }
+        }}
+        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ChevronLeft className="h-4 w-4" /> Back
+      </button>
       <h1 className="font-display text-3xl text-foreground">Your plans</h1>
       <p className="mt-2 text-[14px] text-muted-foreground">Plans you've generated from the Your Life Survey.</p>
 
