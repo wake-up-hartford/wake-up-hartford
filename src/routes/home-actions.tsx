@@ -125,7 +125,7 @@ function HomeActionsPage() {
       <SectionHeader
         eyebrow="Your Home"
         title="Take action"
-        subtitle="Concrete steps you can take today to improve your housing situation. Pick one — small steps add up."
+        subtitle="Small steps add up. Pick one to start today."
       />
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
