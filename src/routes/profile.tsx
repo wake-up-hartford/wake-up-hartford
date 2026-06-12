@@ -116,16 +116,11 @@ function ProfilePage() {
       <p className="mt-2 text-[14px] text-muted-foreground">View and update your info.</p>
 
       {/* Stats */}
-      <section className="mt-5 grid grid-cols-3 gap-3">
+      <section className="mt-5 grid grid-cols-2 gap-3">
         <StatCard
           icon={FileText}
           value={data?.stats.plans ?? 0}
           label="Life Plans created"
-        />
-        <StatCard
-          icon={ClipboardList}
-          value={data?.stats.assessments ?? 0}
-          label="Self-assessments taken"
         />
         <StatCard
           icon={CheckCircle}
