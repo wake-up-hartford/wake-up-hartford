@@ -66,7 +66,7 @@ function Landing() {
           onToggle={toggle}
           stackClass="z-10"
         />
-        <div className="flex items-center justify-center gap-2 -mt-4 sm:-mt-5">
+        <div className="flex items-center justify-center gap-2 -mt-2.5 sm:-mt-3.5">
           <Circle
             id="home"
             label="Your Home"
