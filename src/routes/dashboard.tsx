@@ -62,15 +62,13 @@ function DashboardPage() {
         <span className="text-gold">Name It.</span>{" "}<br />
         <span className="text-accent">Fix It.</span>
       </h1>
-      <p className="mt-5 mb-4 font-display text-xl leading-snug text-foreground/95">
-        Knowledge is where change begins.
-      </p>
-      <p className="mb-4 text-[15px] leading-relaxed text-foreground/80">
-        Hartford residents deserve to know what's really going on in their homes and neighborhoods, and find resources that can help them.
+      <p className="mt-5 mb-4 text-[15px] leading-relaxed text-foreground/80">
+        This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
       </p>
 
 
-      <p className="mb-3 text-[14px] font-semibold text-foreground/85">Click one of these ↓ to start:</p>
+
+      <p className="mb-3 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
       <div className="grid gap-4">
 
 
@@ -85,14 +83,14 @@ function DashboardPage() {
           to="/home"
           icon={Building2}
           title="Your Home"
-          body="Look up any Hartford address. Code issues, evictions, utilities."
+          body="Look up any Hartford address — code issues, evictions, landlord info."
           tone="purple"
         />
         <DashLink
           to="/neighborhood"
           icon={Trees}
           title="Your Neighborhood"
-          body="A report card for your block — air, schools, safety, access."
+          body="A report card for your block."
           tone="gold"
         />
 
