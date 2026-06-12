@@ -138,7 +138,7 @@ function DashboardPage() {
         <div className="mt-8 flex justify-center">
           <Link
             to="/profile"
-            className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-8 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-muted"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-[14px] font-semibold text-primary-foreground shadow-soft hover:bg-primary/90"
           >
             See Your Profile
           </Link>
