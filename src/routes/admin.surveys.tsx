@@ -29,7 +29,7 @@ type SurveyRow = {
   ease: number;
   tech_issue: string;
   prompt: string;
-  feature_awareness: string | null;
+  features_used: string[] | null;
   comment: string | null;
 };
 
@@ -61,7 +61,7 @@ function AdminSurveysPage() {
   );
 
   const exportCsv = () => {
-    const headers = ["id", "user_id", "created_at", "most_used", "ease", "tech_issue", "prompt", "feature_awareness", "comment"];
+    const headers = ["id", "user_id", "created_at", "most_used", "ease", "tech_issue", "prompt", "features_used", "comment"];
     const escape = (v: unknown) => {
       const s = v == null ? "" : String(v);
       return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
@@ -166,7 +166,7 @@ function AdminSurveysPage() {
                 <th className="p-2">Most used</th>
                 <th className="p-2">Tech issue</th>
                 <th className="p-2">Prompt</th>
-                <th className="p-2">Awareness</th>
+                <th className="p-2">Features used</th>
                 <th className="p-2">Comment</th>
               </tr>
             </thead>
@@ -184,7 +184,7 @@ function AdminSurveysPage() {
                   <td className="p-2">{r.most_used}</td>
                   <td className="p-2">{r.tech_issue}</td>
                   <td className="p-2">{r.prompt}</td>
-                  <td className="p-2">{r.feature_awareness ?? "—"}</td>
+                  <td className="p-2">{r.features_used?.length ? r.features_used.join(", ") : "—"}</td>
                   <td className="p-2 max-w-[24rem] truncate" title={r.comment ?? ""}>{r.comment ?? "—"}</td>
                 </tr>
               ))}

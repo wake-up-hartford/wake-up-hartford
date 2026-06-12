@@ -19,7 +19,7 @@ export type Database = {
           comment: string | null
           created_at: string
           ease: number
-          feature_awareness: string | null
+          features_used: string[]
           id: string
           most_used: string
           prompt: string
@@ -30,7 +30,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           ease: number
-          feature_awareness?: string | null
+          features_used?: string[]
           id?: string
           most_used: string
           prompt: string
@@ -41,7 +41,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           ease?: number
-          feature_awareness?: string | null
+          features_used?: string[]
           id?: string
           most_used?: string
           prompt?: string
