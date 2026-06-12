@@ -134,7 +134,7 @@ function HomeActionsPage() {
         ))}
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">
+      <p className="mt-8 text-center text-base text-muted-foreground">
         Have an action step to suggest? Tell the team and we'll add it.
       </p>
     </AppShell>
