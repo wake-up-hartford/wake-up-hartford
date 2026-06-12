@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { ChevronLeft, ChevronRight, FilePlus } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, FilePlus, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { listMyPlans } from "@/lib/stabilization-plan.functions";
+import { listMyPlans, deletePlan } from "@/lib/stabilization-plan.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/plans")({
   head: () => ({
