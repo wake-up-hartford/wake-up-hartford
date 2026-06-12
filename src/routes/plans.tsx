@@ -42,6 +42,9 @@ function PlansPage() {
   const nav = useNavigate();
   const { user, loading, signOut } = useAuth();
   const fetchPlans = useServerFn(listMyPlans);
+  const removePlan = useServerFn(deletePlan);
+  const qc = useQueryClient();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -57,6 +60,22 @@ function PlansPage() {
     queryFn: () => fetchPlans({}),
     enabled: !!user,
   });
+
+  const handleDelete = async (e: React.MouseEvent, planId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!window.confirm("Delete this plan? This cannot be undone.")) return;
+    setDeletingId(planId);
+    try {
+      await removePlan({ data: { planId } });
+      toast.success("Plan deleted");
+      await qc.invalidateQueries({ queryKey: ["my-plans"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't delete plan");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <AppShell>
