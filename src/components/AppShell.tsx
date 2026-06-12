@@ -63,7 +63,7 @@ const NAV = [
   { to: "/neighborhood", label: "Neighb.", icon: Trees },
   { to: "/home", label: "Home", icon: Building2 },
   { to: "/life", label: "Life", icon: HeartHandshake },
-  { to: "/profile", label: "Account", icon: User },
+  { to: "/profile", label: "You", icon: User },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
