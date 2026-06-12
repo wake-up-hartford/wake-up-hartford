@@ -91,11 +91,10 @@ function Landing() {
           />
         </div>
         <Link
-          to={user ? "/dashboard" : "/auth"}
+          to="/dashboard"
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
         >
-          {user ? "Get Started" : "Sign up to get started"}
-          <ArrowRight className="h-4 w-4" />
+          Click to get started →
         </Link>
       </section>
 
