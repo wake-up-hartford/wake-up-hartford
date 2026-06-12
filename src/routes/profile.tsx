@@ -241,8 +241,8 @@ function ProfilePage() {
               <MessageSquare className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-[15px] text-white">Quick 5-question survey</p>
-              <p className="text-[12px] text-white/85">Help us make this app better. Takes about 30 seconds.</p>
+              <p className="font-display text-[15px] text-white">Got 30 seconds?</p>
+              <p className="text-[12px] text-white/85">Tap to tell us what you think.</p>
             </div>
             <ChevronRight className="h-4 w-4 text-white/80" />
           </Link>
