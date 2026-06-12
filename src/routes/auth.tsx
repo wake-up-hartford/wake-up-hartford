@@ -96,9 +96,11 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [emailConfirm, setEmailConfirm] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [optIn, setOptIn] = useState(true);
+  const [smsOptIn, setSmsOptIn] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState("");
@@ -163,9 +165,12 @@ function AuthPage() {
           password,
           options: {
             data: {
-              display_name: name || email.split("@")[0],
+              display_name: [firstName, lastName].filter(Boolean).join(" ").trim() || email.split("@")[0],
+              first_name: firstName || null,
+              last_name: lastName || null,
               phone: phone || null,
               opt_in_updates: optIn,
+              sms_alerts: smsOptIn && !!phone.trim(),
             },
             emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
           },
@@ -470,21 +475,38 @@ function AuthPage() {
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
-        <label htmlFor="signup-name" className="sr-only">Your name</label>
-        <input
-          id="signup-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name (optional)"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="signup-first" className="sr-only">First name</label>
+            <input
+              id="signup-first"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name (optional)"
+              autoComplete="given-name"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+          </div>
+          <div>
+            <label htmlFor="signup-last" className="sr-only">Last name</label>
+            <input
+              id="signup-last"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name (optional)"
+              autoComplete="family-name"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+          </div>
+        </div>
         <label htmlFor="signup-phone" className="sr-only">Cell phone</label>
         <input
           id="signup-phone"
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="Cell phone (optional, for text alerts & plan link)"
+          placeholder="Cell phone (optional)"
+          autoComplete="tel"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
         <label htmlFor="signup-email" className="sr-only">Email</label>
@@ -538,6 +560,19 @@ function AuthPage() {
           />
           <span>
             Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
+          </span>
+        </label>
+        <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-foreground" : "text-muted-foreground"}`}>
+          <input
+            type="checkbox"
+            checked={smsOptIn && !!phone.trim()}
+            onChange={(e) => setSmsOptIn(e.target.checked)}
+            disabled={!phone.trim()}
+            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500 disabled:opacity-50"
+          />
+          <span>
+            It's OK to text me follow-ups about my plan and Hartford updates. Msg/data rates may apply.
+            {!phone.trim() && <span className="block text-[11px] italic">Add a cell phone above to enable.</span>}
           </span>
         </label>
         {error && <p className="text-[13px] text-destructive">{error}</p>}
