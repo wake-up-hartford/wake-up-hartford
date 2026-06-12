@@ -1,72 +1,27 @@
+Yes — and most of the pieces are already in place. The `profiles` table already has `first_name`, `last_name`, `phone`, and `sms_alerts` columns; the signup form already collects a single name, phone, and an email opt-in. We just need to split the name field, add a distinct SMS-consent checkbox, and actually persist these into `profiles` on signup (today only `display_name` gets written by the `handle_new_user` trigger).
 
-# Ongoing Costs & Operations Document — Wake Up Hartford
+## Changes
 
-I'll generate a polished client-facing document (saved as both **DOCX** and **PDF** in `/mnt/documents/`) that explains what it costs and what it takes to keep the site running after launch. It will be written in plain language for a non-technical client (NAACP Greater Hartford Branch), with cost ranges rather than false precision.
+1. **Signup form (`src/routes/auth.tsx`)**
+   - Replace the single "Your name" input with two side-by-side inputs: **First name** and **Last name** (both optional, matching current tone).
+   - Keep the existing **phone** input, relabel placeholder to "Cell phone (optional)".
+   - Keep the existing email-updates checkbox as-is.
+   - Add a **second checkbox** below it (unchecked by default, since SMS consent should be explicit opt-in):
+     > "It's OK to text me follow-ups about my plan and Hartford updates. Msg/data rates may apply."
+   - Pass `first_name`, `last_name`, `phone`, `opt_in_updates`, and `sms_alerts` into `supabase.auth.signUp({ options: { data: ... } })`. `display_name` continues to be derived (`${first} ${last}`.trim() or email prefix).
 
-## Document Structure
+2. **Profile persistence (DB migration)**
+   - Update the `handle_new_user()` trigger function so that when a new auth user is created, the row inserted into `public.profiles` also copies `first_name`, `last_name`, `phone`, and `sms_alerts` from `raw_user_meta_data` (with safe defaults: `sms_alerts` only true when both the checkbox was checked AND a phone number was provided).
+   - No schema additions needed — the columns already exist.
 
-### 1. Executive Summary
-One-paragraph overview: the site runs on Lovable Cloud (hosting + database + auth + AI), plus a custom domain. Expected steady-state cost range and the few decisions that drive it (traffic, AI usage, SMS).
+3. **No texting infrastructure in this change.** This only captures consent + contact info. Actually sending SMS would be a follow-up (Twilio connector or similar) and is out of scope here.
 
-### 2. Recurring Cost Categories
+## Technical notes
 
-| Category | What it covers | Typical monthly range |
-|---|---|---|
-| **Lovable workspace plan** | Hosting, preview, publishing, agent edits for future changes | Free tier possible; Pro ~$25/mo if active editing continues |
-| **Lovable Cloud (backend)** | Database, auth, storage, edge functions, bandwidth | $0–$25/mo free credit, then usage-based |
-| **Lovable AI Gateway** | Plan generation, building/tract story summaries, TTS | $1 free credit/mo, then per-call usage |
-| **Custom domain** | wakeup-hartford.org (or similar) registration + DNS | $12–$20/yr |
-| **Email (optional)** | Transactional email if added (password resets are covered) | $0–$15/mo |
-| **SMS alerts (optional, if enabled)** | Twilio per-message fees | $0.0079/SMS + number ~$1/mo |
-| **Third-party data refreshes** | Census/ACS, resource list curation — staff time, not cash | — |
+- Google OAuth signups won't go through this form, so they'll keep getting just `display_name` from Google — that's fine; they can fill in phone/SMS consent later from the profile page if/when we add that.
+- SMS consent is stored as the boolean `profiles.sms_alerts`; the email opt-in (`opt_in_updates`) is currently only passed as auth metadata and not mirrored to a profile column — I'll leave that as-is unless you want it persisted too.
+- Phone is stored as free text (not validated to E.164) to match current behavior. We can tighten validation later if needed.
 
-Each row gets a short plain-language explanation in the document.
+## Open question
 
-### 3. What Drives Cost Up or Down
-- Number of residents generating plans (AI calls = biggest variable)
-- Whether building/tract story dialogs are cached vs. regenerated
-- SMS opt-ins (if turned on)
-- Map tile usage (currently free OpenStreetMap)
-- Storage growth from user uploads (currently minimal)
-
-### 4. One-Time / Annual Costs
-- Domain renewal
-- Optional: branded email domain setup
-- Optional: paid map tiles if OSM traffic grows
-
-### 5. Maintenance & Operations (beyond dollars)
-- **Content upkeep**: vetted resource list (`src/data/vetted-resources.ts`, `ct-resources.json`) — recommend quarterly review with NAACP
-- **Tract/ACS data refresh**: yearly when new Census ACS releases
-- **Security**: dependency updates, RLS policy review, periodic security scan
-- **Backups**: confirm Lovable Cloud backup retention; export schedule
-- **Admin user management**: who can grant/revoke admin access
-- **Accessibility & translation review**: keep ES/EN parity as content changes
-- **Monitoring**: who watches errors and usage (admin dashboard already built)
-
-### 6. Recommended Governance
-- Single point of contact at NAACP for content updates
-- Quarterly review meeting (usage stats + resource accuracy)
-- Annual budget line item with the ranges above
-- Process for handling resident-reported issues (contact email)
-
-### 7. Risks & Things to Plan For
-- Federal funding (SLFRP0128) ends — who absorbs ongoing cost?
-- Key-person risk on the developer side — recommend documentation handoff
-- AI provider pricing changes
-- If usage grows 10×, what the cost curve looks like
-
-### 8. Recommended Next Steps for the Client
-A short checklist: confirm domain ownership, designate content steward, approve annual budget, decide on SMS, schedule first quarterly review.
-
-## Format
-- Branded with Wake Up Hartford header
-- Tables for cost ranges
-- ~3–4 pages, designed to be readable by a board member, not a developer
-- Delivered as `WakeUp_Hartford_Ongoing_Costs_v1.docx` and `.pdf` in `/mnt/documents/`
-
-## What I'd like to confirm before drafting
-- **Currency / audience**: USD and US non-technical board audience — correct?
-- **SMS**: include as "optional / not currently enabled," or omit entirely?
-- **Anything else to add**: e.g., a data privacy / FERPA-style section, or a "what happens if the project sunsets" section?
-
-If you'd rather I just proceed with sensible defaults (USD, SMS as optional, include sunset section), say "go" and I'll build it.
+Should the SMS-consent checkbox be **disabled until a phone number is entered** (clearer UX, prevents meaningless opt-ins), or just left always-clickable? I'd recommend disabling it until a phone is present — let me know if you'd prefer otherwise.
