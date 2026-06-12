@@ -475,21 +475,38 @@ function AuthPage() {
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
-        <label htmlFor="signup-name" className="sr-only">Your name</label>
-        <input
-          id="signup-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name (optional)"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="signup-first" className="sr-only">First name</label>
+            <input
+              id="signup-first"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name (optional)"
+              autoComplete="given-name"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+          </div>
+          <div>
+            <label htmlFor="signup-last" className="sr-only">Last name</label>
+            <input
+              id="signup-last"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name (optional)"
+              autoComplete="family-name"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            />
+          </div>
+        </div>
         <label htmlFor="signup-phone" className="sr-only">Cell phone</label>
         <input
           id="signup-phone"
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="Cell phone (optional, for text alerts & plan link)"
+          placeholder="Cell phone (optional)"
+          autoComplete="tel"
           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
         />
         <label htmlFor="signup-email" className="sr-only">Email</label>
