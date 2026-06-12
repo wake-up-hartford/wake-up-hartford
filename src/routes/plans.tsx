@@ -87,7 +87,7 @@ function PlansPage() {
               params={{ planId: p.id }}
               className="flex flex-col gap-2 rounded-xl border border-border p-4 transition-colors bg-[oklch(0.23_0.06_295)] hover:bg-[oklch(0.30_0.06_295)]"
             >
-              <p className="font-display text-[16px] leading-tight text-foreground">
+              <p className="font-display text-[16px] leading-tight text-white">
                 Plan Created {new Date(p.generated_at).toLocaleDateString()}
               </p>
               {p.totalWeeks > 0 && (
