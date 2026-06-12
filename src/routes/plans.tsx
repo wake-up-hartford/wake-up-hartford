@@ -85,15 +85,7 @@ function PlansPage() {
       <h1 className="font-display text-3xl text-foreground">Your plans</h1>
       <p className="mt-2 text-[14px] text-muted-foreground">Plans you've generated from the Your Life Survey.</p>
 
-      <Link
-        to="/life"
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
-      >
-        <FilePlus className="h-4 w-4" /> Start a new survey
-      </Link>
-
-      <h2 className="mt-6 font-display text-xl text-foreground">Saved stabilization plans</h2>
-      <div className="mt-3 space-y-3">
+      <div className="mt-5 space-y-3">
         {isLoading && <p className="text-muted-foreground">Loading…</p>}
         {data?.plans.length === 0 && (
           <p className="text-[14px] text-muted-foreground">No plans yet. Take the survey to create your first one.</p>
@@ -101,49 +93,69 @@ function PlansPage() {
         {data?.plans.map((p) => {
           const pct = p.totalSteps > 0 ? Math.round((p.doneSteps / p.totalSteps) * 100) : 0;
           return (
-            <Link
+            <div
               key={p.id}
-              to="/plan/$planId"
-              params={{ planId: p.id }}
-              className="flex flex-col gap-2 rounded-xl border border-border p-4 transition-colors bg-[oklch(0.23_0.06_295)] hover:bg-[oklch(0.30_0.06_295)]"
+              className="relative rounded-xl border border-border bg-[oklch(0.23_0.06_295)] transition-colors hover:bg-[oklch(0.30_0.06_295)]"
             >
-              <p className="font-display text-[16px] leading-tight text-white">
-                Plan Created {new Date(p.generated_at).toLocaleDateString()}
-              </p>
-              {p.totalWeeks > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-                    <span>
-                      Week {p.currentWeek} of {p.totalWeeks} · {p.doneSteps} of {p.totalSteps} steps done
-                    </span>
-                    <span className="font-medium text-foreground">{pct}%</span>
+              <button
+                type="button"
+                onClick={(e) => handleDelete(e, p.id)}
+                disabled={deletingId === p.id}
+                aria-label="Delete plan"
+                className="absolute right-2 top-2 z-10 rounded-md p-2 text-muted-foreground hover:bg-background/40 hover:text-red-300 disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+              <Link
+                to="/plan/$planId"
+                params={{ planId: p.id }}
+                className="flex flex-col gap-2 p-4 pr-12"
+              >
+                <p className="font-display text-[16px] leading-tight text-white">
+                  Plan Created {new Date(p.generated_at).toLocaleDateString()}
+                </p>
+                {p.totalWeeks > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-[12px] text-muted-foreground">
+                      <span>
+                        Week {p.currentWeek} of {p.totalWeeks} · {p.doneSteps} of {p.totalSteps} steps done
+                      </span>
+                      <span className="font-medium text-foreground">{pct}%</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-background/40">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-background/40">
-                    <div
-                      className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
-                      style={{ width: `${pct}%` }}
-                    />
+                )}
+                {p.priority_domains.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.priority_domains.map((d) => (
+                      <span key={d} className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium capitalize ${domainClass(d)}`}>
+                        {d}
+                      </span>
+                    ))}
                   </div>
+                )}
+                <p className="text-[13px] leading-snug text-muted-foreground line-clamp-2">{p.summary}</p>
+                <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                  <span>View plan</span>
+                  <ChevronRight className="h-3 w-3" />
                 </div>
-              )}
-              {p.priority_domains.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {p.priority_domains.map((d) => (
-                    <span key={d} className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium capitalize ${domainClass(d)}`}>
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <p className="text-[13px] leading-snug text-muted-foreground line-clamp-2">{p.summary}</p>
-              <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
-                <span>View plan</span>
-                <ChevronRight className="h-3 w-3" />
-              </div>
-            </Link>
+              </Link>
+            </div>
           );
         })}
       </div>
+
+      <Link
+        to="/life"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
+      >
+        <FilePlus className="h-4 w-4" /> Start a new survey
+      </Link>
 
       {user && (
         <button onClick={signOut} className="mt-8 w-full text-center text-[13px] text-muted-foreground hover:text-foreground">
