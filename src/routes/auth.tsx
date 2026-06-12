@@ -562,6 +562,19 @@ function AuthPage() {
             Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
           </span>
         </label>
+        <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-foreground" : "text-muted-foreground"}`}>
+          <input
+            type="checkbox"
+            checked={smsOptIn && !!phone.trim()}
+            onChange={(e) => setSmsOptIn(e.target.checked)}
+            disabled={!phone.trim()}
+            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500 disabled:opacity-50"
+          />
+          <span>
+            It's OK to text me follow-ups about my plan and Hartford updates. Msg/data rates may apply.
+            {!phone.trim() && <span className="block text-[11px] italic">Add a cell phone above to enable.</span>}
+          </span>
+        </label>
         {error && <p className="text-[13px] text-destructive">{error}</p>}
         <button
           type="submit"
