@@ -61,7 +61,7 @@ function AdminSurveysPage() {
   );
 
   const exportCsv = () => {
-    const headers = ["id", "user_id", "created_at", "most_used", "ease", "tech_issue", "prompt", "feature_awareness", "comment"];
+    const headers = ["id", "user_id", "created_at", "most_used", "ease", "tech_issue", "prompt", "features_used", "comment"];
     const escape = (v: unknown) => {
       const s = v == null ? "" : String(v);
       return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
