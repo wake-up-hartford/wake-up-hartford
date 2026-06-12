@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, ClipboardList, MessageSquare, ChevronRight, ShieldCheck, CheckCircle } from "lucide-react";
+import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, MessageSquare, ChevronRight, ShieldCheck, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/use-auth";
@@ -116,16 +116,11 @@ function ProfilePage() {
       <p className="mt-2 text-[14px] text-muted-foreground">View and update your info.</p>
 
       {/* Stats */}
-      <section className="mt-5 grid grid-cols-3 gap-3">
+      <section className="mt-5 grid grid-cols-2 gap-3">
         <StatCard
           icon={FileText}
           value={data?.stats.plans ?? 0}
           label="Life Plans created"
-        />
-        <StatCard
-          icon={ClipboardList}
-          value={data?.stats.assessments ?? 0}
-          label="Self-assessments taken"
         />
         <StatCard
           icon={CheckCircle}
