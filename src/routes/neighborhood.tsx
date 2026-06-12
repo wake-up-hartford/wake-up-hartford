@@ -284,7 +284,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
   return (
     <div className="space-y-3">
       <div
-        className={`aspect-square overflow-hidden rounded-2xl p-6 text-primary-foreground shadow-soft ${hasTint ? "" : "bg-gradient-to-br from-primary to-primary/80"}`}
+        className={`aspect-square overflow-hidden rounded-2xl p-6 shadow-soft ${hasTint ? "text-primary-foreground" : "bg-gradient-to-br from-gray-700 to-gray-800 text-white"}`}
         style={tintStyle}
       >
         <div className="flex h-full flex-col">
