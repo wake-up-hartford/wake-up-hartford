@@ -29,7 +29,7 @@ type SurveyRow = {
   ease: number;
   tech_issue: string;
   prompt: string;
-  feature_awareness: string | null;
+  features_used: string[] | null;
   comment: string | null;
 };
 
