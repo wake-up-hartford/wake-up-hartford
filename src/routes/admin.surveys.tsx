@@ -166,7 +166,7 @@ function AdminSurveysPage() {
                 <th className="p-2">Most used</th>
                 <th className="p-2">Tech issue</th>
                 <th className="p-2">Prompt</th>
-                <th className="p-2">Awareness</th>
+                <th className="p-2">Features used</th>
                 <th className="p-2">Comment</th>
               </tr>
             </thead>
