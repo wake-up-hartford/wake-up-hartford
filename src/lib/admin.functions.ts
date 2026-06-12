@@ -88,7 +88,7 @@ export const listSurveyResponses = createServerFn({ method: "GET" })
     await assertAdmin(context.userId);
     const { data, error } = await supabaseAdmin
       .from("app_usage_survey_responses")
-      .select("id, user_id, created_at, most_used, ease, tech_issue, prompt, feature_awareness, comment")
+      .select("id, user_id, created_at, most_used, ease, tech_issue, prompt, features_used, comment")
       .order("created_at", { ascending: false })
       .limit(1000);
     if (error) throw new Error(error.message);
