@@ -511,17 +511,6 @@ function LifePage() {
       )}
 
 
-      {!authLoading && !user && (
-        <div className="mt-10 border-t border-border/60 pt-4 text-center">
-          <Link
-            to="/auth"
-            className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
-          >
-            <LogIn className="h-3.5 w-3.5" />
-            Save & finish later — sign in
-          </Link>
-        </div>
-      )}
     </AppShell>
   );
 }
@@ -829,6 +818,7 @@ function SummaryScreen({
   onRestart: () => void;
 }) {
   const priorities = answers["su3"] ?? [];
+  const { user } = useAuth();
 
   const ranked = useMemo(() => {
     const order = { high: 0, moderate: 1, stable: 2 } as const;
@@ -904,16 +894,36 @@ function SummaryScreen({
 
       <div className="mb-5">
         <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
-        <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
-          An AI-generated Plan will be created based on your responses — with specific
-          resources, steps, and timelines.
-        </p>
+        {user ? (
+          <>
+            <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
+              An AI-generated Plan will be created based on your responses — with specific
+              resources, steps, and timelines.
+            </p>
+            <PlanGenerator
+              scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
+              priorities={priorities}
+            />
+          </>
+        ) : (
+          <>
+            <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
+              Your AI-generated Plan — built from your unique responses — includes specific resources, steps, and timelines. Sign in to access it. Your plan is private and will never be shared.
+            </p>
+            <Link
+              to="/auth"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.localStorage.setItem("wuw:postAuthRedirect", "/life");
+                }
+              }}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
+            >
+              <LogIn className="h-4 w-4" /> Sign in to access your plan
+            </Link>
+          </>
+        )}
       </div>
-
-      <PlanGenerator
-        scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
-        priorities={priorities}
-      />
 
       <button
         onClick={onRestart}
@@ -953,30 +963,6 @@ function PlanGenerator({
   const [error, setError] = useState<string | null>(null);
 
   if (loading) return null;
-
-  if (!user) {
-    return (
-      <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h3 className="font-display text-[18px] leading-tight text-card-foreground">
-          Register to receive your plan
-        </h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-          Create a free account so this plan can be saved, let you check off steps, and come back later.
-        </p>
-        <Link
-          to="/auth"
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              window.localStorage.setItem("wuw:postAuthRedirect", "/life");
-            }
-          }}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
-        >
-          <LogIn className="h-4 w-4" /> Sign in / sign up
-        </Link>
-      </div>
-    );
-  }
 
 
   const toggleBenefit = (b: string) => {
