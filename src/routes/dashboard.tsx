@@ -75,11 +75,11 @@ function DashboardPage() {
 
 
         <DashLink
-          to="/neighborhood"
-          icon={Trees}
-          title="Your Neighborhood"
-          body="A report card for your block — air, schools, safety, access."
-          tone="gold"
+          to="/life"
+          icon={HeartHandshake}
+          title="Your Life"
+          body="Resources for stability, health, and safety."
+          tone="blue"
         />
         <DashLink
           to="/home"
@@ -89,11 +89,11 @@ function DashboardPage() {
           tone="purple"
         />
         <DashLink
-          to="/life"
-          icon={HeartHandshake}
-          title="Your Life"
-          body="Resources for stability, health, and safety."
-          tone="blue"
+          to="/neighborhood"
+          icon={Trees}
+          title="Your Neighborhood"
+          body="A report card for your block — air, schools, safety, access."
+          tone="gold"
         />
 
       </div>
