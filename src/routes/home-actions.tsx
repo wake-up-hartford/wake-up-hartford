@@ -91,8 +91,6 @@ const ACTIONS: Action[] = [
 ];
 
 function HomeActionsPage() {
-  const navigate = useNavigate();
-
   return (
     <AppShell>
       <div className="mb-3">
