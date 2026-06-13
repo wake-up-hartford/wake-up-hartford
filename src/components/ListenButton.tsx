@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useNavigate } from "@tanstack/react-router";
-import { Loader2, Pause, Play, Volume2, LogIn } from "lucide-react";
+import { Loader2, Pause, Play, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
 import { synthesizeStory } from "@/lib/tts.functions";
 
 type Props = {
@@ -17,11 +15,9 @@ const audioCache = new Map<string, string>(); // cacheKey -> object URL
 
 export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const synth = useServerFn(synthesizeStory);
-  const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "playing" | "paused" | "error">("idle");
   const [errMsg, setErrMsg] = useState<string | null>(null);
-  const { user, loading: authLoading } = useAuth();
 
   // Stop & reset whenever the underlying text changes
   useEffect(() => {
@@ -106,18 +102,6 @@ export function ListenButton({ text, cacheKey, language = "en" }: Props) {
   const Icon =
     status === "loading" ? Loader2 : status === "playing" ? Pause : status === "paused" ? Play : Volume2;
 
-  if (!authLoading && !user) {
-    return (
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => navigate({ to: "/auth" })}
-      >
-        <LogIn className="mr-2 h-4 w-4" />
-        Sign in to listen
-      </Button>
-    );
-  }
 
   return (
     <div className="flex items-center gap-2">
