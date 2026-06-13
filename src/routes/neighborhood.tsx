@@ -220,7 +220,9 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
         <div key={ind.key} className={`rounded-lg border p-4 shadow-sm ${cs.className}`} style={cs.style}>
           <div className="min-w-0">
             <div className="flex items-baseline gap-2">
-              <SeverityIcon severity={ind.severity} className="h-5 w-5 self-center shrink-0" />
+              {ind.key !== "population" && (
+                <SeverityIcon severity={ind.severity} className="h-5 w-5 self-center shrink-0" />
+              )}
               <span className="font-display text-2xl leading-none">{ind.value}</span>
               <h3 className="font-display text-lg leading-tight">{ind.label}</h3>
             </div>
