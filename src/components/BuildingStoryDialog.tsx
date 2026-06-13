@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import { Sparkles, Loader2, Copy, Check, LogIn } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
