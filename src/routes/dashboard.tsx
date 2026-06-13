@@ -43,12 +43,6 @@ function DashboardPage() {
     staleTime: 60 * 1000,
   });
   const planCount = plansData?.plans.length ?? 0;
-  const fetchStats = useServerFn(getPublicStats);
-  const { data: stats } = useQuery({
-    queryKey: ["public-stats"],
-    queryFn: () => fetchStats(),
-    staleTime: 5 * 60 * 1000,
-  });
   return (
 
     <AppShell>
