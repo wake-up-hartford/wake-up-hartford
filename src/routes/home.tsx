@@ -124,8 +124,9 @@ function HomePage() {
                       id="addr"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="555 Main Street, Hartford"
-                      className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+                      onFocus={handleFocus}
+                      placeholder=""
+                      className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/60" : "text-foreground"}`}
                       autoComplete="street-address"
                       inputMode="text"
                     />
