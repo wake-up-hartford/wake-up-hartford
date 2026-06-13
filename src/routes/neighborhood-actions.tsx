@@ -12,6 +12,7 @@ import {
   MessageSquareWarning,
   ArrowRight,
   ExternalLink,
+  Megaphone,
 } from "lucide-react";
 import { useMemo, type ComponentType } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
