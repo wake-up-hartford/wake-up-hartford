@@ -85,7 +85,7 @@ function AboutPage() {
 
         <CollapsibleSection id="who" title="Who It's For" open={!!openSections["who"]} onOpenChange={(open) => handleOpenChange("who", open)}>
           <p>
-            This platform was built for residents of Hartford's 19 highest-poverty census tracts — and for the advocates, legal aid attorneys, tenant organizers, and community partners working alongside them. It is not a government tool. It is not an academic tool. It belongs to the community.
+            This platform was built for residents of Hartford's highest-poverty census tracts — and for the advocates, legal aid attorneys, tenant organizers, and community partners working alongside them. It is not a government tool. It is not an academic tool. It belongs to the community.
           </p>
         </CollapsibleSection>
 
