@@ -112,6 +112,7 @@ function AboutPage() {
         </CollapsibleSection>
 
         <CollapsibleSection id="data" title="Data Sources & Methodology" open={!!openSections["data"]} onOpenChange={(open) => handleOpenChange("data", open)}>
+          <p className="text-[13px] text-muted-foreground italic">[[TO EDIT]]</p>
           <p>
             The data powering this platform comes from public records, city systems, and research infrastructure maintained by the CT Data Collaborative. Neighborhood-level data is updated quarterly. Property and landlord data reflects the most current available records. All data has limitations — we are transparent about those limitations and committed to improving accuracy over time. If you believe something is incorrect, contact us.
           </p>
