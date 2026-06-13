@@ -153,12 +153,12 @@ function HomePage() {
 
       {data && (
         <>
-          <div className="mb-4 rounded-lg border border-amber-400/50 bg-amber-400/15 px-4 py-3 flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+          <div className="mb-4 rounded-lg border border-amber-500/50 bg-amber-100 px-4 py-3 flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
             <div>
-              <p className="text-sm font-semibold text-amber-100">Mock data for demonstration</p>
-              <p className="text-xs text-amber-200/80">
-                The numbers and records below are simulated examples, not live city data. Real data integration is coming soon through our partnership with CT Data Collaborative.
+              <p className="text-sm font-semibold text-amber-900">Mock data for demonstration</p>
+              <p className="text-xs text-amber-700">
+                The numbers and records below are simulated examples, not real data. Real data integration is coming soon.
               </p>
             </div>
           </div>
