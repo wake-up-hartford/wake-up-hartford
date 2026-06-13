@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, Users, ClipboardList, Landmark, Megaphone, DollarSign } from "lucide-react";
+import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, Users, ClipboardList, Landmark, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
 
 export const Route = createFileRoute("/home-actions")({
@@ -92,12 +92,6 @@ const ACTIONS: Action[] = [
     desc: "Tell your elected official what's happening in your building. Find yours by address.",
     icon: Landmark,
     links: [{ label: "Find your council member", href: "https://hartford.civicweb.net/portal/members.aspx?id=10" }],
-  },
-  {
-    title: "Share your story",
-    desc: "Your experience becomes part of the public record — helping the community see patterns across landlords.",
-    icon: Megaphone,
-    comingSoon: true,
   },
 ];
 
