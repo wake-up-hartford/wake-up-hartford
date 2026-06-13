@@ -182,14 +182,3 @@ function Footer() {
     </footer>
   );
 }
-
-function Stat({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="flex-1 px-1">
-      <p className="font-display text-xl leading-none text-foreground tabular-nums">
-        {value.toLocaleString()}
-      </p>
-      <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{label}</p>
-    </div>
-  );
-}
