@@ -16,40 +16,6 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
-const SECTIONS = [
-  { id: "what", title: "What This Platform Is" },
-  { id: "how", title: "How It Came to Be" },
-  { id: "who", title: "Who It's For" },
-  { id: "partners", title: "Our Partners" },
-  { id: "credits", title: "Credits" },
-  { id: "data", title: "Data Sources & Methodology" },
-  { id: "privacy", title: "Privacy & Data Use" },
-  { id: "replicability", title: "A Note on Replicability" },
-  { id: "funding", title: "Federal Funding Disclosure" },
-  { id: "contact", title: "Contact" },
-];
-
-function Toc({ onJump }: { onJump: (id: string) => void }) {
-  return (
-    <nav className="mt-5 rounded-xl border border-border p-3">
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-        Jump to a section
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {SECTIONS.map(({ id, title }) => (
-          <button
-            key={id}
-            onClick={() => onJump(id)}
-            className="rounded-lg border border-border/80 px-2.5 py-1 text-[12px] text-foreground transition-colors hover:bg-muted/40"
-          >
-            {title}
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
-}
-
 function CollapsibleSection({
   id,
   title,
@@ -91,21 +57,12 @@ function AboutPage() {
     setOpenSections((prev) => ({ ...prev, [id]: open }));
   }, []);
 
-  const handleJump = useCallback((id: string) => {
-    setOpenSections((prev) => ({ ...prev, [id]: true }));
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
-  }, []);
-
   return (
     <AppShell>
       <Link to="/dashboard" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Back
       </Link>
       <h1 className="font-display text-3xl text-foreground">About This Tool</h1>
-
-      <Toc onJump={handleJump} />
 
       <div className="mt-6 space-y-3">
         <CollapsibleSection id="what" title="What This Platform Is" open={!!openSections["what"]} onOpenChange={(open) => handleOpenChange("what", open)}>
