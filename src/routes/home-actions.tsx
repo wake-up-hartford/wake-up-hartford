@@ -96,19 +96,13 @@ function HomeActionsPage() {
   return (
     <AppShell>
       <div className="mb-3">
-        <button
-          onClick={() => {
-            if (window.history.length > 1) {
-              window.history.back();
-            } else {
-              navigate({ to: "/home" });
-            }
-          }}
+        <Link
+          to="/home"
           className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back
-        </button>
+          Back to Home
+        </Link>
       </div>
 
       <SectionHeader
