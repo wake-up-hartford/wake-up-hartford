@@ -54,7 +54,7 @@ function AboutPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
 
   const handleOpenChange = useCallback((id: string, open: boolean) => {
-    setOpenSections((prev) => ({ ...prev, [id]: open }));
+    setOpenSections(open ? { [id]: true } : {});
   }, []);
 
   return (
