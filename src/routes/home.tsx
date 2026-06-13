@@ -37,8 +37,9 @@ export const Route = createFileRoute("/home")({
 });
 
 function HomePage() {
+  const EXAMPLE_TEXT = "e.g., 555 Main Street, Hartford";
   const { address, save, clear } = useStoredAddress();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(EXAMPLE_TEXT);
   const [active, setActive] = useState<string | null>(null);
   const [seeded, setSeeded] = useState(false);
 
@@ -56,7 +57,7 @@ function HomePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const v = query.trim();
-    if (!v) return;
+    if (!v || v === EXAMPLE_TEXT) return;
     trackEvent("home_address_submit", { address: v });
     setActive(v);
     save(v);
@@ -64,9 +65,15 @@ function HomePage() {
 
   const handleReset = () => {
     setActive(null);
-    setQuery("");
+    setQuery(EXAMPLE_TEXT);
     setSeeded(true);
     clear();
+  };
+
+  const handleFocus = () => {
+    if (query === EXAMPLE_TEXT) {
+      setQuery("");
+    }
   };
 
   const data = active ? lookupAddress(active) : null;
@@ -117,8 +124,9 @@ function HomePage() {
                       id="addr"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="555 Main Street, Hartford"
-                      className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+                      onFocus={handleFocus}
+                      placeholder=""
+                      className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/60" : "text-foreground"}`}
                       autoComplete="street-address"
                       inputMode="text"
                     />
