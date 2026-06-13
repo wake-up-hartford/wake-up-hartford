@@ -134,7 +134,7 @@ const cardClass =
   "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
 
 const primaryPillClass =
-  "inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:bg-foreground/85";
+  "inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90";
 
 const secondaryPillClass =
   "inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80";
