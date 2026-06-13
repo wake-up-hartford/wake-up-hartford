@@ -177,7 +177,7 @@ function DashLink({
 function Footer() {
   return (
     <footer className="mt-12 space-y-3 text-center text-[13px] text-foreground/70">
-      <p>Presented by <strong className="font-semibold text-foreground">GREATER HARTFORD BRANCH NAACP</strong></p>
+      <p>Presented by <strong className="font-semibold text-foreground">Greater Hartford Branch NAACP</strong></p>
       <p>Data partnership with CT Data Collaborative</p>
     </footer>
   );
