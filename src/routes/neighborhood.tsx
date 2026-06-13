@@ -237,8 +237,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
       <Card>
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where this comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          All numbers are pulled live from the US Census Bureau's American Community Survey (ACS 5-year, 2022)
-          and the USDA Food Access Research Atlas. Comparisons are against the Connecticut statewide ACS figure.
+          All numbers are pulled live from the US Census Bureau's American Community Survey (ACS 5-year, 2022). Comparisons are against the Connecticut statewide ACS figure.
           "Watch" or "Concern" doesn't mean a neighborhood is bad — it flags something worth knowing about and
           talking through on Wake Up Wednesday.
         </p>
