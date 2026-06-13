@@ -413,7 +413,7 @@ export const getTractIndicators = createServerFn({ method: "POST" })
         },
         {
           key: "median_income",
-          label: "% of CT Median Household income",
+          label: "of CT Median Household income",
           value: t.medIncVal != null && ct.medIncVal ? `${Math.round((t.medIncVal / ct.medIncVal) * 100)}%` : "—",
           raw: t.medIncVal,
           severity: tier(t.medIncVal, 90213, 60000, true),
