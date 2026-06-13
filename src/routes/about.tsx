@@ -106,13 +106,8 @@ function AboutPage() {
           </p>
           <ul className="mt-1 list-disc space-y-1 pl-5 text-[13px] text-muted-foreground">
             <li>CT Data Collaborative</li>
-            <li>Hartford Assessor records</li>
-            <li>CT land records</li>
-            <li>CT Secretary of State business registry</li>
             <li>U.S. Census / American Community Survey</li>
-            <li>Hartford 311</li>
-            <li>Hartford Fair Rent Commission</li>
-            <li>USDA Food Access Research Atlas</li>
+            <li>[[ADD OTHERS]]</li>
           </ul>
         </CollapsibleSection>
 
