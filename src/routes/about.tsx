@@ -57,21 +57,12 @@ function AboutPage() {
     setOpenSections((prev) => ({ ...prev, [id]: open }));
   }, []);
 
-  const handleJump = useCallback((id: string) => {
-    setOpenSections((prev) => ({ ...prev, [id]: true }));
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
-  }, []);
-
   return (
     <AppShell>
       <Link to="/dashboard" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Back
       </Link>
       <h1 className="font-display text-3xl text-foreground">About This Tool</h1>
-
-      <Toc onJump={handleJump} />
 
       <div className="mt-6 space-y-3">
         <CollapsibleSection id="what" title="What This Platform Is" open={!!openSections["what"]} onOpenChange={(open) => handleOpenChange("what", open)}>
