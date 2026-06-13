@@ -16,40 +16,6 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
-const SECTIONS = [
-  { id: "what", title: "What This Platform Is" },
-  { id: "how", title: "How It Came to Be" },
-  { id: "who", title: "Who It's For" },
-  { id: "partners", title: "Our Partners" },
-  { id: "credits", title: "Credits" },
-  { id: "data", title: "Data Sources & Methodology" },
-  { id: "privacy", title: "Privacy & Data Use" },
-  { id: "replicability", title: "A Note on Replicability" },
-  { id: "funding", title: "Federal Funding Disclosure" },
-  { id: "contact", title: "Contact" },
-];
-
-function Toc({ onJump }: { onJump: (id: string) => void }) {
-  return (
-    <nav className="mt-5 rounded-xl border border-border p-3">
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-        Jump to a section
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {SECTIONS.map(({ id, title }) => (
-          <button
-            key={id}
-            onClick={() => onJump(id)}
-            className="rounded-lg border border-border/80 px-2.5 py-1 text-[12px] text-foreground transition-colors hover:bg-muted/40"
-          >
-            {title}
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
-}
-
 function CollapsibleSection({
   id,
   title,
