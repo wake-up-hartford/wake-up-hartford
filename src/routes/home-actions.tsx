@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, Users, ClipboardList, Landmark, DollarSign } from "lucide-react";
+import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, ClipboardList, Landmark, DollarSign } from "lucide-react";
 import { AppShell, SectionHeader } from "@/components/AppShell";
 
 export const Route = createFileRoute("/home-actions")({
@@ -81,11 +81,6 @@ const ACTIONS: Action[] = [
     desc: "Plain-language guide to repairs, deposits, eviction rules, and your right to complain without retaliation.",
     icon: ShieldCheck,
     links: [{ label: "Learn your rights", href: "https://ctlawhelp.org/en/housing/landlord-tenant/renters-rights" }],
-  },
-  {
-    title: "Organize with your neighbors",
-    desc: "Tenants who organize have more power than one person alone. Talk to neighbors — especially those with the same landlord.",
-    icon: Users,
   },
   {
     title: "Contact your city council member",
