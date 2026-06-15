@@ -50,6 +50,106 @@ export type Database = {
         }
         Relationships: []
       }
+      hartford_311_complaints: {
+        Row: {
+          department: string | null
+          id: number
+          norm_address: string
+          opened_at: string | null
+          request_number: string | null
+          status: string | null
+          type: string | null
+        }
+        Insert: {
+          department?: string | null
+          id?: number
+          norm_address: string
+          opened_at?: string | null
+          request_number?: string | null
+          status?: string | null
+          type?: string | null
+        }
+        Update: {
+          department?: string | null
+          id?: number
+          norm_address?: string
+          opened_at?: string | null
+          request_number?: string | null
+          status?: string | null
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hartford_311_complaints_norm_address_fkey"
+            columns: ["norm_address"]
+            isOneToOne: false
+            referencedRelation: "hartford_addresses"
+            referencedColumns: ["norm_address"]
+          },
+        ]
+      }
+      hartford_addresses: {
+        Row: {
+          display_address: string
+          norm_address: string
+          owner_name: string | null
+        }
+        Insert: {
+          display_address: string
+          norm_address: string
+          owner_name?: string | null
+        }
+        Update: {
+          display_address?: string
+          norm_address?: string
+          owner_name?: string | null
+        }
+        Relationships: []
+      }
+      hartford_code_violations: {
+        Row: {
+          case_number: string | null
+          closed_at: string | null
+          dept_division: string | null
+          description: string | null
+          id: number
+          norm_address: string
+          opened_at: string | null
+          record_type: string | null
+          status: string | null
+        }
+        Insert: {
+          case_number?: string | null
+          closed_at?: string | null
+          dept_division?: string | null
+          description?: string | null
+          id?: number
+          norm_address: string
+          opened_at?: string | null
+          record_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          case_number?: string | null
+          closed_at?: string | null
+          dept_division?: string | null
+          description?: string | null
+          id?: number
+          norm_address?: string
+          opened_at?: string | null
+          record_type?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hartford_code_violations_norm_address_fkey"
+            columns: ["norm_address"]
+            isOneToOne: false
+            referencedRelation: "hartford_addresses"
+            referencedColumns: ["norm_address"]
+          },
+        ]
+      }
       intake_responses: {
         Row: {
           created_at: string
