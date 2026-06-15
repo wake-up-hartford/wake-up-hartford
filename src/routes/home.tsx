@@ -91,6 +91,10 @@ function HomePage() {
 
   return (
     <AppShell>
+      <div className="mb-3 rounded-xl border border-dashed border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning-foreground/90">
+        <span className="font-semibold">Under construction.</span> Some data is available now and we are working on getting more.
+      </div>
+
       <div className="mb-4 flex items-center justify-between gap-4">
         <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Dashboard
