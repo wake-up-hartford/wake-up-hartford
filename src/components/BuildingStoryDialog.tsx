@@ -99,7 +99,7 @@ export function BuildingStoryDialog({ data }: { data: Found }) {
           {mutation.data?.story && (
             <ListenButton
               text={mutation.data.story}
-              cacheKey={`building:${data.address}:${language}`}
+              cacheKey={`building:${data.address.normalized}:${language}`}
               language={language}
             />
           )}
