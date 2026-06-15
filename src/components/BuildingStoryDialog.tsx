@@ -89,7 +89,7 @@ export function BuildingStoryDialog({ data }: { data: Found }) {
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">{data.address}</DialogTitle>
+          <DialogTitle className="font-display text-xl">{data.address.display}</DialogTitle>
           <p className="text-xs text-muted-foreground">
             An AI-written story, grounded in the records for this building and its owner.
           </p>
