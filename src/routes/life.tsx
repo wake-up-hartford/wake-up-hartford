@@ -907,7 +907,7 @@ function SummaryScreen({
           </>
         ) : (
           <>
-            <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
+            <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
               Your AI-generated Plan — built from your unique responses — includes specific resources, steps, and timelines. Sign in to access it. Your plan is private and will never be shared.
             </p>
             <Link
