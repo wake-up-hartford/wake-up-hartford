@@ -91,7 +91,7 @@ function HomePage() {
 
   return (
     <AppShell>
-      <div className="mb-3 rounded-xl border border-dashed border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning-foreground/90">
+      <div className="mb-3 rounded-xl border border-dashed border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
         <span className="font-semibold">Data is currently partial.</span> We are actively working to connect more city datasets, so what you see here may be incomplete. If something looks missing, it might not be in our records yet.
       </div>
 
