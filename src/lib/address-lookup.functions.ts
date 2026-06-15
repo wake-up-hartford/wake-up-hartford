@@ -122,7 +122,8 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
     for (const [t, n] of typeCounts) if (n > topN) { top = t; topN = n; }
 
     // Portfolio rollup
-    let portfolio: LookupResult extends { portfolio: infer P } ? P : never = null;
+    type Portfolio = { propertiesInHartford: number; totalOpenViolations: number; totalComplaints12mo: number };
+    let portfolio: Portfolio | null = null;
     if (addr.owner_name) {
       const { data: ownerAddrs } = await supabaseAdmin
         .from("hartford_addresses")
