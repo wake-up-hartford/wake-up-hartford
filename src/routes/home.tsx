@@ -1,14 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Zap, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare } from "lucide-react";
+import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
-import { lookupAddress } from "@/lib/mock-data";
+import { lookupHartfordAddress, type LookupResult } from "@/lib/address-lookup.functions";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
@@ -23,9 +25,9 @@ export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Your Home — Wake Up Wednesday" },
-      { name: "description", content: "Look up any Hartford address. See code violations, evictions, utility shutoffs, and 311 complaints in plain language." },
+      { name: "description", content: "Look up any Hartford address. See live code violations and 311 complaints from city open data." },
       { property: "og:title", content: "Your Home — Wake Up Wednesday" },
-      { property: "og:description", content: "Look up any Hartford address and see code violations, evictions, utility shutoffs, and 311 complaints in plain language." },
+      { property: "og:description", content: "Look up any Hartford address and see live code violations and 311 complaints in plain language." },
       { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/home" },
       { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
     ],
@@ -36,12 +38,16 @@ export const Route = createFileRoute("/home")({
   component: HomePage,
 });
 
+type Found = Extract<LookupResult, { status: "found" }>;
+
 function HomePage() {
   const EXAMPLE_TEXT = "e.g., 555 Main Street, Hartford";
-  const { address, save, clear } = useStoredAddress();
+  const { save, clear } = useStoredAddress();
   const [query, setQuery] = useState(EXAMPLE_TEXT);
   const [active, setActive] = useState<string | null>(null);
   const [seeded, setSeeded] = useState(false);
+
+  const lookup = useServerFn(lookupHartfordAddress);
 
   useEffect(() => {
     if (seeded) return;
@@ -71,12 +77,17 @@ function HomePage() {
   };
 
   const handleFocus = () => {
-    if (query === EXAMPLE_TEXT) {
-      setQuery("");
-    }
+    if (query === EXAMPLE_TEXT) setQuery("");
   };
 
-  const data = active ? lookupAddress(active) : null;
+  const { data: result, isLoading } = useQuery({
+    queryKey: ["hartford-address", active],
+    queryFn: () => lookup({ data: { query: active! } }),
+    enabled: !!active,
+    staleTime: 60_000,
+  });
+
+  const found = result?.status === "found" ? (result as Found) : null;
 
   return (
     <AppShell>
@@ -84,7 +95,7 @@ function HomePage() {
         <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
-        {data && (
+        {active && (
           <button
             onClick={handleReset}
             className="ml-auto inline-flex items-center gap-1.5 text-sm text-[#dfddce] hover:opacity-80 transition-opacity"
@@ -94,7 +105,7 @@ function HomePage() {
         )}
       </div>
 
-      {!data && (
+      {!active && (
         <>
           <SectionHeader
             eyebrow="Your home"
@@ -159,33 +170,33 @@ function HomePage() {
         </>
       )}
 
-      {data && (
+      {active && isLoading && (
+        <Card className="mb-5 flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="text-sm">Looking up <strong className="text-foreground">{active}</strong> in Hartford city records…</span>
+        </Card>
+      )}
+
+      {active && !isLoading && !found && (
+        <NotFoundState query={active} onReset={handleReset} />
+      )}
+
+      {found && (
         <>
-          <div className="mb-4 rounded-lg border border-amber-500/50 bg-amber-100 px-4 py-3 flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
-            <div>
-              <p className="text-sm font-semibold text-amber-900">Mock data for demonstration</p>
-              <p className="text-xs text-amber-700">
-                The numbers and records below are simulated examples, not real data. Real data integration is coming soon.
-              </p>
-            </div>
-          </div>
-
-
-          <BuildingStoryDialog data={data} />
+          <BuildingStoryDialog data={found} />
 
           <Card className="mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 opacity-80" />
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] uppercase tracking-wider opacity-70">Showing</p>
-                <h1 className="truncate font-display text-lg">{data.address}</h1>
-                <p className="text-sm opacity-80">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
+                <h1 className="truncate font-display text-lg">{found.address.display}</h1>
+                <p className="text-sm opacity-80">Hartford, CT · Year built and unit count not available</p>
               </div>
             </div>
             <div className="mt-3">
               <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
-                <AddressLocationMap address={data.address} />
+                <AddressLocationMap address={found.address.display} />
               </Suspense>
             </div>
           </Card>
@@ -199,18 +210,18 @@ function HomePage() {
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
-              <DetailedReport data={data} />
+              <DetailedReport data={found} />
             </TabsContent>
             <TabsContent value="share" className="mt-4">
-              <ShareSlideshow data={data} />
+              <ShareSlideshow data={found} />
             </TabsContent>
             <TabsContent value="print" className="mt-4">
-              <PrintReport data={data} />
+              <PrintReport data={found} />
             </TabsContent>
           </Tabs>
 
           <div className="mt-5">
-            <LandlordCard data={data} />
+            <LandlordCard data={found} />
           </div>
 
           <TakeAction />
@@ -220,7 +231,25 @@ function HomePage() {
   );
 }
 
-type Data = ReturnType<typeof lookupAddress>;
+function NotFoundState({ query, onReset }: { query: string; onReset: () => void }) {
+  return (
+    <Card className="mb-5">
+      <div className="flex items-start gap-3">
+        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+        <div className="flex-1">
+          <h2 className="font-display text-lg leading-tight">No records found</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We couldn't find <strong className="text-foreground">{query}</strong> in Hartford's code enforcement or 311 records.
+            Try a different spelling, or just the street number and street name (e.g. "555 Main St").
+          </p>
+          <Button onClick={onReset} className="mt-4 w-full" size="lg">
+            <Search className="h-4 w-4" /> Try another address
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 type Severity = "good" | "watch" | "concern";
 
@@ -269,120 +298,95 @@ function ExpandableIndicator({
   );
 }
 
-function DetailedReport({ data }: { data: Data }) {
-  const cv = data.building.codeViolations;
-  const ev = data.building.evictions;
-  const us = data.building.utilityShutoffs;
-  const c311 = data.building.complaints311;
-  const cvSeverity: Severity = cv.open > 2 ? "concern" : cv.open > 0 ? "watch" : "good";
-  const usSeverity: Severity = us.count12mo > 0 ? "watch" : "good";
+function DetailedReport({ data }: { data: Found }) {
+  const c = data.counts;
+  const cvSeverity: Severity = c.violationsOpen > 2 ? "concern" : c.violationsOpen > 0 ? "watch" : "good";
+  const ownerLabel = data.address.owner ?? "this owner";
 
   return (
     <div className="space-y-3">
       <ExpandableIndicator
-        value={cv.open}
+        value={c.violationsOpen}
         label="Code violations"
-        sub={`${cv.closed12mo} closed in last year`}
+        sub={`${c.violationsClosed12mo} closed in last year`}
         severity={cvSeverity}
-        pillText={`${cv.open} open`}
+        pillText={`${c.violationsOpen} open`}
       >
         <div className="mb-2 flex items-start gap-3">
           <FileWarning className="mt-0.5 h-5 w-5 text-warning-foreground" />
           <p className="text-sm text-muted-foreground">From Hartford Housing Code Enforcement.</p>
         </div>
-        <ul className="divide-y divide-border">
-          {cv.recent.map((v) => (
-            <li key={v.date} className="flex items-start justify-between gap-3 py-3">
-              <div>
-                <p className="text-sm font-medium text-foreground">{v.description}</p>
-                <p className="text-xs text-muted-foreground">{v.date}</p>
-              </div>
-              <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${v.status === "Open" ? "bg-destructive/15 text-destructive" : "bg-success/15 text-success"}`}>
-                {v.status}
-              </span>
-            </li>
-          ))}
-        </ul>
+        {data.recentViolations.length === 0 ? (
+          <p className="py-3 text-sm text-muted-foreground">No recent violations on record.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {data.recentViolations.map((v, i) => (
+              <li key={i} className="flex items-start justify-between gap-3 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{v.description || "Violation"}</p>
+                  <p className="text-xs text-muted-foreground">{v.date || "Date not recorded"}</p>
+                </div>
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${v.status === "Open" ? "bg-destructive/15 text-destructive" : "bg-success/15 text-success"}`}>
+                  {v.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
         <PlainLanguage>
           Open violations mean the city has asked your landlord to fix something. You can call <strong>311</strong> if a problem hasn't been fixed.
-          {" "}Across <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties this owner has <strong>{data.landlordPortfolio.totalOpenCodeViolations}</strong> open violations in total.
+          {data.portfolio && (
+            <> Across <strong>{data.portfolio.propertiesInHartford}</strong> Hartford properties {ownerLabel} has <strong>{data.portfolio.totalOpenViolations}</strong> open violations in total.</>
+          )}
         </PlainLanguage>
       </ExpandableIndicator>
 
       <ExpandableIndicator
-        value={ev.filings12mo}
-        label="Evictions filed"
-        sub={`${ev.rate} of units`}
-        severity="concern"
-        pillText={`${ev.filings12mo} filings`}
-      >
-        <div className="mb-2 flex items-start gap-3">
-          <AlertTriangle className="mt-0.5 h-5 w-5 text-destructive" />
-          <p className="text-sm text-muted-foreground">Court records, last 12 months.</p>
-        </div>
-        <p className="text-2xl font-display">{ev.rate} <span className="text-sm font-sans text-muted-foreground">of units</span></p>
-        <p className="mt-1 text-sm text-muted-foreground">{ev.note}</p>
-        <PlainLanguage>
-          If you receive a notice to quit, <strong>you have rights</strong>. Free legal help: call <strong>(860) 541-5000</strong>.
-          {" "}This owner filed <strong>{data.landlordPortfolio.totalEvictions12mo}</strong> evictions across their <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties in the last year.
-        </PlainLanguage>
-      </ExpandableIndicator>
-
-      <ExpandableIndicator
-        value={us.count12mo}
-        label="Utility shutoffs"
-        sub="last 12 months"
-        severity={usSeverity}
-      >
-        <div className="mb-2 flex items-start gap-3">
-          <Zap className="mt-0.5 h-5 w-5 text-warning-foreground" />
-          <p className="text-sm text-muted-foreground">Reported by Eversource and CNG.</p>
-        </div>
-        <p className="text-sm">{us.note}</p>
-        <PlainLanguage>
-          Cold months (Nov–Apr) have shutoff protections if you qualify. Dial <strong>211</strong> for help.
-        </PlainLanguage>
-      </ExpandableIndicator>
-
-      <ExpandableIndicator
-        value={c311.count12mo}
+        value={c.complaints12mo}
         label="311 complaints"
-        sub={c311.topCategory}
-        severity="watch"
+        sub={c.topComplaintType ?? "No complaints on record"}
+        severity={c.complaints12mo > 0 ? "watch" : "good"}
       >
         <div className="mb-2 flex items-start gap-3">
           <Phone className="mt-0.5 h-5 w-5 text-primary" />
-          <p className="text-sm text-muted-foreground">Most reported: {c311.topCategory}</p>
+          <p className="text-sm text-muted-foreground">
+            {c.topComplaintType ? <>Most reported: {c.topComplaintType}</> : <>No 311 calls on record for this address.</>}
+          </p>
         </div>
-        <ul className="space-y-2">
-          {c311.recent.map((c) => (
-            <li key={c.date} className="flex items-center justify-between text-sm">
-              <span className="text-foreground">{c.type}</span>
-              <span className="text-xs text-muted-foreground">{c.date}</span>
-            </li>
-          ))}
-        </ul>
+        {data.recent311.length > 0 && (
+          <ul className="space-y-2">
+            {data.recent311.map((cc, i) => (
+              <li key={i} className="flex items-center justify-between text-sm">
+                <span className="text-foreground">{cc.type}</span>
+                <span className="text-xs text-muted-foreground">{cc.date}</span>
+              </li>
+            ))}
+          </ul>
+        )}
         <PlainLanguage>
-          Across all <strong>{data.landlordPortfolio.propertiesInHartford}</strong> Hartford properties owned by {data.landlord}, residents and neighbors have filed <strong>{data.landlordPortfolio.totalComplaints311_12mo}</strong> 311 complaints in the last 12 months.
+          {data.portfolio ? (
+            <>Across all <strong>{data.portfolio.propertiesInHartford}</strong> Hartford properties owned by {ownerLabel}, residents and neighbors have filed <strong>{data.portfolio.totalComplaints12mo}</strong> 311 complaints in the last 12 months.</>
+          ) : (
+            <>311 is the city's non-emergency line for issues like trash, rats, broken streetlights, and parking.</>
+          )}
         </PlainLanguage>
       </ExpandableIndicator>
     </div>
   );
 }
 
-function ShareSlideshow({ data }: { data: Data }) {
+function ShareSlideshow({ data }: { data: Found }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: data.address, body: `${data.neighborhood} · Hartford` },
-    { eyebrow: "Code violations", title: `${data.building.codeViolations.open} code violations open`, body: "From city housing inspectors." },
-    { eyebrow: "Evictions filed", title: `${data.building.evictions.filings12mo} evictions filed in the last 12 months`, body: data.building.evictions.note },
-    { eyebrow: "311 complaints", title: `${data.building.complaints311.count12mo} complaints to 311 in the last 12 months`, body: `Top issue: ${data.building.complaints311.topCategory}` },
+    { eyebrow: "Wake Up Wednesday", title: data.address.display, body: "Hartford, CT" },
+    { eyebrow: "Code violations", title: `${data.counts.violationsOpen} code violations open`, body: "From city housing inspectors." },
+    { eyebrow: "311 complaints", title: `${data.counts.complaints12mo} complaints to 311 in the last 12 months`, body: data.counts.topComplaintType ? `Top issue: ${data.counts.topComplaintType}` : "No top category on record." },
   ];
   const [i, setI] = useState(0);
   const slide = slides[i];
 
   const [shareStatus, setShareStatus] = useState<null | "copied" | "error">(null);
   const handleShare = async () => {
-    const text = `${data.address} — ${data.building.codeViolations.open} open code violations, ${data.building.evictions.filings12mo} evictions filed in the last year. See more on Wake Up Wednesday.`;
+    const text = `${data.address.display} — ${data.counts.violationsOpen} open code violations, ${data.counts.complaints12mo} 311 complaints in the last year. See more on Wake Up Wednesday.`;
     const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
     if (result) {
       setShareStatus(result);
@@ -422,24 +426,18 @@ function ShareSlideshow({ data }: { data: Data }) {
       </div>
 
       {(() => {
-        const text = `${data.address} — ${data.building.codeViolations.open} open code violations, ${data.building.evictions.filings12mo} evictions filed in the last year. See more on Wake Up Wednesday.`;
+        const text = `${data.address.display} — ${data.counts.violationsOpen} open code violations, ${data.counts.complaints12mo} 311 complaints in the last year. See more on Wake Up Wednesday.`;
         const url = typeof window !== "undefined" ? window.location.href : "";
         const payload = `${text}\n${url}`;
         const sms = `sms:?&body=${encodeURIComponent(payload)}`;
-        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + data.address)}&body=${encodeURIComponent(payload)}`;
+        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + data.address.display)}&body=${encodeURIComponent(payload)}`;
         return (
           <div className="grid grid-cols-2 gap-2">
-            <a
-              href={sms}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
-            >
+            <a href={sms} className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90">
               <MessageSquare className="h-4 w-4" />
               Text this
             </a>
-            <a
-              href={mailto}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
-            >
+            <a href={mailto} className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90">
               <Mail className="h-4 w-4" />
               Email this
             </a>
@@ -454,25 +452,22 @@ function ShareSlideshow({ data }: { data: Data }) {
       <p className="text-center text-xs text-muted-foreground">
         Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
       </p>
-
     </div>
   );
 }
 
-function PrintReport({ data }: { data: Data }) {
-  const cv = data.building.codeViolations;
-  const ev = data.building.evictions;
-  const us = data.building.utilityShutoffs;
-  const c311 = data.building.complaints311;
+function PrintReport({ data }: { data: Found }) {
+  const c = data.counts;
+  const owner = data.address.owner ?? "Not on record";
 
   const handlePrint = async () => {
-    const shareUrl = `${window.location.origin}/home?address=${encodeURIComponent(data.address)}`;
+    const shareUrl = `${window.location.origin}/home?address=${encodeURIComponent(data.address.display)}`;
     let qrDataUrl = "";
     try {
       const QRCode = (await import("qrcode")).default;
       qrDataUrl = await QRCode.toDataURL(shareUrl, { margin: 1, width: 240, color: { dark: "#14213d", light: "#ffffff" } });
     } catch {}
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(data.address)}</title>
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(data.address.display)}</title>
 <style>
   @page { size: letter; margin: 0.6in; }
   * { box-sizing: border-box; }
@@ -503,40 +498,34 @@ function PrintReport({ data }: { data: Data }) {
   <div class="header">
     <div class="titles">
       <p class="eyebrow">Wake Up Wednesday · GREATER HARTFORD BRANCH NAACP</p>
-      <h1>${escapeHtml(data.address)}</h1>
-      <p class="sub">${escapeHtml(data.neighborhood)} · Census Tract ${escapeHtml(data.censusTract)} · Built ${data.yearBuilt} · ${data.units} units · Owner: ${escapeHtml(data.landlord)}</p>
+      <h1>${escapeHtml(data.address.display)}</h1>
+      <p class="sub">Hartford, CT · Owner: ${escapeHtml(owner)} · Year built and unit count not available</p>
     </div>
     ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code to view this report online"><div>Scan to view<br>or share</div></div>` : ""}
   </div>
 
   <h2>Report Card</h2>
   <div class="grid">
-    <div class="card"><span class="pill ${cv.open > 2 ? "concern" : cv.open > 0 ? "watch" : "good"}">Code violations</span><div class="num">${cv.open}</div><div class="note">${cv.closed12mo} closed in last year</div></div>
-    <div class="card"><span class="pill concern">Evictions filed</span><div class="num">${ev.filings12mo}</div><div class="note">${escapeHtml(ev.rate)} of units</div></div>
-    <div class="card"><span class="pill ${us.count12mo > 0 ? "watch" : "good"}">Utility shutoffs</span><div class="num">${us.count12mo}</div><div class="note">last 12 months</div></div>
-    <div class="card"><span class="pill watch">311 complaints</span><div class="num">${c311.count12mo}</div><div class="note">${escapeHtml(c311.topCategory)}</div></div>
+    <div class="card"><span class="pill ${c.violationsOpen > 2 ? "concern" : c.violationsOpen > 0 ? "watch" : "good"}">Code violations</span><div class="num">${c.violationsOpen}</div><div class="note">${c.violationsClosed12mo} closed in last year</div></div>
+    <div class="card"><span class="pill ${c.complaints12mo > 0 ? "watch" : "good"}">311 complaints</span><div class="num">${c.complaints12mo}</div><div class="note">${escapeHtml(c.topComplaintType ?? "no top category")}</div></div>
   </div>
 
   <h2>Code violations</h2>
-  <p class="meta">From Hartford Housing Code Enforcement. ${cv.open} open, ${cv.closed12mo} closed in the last year.</p>
-  <table><thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead><tbody>
-    ${cv.recent.map(v => `<tr><td>${escapeHtml(v.date)}</td><td>${escapeHtml(v.description)}</td><td>${escapeHtml(v.status)}</td></tr>`).join("")}
-  </tbody></table>
+  <p class="meta">From Hartford Housing Code Enforcement. ${c.violationsOpen} open, ${c.violationsClosed12mo} closed in the last year.</p>
+  ${data.recentViolations.length === 0
+    ? `<p class="meta">No recent violations on record.</p>`
+    : `<table><thead><tr><th>Date</th><th>Description</th><th>Status</th></tr></thead><tbody>
+        ${data.recentViolations.map(v => `<tr><td>${escapeHtml(v.date)}</td><td>${escapeHtml(v.description)}</td><td>${escapeHtml(v.status)}</td></tr>`).join("")}
+      </tbody></table>`}
   <div class="plain">Open violations mean the city has asked your landlord to fix something. Call <strong>311</strong> if a problem hasn't been fixed.</div>
 
-  <h2>Evictions filed</h2>
-  <p class="meta">${escapeHtml(ev.rate)} of units · ${ev.filings12mo} filings in the last 12 months. ${escapeHtml(ev.note)}</p>
-  <div class="plain">If you receive a notice to quit, you have rights. Free legal help: <strong>(860) 541-5000</strong>.</div>
-
-  <h2>Utility shutoffs</h2>
-  <p class="meta">${escapeHtml(us.note)}</p>
-  <div class="plain">Cold months (Nov–Apr) have shutoff protections if you qualify. Dial <strong>211</strong> for help.</div>
-
-  <h2>311 complaints nearby</h2>
-  <p class="meta">Most reported: ${escapeHtml(c311.topCategory)} · ${c311.count12mo} total in last 12 months.</p>
-  <table><thead><tr><th>Date</th><th>Type</th></tr></thead><tbody>
-    ${c311.recent.map(c => `<tr><td>${escapeHtml(c.date)}</td><td>${escapeHtml(c.type)}</td></tr>`).join("")}
-  </tbody></table>
+  <h2>311 complaints</h2>
+  <p class="meta">${c.topComplaintType ? `Most reported: ${escapeHtml(c.topComplaintType)} · ` : ""}${c.complaints12mo} total in last 12 months.</p>
+  ${data.recent311.length === 0
+    ? `<p class="meta">No recent 311 calls on record.</p>`
+    : `<table><thead><tr><th>Date</th><th>Type</th></tr></thead><tbody>
+        ${data.recent311.map(cc => `<tr><td>${escapeHtml(cc.date)}</td><td>${escapeHtml(cc.type)}</td></tr>`).join("")}
+      </tbody></table>`}
 
   <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
   <script>window.onload = () => { window.print(); };</script>
@@ -570,64 +559,49 @@ function PrintReport({ data }: { data: Data }) {
 
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
-        <h3 className="mt-2 font-display text-lg">{data.address}</h3>
-        <p className="text-xs text-muted-foreground">{data.neighborhood} · Built {data.yearBuilt} · {data.units} units</p>
+        <h3 className="mt-2 font-display text-lg">{data.address.display}</h3>
+        <p className="text-xs text-muted-foreground">Hartford, CT · Owner: {owner}</p>
         <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Code violations</div><div className="font-display text-2xl">{cv.open}</div></div>
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Evictions</div><div className="font-display text-2xl">{ev.filings12mo}</div></div>
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Shutoffs</div><div className="font-display text-2xl">{us.count12mo}</div></div>
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">311 complaints</div><div className="font-display text-2xl">{c311.count12mo}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Code violations</div><div className="font-display text-2xl">{c.violationsOpen}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">311 complaints</div><div className="font-display text-2xl">{c.complaints12mo}</div></div>
         </div>
       </div>
     </div>
   );
 }
 
-function LandlordCard({ data }: { data: Data }) {
-  const c = data.landlordContact;
-  const p = data.landlordPortfolio;
+function LandlordCard({ data }: { data: Found }) {
+  const owner = data.address.owner;
+  const p = data.portfolio;
+  const NA = <span className="text-muted-foreground/70 italic">Not available</span>;
   return (
     <Card className="mb-5">
       <div className="flex items-start gap-3">
         <Building2 className="mt-0.5 h-5 w-5 text-primary" />
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Owner / Landlord</p>
-          <h2 className="font-display text-lg leading-tight">{data.landlord}</h2>
+          <h2 className="font-display text-lg leading-tight">{owner ?? "Not on record"}</h2>
 
           <div className="mt-3 space-y-1.5 text-sm">
-            {c.phone && (
-              <p className="flex items-center gap-2 text-foreground">
-                <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-                <a href={`tel:${c.phone.replace(/[^\d+]/g, "")}`} className="hover:underline">{c.phone}</a>
-              </p>
-            )}
-            {c.email && (
-              <p className="flex items-center gap-2 text-foreground">
-                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                <a href={`mailto:${c.email}`} className="hover:underline break-all">{c.email}</a>
-              </p>
-            )}
-            {c.mailingAddress && (
-              <p className="flex items-start gap-2 text-foreground">
-                <MapPin className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
-                <span>{c.mailingAddress}</span>
-              </p>
-            )}
+            <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
+            <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
+            <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
           </div>
 
-          <div className="mt-4 rounded-xl border border-border bg-secondary/40 p-3">
-            <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              <Briefcase className="h-3.5 w-3.5" /> This owner's full Hartford portfolio
-            </p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-              <PortfolioStat value={p.propertiesInHartford} label="properties" />
-              <PortfolioStat value={p.totalUnits} label="total units" />
-              <PortfolioStat value={p.totalOpenCodeViolations} label="open code violations" />
-              <PortfolioStat value={p.totalEvictions12mo} label="evictions, last yr" />
-              <PortfolioStat value={p.totalComplaints311_12mo} label="311 complaints, last yr" />
+          {p && (
+            <div className="mt-4 rounded-xl border border-border bg-secondary/40 p-3">
+              <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <Briefcase className="h-3.5 w-3.5" /> This owner's full Hartford portfolio
+              </p>
+              <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                <PortfolioStat value={p.propertiesInHartford} label="properties" />
+                <PortfolioStat value={p.totalOpenViolations} label="open code violations" />
+                <PortfolioStat value={p.totalComplaints12mo} label="311 complaints, last yr" />
+                <PortfolioStatNA label="total units" />
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">Rollup based on owner-name match across Hartford code enforcement records.</p>
             </div>
-            {p.note && <p className="mt-2 text-xs text-muted-foreground">{p.note}</p>}
-          </div>
+          )}
 
           <Link
             to="/landlord-letter"
@@ -646,6 +620,15 @@ function PortfolioStat({ value, label }: { value: number; label: string }) {
   return (
     <div className="rounded-md bg-card px-2.5 py-2">
       <div className="font-display text-xl leading-none text-foreground">{value}</div>
+      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function PortfolioStatNA({ label }: { label: string }) {
+  return (
+    <div className="rounded-md bg-card px-2.5 py-2">
+      <div className="text-[11px] italic text-muted-foreground/70">Not available</div>
       <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
     </div>
   );

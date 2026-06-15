@@ -4,28 +4,23 @@ import { z } from "zod";
 
 const Input = z.object({
   address: z.string(),
-  neighborhood: z.string(),
-  yearBuilt: z.number(),
-  units: z.number(),
-  landlord: z.string(),
+  neighborhood: z.string().optional().nullable(),
+  yearBuilt: z.number().optional().nullable(),
+  units: z.number().optional().nullable(),
+  landlord: z.string().optional().nullable(),
   language: z.enum(["en", "es"]).optional().default("en"),
   building: z.object({
     openCodeViolations: z.number(),
     closedCodeViolations12mo: z.number(),
     recentViolations: z.array(z.string()).max(10),
-    evictions12mo: z.number(),
-    evictionRate: z.string(),
-    utilityShutoffs12mo: z.number(),
     complaints311_12mo: z.number(),
-    topComplaintCategory: z.string(),
+    topComplaintCategory: z.string().optional().nullable(),
   }),
   landlordPortfolio: z.object({
     propertiesInHartford: z.number(),
-    totalUnits: z.number(),
     totalOpenCodeViolations: z.number(),
-    totalEvictions12mo: z.number(),
     totalComplaints311_12mo: z.number(),
-  }),
+  }).optional().nullable(),
 });
 
 export const generateBuildingStory = createServerFn({ method: "POST" })
@@ -38,23 +33,20 @@ export const generateBuildingStory = createServerFn({ method: "POST" })
     const p = data.landlordPortfolio;
     const facts = `
 Building: ${data.address}
-Neighborhood: ${data.neighborhood}
-Year built: ${data.yearBuilt}
-Units: ${data.units}
-Landlord/owner: ${data.landlord}
+Neighborhood: ${data.neighborhood ?? "not available"}
+Year built: ${data.yearBuilt ?? "not available"}
+Units: ${data.units ?? "not available"}
+Landlord/owner: ${data.landlord ?? "not on record"}
 
-This building (last 12 months unless noted):
+This building:
 - Open code violations: ${b.openCodeViolations} (${b.closedCodeViolations12mo} closed in last 12 months)
 - Recent violations: ${b.recentViolations.join("; ") || "none listed"}
-- Evictions filed: ${b.evictions12mo} (${b.evictionRate} of units)
-- Utility shutoffs: ${b.utilityShutoffs12mo}
-- 311 complaints: ${b.complaints311_12mo} (top category: ${b.topComplaintCategory})
+- 311 complaints (last 12 months): ${b.complaints311_12mo}${b.topComplaintCategory ? ` (top category: ${b.topComplaintCategory})` : ""}
 
-Same owner's full Hartford portfolio:
-- ${p.propertiesInHartford} buildings, ${p.totalUnits} total units
+${p ? `Same owner's full Hartford portfolio:
+- ${p.propertiesInHartford} buildings
 - ${p.totalOpenCodeViolations} open code violations across all buildings
-- ${p.totalEvictions12mo} evictions filed in last 12 months
-- ${p.totalComplaints311_12mo} 311 complaints in last 12 months
+- ${p.totalComplaints311_12mo} 311 complaints in last 12 months` : "No owner portfolio data available."}
 `.trim();
 
     const languageLine =

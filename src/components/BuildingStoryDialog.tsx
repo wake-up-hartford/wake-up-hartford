@@ -16,45 +16,40 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/lib/language";
 
 import { generateBuildingStory } from "@/lib/building-story.functions";
-import type { AddressLookup } from "@/lib/mock-data";
+import type { LookupResult } from "@/lib/address-lookup.functions";
 
+type Found = Extract<LookupResult, { status: "found" }>;
 
-export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
+export function BuildingStoryDialog({ data }: { data: Found }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [language] = useLanguage();
-  
+
   const generate = useServerFn(generateBuildingStory);
 
   const mutation = useMutation({
     mutationFn: () =>
       generate({
         data: {
-          address: data.address,
-          neighborhood: data.neighborhood,
-          yearBuilt: data.yearBuilt,
-          units: data.units,
-          landlord: data.landlord,
+          address: data.address.display,
+          landlord: data.address.owner,
           language,
           building: {
-            openCodeViolations: data.building.codeViolations.open,
-            closedCodeViolations12mo: data.building.codeViolations.closed12mo,
-            recentViolations: data.building.codeViolations.recent.map(
+            openCodeViolations: data.counts.violationsOpen,
+            closedCodeViolations12mo: data.counts.violationsClosed12mo,
+            recentViolations: data.recentViolations.map(
               (v) => `${v.description} (${v.status})`,
             ),
-            evictions12mo: data.building.evictions.filings12mo,
-            evictionRate: data.building.evictions.rate,
-            utilityShutoffs12mo: data.building.utilityShutoffs.count12mo,
-            complaints311_12mo: data.building.complaints311.count12mo,
-            topComplaintCategory: data.building.complaints311.topCategory,
+            complaints311_12mo: data.counts.complaints12mo,
+            topComplaintCategory: data.counts.topComplaintType,
           },
-          landlordPortfolio: {
-            propertiesInHartford: data.landlordPortfolio.propertiesInHartford,
-            totalUnits: data.landlordPortfolio.totalUnits,
-            totalOpenCodeViolations: data.landlordPortfolio.totalOpenCodeViolations,
-            totalEvictions12mo: data.landlordPortfolio.totalEvictions12mo,
-            totalComplaints311_12mo: data.landlordPortfolio.totalComplaints311_12mo,
-          },
+          landlordPortfolio: data.portfolio
+            ? {
+                propertiesInHartford: data.portfolio.propertiesInHartford,
+                totalOpenCodeViolations: data.portfolio.totalOpenViolations,
+                totalComplaints311_12mo: data.portfolio.totalComplaints12mo,
+              }
+            : null,
         },
       }),
   });
@@ -94,7 +89,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">{data.address}</DialogTitle>
+          <DialogTitle className="font-display text-xl">{data.address.display}</DialogTitle>
           <p className="text-xs text-muted-foreground">
             An AI-written story, grounded in the records for this building and its owner.
           </p>
@@ -104,7 +99,7 @@ export function BuildingStoryDialog({ data }: { data: AddressLookup }) {
           {mutation.data?.story && (
             <ListenButton
               text={mutation.data.story}
-              cacheKey={`building:${data.address}:${language}`}
+              cacheKey={`building:${data.address.normalized}:${language}`}
               language={language}
             />
           )}
