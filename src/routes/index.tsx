@@ -18,11 +18,11 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "See the facts. Find the resources. Build the plan.",
       },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/" },
+      { property: "og:url", content: "https://wake-up-hartford.lovable.app/" },
       { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/" },
+      { rel: "canonical", href: "https://wake-up-hartford.lovable.app/" },
     ],
   }),
   component: Landing,
