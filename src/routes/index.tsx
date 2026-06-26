@@ -47,7 +47,7 @@ function Landing() {
         alt="Wake Up Hartford"
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
-      <p className="mx-auto max-w-md px-6 pb-0 text-center text-base font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
+      <p className="mx-auto max-w-md px-6 pb-0 text-center text-sm font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
         Learn the facts about your neighborhood and your home and&nbsp;get the tools to stabilize your life.{"\n"}
         {"\n"}
         <em>This site will guide you through ACTIONS to improve...</em>
