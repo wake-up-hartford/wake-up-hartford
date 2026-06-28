@@ -86,7 +86,7 @@ function NeighborhoodPage() {
             title="Learn About Your Neighborhood"
             subtitle="Enter an address or tap a tract on the map. Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA."
           />
-          <Card className="mb-5">
+          <Card className="mb-5" id="neighborhood-lookup">
             <Tabs defaultValue="address">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
                 <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Enter Address</TabsTrigger>
@@ -102,8 +102,18 @@ function NeighborhoodPage() {
               </TabsContent>
             </Tabs>
           </Card>
+          {/* Sticky mobile CTA */}
+          <div className="fixed inset-x-0 bottom-16 z-30 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
+            <button
+              onClick={() => document.getElementById("neighborhood-lookup")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-[14px] font-semibold text-primary-foreground shadow-lg"
+            >
+              Pick a neighborhood <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </>
       )}
+
 
       {tract && (
         <>
