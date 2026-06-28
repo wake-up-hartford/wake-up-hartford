@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { suggestHartfordAddresses } from "@/lib/address-lookup.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
