@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "public read addresses" ON public.hartford_addresses; REVOKE SELECT ON public.hartford_addresses FROM anon; CREATE POLICY "Authenticated users can read addresses" ON public.hartford_addresses FOR SELECT TO authenticated USING (true);
