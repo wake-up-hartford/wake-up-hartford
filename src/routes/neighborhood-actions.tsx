@@ -179,8 +179,8 @@ function ActionsPage() {
       <ActionCard
         icon={MessageSquareWarning}
         accent="slate"
-        title="Report what's missing"
-        body="The numbers here don't match what you're seeing on the ground? Tell us. Ground-truth from residents makes this report better."
+        title="Help us get it right"
+        body="If the numbers here don't match what you're seeing on the ground, tell us. Your first-hand knowledge makes this report better for everyone."
         cta={
           <a
             href={`mailto:hello@wakeupwednesday.org?subject=${encodeURIComponent(
