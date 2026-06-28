@@ -175,3 +175,42 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
       portfolio,
     };
   });
+
+export const suggestHartfordAddresses = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ query: z.string() }).parse(input))
+  .handler(async ({ data }): Promise<{ display: string; normalized: string }[]> => {
+    const q = data.query.trim();
+    if (q.length < 2) return [];
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const norm = normalizeAddress(q);
+    const tokens = norm.split(" ").filter(Boolean);
+    if (tokens.length === 0) return [];
+
+    // Use prefix match on normalized address for fast, intuitive ordering.
+    // Fall back to ilike for partial street name matches.
+    let query = supabaseAdmin
+      .from("hartford_addresses")
+      .select("norm_address, display_address")
+      .ilike("norm_address", `${norm}%`)
+      .order("norm_address", { ascending: true })
+      .limit(8);
+
+    let { data: rows } = await query;
+
+    if (!rows || rows.length === 0) {
+      // Try contains match (for typing street name without number)
+      const res = await supabaseAdmin
+        .from("hartford_addresses")
+        .select("norm_address, display_address")
+        .ilike("norm_address", `%${norm}%`)
+        .order("norm_address", { ascending: true })
+        .limit(8);
+      rows = res.data ?? [];
+    }
+
+    return (rows ?? []).map((r) => ({
+      display: r.display_address,
+      normalized: r.norm_address,
+    }));
+  });
