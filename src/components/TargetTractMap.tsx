@@ -91,7 +91,16 @@ export default function TargetTractMap({
   const onEachFeature = (feature: Feature<Geometry, TractProps>, layer: L.Layer) => {
     const p = feature.properties;
     layer.on({
-      click: () => setPicked(p),
+      click: () => {
+        onSelect({
+          address: `Census Tract ${p.tractName}, Hartford, CT`,
+          state: p.state,
+          county: p.county,
+          tract: p.tract,
+          tractName: p.tractName,
+          neighborhood: `${p.neighborhood}, Hartford`,
+        });
+      },
       mouseover: () => setHovered(p.tract),
       mouseout: () => setHovered(null),
     });
