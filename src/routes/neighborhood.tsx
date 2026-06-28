@@ -105,15 +105,6 @@ function NeighborhoodPage() {
             </Card>
           </div>
 
-          {/* Sticky mobile CTA */}
-          <div className="fixed inset-x-0 bottom-16 z-30 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
-            <button
-              onClick={() => document.getElementById("neighborhood-lookup")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-[14px] font-semibold text-primary-foreground shadow-lg"
-            >
-              Pick a neighborhood <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
         </>
       )}
 
