@@ -71,6 +71,7 @@ function DashboardPage() {
           title="Your Life"
           body="Resources for stability, health, and safety."
           tone="blue"
+          time="~5–8 min"
         />
         <DashLink
           to="/home"
@@ -78,6 +79,7 @@ function DashboardPage() {
           title="Your Home"
           body="Look up any Hartford address — code issues, evictions, landlord info."
           tone="purple"
+          time="~30 sec"
         />
         <DashLink
           to="/neighborhood"
@@ -85,7 +87,9 @@ function DashboardPage() {
           title="Your Neighborhood"
           body="A report card for your block."
           tone="gold"
+          time="~1 min"
         />
+
 
       </div>
 
@@ -145,11 +149,11 @@ const TONES: Record<Tone, { border: string; iconBg: string; iconText: string; ti
 };
 
 function DashLink({
-  to, icon: Icon, title, body, tone, badge,
+  to, icon: Icon, title, body, tone, badge, time,
 }: {
   to:  "/home" | "/neighborhood" | "/life" | "/plans";
   icon: React.ComponentType<{ className?: string }>;
-  title: string; body: string; tone: Tone; badge?: string;
+  title: string; body: string; tone: Tone; badge?: string; time?: string;
 }) {
   const t = TONES[tone];
   return (
@@ -159,6 +163,7 @@ function DashLink({
           <div className="flex items-center gap-2">
             <h2 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h2>
             {badge && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{badge}</span>}
+            {time && <span className="text-[11px] font-medium text-muted-foreground">{time}</span>}
           </div>
           <p className="text-sm text-card-foreground/80">{body}</p>
         </div>
@@ -172,6 +177,7 @@ function DashLink({
     </Link>
   );
 }
+
 
 
 function Footer() {

@@ -528,7 +528,14 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Life can get hard. This short survey takes 5-8 minutes. Answer a few questions and we'll build you a free, personal AI-generated 30-day <span className="text-emerald-600 font-semibold">ACTION PLAN</span> — with real resources in Connecticut to help you move forward.
       </p>
 
-
+      <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+        <h2 className="font-display text-base leading-tight text-foreground">What you'll get</h2>
+        <ul className="mt-2 space-y-1.5 text-[13px] text-card-foreground">
+          <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>A personalized 30-day plan</span></li>
+          <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>Specific Hartford and Connecticut resources</span></li>
+          <li className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>Concrete steps you can start this week</span></li>
+        </ul>
+      </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <h2 className="font-display text-lg leading-tight text-card-foreground">
@@ -564,11 +571,21 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Enter Here <ArrowRight className="h-5 w-5" />
       </button>
 
-
+      {/* Sticky mobile CTA */}
+      <div className="fixed inset-x-0 bottom-16 z-30 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
+        <button
+          onClick={onBegin}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-4 py-3 text-[14px] font-semibold text-white shadow-lg"
+        >
+          Start the survey <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
 
     </div>
   );
 }
+
+
 
 /* ---------- Survey ---------- */
 
@@ -678,7 +695,7 @@ function SurveyScreen({
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between font-semibold uppercase tracking-wider">
           <span className="text-[13px] text-foreground">
-            Section {sectionIdx + 1} of {SECTIONS.length}
+            Question {answeredCount + 1} of {totalQuestions}
           </span>
           <span className="text-[11px] text-muted-foreground">{pct}%</span>
         </div>
@@ -688,7 +705,11 @@ function SurveyScreen({
             style={{ width: `${pct}%` }}
           />
         </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Section {sectionIdx + 1} of {SECTIONS.length} · {section.name}
+        </p>
       </div>
+
 
       {/* Category badge */}
       <div className="mb-4 inline-flex items-center gap-2.5 rounded-2xl border border-border bg-transparent px-4 py-2.5">
@@ -785,6 +806,19 @@ function SurveyScreen({
           {isLastQuestion ? "Finish Survey" : "Continue"} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
+      {question.type === "multi" && (
+        <button
+          type="button"
+          onClick={() => {
+            setAnswers((prev) => ({ ...prev, [question.id]: [] }));
+            goNext();
+          }}
+          className="mt-3 w-full text-center text-[13px] text-muted-foreground underline hover:text-foreground"
+        >
+          Skip this question
+        </button>
+      )}
+
     </div>
   );
 }
