@@ -139,7 +139,7 @@ export const VETTED_RESOURCES: Resource[] = [
 
   // Civic & advocacy
   {
-    name: "GREATER HARTFORD BRANCH NAACP",
+    name: "Greater Hartford Branch NAACP",
     description: "Civil rights advocacy, complaint intake, and civic organizing.",
     url: "https://www.naacphartford.org",
     tags: ["civic", "legal"],
