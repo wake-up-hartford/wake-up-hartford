@@ -686,7 +686,7 @@ function SurveyScreen({
       <div className="mb-5">
         <div className="mb-2 flex items-center justify-between font-semibold uppercase tracking-wider">
           <span className="text-[13px] text-foreground">
-            Section {sectionIdx + 1} of {SECTIONS.length}
+            Question {answeredCount + 1} of {totalQuestions}
           </span>
           <span className="text-[11px] text-muted-foreground">{pct}%</span>
         </div>
@@ -696,7 +696,11 @@ function SurveyScreen({
             style={{ width: `${pct}%` }}
           />
         </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Section {sectionIdx + 1} of {SECTIONS.length} · {section.name}
+        </p>
       </div>
+
 
       {/* Category badge */}
       <div className="mb-4 inline-flex items-center gap-2.5 rounded-2xl border border-border bg-transparent px-4 py-2.5">
