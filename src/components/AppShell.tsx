@@ -39,11 +39,11 @@ function RotatingMessages() {
 
   return (
     <div className="border-t border-border/60">
-      <div className="mx-auto w-full max-w-xl px-5 py-2.5 sm:px-6 sm:py-2">
+      <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-center px-5 sm:h-auto sm:px-6 sm:py-2">
         <p
           aria-live="polite"
           aria-atomic="true"
-          className="text-center text-[15px] sm:text-[14px] italic leading-snug text-gold transition-opacity duration-300"
+          className="line-clamp-2 text-center text-[15px] italic leading-snug text-gold transition-opacity duration-300 sm:text-[14px]"
           style={{
             fontFamily: '"Public Sans", sans-serif',
             fontWeight: 500,
