@@ -180,7 +180,7 @@ function ActionsPage() {
         icon={MessageSquareWarning}
         accent="slate"
         title="Help us get it right"
-        body="Your first-hand knowledge makes this website better for everyone. Please tell us how we can make it better."
+        body="Your first-hand knowledge makes this website better for everyone. Tell us how we can make it better."
         cta={
           <a
             href={`mailto:hello@wakeupwednesday.org?subject=${encodeURIComponent(
