@@ -526,7 +526,7 @@ function PrintReport({ data }: { data: Found }) {
 </style></head><body>
   <div class="header">
     <div class="titles">
-      <p class="eyebrow">Wake Up Wednesday · GREATER HARTFORD BRANCH NAACP</p>
+      <p class="eyebrow">Wake Up Wednesday · Greater Hartford Branch NAACP</p>
       <h1>${escapeHtml(data.address.display)}</h1>
       <p class="sub">Hartford, CT · Owner: ${escapeHtml(owner)} · Year built and unit count not available</p>
     </div>

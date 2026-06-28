@@ -1,4 +1,4 @@
-// 19 GREATER HARTFORD BRANCH NAACP target census tracts.
+// 19 Greater Hartford Branch NAACP target census tracts.
 // Note: 7 of the 19 (5006, 5007, 5008, 5011, 5016, 5019, 5020) were renumbered
 // or merged in the 2020 Census redistricting and do not have 2020-vintage
 // polygons. Only the 12 tracts that survived 2020 redistricting appear on the
