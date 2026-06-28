@@ -172,18 +172,43 @@ function HomePage() {
                   <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
                     Home address
                   </label>
-                  <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-                    <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
-                    <input
-                      id="addr"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      onFocus={handleFocus}
-                      placeholder=""
-                      className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/60" : "text-foreground"}`}
-                      autoComplete="street-address"
-                      inputMode="text"
-                    />
+                  <div className="relative">
+                    <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                      <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+                      <input
+                        id="addr"
+                        value={query}
+                        onChange={(e) => { setQuery(e.target.value); setSuggestOpen(true); }}
+                        onFocus={handleFocus}
+                        onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
+                        placeholder=""
+                        className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/60" : "text-foreground"}`}
+                        autoComplete="off"
+                        inputMode="text"
+                        role="combobox"
+                        aria-expanded={suggestOpen && suggestions.length > 0}
+                        aria-autocomplete="list"
+                      />
+                    </div>
+                    {suggestOpen && suggestions.length > 0 && (
+                      <ul
+                        role="listbox"
+                        className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-border bg-card shadow-lg"
+                      >
+                        {suggestions.map((s) => (
+                          <li key={s.normalized}>
+                            <button
+                              type="button"
+                              onMouseDown={(e) => { e.preventDefault(); pickSuggestion(s); }}
+                              className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm text-foreground hover:bg-secondary/60"
+                            >
+                              <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                              <span className="truncate">{s.display}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                   <button
                     type="submit"
