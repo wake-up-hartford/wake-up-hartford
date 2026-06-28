@@ -98,6 +98,9 @@ function FindHelpPage() {
         <p className="mb-3 uppercase tracking-[0.18em] text-gold font-bold text-sm">
           What do you need help with?
         </p>
+        <p className="mb-3 text-sm text-muted-foreground">
+          Scroll to the bottom to see the resources.
+        </p>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {NEEDS.map((n) => {
             const on = selected.has(n.id);
