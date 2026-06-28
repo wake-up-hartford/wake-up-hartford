@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
-import { lookupHartfordAddress, type LookupResult } from "@/lib/address-lookup.functions";
+import { lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
