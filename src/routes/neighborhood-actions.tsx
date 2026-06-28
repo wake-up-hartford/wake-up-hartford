@@ -199,34 +199,23 @@ function ActionsPage() {
       <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
         <div className="flex items-start gap-3">
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
-            <Megaphone className="h-5 w-5" />
+            <Vote className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
+            <h3 className="font-display text-xl leading-tight">Learn who your State Legislator is</h3>
             <p className="mt-1 text-sm text-foreground/80">
-              Find help, email your State Rep, or take a survey to create a Life Plan.
+              Your State Rep and State Senator can help with housing, utilities, benefits, and neighborhood issues. Find their contact information and reach out.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Link
-                to="/find-help"
-                search={{ state, county, tract, name, neighborhood }}
-              >
-                <Button size="sm">Find help</Button>
-              </Link>
               <a
-                href="https://www.cga.ct.gov/asp/menu/FindYourLegislator.asp"
+                href="https://www.cga.ct.gov/asp/menu/cgafindleg.asp"
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button size="sm" variant="outline">
-                  Email State Rep <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                <Button size="sm">
+                  Find your legislator <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               </a>
-              <Link to="/life">
-                <Button size="sm" variant="outline">
-                  Create Life Plan <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
