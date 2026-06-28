@@ -91,11 +91,7 @@ function HomePage() {
 
   return (
     <AppShell>
-      <div className="mb-3 rounded-xl border border-dashed border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
-        <span className="font-semibold">Data is currently partial.</span> We are actively working to connect more city datasets, so what you see here may be incomplete. If something looks missing, it might not be in our records yet.
-      </div>
-
-      <div className="mb-4 flex items-center justify-between gap-4">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
@@ -108,6 +104,25 @@ function HomePage() {
           </button>
         )}
       </div>
+
+      <Collapsible>
+        <div className="mb-4 rounded-lg border border-dashed border-warning/40 bg-warning/10 px-3 py-2 text-xs text-foreground">
+          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 text-left">
+            <span className="inline-flex items-center gap-1.5">
+              <AlertTriangle className="h-3.5 w-3.5 text-warning-foreground" />
+              <span className="font-semibold">Beta — partial data.</span>
+              <span className="text-muted-foreground">Tap to learn more</span>
+            </span>
+            <ChevronDown className="h-3.5 w-3.5 transition-transform group-data-[state=open]:rotate-180" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <p className="mt-2 leading-relaxed text-foreground/90">
+              We are actively working to connect more city datasets, so what you see here may be incomplete. If something looks missing, it might not be in our records yet.
+            </p>
+          </CollapsibleContent>
+        </div>
+      </Collapsible>
+
 
       {!active && (
         <>
