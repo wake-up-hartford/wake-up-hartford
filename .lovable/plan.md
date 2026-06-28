@@ -1,26 +1,14 @@
-## Fix mobile header jump from rotating messages
+Update the resident feedback prompt on the neighborhood/action page.
 
-The rotating civic-message banner in `src/components/AppShell.tsx` changes height between messages on mobile — some wrap to 2 lines, others stay on 1 line — causing the sticky header to push/pull the page content.
+Current text:
+- Heading: "Report what's missing"
+- Body: "The numbers here don't match what you're seeing on the ground? Tell us. Ground-truth from residents makes this report better."
 
-### Plan
+Revised text (chosen by user):
+- Heading: "Help us get it right"
+- Body: "If the numbers here don't match what you're seeing on the ground, tell us. Your first-hand knowledge makes this report better for everyone."
 
-1. Inspect the message container
-   - The current markup has no fixed height; it relies on text content + padding (`py-2.5`).
-   - Text size is `text-[15px]` on mobile and `text-[14px]` on desktop (`sm:text-[14px]`).
-
-2. Fix the mobile banner height
-   - Set a fixed height on the message container below `sm` that accommodates exactly 2 lines of the 15px italic text.
-   - Center the text vertically inside that fixed height (`flex items-center justify-center`).
-   - Apply `line-clamp-2` or equivalent so any longer message never grows beyond 2 lines.
-
-3. Keep desktop untouched
-   - Leave the `sm:` layout at its current height and font size; the problem is specifically mobile.
-
-4. Verify visually
-   - Cycle through the rotating messages in a mobile viewport to confirm the header height stays constant and no text is clipped or overflows.
-
-### Implementation detail
-- File: `src/components/AppShell.tsx` only.
-- No new dependencies.
-- No behavior changes beyond preventing layout shift.
-
+Steps:
+1. Locate the exact route file containing this prompt (likely `src/routes/neighborhood-actions.tsx` or `src/routes/neighborhood.tsx`).
+2. Replace the heading and body with the revised copy.
+3. Verify the build passes and the text renders correctly in the preview.
