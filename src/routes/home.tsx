@@ -46,8 +46,23 @@ function HomePage() {
   const [query, setQuery] = useState(EXAMPLE_TEXT);
   const [active, setActive] = useState<string | null>(null);
   const [seeded, setSeeded] = useState(false);
+  const [suggestOpen, setSuggestOpen] = useState(false);
+  const [debounced, setDebounced] = useState("");
 
   const lookup = useServerFn(lookupHartfordAddress);
+  const suggest = useServerFn(suggestHartfordAddresses);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query), 180);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const { data: suggestions = [] } = useQuery({
+    queryKey: ["address-suggest", debounced],
+    queryFn: () => suggest({ data: { query: debounced } }),
+    enabled: suggestOpen && debounced.length >= 2 && debounced !== EXAMPLE_TEXT,
+    staleTime: 30_000,
+  });
 
   useEffect(() => {
     if (seeded) return;
