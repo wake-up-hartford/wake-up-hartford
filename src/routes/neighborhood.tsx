@@ -10,7 +10,7 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
