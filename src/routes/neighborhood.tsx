@@ -418,7 +418,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
 </style></head><body>
   <div class="header">
     <div class="titles">
-      <p class="eyebrow">Wake Up Wednesday · GREATER HARTFORD BRANCH NAACP</p>
+      <p class="eyebrow">Wake Up Wednesday · Greater Hartford Branch NAACP</p>
       <h1>${escapeHtml(tract.neighborhood ?? tract.tractName)}</h1>
       <p class="sub">Census Tract ${escapeHtml(tract.tractName)} · ${escapeHtml(tract.address)}</p>
     </div>
@@ -431,7 +431,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
   </tbody></table>
 
   <p style="font-family: Arial, sans-serif; font-size: 10px; color:#555; margin-top: 10px;">
-    Source: US Census Bureau, American Community Survey 5-year (2022); USDA Food Access Research Atlas (2019).
+    Source: US Census Bureau, American Community Survey 5-year (2022).
   </p>
 
   <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>

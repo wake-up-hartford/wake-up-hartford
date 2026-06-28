@@ -558,7 +558,7 @@ function AuthPage() {
             className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
           />
           <span>
-            Send me info on free resources and GREATER HARTFORD BRANCH NAACP campaign updates.
+            Send me info on free resources and Greater Hartford Branch NAACP campaign updates.
           </span>
         </label>
         <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-foreground" : "text-muted-foreground"}`}>
