@@ -10,12 +10,13 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
 import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { suggestHartfordAddresses } from "@/lib/address-lookup.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
@@ -483,9 +484,48 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Tract | null>(null);
+  const [suggestOpen, setSuggestOpen] = useState(false);
+  const [debounced, setDebounced] = useState("");
   const lookupAddress = useServerFn(geocodeAddressToTract);
+  const suggest = useServerFn(suggestHartfordAddresses);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(street), 180);
+    return () => clearTimeout(t);
+  }, [street]);
+
+  const { data: suggestions = [] } = useQuery({
+    queryKey: ["neighborhood-address-suggest", debounced],
+    queryFn: () => suggest({ data: { query: debounced } }),
+    enabled: suggestOpen && debounced.trim().length >= 2,
+    staleTime: 30_000,
+  });
 
   const canSubmit = street.trim().length > 2 && city.trim().length > 1 && state.trim().length >= 2;
+
+  const pickSuggestion = async (s: { display: string; normalized: string }) => {
+    setStreet(s.display);
+    setCity((c) => c || "Hartford");
+    setState((st) => st || "CT");
+    setSuggestOpen(false);
+    const q = `${s.display}, Hartford, CT`;
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const resolved = await lookupAddress({ data: { address: q } });
+      if (resolved.error) {
+        setError(resolved.error);
+        return;
+      }
+      setResult(resolved);
+      onResolved(resolved);
+    } catch {
+      setError("Couldn't reach the Census geocoder. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -518,15 +558,41 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
 
         <form onSubmit={handleLookup} className="flex flex-col gap-2">
           <label htmlFor="lookup-street" className="sr-only">Street address</label>
-          <input
-            id="lookup-street"
-            type="text"
-            value={street}
-            onChange={(e) => setStreet(e.target.value)}
-            placeholder="Street address (e.g. 1234 Main St)"
-            autoComplete="address-line1"
-            className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
+          <div className="relative">
+            <input
+              id="lookup-street"
+              type="text"
+              value={street}
+              onChange={(e) => { setStreet(e.target.value); setSuggestOpen(true); }}
+              onFocus={() => setSuggestOpen(true)}
+              onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
+              placeholder="Street address (e.g. 1234 Main St)"
+              autoComplete="off"
+              role="combobox"
+              aria-expanded={suggestOpen && suggestions.length > 0}
+              aria-autocomplete="list"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+            {suggestOpen && suggestions.length > 0 && (
+              <ul
+                role="listbox"
+                className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-border bg-card shadow-lg"
+              >
+                {suggestions.map((s) => (
+                  <li key={s.normalized}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => { e.preventDefault(); pickSuggestion(s); }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-foreground hover:bg-secondary/60"
+                    >
+                      <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{s.display}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <div className="flex gap-2">
             <label htmlFor="lookup-city" className="sr-only">City</label>
             <input
