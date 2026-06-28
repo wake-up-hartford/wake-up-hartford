@@ -93,6 +93,15 @@ function HomePage() {
 
   const handleFocus = () => {
     if (query === EXAMPLE_TEXT) setQuery("");
+    setSuggestOpen(true);
+  };
+
+  const pickSuggestion = (s: { display: string; normalized: string }) => {
+    setQuery(s.display);
+    setSuggestOpen(false);
+    trackEvent("home_address_submit", { address: s.display, source: "autocomplete" });
+    setActive(s.display);
+    save(s.display);
   };
 
   const { data: result, isLoading } = useQuery({
