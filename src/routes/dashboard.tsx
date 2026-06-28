@@ -71,6 +71,7 @@ function DashboardPage() {
           title="Your Life"
           body="Resources for stability, health, and safety."
           tone="blue"
+          time="~5–8 min"
         />
         <DashLink
           to="/home"
@@ -78,6 +79,7 @@ function DashboardPage() {
           title="Your Home"
           body="Look up any Hartford address — code issues, evictions, landlord info."
           tone="purple"
+          time="~30 sec"
         />
         <DashLink
           to="/neighborhood"
@@ -85,7 +87,9 @@ function DashboardPage() {
           title="Your Neighborhood"
           body="A report card for your block."
           tone="gold"
+          time="~1 min"
         />
+
 
       </div>
 
