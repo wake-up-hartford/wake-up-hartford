@@ -194,6 +194,9 @@ function SurveyPage() {
     );
   }
 
+  const answered = [ease !== null, !!techIssue, !!prompt, features.length > 0].filter(Boolean).length;
+  const pct = Math.round((answered / 4) * 100);
+
   return (
     <AppShell>
       <Link to="/profile" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
@@ -203,6 +206,20 @@ function SurveyPage() {
       <p className="mt-2 text-[14px] text-muted-foreground">
         4 questions, under 1 minute. Your feedback shapes this app.
       </p>
+
+      <div className="mt-4">
+        <div className="mb-1.5 flex items-center justify-between text-[12px] font-medium text-muted-foreground">
+          <span>{answered} of 4 answered</span>
+          <span>{pct}%</span>
+        </div>
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+          <div
+            className="h-full rounded-full bg-accent transition-all"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {/* Q1 */}
