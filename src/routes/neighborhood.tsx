@@ -86,22 +86,25 @@ function NeighborhoodPage() {
             title="Learn About Your Neighborhood"
             subtitle="Enter an address or tap a tract on the map. Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA."
           />
-          <Card className="mb-5" id="neighborhood-lookup">
-            <Tabs defaultValue="address">
-              <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-                <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Enter Address</TabsTrigger>
-                <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Click from Map</TabsTrigger>
-              </TabsList>
-              <TabsContent value="map" className="mt-3">
-                <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
-                  <TargetTractMap selectedTract={null} onSelect={(t) => { trackEvent("neighborhood_map_tract_click", { tract: t.tract }); handleResolved(t); }} />
-                </Suspense>
-              </TabsContent>
-              <TabsContent value="address" className="mt-3">
-                <CensusTractLookup onResolved={(t) => { trackEvent("neighborhood_address_submit", { tract: t.tract }); handleResolved(t); }} />
-              </TabsContent>
-            </Tabs>
-          </Card>
+          <div id="neighborhood-lookup">
+            <Card className="mb-5">
+              <Tabs defaultValue="address">
+                <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
+                  <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Enter Address</TabsTrigger>
+                  <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Click from Map</TabsTrigger>
+                </TabsList>
+                <TabsContent value="map" className="mt-3">
+                  <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
+                    <TargetTractMap selectedTract={null} onSelect={(t) => { trackEvent("neighborhood_map_tract_click", { tract: t.tract }); handleResolved(t); }} />
+                  </Suspense>
+                </TabsContent>
+                <TabsContent value="address" className="mt-3">
+                  <CensusTractLookup onResolved={(t) => { trackEvent("neighborhood_address_submit", { tract: t.tract }); handleResolved(t); }} />
+                </TabsContent>
+              </Tabs>
+            </Card>
+          </div>
+
           {/* Sticky mobile CTA */}
           <div className="fixed inset-x-0 bottom-16 z-30 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
             <button
