@@ -797,6 +797,19 @@ function SurveyScreen({
           {isLastQuestion ? "Finish Survey" : "Continue"} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
+      {question.type === "multi" && (
+        <button
+          type="button"
+          onClick={() => {
+            setAnswers((prev) => ({ ...prev, [question.id]: [] }));
+            goNext();
+          }}
+          className="mt-3 w-full text-center text-[13px] text-muted-foreground underline hover:text-foreground"
+        >
+          Skip this question
+        </button>
+      )}
+
     </div>
   );
 }
