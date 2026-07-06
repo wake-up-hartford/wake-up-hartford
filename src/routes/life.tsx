@@ -555,10 +555,10 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <h2 className="font-display text-lg leading-tight text-card-foreground">
-          8 areas of life
+          Survey covers 8 areas of life
         </h2>
         <p className="mt-1 text-[13px] leading-relaxed text-card-foreground">
-          The survey covers eight areas that affect day-to-day stability.
+          {"\n"}
         </p>
         <div className="mt-4 grid grid-cols-4 gap-y-4 gap-x-2">
           {SECTIONS.map((s) => {
