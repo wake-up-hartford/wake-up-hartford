@@ -4,9 +4,10 @@ import { useSharePdf } from "@/hooks/use-share-pdf";
 
 type Props = {
   printRef?: React.RefObject<HTMLElement | null>;
+  onBeforeCapture?: () => (() => void) | void;
 };
 
-export function SharePlanCard({ printRef }: Props) {
+export function SharePlanCard({ printRef, onBeforeCapture }: Props) {
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = "My 30-day stabilization plan";
   const shareText = `I'd like to share my 30-day plan with you so you can help me follow through. View it here: ${shareUrl}`;
@@ -20,7 +21,7 @@ export function SharePlanCard({ printRef }: Props) {
       title: shareTitle,
       text: shareText,
       filename,
-    });
+    }, onBeforeCapture);
   };
 
   return (
