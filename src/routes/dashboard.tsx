@@ -55,7 +55,7 @@ function DashboardPage() {
         <span className="text-gold">Name It.</span>{" "}<br />
         <span className="text-accent">Fix It.</span>
       </h1>
-      <p className="mt-5 mb-4 text-[15px] leading-relaxed text-foreground/80">
+      <p className="mt-5 mb-4 text-[14px] leading-relaxed text-foreground/80 sm:text-[15px]">
         This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. <strong>Then take ACTION to make change.</strong>
       </p>
 
