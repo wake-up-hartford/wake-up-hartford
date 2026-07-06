@@ -43,6 +43,19 @@ function PlanPage() {
   const { isBookmarked, bookmarkCount, toggleBookmark } = useBookmarkPlan(planId);
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  useEffect(() => {
+    const before = () => setIsPrinting(true);
+    const after = () => setIsPrinting(false);
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
+
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["plan", planId],
