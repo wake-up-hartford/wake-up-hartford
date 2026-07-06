@@ -15,7 +15,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  LogIn,
   FileText,
 } from "lucide-react";
 import { useMemo, useState, useEffect, type ComponentType } from "react";
