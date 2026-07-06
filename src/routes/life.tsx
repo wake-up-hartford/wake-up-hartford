@@ -1007,13 +1007,13 @@ function PlanGenerator({
         A few last questions
       </h3>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-        These help this plan pick resources that actually fit your life.
+        Helps plan pick resources that fit your life.
       </p>
 
       <div className="mt-4 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <NumberField label="Adults in household" value={adults} setValue={setAdults} min={1} max={10} />
-          <NumberField label="Children" value={children} setValue={setChildren} min={0} max={10} />
+          <NumberField label="CHILDREN IN HOUSEHOLD" value={children} setValue={setChildren} min={0} max={10} />
         </div>
 
         <div>
