@@ -538,7 +538,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
             </div>
             <div className="ml-6 mt-1 flex items-start gap-2">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-              <span>Steps you can start this week</span>
+              <span></span>
             </div>
           </li>
           <li className="flex items-start gap-2">
