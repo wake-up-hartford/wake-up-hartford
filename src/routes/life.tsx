@@ -652,6 +652,10 @@ function SurveyScreen({
   };
 
   const goBack = () => {
+    if (sectionIdx === 0 && questionIdx === 0) {
+      onBack();
+      return;
+    }
     if (questionIdx > 0) setQuestionIdx(questionIdx - 1);
     else if (sectionIdx > 0) {
       const prev = SECTIONS[sectionIdx - 1];
@@ -777,7 +781,6 @@ function SurveyScreen({
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={goBack}
-          disabled={sectionIdx === 0 && questionIdx === 0}
           className="flex items-center gap-1 rounded-xl border border-border bg-card px-4 py-3 text-[14px] font-semibold text-card-foreground disabled:opacity-40"
         >
           <ChevronLeft className="h-4 w-4" /> Back
