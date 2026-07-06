@@ -35,15 +35,10 @@ export const Route = createFileRoute("/plan/$planId")({
 
 function PlanPage() {
   const { planId } = Route.useParams();
-  const nav = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, isAnonymous } = useAuth({ ensureAnonymous: true });
   const fetchPlan = useServerFn(getPlan);
   const qc = useQueryClient();
   const toggleFn = useServerFn(toggleStep);
-
-  useEffect(() => {
-    if (!loading && !user) nav({ to: "/auth" });
-  }, [user, loading, nav]);
 
   const { isBookmarked, bookmarkCount, toggleBookmark } = useBookmarkPlan(planId);
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
@@ -69,7 +64,22 @@ function PlanPage() {
     return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
   }
   if (error || !data || !plan) {
-    return <AppShell><p className="text-destructive">{(error as Error)?.message ?? "Couldn't load plan."}</p></AppShell>;
+    return (
+      <AppShell>
+        <p className="text-destructive mb-3">
+          {(error as Error)?.message ?? "Couldn't load this plan."}
+        </p>
+        <p className="text-sm text-muted-foreground mb-4">
+          If you saved this plan to an account, sign in to view it.
+        </p>
+        <Link
+          to="/auth"
+          className="inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+        >
+          Sign in
+        </Link>
+      </AppShell>
+    );
   }
 
   const stepsByWeek = new Map<number, StepRow[]>();
