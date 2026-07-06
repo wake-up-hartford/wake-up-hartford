@@ -85,6 +85,7 @@ export function LetterPage({
     <AppShell>
       <Link
         to={backTo}
+        search={backSearch as never}
         className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground print:hidden"
       >
         <ChevronLeft className="h-4 w-4" /> {backLabel}
