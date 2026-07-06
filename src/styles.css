@@ -228,9 +228,9 @@
     font-size: 11pt;
     line-height: 1.4;
   }
-  #print-plan .no-print,
-  #print-plan button,
-  #print-plan a[href="/plans"] { display: none !important; }
+  #print-plan .no-print { display: none !important; }
+  #print-plan button { border: none !important; background: transparent !important; padding: 0 !important; color: inherit !important; }
+
 }
 
 

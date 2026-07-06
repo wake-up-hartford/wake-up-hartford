@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { CrisisFlags } from "@/components/plan/CrisisFlags";
 import { PlanFooterActions } from "@/components/plan/PlanFooterActions";
@@ -43,6 +43,19 @@ function PlanPage() {
   const { isBookmarked, bookmarkCount, toggleBookmark } = useBookmarkPlan(planId);
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  useEffect(() => {
+    const before = () => setIsPrinting(true);
+    const after = () => setIsPrinting(false);
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
+
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["plan", planId],
@@ -99,7 +112,7 @@ function PlanPage() {
     <AppShell>
       <div id="print-plan">
 
-      <Link to="/plans" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link to="/plans" className="no-print mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> All plans
       </Link>
 
@@ -128,7 +141,7 @@ function PlanPage() {
               steps={ws}
               dueDate={dueDate}
               isCustom={isCustom}
-              isCollapsed={collapsedWeeks.has(w)}
+              isCollapsed={!isPrinting && collapsedWeeks.has(w)}
               isEditing={editingWeek === w}
               onToggleCollapse={toggleWeekCollapse}
               onStartEdit={(week) => setEditingWeek(editingWeek === week ? null : week)}
@@ -141,7 +154,7 @@ function PlanPage() {
       </div>
 
       {isAnonymous && (
-        <>
+        <div className="no-print">
           <Link
             id="save-plan-section"
             to="/auth"
@@ -158,11 +171,14 @@ function PlanPage() {
           <p className="mt-2 text-center text-[12px] text-muted-foreground">
             This plan is saved to your current session. Create an account to keep it permanently.
           </p>
-        </>
+        </div>
       )}
 
-      <SharePlanCard />
-      <PlanFooterActions bookmarkCount={bookmarkCount} />
+      <div className="no-print">
+        <SharePlanCard />
+        <PlanFooterActions bookmarkCount={bookmarkCount} />
+      </div>
+
       </div>
     </AppShell>
   );
