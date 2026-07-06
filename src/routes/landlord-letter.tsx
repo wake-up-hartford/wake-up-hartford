@@ -162,6 +162,7 @@ ${tenantName || "[Your name]"}
     <LetterPage
       backTo="/home"
       backLabel="Back to your report"
+      backSearch={address ? { address } : undefined}
       eyebrow="Tenant tools"
       title="Letter of Complaint to Your Landlord"
       intro="A written letter creates a paper trail. Fill in the details below and we'll generate a clear, formal letter you can print, email, or copy."
