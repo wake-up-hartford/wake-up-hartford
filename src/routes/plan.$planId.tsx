@@ -154,7 +154,7 @@ function PlanPage() {
       </div>
 
       {isAnonymous && (
-        <>
+        <div className="no-print">
           <Link
             id="save-plan-section"
             to="/auth"
@@ -171,11 +171,14 @@ function PlanPage() {
           <p className="mt-2 text-center text-[12px] text-muted-foreground">
             This plan is saved to your current session. Create an account to keep it permanently.
           </p>
-        </>
+        </div>
       )}
 
-      <SharePlanCard />
-      <PlanFooterActions bookmarkCount={bookmarkCount} />
+      <div className="no-print">
+        <SharePlanCard />
+        <PlanFooterActions bookmarkCount={bookmarkCount} />
+      </div>
+
       </div>
     </AppShell>
   );
