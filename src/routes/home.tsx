@@ -20,6 +20,9 @@ const PickAddressMap = lazy(() =>
 const AddressLocationMap = lazy(() =>
   import("@/components/BuildingAddressMap").then((m) => ({ default: m.AddressLocationMap })),
 );
+const AddressStreetView = lazy(() =>
+  import("@/components/AddressStreetView").then((m) => ({ default: m.AddressStreetView })),
+);
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -266,6 +269,11 @@ function HomePage() {
             <div className="mt-3">
               <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
                 <AddressLocationMap address={found.address.display} />
+              </Suspense>
+            </div>
+            <div className="mt-3">
+              <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
+                <AddressStreetView address={found.address.display} />
               </Suspense>
             </div>
           </Card>
