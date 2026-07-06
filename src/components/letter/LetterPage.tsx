@@ -58,6 +58,7 @@ export function LetterPage({
   letter,
   emailSubject,
   disclaimer,
+  backSearch,
 }: LetterPageProps) {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
 
