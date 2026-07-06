@@ -453,9 +453,6 @@ function ShareSlideshow({ data }: { data: Found }) {
   const [i, setI] = useState(0);
   const slide = slides[i];
 
-  const streetViewSrc = `/api/street-view?address=${encodeURIComponent(data.address.display + ", Hartford, CT")}`;
-  const [bgOk, setBgOk] = useState(true);
-
   const [shareStatus, setShareStatus] = useState<null | "copied" | "error">(null);
   const handleShare = async () => {
     const text = `${data.address.display} — ${data.counts.violationsOpen} open code violations, ${data.counts.complaints12mo} 311 complaints in the last year. See more on Wake Up Wednesday.`;
@@ -468,31 +465,20 @@ function ShareSlideshow({ data }: { data: Found }) {
 
   return (
     <div className="space-y-3">
-      <div className={`relative aspect-square overflow-hidden rounded-2xl text-primary-foreground shadow-soft ${bgOk ? "bg-neutral-900" : "bg-gradient-to-br from-primary to-primary/80"}`}>
-        {bgOk && (
-          <img
-            src={streetViewSrc}
-            alt=""
-            loading="lazy"
-            onError={() => setBgOk(false)}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
-        {bgOk && (
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80" aria-hidden />
-        )}
-        <div className="relative flex h-full flex-col p-6">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-80">
+      <div className="aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground shadow-soft">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-70">
             <span>{slide.eyebrow}</span>
             <span>{i + 1} / {slides.length}</span>
           </div>
           <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
-            <p className="font-display text-3xl leading-tight break-words drop-shadow sm:text-4xl">{slide.title}</p>
-            <p className="mt-3 text-sm leading-relaxed opacity-95 drop-shadow break-words sm:text-base">{slide.body}</p>
+            <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
+            <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
           </div>
-          <p className="text-[10px] uppercase tracking-wider opacity-75">naacp greater hartford · wake up wednesday</p>
+          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
         </div>
       </div>
+
 
 
       <div className="flex items-center justify-between gap-2">
