@@ -571,15 +571,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         Enter Here <ArrowRight className="h-5 w-5" />
       </button>
 
-      {/* Sticky mobile CTA */}
-      <div className="fixed inset-x-0 bottom-16 z-30 px-4 pb-[env(safe-area-inset-bottom)] md:hidden">
-        <button
-          onClick={onBegin}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-4 py-3 text-[14px] font-semibold text-white shadow-lg"
-        >
-          Start the survey <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+      {/* Mobile sticky CTA removed per request */}
 
     </div>
   );
