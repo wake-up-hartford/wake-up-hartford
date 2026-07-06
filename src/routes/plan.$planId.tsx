@@ -44,6 +44,7 @@ function PlanPage() {
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [isSharingPdf, setIsSharingPdf] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
