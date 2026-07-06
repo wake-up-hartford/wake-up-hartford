@@ -120,20 +120,25 @@ export function useSharePdf() {
 
         const file = new File([blob], opts.filename, { type: "application/pdf" });
         const shareData: ShareData = { title: opts.title, text: opts.text, files: [file] };
+        console.log("[useSharePdf] blob size", blob.size, "canShare", typeof navigator !== "undefined" && navigator.canShare ? navigator.canShare({ files: [file] }) : "no canShare");
 
         // Preferred path: native share sheet with the PDF file (mobile Mail/Gmail/etc).
         if (typeof navigator !== "undefined" && navigator.canShare && navigator.canShare({ files: [file] })) {
+          console.log("[useSharePdf] using navigator.share");
           await navigator.share(shareData);
+          console.log("[useSharePdf] navigator.share resolved");
           setState({ loading: false, error: null });
           return;
         }
 
+        console.log("[useSharePdf] using fallback download+mailto");
         // Desktop / unsupported clients: download the PDF and open a mailto asking the user to attach it.
         downloadPdf(blob, opts.filename);
         const body = `${opts.text}\n\nI've downloaded my plan as a PDF; please attach it to this email if it wasn't added automatically.`;
         openMailto(opts.title, body);
         setState({ loading: false, error: null });
       } catch (err) {
+        console.error("[useSharePdf] error", err);
         cleanup?.();
         if (abortRef.current) return;
         const message = (err as Error)?.message ?? "Couldn't prepare the PDF.";
