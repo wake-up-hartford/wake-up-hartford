@@ -175,7 +175,13 @@ function PlanPage() {
       )}
 
       <div className="no-print">
-        <SharePlanCard />
+        <SharePlanCard
+          planData={{
+            plan,
+            steps,
+            generatedAt,
+          }}
+        />
         <PlanFooterActions bookmarkCount={bookmarkCount} isAnonymous={isAnonymous} />
       </div>
 
