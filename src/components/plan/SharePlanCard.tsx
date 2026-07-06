@@ -1,27 +1,26 @@
 import { useRef } from "react";
 import { Loader2, Mail, MessageSquare } from "lucide-react";
-import { useSharePdf } from "@/hooks/use-share-pdf";
+import { useSharePlanPdf } from "@/hooks/use-share-plan-pdf";
+import type { PlanPdfInput } from "@/lib/plan-pdf";
 
 type Props = {
-  printRef?: React.RefObject<HTMLElement | null>;
-  onBeforeCapture?: () => (() => void) | void;
+  planData?: PlanPdfInput;
 };
 
-export function SharePlanCard({ printRef, onBeforeCapture }: Props) {
+export function SharePlanCard({ planData }: Props) {
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = "My 30-day stabilization plan";
   const shareText = `I'd like to share my 30-day plan with you so you can help me follow through. View it here: ${shareUrl}`;
   const sms = `sms:?&body=${encodeURIComponent(shareText)}`;
-  const { share, loading, error } = useSharePdf();
+  const { share, loading, error } = useSharePlanPdf();
   const filename = useRef(`Wake-Up-Plan-${shareUrl.split("/").pop()?.split("?")[0] ?? "plan"}.pdf`).current;
 
   const handleEmail = async () => {
-    if (!printRef?.current) return;
-    await share(printRef.current, {
+    await share(planData ?? null, {
       title: shareTitle,
       text: shareText,
       filename,
-    }, onBeforeCapture);
+    });
   };
 
   return (
@@ -39,7 +38,7 @@ export function SharePlanCard({ printRef, onBeforeCapture }: Props) {
         </a>
         <button
           onClick={handleEmail}
-          disabled={loading}
+          disabled={loading || !planData}
           className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-70"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
@@ -50,4 +49,3 @@ export function SharePlanCard({ printRef, onBeforeCapture }: Props) {
     </div>
   );
 }
-
