@@ -1066,7 +1066,7 @@ function PlanGenerator({
           <div className="flex flex-wrap gap-2">
             {BENEFIT_OPTIONS.map((b) => (
               <button key={b} type="button" onClick={() => toggleBenefit(b)}
-                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium ${benefits.includes(b) ? "border-emerald-600 bg-emerald-50 text-emerald-700" : "border-border bg-background text-muted-foreground"}`}>
+                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium ${benefits.includes(b) ? "border-foreground/50 bg-secondary font-semibold text-secondary-foreground" : "border-border bg-secondary text-secondary-foreground"}`}>
                 {b}
               </button>
             ))}
