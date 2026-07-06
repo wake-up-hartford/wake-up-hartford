@@ -531,15 +531,9 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
       <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4">
         <h2 className="font-display text-base leading-tight text-foreground">What you'll get</h2>
         <ul className="mt-2 space-y-1.5 text-[13px] text-foreground">
-          <li className="flex flex-col">
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-              <span>A plan made for your situation</span>
-            </div>
-            <div className="ml-6 mt-1 flex items-start gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-              <span></span>
-            </div>
+          <li className="flex items-start gap-2">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <span>A plan made for your situation</span>
           </li>
           <li className="flex items-start gap-2">
             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
