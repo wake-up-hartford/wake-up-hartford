@@ -29,6 +29,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
+import { Route as ApiStreetViewRouteImport } from './routes/api/street-view'
 import { Route as AdminSurveysRouteImport } from './routes/admin.surveys'
 import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
 import { Route as AdminReportingRouteImport } from './routes/admin.reporting'
@@ -134,6 +135,11 @@ const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
   path: '/plan/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStreetViewRoute = ApiStreetViewRouteImport.update({
+  id: '/api/street-view',
+  path: '/api/street-view',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSurveysRoute = AdminSurveysRouteImport.update({
   id: '/surveys',
   path: '/surveys',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/api/street-view': typeof ApiStreetViewRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/api/street-view': typeof ApiStreetViewRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/api/street-view': typeof ApiStreetViewRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/api/street-view'
     | '/plan/$planId'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/api/street-view'
     | '/plan/$planId'
     | '/admin'
   id:
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/api/street-view'
     | '/plan/$planId'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SurveyRoute: typeof SurveyRoute
+  ApiStreetViewRoute: typeof ApiStreetViewRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
 
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/street-view': {
+      id: '/api/street-view'
+      path: '/api/street-view'
+      fullPath: '/api/street-view'
+      preLoaderRoute: typeof ApiStreetViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/surveys': {
       id: '/admin/surveys'
       path: '/surveys'
@@ -545,18 +565,9 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityDepositLetterRoute: SecurityDepositLetterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SurveyRoute: SurveyRoute,
+  ApiStreetViewRoute: ApiStreetViewRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
