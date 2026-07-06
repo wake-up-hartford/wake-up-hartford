@@ -267,7 +267,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
       title: ind.value,
       body: ind.note,
       compare: ind.stateAverage?.label ?? null,
-      severity: ind.severity,
+      severity: ind.key === "population" ? null : ind.severity,
     })),
   ];
   const [i, setI] = useState(0);
