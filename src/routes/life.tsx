@@ -1086,6 +1086,9 @@ function PlanGenerator({
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-[14px] font-semibold text-primary-foreground shadow-soft hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
           {busy ? "Building your plan…" : (<><Sparkles className="h-4 w-4" /> Generate my 30-day plan</>)}
         </button>
+        <p className="text-center text-[12px] text-muted-foreground">
+          Your plan is made by AI, then it's yours to use.
+        </p>
         {busy && <p className="text-center text-[12px] text-muted-foreground">This takes about 10 seconds.</p>}
       </div>
     </div>
