@@ -652,6 +652,10 @@ function SurveyScreen({
   };
 
   const goBack = () => {
+    if (sectionIdx === 0 && questionIdx === 0) {
+      onBack();
+      return;
+    }
     if (questionIdx > 0) setQuestionIdx(questionIdx - 1);
     else if (sectionIdx > 0) {
       const prev = SECTIONS[sectionIdx - 1];
