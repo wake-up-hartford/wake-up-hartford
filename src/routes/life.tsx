@@ -641,9 +641,14 @@ function SurveyScreen({
   const canContinue = selected.length > 0;
 
   const toggle = (opt: string) => {
+    if (question.type === "single") {
+      if (selected.includes(opt)) return; // already selected
+      setAnswers((prev) => ({ ...prev, [question.id]: [opt] }));
+      goNext();
+      return;
+    }
     setAnswers((prev) => {
       const cur = prev[question.id] ?? [];
-      if (question.type === "single") return { ...prev, [question.id]: [opt] };
       if (cur.includes(opt))
         return { ...prev, [question.id]: cur.filter((o) => o !== opt) };
       if (question.maxSelect && cur.length >= question.maxSelect) return prev;
