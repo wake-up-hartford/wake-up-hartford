@@ -580,11 +580,20 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         </div>
       </div>
 
-      {/* Mobile sticky CTA removed per request */}
+      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
+        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
+        <div>
+          <h2 className="mb-1 font-display text-[16px] font-semibold text-white">Trust</h2>
+          <p className="text-[15px] leading-relaxed">
+            We know trust matters. Your answers are private and secure. We will never share or sell your information.
+          </p>
+        </div>
+      </div>
 
     </div>
   );
 }
+
 
 
 
@@ -603,7 +612,11 @@ function SurveyScreen({
 }) {
   const [sectionIdx, setSectionIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
-  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    trackEvent("life_survey_start");
+  }, []);
+
 
   const section = SECTIONS[sectionIdx];
   const question = section.questions[questionIdx];
@@ -656,38 +669,8 @@ function SurveyScreen({
     }
   };
 
-  if (!started) {
-    return (
-      <div>
-        <button
-          type="button"
-          onClick={onBack}
-          className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="h-4 w-4" /> Back to Your Life
-        </button>
 
-        <div className="mb-5 space-y-3">
-          <div className="flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
-            <div>
-              <h2 className="mb-1 font-display text-[16px] font-semibold text-white">Trust</h2>
-              <p className="text-[15px] leading-relaxed">
-                We know trust matters. Your answers are private and secure. We will never share or sell your information.
-              </p>
-            </div>
-          </div>
-        </div>
 
-        <button
-          onClick={() => { trackEvent("life_survey_start"); setStarted(true); }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
-        >
-          Start Life Survey <ArrowRight className="h-5 w-5" />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div>
