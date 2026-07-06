@@ -479,6 +479,8 @@ function ShareSlideshow({ data }: { data: Found }) {
         </div>
       </div>
 
+
+
       <div className="flex items-center justify-between gap-2">
         <button
           onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
