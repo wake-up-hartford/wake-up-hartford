@@ -27,6 +27,54 @@ function openMailto(subject: string, body: string) {
   window.location.href = href;
 }
 
+function preparePdfClone(element: HTMLElement): { clone: HTMLElement; cleanup: () => void } {
+  const clone = element.cloneNode(true) as HTMLElement;
+
+  // Hide elements that are not meant for print.
+  clone.querySelectorAll(".no-print").forEach((el) => {
+    if (el instanceof HTMLElement) el.style.display = "none";
+  });
+
+  // Force a PDF-safe palette so html2canvas doesn't choke on Tailwind v4 oklch/lab colors.
+  const safeElements = [clone, ...Array.from(clone.querySelectorAll("*"))];
+  for (const el of safeElements) {
+    if (el instanceof HTMLElement) {
+      el.style.color = "#000000";
+      el.style.backgroundColor = "#ffffff";
+      el.style.borderColor = "#cccccc";
+      el.style.boxShadow = "none";
+      el.style.textShadow = "none";
+      // Remove Tailwind CSS variables that may resolve to oklch/lab colors.
+      el.style.removeProperty("--background");
+      el.style.removeProperty("--foreground");
+      el.style.removeProperty("--card");
+      el.style.removeProperty("--card-foreground");
+      el.style.removeProperty("--muted-foreground");
+      el.style.removeProperty("--border");
+      el.style.removeProperty("--accent");
+      el.style.removeProperty("--accent-foreground");
+    }
+  }
+
+  // Render the clone off-screen so html2canvas can measure it.
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.top = "0";
+  container.style.left = "-9999px";
+  container.style.width = "8.5in";
+  container.style.background = "white";
+  container.style.zIndex = "-1";
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  return {
+    clone,
+    cleanup: () => {
+      if (container.parentNode) container.parentNode.removeChild(container);
+    },
+  };
+}
+
 export function useSharePdf() {
   const [state, setState] = useState<SharePdfState>({ loading: false, error: null });
   const abortRef = useRef(false);
@@ -34,17 +82,23 @@ export function useSharePdf() {
   const generatePdf = useCallback(async (element: HTMLElement, filename: string): Promise<Blob> => {
     if (typeof window === "undefined") throw new Error("PDF generation is only available in the browser.");
     const html2pdf = (await import("html2pdf.js")).default;
-    return html2pdf()
-      .set({
-        margin: [0.5, 0.5, 0.5, 0.5],
-        filename,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-      })
-      .from(element)
-      .output("blob");
+    const { clone, cleanup } = preparePdfClone(element);
+    try {
+      return await html2pdf()
+        .set({
+          margin: [0.5, 0.5, 0.5, 0.5],
+          filename,
+          image: { type: "jpeg", quality: 0.95 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        })
+        .from(clone)
+        .output("blob");
+    } finally {
+      cleanup();
+    }
   }, []);
+
 
   const share = useCallback(
     async (element: HTMLElement | null, opts: ShareOptions, onBeforeCapture?: () => (() => void) | void) => {
