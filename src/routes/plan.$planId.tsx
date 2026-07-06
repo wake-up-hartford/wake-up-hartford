@@ -143,7 +143,7 @@ function PlanPage() {
               steps={ws}
               dueDate={dueDate}
               isCustom={isCustom}
-              isCollapsed={!isPrinting && collapsedWeeks.has(w)}
+              isCollapsed={!isPrinting && !isSharingPdf && collapsedWeeks.has(w)}
               isEditing={editingWeek === w}
               onToggleCollapse={toggleWeekCollapse}
               onStartEdit={(week) => setEditingWeek(editingWeek === week ? null : week)}
