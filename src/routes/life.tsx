@@ -931,9 +931,9 @@ function SummaryScreen({
       <div className="mb-5">
         <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
         <p className="mt-2 text-[14px] leading-relaxed text-foreground/80">
-          An AI-generated Plan will be created based on your responses — with specific
+          We're building your plan now, based on what you told us — with specific
           resources, steps, and timelines. No sign-in needed. You can save or share
-          your plan later.
+          it later.
         </p>
         <PlanGenerator
           scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
