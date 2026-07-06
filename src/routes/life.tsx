@@ -901,21 +901,21 @@ function SummaryScreen({
                   · {items.length}
                 </span>
               </div>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
                 {items.map(({ s }) => {
                   const Icon = s.icon;
                   return (
-                      <div
+                    <div
                       key={s.id}
-                      className="flex items-center gap-3 rounded-xl border border-border bg-card py-2 px-3"
+                      className="flex items-center gap-2 rounded-xl border border-border bg-card py-2 px-2"
                     >
                       <span
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white"
                         style={{ backgroundColor: s.color }}
                       >
                         <Icon className="h-3.5 w-3.5" />
                       </span>
-                      <span className="flex-1 text-[13px] font-semibold text-card-foreground">
+                      <span className="flex-1 text-[12px] font-semibold text-card-foreground leading-tight">
                         {s.name}
                       </span>
                     </div>
