@@ -177,7 +177,13 @@ function PlanPage() {
       )}
 
       <div className="no-print">
-        <SharePlanCard printRef={printRef} />
+        <SharePlanCard
+          printRef={printRef}
+          onBeforeCapture={() => {
+            setIsSharingPdf(true);
+            return () => setIsSharingPdf(false);
+          }}
+        />
         <PlanFooterActions bookmarkCount={bookmarkCount} isAnonymous={isAnonymous} />
       </div>
 
