@@ -118,10 +118,11 @@ function AuthPage() {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) nav({ to: consumePostAuthRedirect(), replace: true });
+      // Don't redirect anonymous users — they're here specifically to upgrade.
+      if (session && !session.user.is_anonymous) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     supabase.auth.getUser().then(({ data, error }) => {
-      if (!error && data.user) nav({ to: consumePostAuthRedirect(), replace: true });
+      if (!error && data.user && !data.user.is_anonymous) nav({ to: consumePostAuthRedirect(), replace: true });
     });
     return () => subscription.unsubscribe();
   }, [nav]);
@@ -160,10 +161,17 @@ function AuthPage() {
           setBusy(false);
           return;
         }
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
+
+        // If the visitor has an anonymous session (from the survey), upgrade
+        // it in place so their plan stays attached to the same account.
+        const { data: sessionData } = await supabase.auth.getSession();
+        const anonSession = sessionData.session;
+        const isAnon = !!anonSession?.user?.is_anonymous;
+
+        if (isAnon) {
+          const { error: updErr } = await supabase.auth.updateUser({
+            email,
+            password,
             data: {
               first_name: firstName || null,
               last_name: lastName || null,
@@ -171,13 +179,31 @@ function AuthPage() {
               opt_in_updates: optIn,
               sms_alerts: smsOptIn && !!phone.trim(),
             },
-            emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
-          },
-        });
-        if (error) throw error;
-        setPendingEmail(email);
-        setView("pending");
-        setPassword("");
+          });
+          if (updErr) throw updErr;
+          setPendingEmail(email);
+          setView("pending");
+          setPassword("");
+        } else {
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                first_name: firstName || null,
+                last_name: lastName || null,
+                phone: phone || null,
+                opt_in_updates: optIn,
+                sms_alerts: smsOptIn && !!phone.trim(),
+              },
+              emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
+            },
+          });
+          if (error) throw error;
+          setPendingEmail(email);
+          setView("pending");
+          setPassword("");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
