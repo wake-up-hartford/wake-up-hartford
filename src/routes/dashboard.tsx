@@ -158,7 +158,7 @@ function DashLink({
   const t = TONES[tone];
   return (
     <Link to={to} className="block">
-      <Card className={`flex items-center gap-4 border-l-4 lg:border-l-[6px] py-3 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
+      <Card className={`flex items-center gap-4 border-l-[6px] lg:border-l-[10px] py-3 transition active:scale-[0.99] ${t.border} ${t.shadow}`}>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h2 className={`font-display text-lg leading-tight ${t.title}`}>{title}</h2>
