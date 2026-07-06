@@ -110,7 +110,7 @@ function PlanPage() {
 
   return (
     <AppShell>
-      <div id="print-plan" ref={printRef}>
+      <div id="print-plan">
 
       <Link to="/plans" className="no-print mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> All plans
