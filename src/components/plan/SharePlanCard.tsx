@@ -1,11 +1,27 @@
-import { Mail, MessageSquare } from "lucide-react";
+import { useRef } from "react";
+import { Loader2, Mail, MessageSquare } from "lucide-react";
+import { useSharePdf } from "@/hooks/use-share-pdf";
 
-export function SharePlanCard() {
+type Props = {
+  printRef?: React.RefObject<HTMLElement | null>;
+};
+
+export function SharePlanCard({ printRef }: Props) {
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = "My 30-day stabilization plan";
   const shareText = `I'd like to share my 30-day plan with you so you can help me follow through. View it here: ${shareUrl}`;
-  const mailto = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText)}`;
   const sms = `sms:?&body=${encodeURIComponent(shareText)}`;
+  const { share, loading, error } = useSharePdf();
+  const filename = useRef(`Wake-Up-Plan-${shareUrl.split("/").pop()?.split("?")[0] ?? "plan"}.pdf`).current;
+
+  const handleEmail = async () => {
+    if (!printRef?.current) return;
+    await share(printRef.current, {
+      title: shareTitle,
+      text: shareText,
+      filename,
+    });
+  };
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-soft">
@@ -20,13 +36,17 @@ export function SharePlanCard() {
         >
           <MessageSquare className="h-4 w-4" /> Text
         </a>
-        <a
-          href={mailto}
-          className="flex items-center justify-center gap-1.5 rounded-xl bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-foreground hover:opacity-90"
+        <button
+          onClick={handleEmail}
+          disabled={loading}
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-accent px-3 py-2.5 text-[13px] font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-70"
         >
-          <Mail className="h-4 w-4" /> Email
-        </a>
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+          {loading ? "Preparing PDF…" : "Email"}
+        </button>
       </div>
+      {error && <p className="mt-2 text-[12px] text-destructive">{error}</p>}
     </div>
   );
 }
+
