@@ -905,17 +905,17 @@ function SummaryScreen({
                 {items.map(({ s }) => {
                   const Icon = s.icon;
                   return (
-                    <div
+                      <div
                       key={s.id}
-                      className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                      className="flex items-center gap-3 rounded-xl border border-border bg-card py-2 px-3"
                     >
                       <span
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
                         style={{ backgroundColor: s.color }}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-3.5 w-3.5" />
                       </span>
-                      <span className="flex-1 text-[14px] font-semibold text-card-foreground">
+                      <span className="flex-1 text-[13px] font-semibold text-card-foreground">
                         {s.name}
                       </span>
                     </div>
