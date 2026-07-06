@@ -176,7 +176,7 @@ function PlanPage() {
       )}
 
       <div className="no-print">
-        <SharePlanCard />
+        <SharePlanCard printRef={printRef} />
         <PlanFooterActions bookmarkCount={bookmarkCount} isAnonymous={isAnonymous} />
       </div>
 
