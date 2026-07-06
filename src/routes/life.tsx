@@ -880,42 +880,53 @@ function SummaryScreen({
         </div>
       )}
 
-      <div className="mb-5 space-y-2">
-        {ranked.map(({ s, score }, i) => {
-          const Icon = s.icon;
-          const badge =
-            score === "high"
-              ? { label: "High Priority", dot: "bg-red-500", text: "text-red-700", bg: "bg-red-50" }
-              : score === "moderate"
-                ? { label: "Moderate Priority", dot: "bg-amber-500", text: "text-amber-700", bg: "bg-amber-50" }
-                : { label: "Stable / Monitoring", dot: "bg-emerald-500", text: "text-emerald-700", bg: "bg-emerald-50" };
+      <div className="mb-5 space-y-3">
+        {(["high", "moderate", "stable"] as const).map((level) => {
+          const items = ranked.filter((r) => r.score === level);
+          if (items.length === 0) return null;
+          const group =
+            level === "high"
+              ? { label: "High Priority", dot: "bg-red-500", text: "text-red-700", bg: "bg-red-50", border: "border-red-200" }
+              : level === "moderate"
+                ? { label: "Moderate Priority", dot: "bg-amber-500", text: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200" }
+                : { label: "Stable / Monitoring", dot: "bg-emerald-500", text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200" };
           return (
-            <div
-              key={s.id}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-soft"
-            >
-              <span className="font-display text-[15px] text-muted-foreground w-5 text-center">
-                {i + 1}
-              </span>
-              <span
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-                style={{ backgroundColor: s.color }}
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-              <span className="flex-1 text-[14px] font-semibold text-card-foreground">
-                {s.name}
-              </span>
-              <span
-                className={`inline-flex items-center gap-1.5 rounded-full ${badge.bg} px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${badge.text}`}
-              >
-                <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
-                {badge.label}
-              </span>
+            <div key={level} className={`rounded-2xl border ${group.border} ${group.bg} p-4 shadow-soft`}>
+              <div className="mb-3 flex items-center gap-2">
+                <span className={`h-2 w-2 rounded-full ${group.dot}`} />
+                <span className={`text-[11px] font-semibold uppercase tracking-wider ${group.text}`}>
+                  {group.label}
+                </span>
+                <span className={`text-[11px] font-semibold ${group.text}`}>
+                  · {items.length}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {items.map(({ s }) => {
+                  const Icon = s.icon;
+                  return (
+                    <div
+                      key={s.id}
+                      className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                    >
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
+                        style={{ backgroundColor: s.color }}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <span className="flex-1 text-[14px] font-semibold text-card-foreground">
+                        {s.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
       </div>
+
 
       <div className="mb-5">
         <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
