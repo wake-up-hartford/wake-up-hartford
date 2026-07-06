@@ -140,6 +140,7 @@ function PlanPage() {
 
       {isAnonymous && (
         <Link
+          id="save-plan-section"
           to="/auth"
           onClick={() => {
             if (typeof window !== "undefined") {
