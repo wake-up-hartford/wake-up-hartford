@@ -29,32 +29,7 @@ function openMailto(subject: string, body: string) {
 
 function preparePdfClone(element: HTMLElement): { clone: HTMLElement; cleanup: () => void } {
   const clone = element.cloneNode(true) as HTMLElement;
-
-  // Hide elements that are not meant for print.
-  clone.querySelectorAll(".no-print").forEach((el) => {
-    if (el instanceof HTMLElement) el.style.display = "none";
-  });
-
-  // Force a PDF-safe palette so html2canvas doesn't choke on Tailwind v4 oklch/lab colors.
-  const safeElements = [clone, ...Array.from(clone.querySelectorAll("*"))];
-  for (const el of safeElements) {
-    if (el instanceof HTMLElement) {
-      el.style.setProperty("color", "#000000", "important");
-      el.style.setProperty("background-color", "#ffffff", "important");
-      el.style.setProperty("background", "#ffffff", "important");
-      el.style.setProperty("border-color", "#cccccc", "important");
-      el.style.setProperty("box-shadow", "none", "important");
-      el.style.setProperty("text-shadow", "none", "important");
-      // Remove Tailwind CSS variables that may resolve to oklch/lab colors.
-      const props = Array.from(el.style);
-      for (const prop of props) {
-        if (prop.startsWith("--")) {
-          el.style.removeProperty(prop);
-        }
-      }
-    }
-  }
-
+  clone.id = "pdf-clone";
 
   // Render the clone off-screen so html2canvas can measure it.
   const container = document.createElement("div");
@@ -62,15 +37,40 @@ function preparePdfClone(element: HTMLElement): { clone: HTMLElement; cleanup: (
   container.style.top = "0";
   container.style.left = "-9999px";
   container.style.width = "8.5in";
-  container.style.background = "white";
   container.style.zIndex = "-1";
   container.appendChild(clone);
   document.body.appendChild(container);
+
+  // Inject a stylesheet that overrides all color properties, including pseudo-elements,
+  // so html2canvas doesn't trip over Tailwind v4 oklch/lab colors.
+  const style = document.createElement("style");
+  style.textContent = `
+    #pdf-clone,
+    #pdf-clone *,
+    #pdf-clone *::before,
+    #pdf-clone *::after {
+      color: #000000 !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      border-color: #cccccc !important;
+      outline-color: #cccccc !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      stroke: #000000 !important;
+      fill: #000000 !important;
+    }
+    #pdf-clone .no-print,
+    #pdf-clone .no-print * {
+      display: none !important;
+    }
+  `;
+  document.head.appendChild(style);
 
   return {
     clone,
     cleanup: () => {
       if (container.parentNode) container.parentNode.removeChild(container);
+      if (style.parentNode) style.parentNode.removeChild(style);
     },
   };
 }
@@ -99,7 +99,6 @@ export function useSharePdf() {
     }
   }, []);
 
-
   const share = useCallback(
     async (element: HTMLElement | null, opts: ShareOptions, onBeforeCapture?: () => (() => void) | void) => {
       if (!element) {
@@ -120,25 +119,20 @@ export function useSharePdf() {
 
         const file = new File([blob], opts.filename, { type: "application/pdf" });
         const shareData: ShareData = { title: opts.title, text: opts.text, files: [file] };
-        console.log("[useSharePdf] blob size", blob.size, "canShare", typeof navigator !== "undefined" && navigator.canShare ? navigator.canShare({ files: [file] }) : "no canShare");
 
         // Preferred path: native share sheet with the PDF file (mobile Mail/Gmail/etc).
         if (typeof navigator !== "undefined" && navigator.canShare && navigator.canShare({ files: [file] })) {
-          console.log("[useSharePdf] using navigator.share");
           await navigator.share(shareData);
-          console.log("[useSharePdf] navigator.share resolved");
           setState({ loading: false, error: null });
           return;
         }
 
-        console.log("[useSharePdf] using fallback download+mailto");
         // Desktop / unsupported clients: download the PDF and open a mailto asking the user to attach it.
         downloadPdf(blob, opts.filename);
         const body = `${opts.text}\n\nI've downloaded my plan as a PDF; please attach it to this email if it wasn't added automatically.`;
         openMailto(opts.title, body);
         setState({ loading: false, error: null });
       } catch (err) {
-        console.error("[useSharePdf] error", err);
         cleanup?.();
         if (abortRef.current) return;
         const message = (err as Error)?.message ?? "Couldn't prepare the PDF.";
@@ -155,4 +149,3 @@ export function useSharePdf() {
 
   return { ...state, share, reset };
 }
-
