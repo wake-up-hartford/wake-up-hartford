@@ -271,6 +271,11 @@ function HomePage() {
                 <AddressLocationMap address={found.address.display} />
               </Suspense>
             </div>
+            <div className="mt-3">
+              <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
+                <AddressStreetView address={found.address.display} />
+              </Suspense>
+            </div>
           </Card>
 
           <Tabs defaultValue="story" className="w-full">
