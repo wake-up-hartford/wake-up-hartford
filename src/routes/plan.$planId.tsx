@@ -178,10 +178,10 @@ function PlanPage() {
 
       <div className="no-print">
         <SharePlanCard
-          printRef={printRef}
-          onBeforeCapture={() => {
-            setIsSharingPdf(true);
-            return () => setIsSharingPdf(false);
+          planData={{
+            plan,
+            steps,
+            generatedAt,
           }}
         />
         <PlanFooterActions bookmarkCount={bookmarkCount} isAnonymous={isAnonymous} />
