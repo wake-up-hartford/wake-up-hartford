@@ -550,7 +550,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         onClick={onBegin}
         className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
       >
-        Enter Here <ArrowRight className="h-5 w-5" />
+        Click to Start Survey <ArrowRight className="h-5 w-5" />
       </button>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
