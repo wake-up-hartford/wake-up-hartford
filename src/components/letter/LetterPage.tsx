@@ -39,6 +39,8 @@ type LetterPageProps = {
   emailSubject: string;
   /** Footer disclaimer / source attribution. */
   disclaimer: ReactNode;
+  /** Optional search params for the back link. */
+  backSearch?: Record<string, string>;
 };
 
 /**
