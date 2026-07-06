@@ -3,7 +3,7 @@ import { Home, Building2, Trees, HeartHandshake, User, LogOut } from "lucide-rea
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
-import wuwLogo from "@/assets/wuw-logo.webp";
+import wuwLogo from "@/assets/wake-up-hartford.png.asset.json";
 
 const ROTATING_MESSAGES = [
   "Concentrated poverty is not natural. It is produced by policy choices.",
@@ -74,13 +74,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex w-full max-w-xl lg:max-w-4xl items-center justify-between px-4 py-2.5 sm:px-5">
           <Link to="/" className="flex items-center">
             <img
-              src={wuwLogo}
-              alt="Wake Up Wednesday"
-              width={160}
-              height={40}
+              src={wuwLogo.url}
+              alt="Wake Up Hartford"
+              width={200}
+              height={50}
               fetchPriority="high"
               decoding="async"
-              className="h-10 w-auto flex-shrink-0"
+              className="h-10 sm:h-12 w-auto flex-shrink-0"
             />
 
           </Link>
