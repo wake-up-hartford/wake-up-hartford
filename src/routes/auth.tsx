@@ -106,10 +106,17 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const consumePostAuthRedirect = (): "/life" | "/plans" | "/dashboard" => {
+  const ALLOWED_POST_AUTH_PATHS = ["/life", "/plans", "/dashboard"];
+
+  const isValidPostAuthRedirect = (target: string | null): target is string => {
+    if (!target) return false;
+    return ALLOWED_POST_AUTH_PATHS.includes(target) || /^\/plan\/[a-f0-9-]+$/i.test(target);
+  };
+
+  const consumePostAuthRedirect = (): string => {
     if (typeof window === "undefined") return "/dashboard";
     const target = window.localStorage.getItem("wuw:postAuthRedirect");
-    if (target === "/life" || target === "/plans") {
+    if (isValidPostAuthRedirect(target)) {
       window.localStorage.removeItem("wuw:postAuthRedirect");
       return target;
     }
@@ -134,10 +141,10 @@ function AuthPage() {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
-  const peekPostAuthRedirect = (): "/life" | "/plans" | "/dashboard" => {
+  const peekPostAuthRedirect = (): string => {
     if (typeof window === "undefined") return "/dashboard";
     const target = window.localStorage.getItem("wuw:postAuthRedirect");
-    if (target === "/life" || target === "/plans") return target;
+    if (isValidPostAuthRedirect(target)) return target;
     return "/dashboard";
   };
 
