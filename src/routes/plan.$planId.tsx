@@ -163,6 +163,8 @@ function PlanPage() {
 
       <SharePlanCard />
       <PlanFooterActions bookmarkCount={bookmarkCount} />
+      </div>
     </AppShell>
   );
 }
+
