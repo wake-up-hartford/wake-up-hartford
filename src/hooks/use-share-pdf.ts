@@ -56,7 +56,7 @@ export function useSharePdf() {
   }, []);
 
   const share = useCallback(
-    async (element: HTMLElement | null, opts: ShareOptions) => {
+    async (element: HTMLElement | null, opts: ShareOptions, onBeforeCapture?: () => (() => void) | void) => {
       if (!element) {
         setState({ loading: false, error: "Nothing to share." });
         return;
@@ -64,8 +64,13 @@ export function useSharePdf() {
       setState({ loading: true, error: null });
       abortRef.current = false;
 
+      const cleanup = onBeforeCapture?.();
+      // Give React a tick to render expanded content before capturing.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       try {
         const blob = await generatePdf(element, opts.filename);
+        cleanup?.();
         if (abortRef.current) return;
 
         const file = new File([blob], opts.filename, { type: "application/pdf" });
@@ -84,6 +89,7 @@ export function useSharePdf() {
         openMailto(opts.title, body);
         setState({ loading: false, error: null });
       } catch (err) {
+        cleanup?.();
         if (abortRef.current) return;
         const message = (err as Error)?.message ?? "Couldn't prepare the PDF.";
         setState({ loading: false, error: message });
@@ -99,3 +105,4 @@ export function useSharePdf() {
 
   return { ...state, share, reset };
 }
+
