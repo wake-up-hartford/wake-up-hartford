@@ -120,11 +120,34 @@ export function AppShell({ children }: { children: ReactNode }) {
 }
 
 function LogoutButton() {
-  const { user, signOut } = useAuth();
+  const { user, isAnonymous, signOut } = useAuth();
+  const { pathname } = useLocation();
   const qc = useQueryClient();
   const nav = useNavigate();
 
   if (!user) return null;
+
+  if (isAnonymous) {
+    const handleSignUp = () => {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("wuw:postAuthRedirect", pathname);
+      }
+      nav({ to: "/auth", replace: true });
+    };
+
+    return (
+      <div className="mt-10 flex justify-center">
+        <button
+          onClick={handleSignUp}
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2 text-[13px] font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          aria-label="Sign up to save this plan"
+        >
+          <UserPlus className="h-4 w-4" />
+          Sign up to save this plan
+        </button>
+      </div>
+    );
+  }
 
   const handleSignOut = async () => {
     await qc.cancelQueries();
