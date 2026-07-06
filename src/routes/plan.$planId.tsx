@@ -138,12 +138,18 @@ function PlanPage() {
         })}
       </div>
 
-      {!user && (
+      {isAnonymous && (
         <Link
           to="/auth"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem("wuw:postAuthRedirect", `/plan/${planId}`);
+              window.localStorage.setItem("wuw:authIntent", "save");
+            }
+          }}
           className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
         >
-          Sign In to receive plan via text/email
+          Save this plan — sign up to return or share
         </Link>
       )}
 
