@@ -901,13 +901,13 @@ function SummaryScreen({
                   · {items.length}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                 {items.map(({ s }) => {
                   const Icon = s.icon;
                   return (
                     <div
                       key={s.id}
-                      className="flex items-center gap-2 rounded-xl border border-border bg-card py-2 px-2"
+                      className="flex items-center gap-2"
                     >
                       <span
                         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white"
@@ -915,7 +915,7 @@ function SummaryScreen({
                       >
                         <Icon className="h-3.5 w-3.5" />
                       </span>
-                      <span className="flex-1 text-[12px] font-semibold text-card-foreground leading-tight">
+                      <span className="text-[15px] font-semibold text-foreground leading-tight">
                         {s.name}
                       </span>
                     </div>
