@@ -84,38 +84,40 @@ export const generateTractStory = createServerFn({ method: "POST" })
         : "this community";
 
     const toneLine = data.tone === "direct"
-      ? `Tone: direct and practical. Be matter-of-fact and unsentimental. Lead with the numbers and what they mean concretely for daily life. Skip warmth, encouragement, and hopeful framing — just describe what is true.`
-      : `Tone: warm and hopeful. Be plain-spoken, honest, and hopeful. Acknowledge hardship without sensationalizing it, and close on what can be built on together.`;
+      ? `Tone: direct, plain, conversational. Talk like a neighbor at the kitchen table, not a report writer. Short sentences. Everyday words. No flourishes, no metaphors, no "paints a picture" or "tells a story of" phrasing.`
+      : `Tone: warm and conversational, like you're talking with a neighbor. Short sentences, everyday words. Honest about hard stuff, but not dramatic. No flourishes, no metaphors, no "paints a picture" phrasing.`;
 
     const closingLine = data.tone === "direct"
-      ? `End with one short paragraph that names the most pressing practical needs the numbers point to. No pep talk.`
-      : `End with one short paragraph about what residents and neighbors can build on together.`;
+      ? `End with one short paragraph — 2 or 3 sentences — naming what the numbers say people most need. No pep talk.`
+      : `End with one short paragraph — 2 or 3 sentences — on what neighbors can build on together. Keep it grounded, not preachy.`;
 
     const languageLine =
       data.language === "es"
-        ? `\nWrite the entire response in Spanish (es-US, plain Hartford community Spanish, accessible and warm). Keep proper nouns, program names, agency names, and place names in English (e.g. "Hartford", "Connecticut", "ACS"). Do not include English translations in parentheses.`
+        ? `\nWrite the entire response in Spanish (es-US, plain everyday Hartford Spanish, like you'd talk to a neighbor). Keep proper nouns, program names, agency names, and place names in English (e.g. "Hartford", "Connecticut", "ACS"). Do not include English translations in parentheses.`
         : "";
 
     const systemPrompt = isCT
-      ? `You are a community-data storyteller writing for Hartford, Connecticut residents.
-Write at an 8th-grade reading level.
+      ? `You are writing a short, down-to-earth summary for Hartford, Connecticut residents.
+Write at a 6th-grade reading level. Short sentences. Plain words.
 ${toneLine}
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
-Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
-When a number is far from the Connecticut average, name the gap plainly.
-Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
+Skip hedge phrases like "according to the data." Just say what the numbers show.
+When a number is far from the Connecticut average, say it plainly (e.g. "way higher than most of CT").
+Third person. No "we," "us," or "our" — you're an outsider summarizing, not a neighbor.
+Do NOT use fancy or literary phrasing ("paints a picture," "tells a story," "woven into," "the fabric of").
 ${closingLine}
-Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.${languageLine}`
-      : `You are a community-data storyteller writing for residents of ${placePhrase}.
-Write at an 8th-grade reading level.
+Length: 3 short paragraphs, about 150-220 words total. Plain prose. No headings, no bullets.${languageLine}`
+      : `You are writing a short, down-to-earth summary for residents of ${placePhrase}.
+Write at a 6th-grade reading level. Short sentences. Plain words.
 ${toneLine}
 Ground every claim in the numbers provided — never invent facts, statistics, history, or place details.
-Do not use hedge phrases like "according to the data." Just tell the story the numbers tell.
+Skip hedge phrases like "according to the data." Just say what the numbers show.
 Do NOT mention Connecticut, Hartford, or any CT-specific comparisons — this tract is not in Connecticut.
-No statewide comparisons are provided, so describe the numbers on their own terms rather than comparing to an average.
-Write in third person about residents and neighbors. Do NOT use "we," "us," or "our" — you are not a neighbor or member of this community, you are an outside storyteller.
+No statewide comparisons are provided, so describe the numbers on their own terms.
+Third person. No "we," "us," or "our" — you're an outsider summarizing, not a neighbor.
+Do NOT use fancy or literary phrasing ("paints a picture," "tells a story," "woven into," "the fabric of").
 ${closingLine}
-Length: 4 to 6 short paragraphs, roughly 250-400 words. Plain prose, no headings, no bullet lists.${languageLine}`;
+Length: 3 short paragraphs, about 150-220 words total. Plain prose. No headings, no bullets.${languageLine}`;
 
     const userPrompt = `Census Tract ${data.tractName} — ${data.neighborhood}${isCT ? ", Hartford, CT" : stateInfo ? `, ${stateInfo.name}` : ""}.
 

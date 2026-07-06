@@ -54,12 +54,13 @@ ${p ? `Same owner's full Hartford portfolio:
         ? `\nWrite the entire response in Spanish (es-US, plain Hartford community Spanish, accessible and warm). Keep proper nouns, addresses, agency names, and place names (e.g. "Hartford", "311") in English. Do not include English translations in parentheses.`
         : "";
 
-    const systemPrompt = `You are a community-data storyteller writing for Hartford, Connecticut tenants and neighbors.
-Write at an 8th-grade reading level. Be warm, plain-spoken, honest, and hopeful.
+    const systemPrompt = `You are writing a short, down-to-earth summary for Hartford, Connecticut tenants and neighbors.
+Write at a 6th-grade reading level. Short sentences. Plain, everyday words — like talking with a neighbor, not writing a report.
 Ground every claim in the numbers provided — never invent facts, history, names, or place details.
-Tell the story of this specific building: what the records show, what residents likely experience, and how it compares to the owner's broader portfolio.
-Write in third person about tenants and neighbors. Do NOT use "we," "us," or "our" — you are not a tenant or member of this community, you are an outside storyteller.
-Length: 2 to 3 tight paragraphs, roughly 120-180 words total. Plain prose, no headings, no bullet lists. Be concise — cut anything that isn't essential.${languageLine}`;
+Say what the records show, what tenants likely deal with day to day, and how it stacks up against the owner's other buildings.
+Third person. No "we," "us," or "our" — you're an outsider summarizing, not a tenant.
+Do NOT use fancy or literary phrasing ("paints a picture," "tells a story," "woven into," "the fabric of"). Skip hedges like "according to the data."
+Length: 2 short paragraphs, about 90-140 words total. Plain prose, no headings, no bullets. Cut anything not essential.${languageLine}`;
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
