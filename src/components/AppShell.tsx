@@ -39,7 +39,7 @@ function RotatingMessages() {
 
   return (
     <div className="border-t border-border/60">
-      <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-center px-5 sm:h-auto sm:px-6 sm:py-2">
+      <div className="mx-auto flex h-16 w-full max-w-xl lg:max-w-4xl items-center justify-center px-5 sm:h-auto sm:px-6 sm:py-2">
         <p
           aria-live="polite"
           aria-atomic="true"
@@ -71,7 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 py-2.5 sm:px-5">
+        <div className="mx-auto flex w-full max-w-xl lg:max-w-4xl items-center justify-between px-4 py-2.5 sm:px-5">
           <Link to="/" className="flex items-center">
             <img
               src={wuwLogo}
@@ -91,13 +91,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         {pathname !== "/" && <RotatingMessages />}
       </header>
 
-      <main className="mx-auto w-full max-w-xl px-4 pb-28 pt-6 sm:px-5">
+      <main className="mx-auto w-full max-w-xl lg:max-w-4xl px-4 pb-28 pt-6 sm:px-5">
         {children}
         <LogoutButton />
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
-        <ul className="mx-auto grid w-full max-w-xl grid-cols-5 px-4 sm:px-5">
+        <ul className="mx-auto grid w-full max-w-xl lg:max-w-4xl grid-cols-5 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to;
             return (
