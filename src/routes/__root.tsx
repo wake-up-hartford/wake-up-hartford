@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import logoUrl from "@/assets/wuw-logo.webp?url";
+import logoAsset from "@/assets/wake-up-hartford.png.asset.json";
 import {
   Outlet,
   Link,
@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
       { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
-      { rel: "preload", as: "image", href: logoUrl, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: logoAsset.url, fetchpriority: "high" },
     ],
 
     scripts: [
