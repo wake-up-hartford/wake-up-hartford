@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Building2, Trees, HeartHandshake, User, LogOut } from "lucide-react";
+import { Home, Building2, Trees, HeartHandshake, User, LogOut, UserPlus } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
