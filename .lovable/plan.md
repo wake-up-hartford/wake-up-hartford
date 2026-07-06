@@ -1,25 +1,42 @@
-Make the anonymous-user state clearer on the Plan page and ensure anonymous users can return to their plan after signing up.
+Change the plan page's Email button so it opens the user's own email app with a PDF of the plan already attached, instead of sending a plain link.
 
-### Problem
-Anonymous users currently see a "Log Out" button at the bottom of every page, which makes them think they are already signed in. They also see a "Save this plan" button on the Plan page, but it is not obvious that the plan is only saved to a temporary session. After clicking "Save this plan" and signing up, the auth page redirects them to `/dashboard` instead of back to the plan they were viewing.
+Approach: client-side PDF generation + native share sheet. No backend email domain is required.
 
-### Solution
-1. **Clarify the bottom action for anonymous users**  
-   In `src/components/AppShell.tsx`, change the bottom "Log Out" button when the user is anonymous to read "Sign up to save this plan" and navigate to `/auth` (with the current path stored as `wuw:postAuthRedirect`). For signed-in users, keep the existing "Log Out" behavior.
+## Implementation
 
-2. **Add context to the Plan page save prompt**  
-   In `src/routes/plan.$planId.tsx`, add a short note directly above or below the existing "Save this plan — sign up to return or share" button:  
-   "This plan is saved to your current session. Create an account to keep it permanently."
+1. Install `html2pdf.js` (client-side HTML-to-PDF library) for converting the printable plan element into a PDF blob.
 
-3. **Fix auth redirect to support `/plan/:planId`**  
-   In `src/routes/auth.tsx`, update `consumePostAuthRedirect` and `peekPostAuthRedirect` to recognize and return valid plan paths (`/plan/${planId}`), not only `/life`, `/plans`, and `/dashboard`. This lets anonymous users who sign up from a plan page land back on that plan.
+2. Create a reusable `useSharePdf` hook in `src/hooks/use-share-pdf.ts` that:
+   - Takes a React ref pointing to the printable DOM element (`#print-plan`).
+   - Temporarily forces all plan sections to expand (reuse the existing print-expansion logic) so the PDF includes every week and task.
+   - Uses `html2pdf.js` to render the element to a PDF blob.
+   - Returns `{ pdf, filename, share, loading, error }`.
+   - `share()` tries `navigator.share({ files: [pdfFile], title, text })` first, which on mobile opens the system share sheet and lets the user pick Mail/Gmail/etc.
+   - Falls back to a `mailto:` link with the PDF as a data URI when native file sharing is unavailable.
+   - Final fallback: download the PDF so the user can attach it manually.
 
-### Scope
-- Only touches `AppShell.tsx`, `plan.$planId.tsx`, and `auth.tsx`.
-- No database or server-function changes.
-- No changes to the actual save/bookmark behavior for signed-in users.
+3. Update `src/components/plan/SharePlanCard.tsx`:
+   - Add a `printRef` prop.
+   - Change the Email button from a `mailto:` link to an async click handler.
+   - Show a loading state (e.g., "Preparing PDF…") while the PDF is generated.
+   - Use `useSharePdf` to share the generated file.
+   - Keep the Text button unchanged (still shares the link via SMS).
 
-### Verification
-- Preview the Plan page as an anonymous user: bottom button should say "Sign up to save this plan" and go to `/auth`.
-- After signing up, the user should return to the same `/plan/:planId` URL.
-- Signed-in users should still see the normal "Log Out" button and no "Save this plan" CTA.
+4. Update `src/routes/plan.$planId.tsx`:
+   - Create a `React.RefObject<HTMLDivElement>` for the `#print-plan` wrapper.
+   - Pass that ref to `SharePlanCard`.
+
+5. Ensure the generated PDF captures the same content as the existing print view:
+   - Weeks should be expanded during generation.
+   - `.no-print` elements (share card, footer actions, back link, sign-up banner) should be excluded from the PDF by generating from the same `#print-plan` element the print styles already target.
+
+6. Add basic error handling and a toast/message if PDF generation fails.
+
+## Out of scope
+- No backend email sending or email domain setup.
+- The Text button continues to share the link, not a PDF.
+
+## Verification
+- Build the app and confirm no type errors.
+- On mobile preview, tap Email and verify the native share sheet opens with a PDF file named like `Wake-Up-Plan-{planId}.pdf`.
+- On desktop, verify fallback behavior (mailto or download) is reachable.
