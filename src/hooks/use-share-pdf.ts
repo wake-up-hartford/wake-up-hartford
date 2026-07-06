@@ -39,22 +39,22 @@ function preparePdfClone(element: HTMLElement): { clone: HTMLElement; cleanup: (
   const safeElements = [clone, ...Array.from(clone.querySelectorAll("*"))];
   for (const el of safeElements) {
     if (el instanceof HTMLElement) {
-      el.style.color = "#000000";
-      el.style.backgroundColor = "#ffffff";
-      el.style.borderColor = "#cccccc";
-      el.style.boxShadow = "none";
-      el.style.textShadow = "none";
+      el.style.setProperty("color", "#000000", "important");
+      el.style.setProperty("background-color", "#ffffff", "important");
+      el.style.setProperty("background", "#ffffff", "important");
+      el.style.setProperty("border-color", "#cccccc", "important");
+      el.style.setProperty("box-shadow", "none", "important");
+      el.style.setProperty("text-shadow", "none", "important");
       // Remove Tailwind CSS variables that may resolve to oklch/lab colors.
-      el.style.removeProperty("--background");
-      el.style.removeProperty("--foreground");
-      el.style.removeProperty("--card");
-      el.style.removeProperty("--card-foreground");
-      el.style.removeProperty("--muted-foreground");
-      el.style.removeProperty("--border");
-      el.style.removeProperty("--accent");
-      el.style.removeProperty("--accent-foreground");
+      const props = Array.from(el.style);
+      for (const prop of props) {
+        if (prop.startsWith("--")) {
+          el.style.removeProperty(prop);
+        }
+      }
     }
   }
+
 
   // Render the clone off-screen so html2canvas can measure it.
   const container = document.createElement("div");
