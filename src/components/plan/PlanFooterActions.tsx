@@ -3,9 +3,10 @@ import { Bookmark, Printer, User } from "lucide-react";
 
 type Props = {
   bookmarkCount: number;
+  isAnonymous?: boolean;
 };
 
-export function PlanFooterActions({ bookmarkCount }: Props) {
+export function PlanFooterActions({ bookmarkCount, isAnonymous }: Props) {
   return (
     <>
       <button
