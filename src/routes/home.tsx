@@ -20,6 +20,9 @@ const PickAddressMap = lazy(() =>
 const AddressLocationMap = lazy(() =>
   import("@/components/BuildingAddressMap").then((m) => ({ default: m.AddressLocationMap })),
 );
+const AddressStreetView = lazy(() =>
+  import("@/components/AddressStreetView").then((m) => ({ default: m.AddressStreetView })),
+);
 
 export const Route = createFileRoute("/home")({
   head: () => ({
