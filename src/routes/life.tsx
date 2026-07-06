@@ -423,7 +423,7 @@ const LIFE_STATE_KEY = "wuw:life:pendingSurvey";
 function LifePage() {
   const [stage, setStage] = useState<"intro" | "survey" | "summary">("intro");
   const [answers, setAnswers] = useState<Answers>({});
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth({ ensureAnonymous: true });
   const [restored, setRestored] = useState(false);
 
   // Restore in-progress survey after returning from /auth.
@@ -920,35 +920,15 @@ function SummaryScreen({
 
       <div className="mb-5">
         <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
-        {user ? (
-          <>
-            <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
-              An AI-generated Plan will be created based on your responses — with specific
-              resources, steps, and timelines.
-            </p>
-            <PlanGenerator
-              scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
-              priorities={priorities}
-            />
-          </>
-        ) : (
-          <>
-            <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-              Your AI-generated Plan — built from your unique responses — includes specific resources, steps, and timelines. Sign in to access it. Your plan is private and will never be shared.
-            </p>
-            <Link
-              to="/auth"
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  window.localStorage.setItem("wuw:postAuthRedirect", "/life");
-                }
-              }}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
-            >
-              <LogIn className="h-4 w-4" /> Sign in to access your plan
-            </Link>
-          </>
-        )}
+        <p className="mt-2 text-[14px] leading-relaxed text-blue-50/90">
+          An AI-generated Plan will be created based on your responses — with specific
+          resources, steps, and timelines. No sign-in needed. You can save or share
+          your plan later.
+        </p>
+        <PlanGenerator
+          scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
+          priorities={priorities}
+        />
       </div>
 
       <button
