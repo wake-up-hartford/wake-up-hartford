@@ -860,7 +860,7 @@ function SummaryScreen({
         </div>
         <h1 className="font-display text-3xl text-foreground">Survey Complete</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-          Here's a preview of your priority areas based on your responses.
+          Here's a preview of your priority areas.
         </p>
       </div>
 
