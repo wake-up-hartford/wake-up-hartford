@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import type { User } from "@supabase/supabase-js";
 
