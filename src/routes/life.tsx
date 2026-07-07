@@ -503,7 +503,7 @@ function LifePage() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
-            <p className="text-[12px] text-muted-foreground">Stabilization plans you've saved.</p>
+            <p className="text-[12px] text-muted-foreground">Stabilization plans you've created.</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
