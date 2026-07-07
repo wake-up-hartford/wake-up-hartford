@@ -40,7 +40,7 @@ function formatUSPhone(input: string): string {
 function ProfilePage() {
   const nav = useNavigate();
   const qc = useQueryClient();
-  const { user, loading } = useAuth();
+  const { user, loading, isAnonymous } = useAuth();
   const fetchProfile = useServerFn(getMyProfile);
   const saveProfile = useServerFn(updateMyProfile);
   const checkAdmin = useServerFn(checkIsAdmin);
