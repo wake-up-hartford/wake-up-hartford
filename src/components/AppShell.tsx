@@ -1,8 +1,10 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Home, Building2, Trees, HeartHandshake, User, LogOut, UserPlus } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMyProfile } from "@/lib/profile.functions";
 import wuwLogo from "@/assets/wake-up-hartford.png.asset.json";
 
 const ROTATING_MESSAGES = [
