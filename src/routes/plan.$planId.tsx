@@ -82,7 +82,7 @@ function PlanPage() {
           {(error as Error)?.message ?? "Couldn't load this plan."}
         </p>
         <p className="text-sm text-muted-foreground mb-4">
-          If you saved this plan to an account, sign in to view it.
+          If this plan is on your account, sign in to view it.
         </p>
         <Link
           to="/auth"
