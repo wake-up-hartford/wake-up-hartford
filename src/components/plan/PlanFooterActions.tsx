@@ -11,7 +11,7 @@ export function PlanFooterActions({ bookmarkCount, isAnonymous }: Props) {
     <>
       <button
         onClick={() => window.print()}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground hover:bg-secondary/50"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-card-foreground/10"
       >
         <Printer className="h-4 w-4" /> Print this plan
       </button>
