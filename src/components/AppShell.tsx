@@ -70,6 +70,15 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+  const { user, isAnonymous } = useAuth();
+  const fetchProfile = useServerFn(getMyProfile);
+  const { data: profileData } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: () => fetchProfile({}),
+    enabled: !!user && !isAnonymous,
+    staleTime: 60_000,
+  });
+  const mostRecentPlanId = profileData?.stats?.mostRecentPlanId ?? null;
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
