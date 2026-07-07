@@ -231,9 +231,13 @@ function AuthPage() {
           setPassword("");
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        nav({ to: consumePostAuthRedirect(), replace: true });
+        const uid = data.user?.id;
+        const target = uid
+          ? await resolveDestinationForUser(uid, consumePostAuthRedirect())
+          : consumePostAuthRedirect();
+        nav({ to: target, replace: true });
       }
     } catch (err) {
       setError(friendlyAuthError(err, view === "signup" ? "signup" : "signin"));
