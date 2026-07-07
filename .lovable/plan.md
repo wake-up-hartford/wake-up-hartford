@@ -1,49 +1,45 @@
 ## Goal
-Show a real photo of the looked-up address as the background of each slide in the `ShareSlideshow` on `/home`.
 
-## Feasibility: yes
-Google Maps Platform has two good options, both reachable through the Lovable Google Maps connector (gateway). The connector isn't linked yet — that's step 1 whichever option we pick.
+Deliver a `.pptx` in `/mnt/documents/` with one slide per route, each showing the mobile (390×844) and desktop (1280×900) screenshot side by side, plus the route path and page title.
 
-### Option A — Street View Static Image (recommended)
-- One HTTPS image URL per address, e.g. `/maps/api/streetview?location=65+AMITY+ST,Hartford,CT&size=800x600`.
-- Load it as a normal `<img>` behind the slide text, dim with a dark overlay so the text stays readable.
-- Best fit for "photo of the address." Works on every address Google has street coverage for (very high in Hartford).
+## Routes to capture
 
-### Option B — Places API (New) photos
-- Two calls: `places:searchText` to get a `place_id`, then `places/{id}/photos/...`.
-- More variety (business photos, exterior shots) but many residential addresses have no place photos, so it falls back to Street View anyway. More complexity, not clearly better here.
+Every route file in `src/routes/`, grouped:
 
-Recommend A, with a graceful fallback to the current gradient card when no imagery is returned.
+- **Public**: `/`, `/about`, `/auth`, `/reset-password`, `/find-help`, `/home`, `/home-actions`, `/landlord-letter`, `/life`, `/neighborhood`, `/neighborhood-actions`, `/plans`, `/profile`, `/security-deposit-letter`, `/survey`, `/plan/$planId` (using a seeded/known plan id if available, otherwise the empty-state)
+- **Onboarding**: `/onboarding/address`
+- **Dashboard**: `/dashboard`
+- **Admin**: `/admin`, `/admin/admins`, `/admin/reporting`, `/admin/survey-results`, `/admin/surveys`
 
-## What it entails
-1. **Connect Google Maps Platform** via `standard_connectors--connect` (`google_maps`). No cost to link. Uses the Lovable-managed key.
-2. **Add a tiny server function** `getAddressStreetViewUrl({ address })` in `src/lib/street-view.functions.ts` that:
-   - Calls the gateway `metadata` endpoint first to confirm imagery exists at that address (`/maps/api/streetview/metadata`). Returns `null` if `status !== "OK"`.
-   - Returns a short-lived signed image URL string (or streams the JPEG back and returns a `data:` URL). Simpler: return the gateway image URL with auth headers set server-side — but the browser can't send `X-Connection-Api-Key`, so we either:
-     - **(a) proxy the image** through a small server route `/api/street-view?address=...` that streams the JPEG from the gateway, or
-     - **(b) fetch on the server, base64 it, and hand a `data:` URL to the client.**
-   - Recommend (a) — proxy route. Cleaner, browser-cacheable via `Cache-Control: public, max-age=…`.
-3. **Update `ShareSlideshow` in `src/routes/home.tsx`**:
-   - `useQuery` for the street-view URL keyed on the normalized address.
-   - Render `<img>` absolutely positioned inside the slide with `object-cover`, plus a dark gradient overlay for text contrast.
-   - Fall back to the current colored card when the query returns `null`.
+Skipped: `__root.tsx` (layout, not a URL) and `sitemap[.]xml.tsx` (non-visual).
 
-## Efficiency impact
-Small and bounded:
-- **Bandwidth:** one JPEG per address, ~40–120 KB at 800×600. Fetched once, cached by the browser and the server proxy.
-- **Latency:** metadata check + image fetch happen on the server in parallel with the rest of the report. The image loads lazily with `loading="lazy"` and doesn't block slide navigation.
-- **Runtime cost:** negligible CPU; just a fetch + stream. No image processing on the Worker.
-- **Quotas / cost:** Street View Static is $7 per 1,000 requests after the free monthly credit. Because we cache per address, real usage is one call per unique address lookup — very low for this app's traffic.
-- **No impact on** the address lookup, the AI story, or the plan flow — this is additive, behind a single query.
+## Auth strategy
 
-## Risks / caveats
-- Not every address returns imagery (rural, private drives, blurred houses). Handled by the metadata pre-check + gradient fallback.
-- Privacy: Google already blurs faces/plates, but some residents may not want their home imagery highlighted. Easy switch to a wider zoom or a neighborhood-level pull-back if desired.
-- Custom domain: the browser never touches the key (we proxy server-side), so the `*.lovable.app` referrer restriction on the managed key is fine.
+Use the injected managed Supabase session (`LOVABLE_BROWSER_AUTH_STATUS=injected`) to sign in for authenticated + admin routes. If the current test user is not an admin, admin pages will show their access-denied state — I'll capture what actually renders and note it on the slide. If you'd rather I grant this test user the `admin` role first, say so and I'll add that to the plan.
 
-## Out of scope for this plan
-- The `/neighborhood` slideshow (already slated for video replacement per the `[[to be replaced]]` note).
-- Places API photo fallback (can add later if street coverage feels thin).
+## Capture approach (Playwright, headless Chromium)
 
-## Summary
-Yes, connectable via the Google Maps connector, ~1 new server function + 1 proxy route + ~15 lines in `ShareSlideshow`. Efficiency hit is negligible with caching. Recommended if you want the visual upgrade — say the word and I'll implement Option A.
+For each route:
+1. Restore the session (cookies + localStorage) at `http://localhost:8080`.
+2. Set viewport to 390×844, navigate to the route, wait for `networkidle`, screenshot to `/tmp/shots/<slug>-mobile.png`.
+3. Set viewport to 1280×900, repeat to `/tmp/shots/<slug>-desktop.png`.
+4. On error/timeout, capture whatever rendered and log the failure into the slide notes.
+
+All work under `/tmp/shots/`; final deck to `/mnt/documents/`.
+
+## PPTX build
+
+- `pptxgenjs`, 16:9, 1920×1080-equivalent (13.33"×7.5").
+- Layout per slide: route path as title (top-left), page `<title>` beneath it, mobile screenshot on the left (~3" wide), desktop screenshot on the right (~8" wide), both letterboxed to preserve aspect ratio. Muted background, one accent color pulled from the app's amber/emerald palette.
+- Cover slide: "Wake Up Wednesday — Page Inventory", generation date, route count.
+- Table-of-contents slide listing routes with slide numbers.
+- Images embedded as base64 so LibreOffice PDF QA works.
+
+## QA
+
+Convert the PPTX to PDF via LibreOffice, then to JPGs with `pdftoppm`, and read every slide image to check for missing screenshots, clipped titles, wrong aspect ratios, or blank pages. Iterate until clean.
+
+## Deliverable
+
+- `/mnt/documents/wake-up-wednesday-pages.pptx`
+- Presented back via `<presentation-artifact>` with a short summary of routes captured, any that failed to load, and whether admin pages showed real content or the access-denied state.
