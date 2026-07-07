@@ -100,6 +100,7 @@ function AuthPage() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [optIn, setOptIn] = useState(false);
+  const [optOut, setOptOut] = useState(false);
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -371,10 +372,25 @@ function AuthPage() {
               <input
                 type="checkbox"
                 checked={optIn}
-                onChange={(e) => setOptIn(e.target.checked)}
+                onChange={(e) => {
+                  setOptIn(e.target.checked);
+                  if (e.target.checked) setOptOut(false);
+                }}
                 className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
               />
-              <span>Send me free resources and updates.</span>
+              <span>Yes, NAACP can send me resources and updates.</span>
+            </label>
+            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+              <input
+                type="checkbox"
+                checked={optOut}
+                onChange={(e) => {
+                  setOptOut(e.target.checked);
+                  if (e.target.checked) setOptIn(false);
+                }}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+              />
+              <span>No, I do not want to receive resources and updates.</span>
             </label>
           </div>
         </div>
@@ -581,12 +597,25 @@ function AuthPage() {
           <input
             type="checkbox"
             checked={optIn}
-            onChange={(e) => setOptIn(e.target.checked)}
+            onChange={(e) => {
+              setOptIn(e.target.checked);
+              if (e.target.checked) setOptOut(false);
+            }}
             className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
           />
-          <span>
-            Send me info on free resources and Greater Hartford Branch NAACP campaign updates.
-          </span>
+          <span>Yes, NAACP can send me resources and updates.</span>
+        </label>
+        <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+          <input
+            type="checkbox"
+            checked={optOut}
+            onChange={(e) => {
+              setOptOut(e.target.checked);
+              if (e.target.checked) setOptIn(false);
+            }}
+            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+          />
+          <span>No, I do not want to receive resources and updates.</span>
         </label>
         <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-foreground" : "text-muted-foreground"}`}>
           <input
