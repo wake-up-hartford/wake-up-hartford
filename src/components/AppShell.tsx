@@ -109,11 +109,18 @@ export function AppShell({ children }: { children: ReactNode }) {
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur">
         <ul className="mx-auto grid w-full max-w-xl lg:max-w-4xl grid-cols-5 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
-            const active = pathname === to;
+            const isLife = to === "/life";
+            const linkProps =
+              isLife && mostRecentPlanId
+                ? ({ to: "/plan/$planId", params: { planId: mostRecentPlanId } } as const)
+                : ({ to } as const);
+            const active =
+              pathname === to ||
+              (isLife && mostRecentPlanId && pathname === `/plan/${mostRecentPlanId}`);
             return (
               <li key={to}>
                 <Link
-                  to={to}
+                  {...linkProps}
                   className={`flex flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors ${
                     active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                   }`}
