@@ -288,7 +288,7 @@ function AuthPage() {
           <button
             onClick={handleResend}
             disabled={busy || resendCooldown > 0}
-            className="mt-6 w-full rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-card-foreground/10 disabled:opacity-50"
+            className="mt-6 w-full rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:brightness-110 disabled:opacity-50"
           >
             {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend confirmation email"}
           </button>
