@@ -393,6 +393,9 @@ function AuthPage() {
               />
               <span>No, I do not want to receive resources and updates.</span>
             </label>
+            <p className="text-[12px] leading-snug text-muted-foreground">
+              Your choice tells the Greater Hartford Branch NAACP whether to email or text resources, updates, and action opportunities. You can change it anytime from your account settings.
+            </p>
           </div>
         </div>
 
