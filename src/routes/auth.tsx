@@ -108,11 +108,23 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const ALLOWED_POST_AUTH_PATHS = ["/life", "/plans", "/dashboard"];
+  const ALLOWED_POST_AUTH_PATHS = ["/life", "/plans", "/dashboard", "/onboarding/address"];
 
   const isValidPostAuthRedirect = (target: string | null): target is string => {
     if (!target) return false;
     return ALLOWED_POST_AUTH_PATHS.includes(target) || /^\/plan\/[a-f0-9-]+$/i.test(target);
+  };
+
+  const resolveDestinationForUser = async (userId: string, requested: string): Promise<string> => {
+    // If we already know where to send them and it's not the dashboard fallback, honor it.
+    if (requested !== "/dashboard") return requested;
+    const { data } = await supabase
+      .from("profiles")
+      .select("street_address")
+      .eq("id", userId)
+      .maybeSingle();
+    if (!data?.street_address) return "/onboarding/address";
+    return requested;
   };
 
   const consumePostAuthRedirect = (): string => {
@@ -126,12 +138,17 @@ function AuthPage() {
   };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      // Don't redirect anonymous users — they're here specifically to upgrade.
-      if (session && !session.user.is_anonymous) nav({ to: consumePostAuthRedirect(), replace: true });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session && !session.user.is_anonymous) {
+        const target = await resolveDestinationForUser(session.user.id, consumePostAuthRedirect());
+        nav({ to: target, replace: true });
+      }
     });
-    supabase.auth.getUser().then(({ data, error }) => {
-      if (!error && data.user && !data.user.is_anonymous) nav({ to: consumePostAuthRedirect(), replace: true });
+    supabase.auth.getUser().then(async ({ data, error }) => {
+      if (!error && data.user && !data.user.is_anonymous) {
+        const target = await resolveDestinationForUser(data.user.id, consumePostAuthRedirect());
+        nav({ to: target, replace: true });
+      }
     });
     return () => subscription.unsubscribe();
   }, [nav]);

@@ -29,6 +29,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
+import { Route as OnboardingAddressRouteImport } from './routes/onboarding.address'
 import { Route as AdminSurveysRouteImport } from './routes/admin.surveys'
 import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
 import { Route as AdminReportingRouteImport } from './routes/admin.reporting'
@@ -134,6 +135,11 @@ const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
   path: '/plan/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingAddressRoute = OnboardingAddressRouteImport.update({
+  id: '/onboarding/address',
+  path: '/onboarding/address',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSurveysRoute = AdminSurveysRouteImport.update({
   id: '/surveys',
   path: '/surveys',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/onboarding/address': typeof OnboardingAddressRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/onboarding/address': typeof OnboardingAddressRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/admin/reporting': typeof AdminReportingRoute
   '/admin/survey-results': typeof AdminSurveyResultsRoute
   '/admin/surveys': typeof AdminSurveysRoute
+  '/onboarding/address': typeof OnboardingAddressRoute
   '/plan/$planId': typeof PlanPlanIdRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/onboarding/address'
     | '/plan/$planId'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/onboarding/address'
     | '/plan/$planId'
     | '/admin'
   id:
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin/reporting'
     | '/admin/survey-results'
     | '/admin/surveys'
+    | '/onboarding/address'
     | '/plan/$planId'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   SecurityDepositLetterRoute: typeof SecurityDepositLetterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SurveyRoute: typeof SurveyRoute
+  OnboardingAddressRoute: typeof OnboardingAddressRoute
   PlanPlanIdRoute: typeof PlanPlanIdRoute
 }
 
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/address': {
+      id: '/onboarding/address'
+      path: '/onboarding/address'
+      fullPath: '/onboarding/address'
+      preLoaderRoute: typeof OnboardingAddressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/surveys': {
       id: '/admin/surveys'
       path: '/surveys'
@@ -545,6 +565,7 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityDepositLetterRoute: SecurityDepositLetterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SurveyRoute: SurveyRoute,
+  OnboardingAddressRoute: OnboardingAddressRoute,
   PlanPlanIdRoute: PlanPlanIdRoute,
 }
 export const routeTree = rootRouteImport
