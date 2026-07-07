@@ -5,8 +5,6 @@ import type { User } from "@supabase/supabase-js";
 
 type Props = {
   user: User | null;
-  isBookmarked: boolean;
-  onToggleBookmark: () => void;
   generatedAt: string | null;
   prioritySummary: string;
   done: number;
