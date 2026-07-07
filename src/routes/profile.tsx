@@ -84,6 +84,10 @@ function ProfilePage() {
 
   const handleSavePhone = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isAnonymous) {
+      toast.error("Please sign in to update your profile.");
+      return;
+    }
     if (!firstName.trim()) {
       toast.error("First name can't be empty.");
       return;
