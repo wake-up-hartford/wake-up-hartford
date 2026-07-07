@@ -100,6 +100,7 @@ function AuthPage() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [optIn, setOptIn] = useState(false);
+  const [optOut, setOptOut] = useState(false);
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
