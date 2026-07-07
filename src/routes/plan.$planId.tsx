@@ -166,10 +166,10 @@ function PlanPage() {
             }}
             className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
           >
-            Save this plan — sign up to return or share
+            To Save this plan, sign in
           </Link>
           <p className="mt-2 text-center text-[12px] text-muted-foreground">
-            This plan is saved to your current session. Create an account to keep it permanently.
+            Create an account so you can return to track your progress.
           </p>
         </div>
       )}
