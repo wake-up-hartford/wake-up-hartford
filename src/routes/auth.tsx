@@ -364,9 +364,9 @@ function AuthPage() {
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <div className="mt-6 space-y-3">
-          <h1 className="font-display text-3xl leading-tight text-foreground">Sign In</h1>
+          <h1 className="font-display text-3xl leading-tight text-foreground">Sign In...</h1>
           <p className="text-[14px] leading-relaxed text-muted-foreground">
-            Your email connects you to free help and to a movement that's changing what's possible in Hartford.
+            ...to get free resources, save your Life Plan and be part of a movement that's changing Hartford.
           </p>
           <div className="space-y-2 pt-1">
             <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
