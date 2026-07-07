@@ -40,7 +40,7 @@ function PlanPage() {
   const qc = useQueryClient();
   const toggleFn = useServerFn(toggleStep);
 
-  const { isBookmarked, bookmarkCount, toggleBookmark } = useBookmarkPlan(planId);
+  const { bookmarkCount } = useBookmarkPlan(planId);
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
@@ -118,8 +118,6 @@ function PlanPage() {
 
       <PlanHeader
         user={user}
-        isBookmarked={isBookmarked}
-        onToggleBookmark={toggleBookmark}
         generatedAt={generatedAt}
         prioritySummary={plan.priority_summary}
         done={done}
@@ -166,7 +164,7 @@ function PlanPage() {
             }}
             className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
           >
-            To Save this plan, sign in
+            Sign in to return to this plan
           </Link>
           <p className="mt-2 text-center text-[12px] text-muted-foreground">
             Create an account so you can return to track your progress.

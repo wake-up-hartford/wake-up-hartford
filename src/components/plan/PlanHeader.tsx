@@ -13,8 +13,6 @@ type Props = {
 
 export function PlanHeader({
   user,
-  isBookmarked,
-  onToggleBookmark,
   generatedAt,
   prioritySummary,
   done,
@@ -24,25 +22,6 @@ export function PlanHeader({
     <div className="mb-5">
       <div className="flex items-start justify-between gap-3">
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
-        <button
-          onClick={() => {
-            if (user) {
-              onToggleBookmark();
-            } else {
-              document.getElementById("save-plan-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-          }}
-          aria-pressed={isBookmarked}
-          aria-label={user ? (isBookmarked ? "Remove bookmark" : "Bookmark this plan") : "Save this plan"}
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition ${
-            isBookmarked
-              ? "border-gold bg-gold/10 text-gold"
-              : "border-border bg-card text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? "fill-current" : ""}`} />
-          {user ? (isBookmarked ? "Saved" : "Save") : "Save"}
-        </button>
       </div>
       {generatedAt && (
         <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-gold">
