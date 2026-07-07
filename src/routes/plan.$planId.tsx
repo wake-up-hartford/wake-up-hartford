@@ -11,7 +11,7 @@ import { SharePlanCard } from "@/components/plan/SharePlanCard";
 import { WeekCard } from "@/components/plan/WeekCard";
 import { useAuth } from "@/hooks/use-auth";
 import { useAutoCollapseWeeks } from "@/hooks/use-auto-collapse-weeks";
-import { useBookmarkPlan } from "@/hooks/use-bookmark-plan";
+
 import { useWeekDueDates } from "@/hooks/use-week-due-dates";
 import { getPlan, toggleStep } from "@/lib/stabilization-plan.functions";
 import type { PlanShape, StepRow } from "@/lib/plan-types";
@@ -40,7 +40,6 @@ function PlanPage() {
   const qc = useQueryClient();
   const toggleFn = useServerFn(toggleStep);
 
-  const { bookmarkCount } = useBookmarkPlan(planId);
   const { setWeekDueDate, getWeekDueDate } = useWeekDueDates(planId);
   const [editingWeek, setEditingWeek] = useState<number | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
@@ -83,7 +82,7 @@ function PlanPage() {
           {(error as Error)?.message ?? "Couldn't load this plan."}
         </p>
         <p className="text-sm text-muted-foreground mb-4">
-          If you saved this plan to an account, sign in to view it.
+          If this plan is on your account, sign in to view it.
         </p>
         <Link
           to="/auth"
@@ -180,7 +179,7 @@ function PlanPage() {
             generatedAt,
           }}
         />
-        <PlanFooterActions bookmarkCount={bookmarkCount} isAnonymous={isAnonymous} />
+        <PlanFooterActions isAnonymous={isAnonymous} />
       </div>
 
       </div>
