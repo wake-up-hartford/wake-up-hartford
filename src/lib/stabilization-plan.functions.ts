@@ -226,8 +226,9 @@ export const getPlan = createServerFn({ method: "POST" })
       .select("id, plan, generated_at, status")
       .eq("id", data.planId)
       .eq("user_id", userId)
-      .single();
-    if (error || !plan) throw new Error("Plan not found.");
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!plan) return { plan: null, steps: [] };
 
     const { data: steps } = await supabase
       .from("plan_steps")
