@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { AppShell } from "@/components/AppShell";
+import wakeUpMovement from "@/assets/HARTFORD_3.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -646,6 +647,15 @@ function AuthPage() {
       >
         Already have an account? Sign in
       </button>
+
+      <div className="mt-6 flex flex-col items-center text-center">
+        <p className="text-[13px] font-semibold text-foreground">Join the</p>
+        <img
+          src={wakeUpMovement.url}
+          alt="Wake Up Movement"
+          className="mt-2 w-48 max-w-full"
+        />
+      </div>
     </AppShell>
   );
 }
