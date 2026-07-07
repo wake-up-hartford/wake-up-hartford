@@ -233,7 +233,9 @@ export type Database = {
           last_name: string | null
           phone: string | null
           sms_alerts: boolean
+          street_address: string | null
           updated_at: string
+          zip_code: string | null
         }
         Insert: {
           created_at?: string
@@ -243,7 +245,9 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           sms_alerts?: boolean
+          street_address?: string | null
           updated_at?: string
+          zip_code?: string | null
         }
         Update: {
           created_at?: string
@@ -253,7 +257,9 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           sms_alerts?: boolean
+          street_address?: string | null
           updated_at?: string
+          zip_code?: string | null
         }
         Relationships: []
       }
