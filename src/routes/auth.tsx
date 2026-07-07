@@ -391,7 +391,7 @@ function AuthPage() {
           </div>
           <button
             onClick={() => { setView("signin"); setError(null); }}
-            className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:brightness-110 disabled:opacity-50"
+            className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:bg-amber-500 hover:text-white disabled:opacity-50"
           >
             Already Registered? Sign In
           </button>
