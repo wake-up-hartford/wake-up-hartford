@@ -151,6 +151,19 @@ function ProfilePage() {
           >
             <h2 className="font-display text-lg text-card-foreground">Profile & contact</h2>
 
+            {isAnonymous && (
+              <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-[13px] text-amber-900">
+                <p className="mb-2">Sign in or create an account to update your profile and contact info.</p>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-amber-600"
+                >
+                  Sign in
+                </Link>
+              </div>
+            )}
+
+            <fieldset disabled={isAnonymous} className="space-y-3 disabled:opacity-60">
             <div className="grid grid-cols-2 gap-3">
               <Field icon={UserIcon} label="First name" htmlFor="first_name">
                 <input
@@ -235,11 +248,12 @@ function ProfilePage() {
 
             <button
               type="submit"
-              disabled={savingPhone || !phoneValid}
+              disabled={savingPhone || !phoneValid || isAnonymous}
               className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
             </button>
+            </fieldset>
           </form>
 
 
