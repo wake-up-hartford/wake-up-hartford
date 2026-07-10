@@ -173,6 +173,12 @@ function HomePage() {
             subtitle="Type an address (yours, a friend's, a place you might rent) or drop a pin on the map."
           />
 
+          <CoverageSummaryCard
+            coverage={coverage}
+            isRefreshing={refreshMutation.isPending}
+            onRefresh={() => refreshMutation.mutate()}
+          />
+
           <Card className="mb-5">
             <Tabs defaultValue="address" className="w-full">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1 mb-4">
