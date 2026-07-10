@@ -181,7 +181,7 @@ function ActionCard({ action }: { action: Action }) {
     if (primary.to) {
       return <Link to={primary.to} className={cardClass}>{inner}</Link>;
     }
-    return <a href={primary.href} className={cardClass}>{inner}</a>;
+    return <a href={primary.href} className={cardClass} target="_blank" rel="noopener noreferrer">{inner}</a>;
   }
   return <div className={cardClass}>{inner}</div>;
 }
