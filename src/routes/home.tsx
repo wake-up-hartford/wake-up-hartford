@@ -347,7 +347,7 @@ function CoverageSummaryCard({
       <div className="flex items-start gap-3">
         <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Coverage summary</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">COVERAGE SUMMARY (TEMP HERE FOR DEVELOPMENT)</p>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div>
               <p className="font-display text-2xl leading-none text-foreground">{coverage?.total ?? "—"}</p>
