@@ -328,6 +328,65 @@ function HomePage() {
   );
 }
 
+function CoverageSummaryCard({
+  coverage,
+  isRefreshing,
+  onRefresh,
+}: {
+  coverage?: { total: number; withTract: number; distinctTracts: number };
+  isRefreshing: boolean;
+  onRefresh: () => void;
+}) {
+  return (
+    <Card className="mb-5">
+      <div className="flex items-start gap-3">
+        <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Coverage summary</p>
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div>
+              <p className="font-display text-2xl leading-none text-foreground">{coverage?.total ?? "—"}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">addresses</p>
+            </div>
+            <div>
+              <p className="font-display text-2xl leading-none text-foreground">{coverage?.distinctTracts ?? "—"}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">census tracts</p>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-display text-2xl leading-none text-foreground">
+                {coverage ? `${Math.round((coverage.withTract / coverage.total) * 100)}%` : "—"}
+              </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">tract-mapped</p>
+            </div>
+          </div>
+          {coverage && coverage.withTract < coverage.total && (
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              >
+                {isRefreshing ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Geocoding…
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="h-3.5 w-3.5" />
+                    Map {coverage.total - coverage.withTract} more
+                  </>
+                )}
+              </button>
+              <span className="text-[11px] text-muted-foreground">Uses U.S. Census geocoder</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 function NotFoundState({ query, onReset }: { query: string; onReset: () => void }) {
   return (
     <Card className="mb-5">
