@@ -46,7 +46,7 @@ export type RefreshResult = {
 
 export const refreshCensusTracts = createServerFn({ method: "POST" })
   .inputValidator((input) =>
-    z.object({ batchSize: z.number().min(1).max(BATCH_SIZE).optional() }).default({ batchSize: BATCH_SIZE }).parse(input),
+    z.object({ batchSize: z.number().min(1).max(BATCH_SIZE).default(BATCH_SIZE) }).parse(input),
   )
   .handler(async ({ data }): Promise<RefreshResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
