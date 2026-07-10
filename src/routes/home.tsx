@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2 } from "lucide-react";
+import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2, BarChart3 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
+import { getCoverageSummary, refreshCensusTracts } from "@/lib/coverage.functions";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
