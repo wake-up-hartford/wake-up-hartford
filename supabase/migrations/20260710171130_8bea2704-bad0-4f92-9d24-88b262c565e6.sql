@@ -1,0 +1,1 @@
+ALTER TABLE public.hartford_addresses ADD COLUMN IF NOT EXISTS neighborhood text;

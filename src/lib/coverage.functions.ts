@@ -1,13 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const CENSUS_GEOCODER_BATCH = "https://geocoding.geo.census.gov/geocoder/geographies/addressbatch";
-const BATCH_SIZE = 5000;
+const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const BATCH_SIZE = 25;
 
 export type CoverageSummary = {
   total: number;
-  withTract: number;
-  distinctTracts: number;
+  withNeighborhood: number;
+  distinctNeighborhoods: number;
 };
 
 export const getCoverageSummary = createServerFn({ method: "GET" }).handler(
@@ -18,22 +18,22 @@ export const getCoverageSummary = createServerFn({ method: "GET" }).handler(
       .from("hartford_addresses")
       .select("*", { count: "exact", head: true });
 
-    const { count: withTract } = await supabaseAdmin
+    const { count: withNeighborhood } = await supabaseAdmin
       .from("hartford_addresses")
       .select("*", { count: "exact", head: true })
-      .not("census_tract", "is", null);
+      .not("neighborhood", "is", null);
 
-    const { data: tractRows } = await supabaseAdmin
+    const { data: rows } = await supabaseAdmin
       .from("hartford_addresses")
-      .select("census_tract")
-      .not("census_tract", "is", null);
+      .select("neighborhood")
+      .not("neighborhood", "is", null);
 
-    const tracts = new Set(tractRows?.map((r) => r.census_tract).filter(Boolean));
+    const set = new Set(rows?.map((r) => r.neighborhood).filter(Boolean));
 
     return {
       total: total ?? 0,
-      withTract: withTract ?? 0,
-      distinctTracts: tracts.size,
+      withNeighborhood: withNeighborhood ?? 0,
+      distinctNeighborhoods: set.size,
     };
   },
 );
@@ -46,62 +46,63 @@ export type RefreshResult = {
 
 export const refreshCensusTracts = createServerFn({ method: "POST" })
   .inputValidator((input) =>
-    z.object({ batchSize: z.number().min(1).max(BATCH_SIZE).default(BATCH_SIZE) }).parse(input),
+    z.object({ batchSize: z.number().min(1).max(100).default(BATCH_SIZE).optional() }).parse(input ?? {}),
   )
   .handler(async ({ data }): Promise<RefreshResult> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const batchSize = data.batchSize ?? BATCH_SIZE;
 
     const { data: rows } = await supabaseAdmin
       .from("hartford_addresses")
       .select("norm_address, display_address")
-      .is("census_tract", null)
-      .limit(data.batchSize);
+      .is("neighborhood", null)
+      .limit(batchSize);
 
     if (!rows || rows.length === 0) {
-      const { count: remaining } = await supabaseAdmin
-        .from("hartford_addresses")
-        .select("*", { count: "exact", head: true })
-        .is("census_tract", null);
-      return { processed: 0, matched: 0, remaining: remaining ?? 0 };
+      return { processed: 0, matched: 0, remaining: 0 };
     }
-
-    const csv = buildBatchCsv(rows);
-
-    const form = new FormData();
-    form.append("addressFile", new Blob([csv], { type: "text/csv" }), "addresses.csv");
-    form.append("benchmark", "Public_AR_Current");
-    form.append("vintage", "Current_Current");
-
-    const res = await fetch(CENSUS_GEOCODER_BATCH, {
-      method: "POST",
-      body: form,
-    });
-
-    if (!res.ok) {
-      throw new Error(`Census geocoder failed: ${res.status} ${res.statusText}`);
-    }
-
-    const text = await res.text();
-    const updates = parseBatchResponse(text);
 
     let matched = 0;
-    for (const [normAddress, tract] of updates) {
-      const { error } = await supabaseAdmin
-        .from("hartford_addresses")
-        .update({ census_tract: tract })
-        .eq("norm_address", normAddress);
+    for (const row of rows) {
+      try {
+        const url = new URL(NOMINATIM_URL);
+        url.searchParams.set("street", row.display_address);
+        url.searchParams.set("city", "Hartford");
+        url.searchParams.set("state", "CT");
+        url.searchParams.set("country", "USA");
+        url.searchParams.set("format", "json");
+        url.searchParams.set("addressdetails", "1");
+        url.searchParams.set("limit", "1");
 
-      if (!error) {
-        matched++;
-      } else {
-        console.error("Failed to update census tract for", normAddress, error);
+        const res = await fetch(url.toString(), {
+          headers: { "User-Agent": "WakeUpHartford/1.0 (coverage-mapper)" },
+        });
+        if (!res.ok) continue;
+        const json = (await res.json()) as Array<{
+          address?: { neighbourhood?: string; suburb?: string; quarter?: string; city_district?: string };
+        }>;
+        const addr = json[0]?.address;
+        const neighborhood =
+          addr?.neighbourhood || addr?.suburb || addr?.quarter || addr?.city_district || null;
+
+        if (neighborhood) {
+          const { error } = await supabaseAdmin
+            .from("hartford_addresses")
+            .update({ neighborhood })
+            .eq("norm_address", row.norm_address);
+          if (!error) matched++;
+        }
+      } catch (e) {
+        console.error("Nominatim lookup failed for", row.display_address, e);
       }
+      // Nominatim usage policy: max 1 req/sec
+      await new Promise((r) => setTimeout(r, 1100));
     }
 
     const { count: remaining } = await supabaseAdmin
       .from("hartford_addresses")
       .select("*", { count: "exact", head: true })
-      .is("census_tract", null);
+      .is("neighborhood", null);
 
     return {
       processed: rows.length,
@@ -109,76 +110,3 @@ export const refreshCensusTracts = createServerFn({ method: "POST" })
       remaining: remaining ?? 0,
     };
   });
-
-function buildBatchCsv(rows: { norm_address: string; display_address: string }[]): string {
-  const header = "id,street address,city,state,zip";
-  const lines = rows.map((r) => {
-    const id = r.norm_address.replace(/,/g, "");
-    const street = r.display_address.replace(/"/g, '""');
-    return `${id},"${street}",Hartford,CT,`;
-  });
-  return [header, ...lines].join("\n");
-}
-
-function parseBatchResponse(text: string): Map<string, string> {
-  const updates = new Map<string, string>();
-  const lines = parseCsvLines(text);
-
-  for (const row of lines) {
-    if (row.length < 12) continue;
-    const id = row[0];
-    const matchStatus = row[2];
-    if (matchStatus !== "Match") continue;
-    const tract = row[10]; // TRACT column
-    if (!id || !tract) continue;
-    updates.set(id, tract);
-  }
-
-  return updates;
-}
-
-function parseCsvLines(text: string): string[][] {
-  const rows: string[][] = [];
-  let current: string[] = [];
-  let field = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (inQuotes) {
-      if (char === '"' && next === '"') {
-        field += '"';
-        i++;
-      } else if (char === '"') {
-        inQuotes = false;
-      } else {
-        field += char;
-      }
-    } else {
-      if (char === '"') {
-        inQuotes = true;
-      } else if (char === ',') {
-        current.push(field);
-        field = "";
-      } else if (char === '\n') {
-        current.push(field);
-        rows.push(current);
-        current = [];
-        field = "";
-      } else if (char === '\r') {
-        // ignore carriage return, handle newline next
-      } else {
-        field += char;
-      }
-    }
-  }
-
-  if (field || current.length > 0) {
-    current.push(field);
-    rows.push(current);
-  }
-
-  return rows;
-}

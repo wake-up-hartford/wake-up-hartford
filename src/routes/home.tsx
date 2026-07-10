@@ -173,11 +173,6 @@ function HomePage() {
             subtitle="Type an address (yours, a friend's, a place you might rent) or drop a pin on the map."
           />
 
-          <CoverageSummaryCard
-            coverage={coverage}
-            isRefreshing={refreshMutation.isPending}
-            onRefresh={() => refreshMutation.mutate()}
-          />
 
           <Card className="mb-5">
             <Tabs defaultValue="address" className="w-full">
@@ -258,6 +253,12 @@ function HomePage() {
             </Tabs>
           </Card>
           <TakeAction />
+
+          <CoverageSummaryCard
+            coverage={coverage}
+            isRefreshing={refreshMutation.isPending}
+            onRefresh={() => refreshMutation.mutate()}
+          />
         </>
       )}
 
@@ -333,12 +334,16 @@ function CoverageSummaryCard({
   isRefreshing,
   onRefresh,
 }: {
-  coverage?: { total: number; withTract: number; distinctTracts: number };
+  coverage?: { total: number; withNeighborhood: number; distinctNeighborhoods: number };
   isRefreshing: boolean;
   onRefresh: () => void;
 }) {
+  const pct =
+    coverage && coverage.total > 0
+      ? `${Math.round((coverage.withNeighborhood / coverage.total) * 100)}%`
+      : "—";
   return (
-    <Card className="mb-5">
+    <Card className="mb-5 mt-5">
       <div className="flex items-start gap-3">
         <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
         <div className="min-w-0 flex-1">
@@ -349,17 +354,15 @@ function CoverageSummaryCard({
               <p className="mt-1 text-[11px] text-muted-foreground">addresses</p>
             </div>
             <div>
-              <p className="font-display text-2xl leading-none text-foreground">{coverage?.distinctTracts ?? "—"}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">census tracts</p>
+              <p className="font-display text-2xl leading-none text-foreground">{coverage?.distinctNeighborhoods ?? "—"}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">neighborhoods</p>
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <p className="font-display text-2xl leading-none text-foreground">
-                {coverage ? `${Math.round((coverage.withTract / coverage.total) * 100)}%` : "—"}
-              </p>
-              <p className="mt-1 text-[11px] text-muted-foreground">tract-mapped</p>
+              <p className="font-display text-2xl leading-none text-foreground">{pct}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">neighborhood-mapped</p>
             </div>
           </div>
-          {coverage && coverage.withTract < coverage.total && (
+          {coverage && coverage.withNeighborhood < coverage.total && (
             <div className="mt-3 flex items-center gap-3">
               <button
                 onClick={onRefresh}
@@ -374,11 +377,11 @@ function CoverageSummaryCard({
                 ) : (
                   <>
                     <MapPin className="h-3.5 w-3.5" />
-                    Map {coverage.total - coverage.withTract} more
+                    Map {coverage.total - coverage.withNeighborhood} more
                   </>
                 )}
               </button>
-              <span className="text-[11px] text-muted-foreground">Uses U.S. Census geocoder</span>
+              <span className="text-[11px] text-muted-foreground">Uses OpenStreetMap Nominatim</span>
             </div>
           )}
         </div>
