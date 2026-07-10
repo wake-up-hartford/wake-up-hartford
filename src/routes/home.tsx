@@ -156,7 +156,7 @@ function HomePage() {
           <SectionHeader
             eyebrow="Your home"
             title="Look up any Hartford address"
-            subtitle="Type an address — yours, a friend's, a place you might rent — or drop a pin on the map."
+            subtitle="Type an address (yours, a friend's, a place you might rent) or drop a pin on the map."
           />
 
           <Card className="mb-5">
