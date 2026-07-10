@@ -1,45 +1,25 @@
-## Goal
+Add a small coverage summary that tells users how many distinct 2020 U.S. Census tracts are represented by the Hartford addresses in the database.
 
-Deliver a `.pptx` in `/mnt/documents/` with one slide per route, each showing the mobile (390×844) and desktop (1280×900) screenshot side by side, plus the route path and page title.
+What will be built
 
-## Routes to capture
+- Database migration: add a `census_tract` text column to `public.hartford_addresses` (nullable, no default) so each address can store its tract once it is geocoded.
+- Backfill server function: `refreshCensusTracts` in `src/lib/address-lookup.functions.ts` (or a new `src/lib/coverage.functions.ts`) that geocodes every address without a tract using the free U.S. Census Geocoder API, extracts the 2020 census tract, and updates the row. It will process rows in small chunks to stay within server-function time limits.
+- Summary server function: `getCoverageSummary` that returns:
+  - total address count
+  - number of addresses with a tract assigned
+  - number of distinct census tracts covered
+- UI on `/home`: a small `Card` above the lookup tabs showing the summary numbers, e.g. "10,156 addresses across 47 census tracts". It will use a TanStack Query hook with `useServerFn` and a short stale time so the numbers are fresh.
 
-Every route file in `src/routes/`, grouped:
+Technical details
 
-- **Public**: `/`, `/about`, `/auth`, `/reset-password`, `/find-help`, `/home`, `/home-actions`, `/landlord-letter`, `/life`, `/neighborhood`, `/neighborhood-actions`, `/plans`, `/profile`, `/security-deposit-letter`, `/survey`, `/plan/$planId` (using a seeded/known plan id if available, otherwise the empty-state)
-- **Onboarding**: `/onboarding/address`
-- **Dashboard**: `/dashboard`
-- **Admin**: `/admin`, `/admin/admins`, `/admin/reporting`, `/admin/survey-results`, `/admin/surveys`
+- The Census Geocoder API endpoint is `https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress` with `benchmark=Public_AR_Current` and `vintage=Current_Current` and `format=json`. No API key is required.
+- The geocode response includes `Census Tracts` under `geographies`, from which we read the `GEOID` or `NAME` field.
+- The backfill is idempotent: it only processes rows where `census_tract IS NULL`, so it can be re-run safely as new addresses are added.
+- The summary function uses the publishable/admin client (the table is only read server-side) and counts distinct non-null `census_tract` values.
+- The UI will use the existing `Card` component and match the current "Your Home" visual style (muted text, small labels, large numbers).
 
-Skipped: `__root.tsx` (layout, not a URL) and `sitemap[.]xml.tsx` (non-visual).
+Out of scope
 
-## Auth strategy
-
-Use the injected managed Supabase session (`LOVABLE_BROWSER_AUTH_STATUS=injected`) to sign in for authenticated + admin routes. If the current test user is not an admin, admin pages will show their access-denied state — I'll capture what actually renders and note it on the slide. If you'd rather I grant this test user the `admin` role first, say so and I'll add that to the plan.
-
-## Capture approach (Playwright, headless Chromium)
-
-For each route:
-1. Restore the session (cookies + localStorage) at `http://localhost:8080`.
-2. Set viewport to 390×844, navigate to the route, wait for `networkidle`, screenshot to `/tmp/shots/<slug>-mobile.png`.
-3. Set viewport to 1280×900, repeat to `/tmp/shots/<slug>-desktop.png`.
-4. On error/timeout, capture whatever rendered and log the failure into the slide notes.
-
-All work under `/tmp/shots/`; final deck to `/mnt/documents/`.
-
-## PPTX build
-
-- `pptxgenjs`, 16:9, 1920×1080-equivalent (13.33"×7.5").
-- Layout per slide: route path as title (top-left), page `<title>` beneath it, mobile screenshot on the left (~3" wide), desktop screenshot on the right (~8" wide), both letterboxed to preserve aspect ratio. Muted background, one accent color pulled from the app's amber/emerald palette.
-- Cover slide: "Wake Up Wednesday — Page Inventory", generation date, route count.
-- Table-of-contents slide listing routes with slide numbers.
-- Images embedded as base64 so LibreOffice PDF QA works.
-
-## QA
-
-Convert the PPTX to PDF via LibreOffice, then to JPGs with `pdftoppm`, and read every slide image to check for missing screenshots, clipped titles, wrong aspect ratios, or blank pages. Iterate until clean.
-
-## Deliverable
-
-- `/mnt/documents/wake-up-wednesday-pages.pptx`
-- Presented back via `<presentation-artifact>` with a short summary of routes captured, any that failed to load, and whether admin pages showed real content or the access-denied state.
+- No neighborhood boundary map or choropleth layer.
+- No real-time geocoding of every address on every page load; we backfill once and keep the column updated.
+- No automatic scheduled re-run beyond the manual backfill function.

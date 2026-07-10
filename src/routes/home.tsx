@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2 } from "lucide-react";
+import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2, BarChart3 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
+import { getCoverageSummary, refreshCensusTracts } from "@/lib/coverage.functions";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
@@ -54,6 +55,19 @@ function HomePage() {
 
   const lookup = useServerFn(lookupHartfordAddress);
   const suggest = useServerFn(suggestHartfordAddresses);
+  const fetchCoverage = useServerFn(getCoverageSummary);
+  const runRefresh = useServerFn(refreshCensusTracts);
+
+  const { data: coverage, refetch: refetchCoverage } = useQuery({
+    queryKey: ["coverage-summary"],
+    queryFn: () => fetchCoverage(),
+    staleTime: 60_000,
+  });
+
+  const refreshMutation = useMutation({
+    mutationFn: () => runRefresh({ data: {} }),
+    onSuccess: () => refetchCoverage(),
+  });
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query), 180);
@@ -157,6 +171,12 @@ function HomePage() {
             eyebrow="Your home"
             title="Look up any Hartford address"
             subtitle="Type an address (yours, a friend's, a place you might rent) or drop a pin on the map."
+          />
+
+          <CoverageSummaryCard
+            coverage={coverage}
+            isRefreshing={refreshMutation.isPending}
+            onRefresh={() => refreshMutation.mutate()}
           />
 
           <Card className="mb-5">
@@ -305,6 +325,65 @@ function HomePage() {
         </>
       )}
     </AppShell>
+  );
+}
+
+function CoverageSummaryCard({
+  coverage,
+  isRefreshing,
+  onRefresh,
+}: {
+  coverage?: { total: number; withTract: number; distinctTracts: number };
+  isRefreshing: boolean;
+  onRefresh: () => void;
+}) {
+  return (
+    <Card className="mb-5">
+      <div className="flex items-start gap-3">
+        <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">Coverage summary</p>
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div>
+              <p className="font-display text-2xl leading-none text-foreground">{coverage?.total ?? "—"}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">addresses</p>
+            </div>
+            <div>
+              <p className="font-display text-2xl leading-none text-foreground">{coverage?.distinctTracts ?? "—"}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">census tracts</p>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-display text-2xl leading-none text-foreground">
+                {coverage ? `${Math.round((coverage.withTract / coverage.total) * 100)}%` : "—"}
+              </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">tract-mapped</p>
+            </div>
+          </div>
+          {coverage && coverage.withTract < coverage.total && (
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+              >
+                {isRefreshing ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Geocoding…
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="h-3.5 w-3.5" />
+                    Map {coverage.total - coverage.withTract} more
+                  </>
+                )}
+              </button>
+              <span className="text-[11px] text-muted-foreground">Uses U.S. Census geocoder</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
   );
 }
 

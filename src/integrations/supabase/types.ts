@@ -90,16 +90,19 @@ export type Database = {
       }
       hartford_addresses: {
         Row: {
+          census_tract: string | null
           display_address: string
           norm_address: string
           owner_name: string | null
         }
         Insert: {
+          census_tract?: string | null
           display_address: string
           norm_address: string
           owner_name?: string | null
         }
         Update: {
+          census_tract?: string | null
           display_address?: string
           norm_address?: string
           owner_name?: string | null
