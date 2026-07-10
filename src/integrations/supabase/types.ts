@@ -92,18 +92,21 @@ export type Database = {
         Row: {
           census_tract: string | null
           display_address: string
+          neighborhood: string | null
           norm_address: string
           owner_name: string | null
         }
         Insert: {
           census_tract?: string | null
           display_address: string
+          neighborhood?: string | null
           norm_address: string
           owner_name?: string | null
         }
         Update: {
           census_tract?: string | null
           display_address?: string
+          neighborhood?: string | null
           norm_address?: string
           owner_name?: string | null
         }
