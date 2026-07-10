@@ -162,10 +162,10 @@ function HomePage() {
           <Card className="mb-5">
             <Tabs defaultValue="address" className="w-full">
               <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1 mb-4">
-                <TabsTrigger value="address" className="py-1.5 text-xs font-semibold text-[#dfddce] data-[state=active]:text-[#b8860b]">
+                <TabsTrigger value="address" className="py-1.5 text-xs font-semibold text-foreground data-[state=active]:text-gold">
                   Enter Address
                 </TabsTrigger>
-                <TabsTrigger value="map" className="py-1.5 text-xs font-semibold text-[#dfddce] data-[state=active]:text-[#b8860b]">
+                <TabsTrigger value="map" className="py-1.5 text-xs font-semibold text-foreground data-[state=active]:text-gold">
                   Pick on Map
                 </TabsTrigger>
               </TabsList>
