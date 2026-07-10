@@ -55,6 +55,19 @@ function HomePage() {
 
   const lookup = useServerFn(lookupHartfordAddress);
   const suggest = useServerFn(suggestHartfordAddresses);
+  const fetchCoverage = useServerFn(getCoverageSummary);
+  const runRefresh = useServerFn(refreshCensusTracts);
+
+  const { data: coverage, refetch: refetchCoverage } = useQuery({
+    queryKey: ["coverage-summary"],
+    queryFn: () => fetchCoverage(),
+    staleTime: 60_000,
+  });
+
+  const refreshMutation = useMutation({
+    mutationFn: () => runRefresh({ data: {} }),
+    onSuccess: () => refetchCoverage(),
+  });
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(query), 180);
