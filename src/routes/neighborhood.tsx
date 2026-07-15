@@ -67,19 +67,21 @@ function NeighborhoodPage() {
   return (
     <AppShell>
       <div className="mb-4 flex items-center gap-4">
-        <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <ChevronLeft className="h-4 w-4" /> Dashboard
-        </Link>
-        {tract && (
+        {tract ? (
           <button
             type="button"
             onClick={() => setTract(null)}
-            className="ml-auto inline-flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
-            <MapPin className="h-4 w-4 shrink-0" /> Choose another neighborhood
+            <ChevronLeft className="h-4 w-4" /> Choose another neighborhood
           </button>
+        ) : (
+          <Link to="/dashboard" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <ChevronLeft className="h-4 w-4" /> Dashboard
+          </Link>
         )}
       </div>
+
 
       {!tract && (
         <>
