@@ -843,7 +843,14 @@ function SummaryScreen({
   onRestart: () => void;
 }) {
   const priorities = answers["su3"] ?? [];
-  const { user } = useAuth();
+  const { user, isAnonymous } = useAuth();
+  const showSignInPrompt = !user || isAnonymous;
+  const handleSignInToSave = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("wuw:postAuthRedirect", "/life");
+    }
+  };
+
 
   const ranked = useMemo(() => {
     const order = { high: 0, moderate: 1, stable: 2 } as const;
@@ -926,6 +933,26 @@ function SummaryScreen({
           );
         })}
       </div>
+
+
+      {showSignInPrompt && (
+        <div className="mb-5 rounded-2xl border border-amber-300/40 bg-amber-50 p-4 text-amber-950 shadow-soft">
+          <p className="text-[14px] font-semibold">Want to save or share your plan?</p>
+          <p className="mt-1 text-[13px] leading-relaxed">
+            Sign in first so your plan is saved to your account. We'll bring you right back here to generate it.
+          </p>
+          <Link
+            to="/auth"
+            onClick={handleSignInToSave}
+            className="mt-3 inline-flex items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-[13px] font-semibold text-white hover:bg-amber-600"
+          >
+            Sign in to save or share
+          </Link>
+          <p className="mt-2 text-[12px] text-amber-900/80">
+            Or skip and generate your plan below — you can save it later.
+          </p>
+        </div>
+      )}
 
 
       <div className="mb-5">
