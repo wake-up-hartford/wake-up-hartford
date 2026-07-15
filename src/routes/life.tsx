@@ -843,7 +843,14 @@ function SummaryScreen({
   onRestart: () => void;
 }) {
   const priorities = answers["su3"] ?? [];
-  const { user } = useAuth();
+  const { user, isAnonymous } = useAuth();
+  const showSignInPrompt = !user || isAnonymous;
+  const handleSignInToSave = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("wuw:postAuthRedirect", "/life");
+    }
+  };
+
 
   const ranked = useMemo(() => {
     const order = { high: 0, moderate: 1, stable: 2 } as const;
