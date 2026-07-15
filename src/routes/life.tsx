@@ -1056,7 +1056,7 @@ function PlanGenerator({
 
         <div>
           <Label>County in CT</Label>
-          <select value={county} onChange={(e) => setCounty(e.target.value)} className="input">
+          <select value={county} onChange={(e) => setCounty(e.target.value)} className="input input-gold">
             {["Hartford", "New Haven", "Fairfield", "New London", "Litchfield", "Middlesex", "Tolland", "Windham"].map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
