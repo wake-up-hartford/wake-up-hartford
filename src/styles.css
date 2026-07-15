@@ -194,15 +194,6 @@
     outline: 2px solid var(--ring);
     outline-offset: -1px;
   }
-  .input-gold {
-    border-color: var(--gold);
-    background-color: color-mix(in oklab, var(--gold) 18%, var(--secondary));
-    color: var(--gold-foreground);
-  }
-  .input-gold:focus {
-    outline-color: var(--gold);
-  }
-
   /* Lighter opaque popup backgrounds */
   .bg-gold-popup { background-color: oklch(0.83 0.15 60); }
   .bg-primary-popup { background-color: oklch(0.48 0.16 300); }
