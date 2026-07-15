@@ -1073,7 +1073,7 @@ function PlanGenerator({
           <div className="grid grid-cols-2 gap-2">
             {(["car", "bus", "walking", "none"] as Transport[]).map((t) => (
               <button key={t} type="button" onClick={() => setTransport(t)}
-                className={`rounded-lg border px-3 py-2 text-[13px] font-medium capitalize ${transport === t ? "border-foreground bg-foreground font-semibold text-background" : "border-border bg-secondary text-secondary-foreground"}`}>
+                className={`rounded-lg border px-3 py-2 text-[13px] font-medium capitalize ${transport === t ? "border-gold bg-gold font-semibold text-gold-foreground" : "border-border bg-secondary text-secondary-foreground"}`}>
                 {t === "none" ? "no reliable transport" : t}
               </button>
             ))}
