@@ -1082,7 +1082,7 @@ function PlanGenerator({
 
         <div>
           <Label>Preferred language</Label>
-          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="input">
+          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="input input-gold">
             <option value="en">English</option>
             <option value="es">Spanish</option>
           </select>
