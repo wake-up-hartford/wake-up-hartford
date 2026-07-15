@@ -1056,7 +1056,7 @@ function PlanGenerator({
 
         <div>
           <Label>County in CT</Label>
-          <select value={county} onChange={(e) => setCounty(e.target.value)} className="input">
+          <select value={county} onChange={(e) => setCounty(e.target.value)} className="input input-gold">
             {["Hartford", "New Haven", "Fairfield", "New London", "Litchfield", "Middlesex", "Tolland", "Windham"].map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -1073,7 +1073,7 @@ function PlanGenerator({
           <div className="grid grid-cols-2 gap-2">
             {(["car", "bus", "walking", "none"] as Transport[]).map((t) => (
               <button key={t} type="button" onClick={() => setTransport(t)}
-                className={`rounded-lg border px-3 py-2 text-[13px] font-medium capitalize ${transport === t ? "border-foreground bg-foreground font-semibold text-background" : "border-border bg-secondary text-secondary-foreground"}`}>
+                className={`rounded-lg border px-3 py-2 text-[13px] font-medium capitalize ${transport === t ? "border-gold bg-gold font-semibold text-gold-foreground" : "border-border bg-secondary text-secondary-foreground"}`}>
                 {t === "none" ? "no reliable transport" : t}
               </button>
             ))}
@@ -1082,7 +1082,7 @@ function PlanGenerator({
 
         <div>
           <Label>Preferred language</Label>
-          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="input">
+          <select value={language} onChange={(e) => setLanguage(e.target.value)} className="input input-gold">
             <option value="en">English</option>
             <option value="es">Spanish</option>
           </select>
@@ -1093,7 +1093,7 @@ function PlanGenerator({
           <div className="flex flex-wrap gap-2">
             {BENEFIT_OPTIONS.map((b) => (
               <button key={b} type="button" onClick={() => toggleBenefit(b)}
-                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium ${benefits.includes(b) ? "border-foreground bg-foreground font-semibold text-background" : "border-border bg-secondary text-secondary-foreground"}`}>
+                className={`rounded-full border px-3 py-1.5 text-[12px] font-medium ${benefits.includes(b) ? "border-gold bg-gold font-semibold text-gold-foreground" : "border-border bg-secondary text-secondary-foreground"}`}>
                 {b}
               </button>
             ))}
