@@ -65,7 +65,7 @@ function AboutPage() {
       <h1 className="font-display text-3xl text-foreground">About This Tool</h1>
 
       <div className="mt-6 space-y-3">
-        <CollapsibleSection id="what" title="What This Platform Is" open={!!openSections["what"]} onOpenChange={(open) => handleOpenChange("what", open)}>
+        <CollapsibleSection id="what" title="What is this web tool?" open={!!openSections["what"]} onOpenChange={(open) => handleOpenChange("what", open)}>
           <p>
             Wake Up is a free, address-based digital platform built with and for residents of Hartford's highest-poverty neighborhoods. Type in your address and see what's happening in your building and your broader neighborhood — then get a personalized plan to help stabilize your life and connect to people fighting to change the conditions that created these realities in the first place.
           </p>
