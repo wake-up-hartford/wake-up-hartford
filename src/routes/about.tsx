@@ -71,7 +71,7 @@ function AboutPage() {
           </p>
         </CollapsibleSection>
 
-        <CollapsibleSection id="how" title="How It Came to Be" open={!!openSections["how"]} onOpenChange={(open) => handleOpenChange("how", open)}>
+        <CollapsibleSection id="how" title="Why was it created?" open={!!openSections["how"]} onOpenChange={(open) => handleOpenChange("how", open)}>
           <p>
             Wake Up Wednesday launched in August 2023 as a community response to a series of murders in North Hartford. Every Wednesday since, NAACP Greater Hartford Branch volunteers have set up a tent at Unity Plaza on Barbour Street — offering food, support, and direct assistance to residents week after week.
           </p>
