@@ -535,7 +535,7 @@ function DetailedReport({ data }: { data: Found }) {
 
 function ShareSlideshow({ data }: { data: Found }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: data.address.display, body: "Hartford, CT" },
+    { eyebrow: "Wake Up Hartford", title: data.address.display, body: "Hartford, CT" },
     { eyebrow: "Code violations", title: `${data.counts.violationsOpen} code violations open`, body: "From city housing inspectors." },
     { eyebrow: "311 complaints", title: `${data.counts.complaints12mo} complaints to 311 in the last 12 months`, body: data.counts.topComplaintType ? `Top issue: ${data.counts.topComplaintType}` : "No top category on record." },
   ];
