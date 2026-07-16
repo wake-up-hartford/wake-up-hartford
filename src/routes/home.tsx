@@ -535,7 +535,7 @@ function DetailedReport({ data }: { data: Found }) {
 
 function ShareSlideshow({ data }: { data: Found }) {
   const slides = [
-    { eyebrow: "Wake Up Wednesday", title: data.address.display, body: "Hartford, CT" },
+    { eyebrow: "Wake Up Hartford", title: data.address.display, body: "Hartford, CT" },
     { eyebrow: "Code violations", title: `${data.counts.violationsOpen} code violations open`, body: "From city housing inspectors." },
     { eyebrow: "311 complaints", title: `${data.counts.complaints12mo} complaints to 311 in the last 12 months`, body: data.counts.topComplaintType ? `Top issue: ${data.counts.topComplaintType}` : "No top category on record." },
   ];
@@ -564,7 +564,7 @@ function ShareSlideshow({ data }: { data: Found }) {
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
           </div>
-          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
+          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up hartford</p>
         </div>
       </div>
 

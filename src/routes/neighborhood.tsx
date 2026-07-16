@@ -273,7 +273,7 @@ function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
 function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
   const slides = [
     { eyebrow: "Coming soon", title: "[[this slide show to be replaced by videos of neighborhoods]]", body: "", compare: null as string | null, severity: null as Indicator["severity"] | null },
-    { eyebrow: "Wake Up Wednesday", title: `See the story of ${tract.neighborhood ?? tract.tractName}, told in data.`, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
+    { eyebrow: "Wake Up Hartford", title: `See the story of ${tract.neighborhood ?? tract.tractName}, told in data.`, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
     ...indicators.map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
@@ -323,7 +323,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
               </p>
             )}
           </div>
-          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
+          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up hartford</p>
         </div>
       </div>
 
