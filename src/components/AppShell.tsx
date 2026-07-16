@@ -165,7 +165,7 @@ function LogoutButton() {
   );
 }
 
-export function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
+export function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: ReactNode }) {
   return (
     <div className="mb-6">
       {eyebrow && (
