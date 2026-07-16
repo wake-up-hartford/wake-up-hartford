@@ -415,7 +415,7 @@ function AuthPage() {
               <span>No, I do not want to receive resources and updates.</span>
             </label>
             <p className="text-[12px] leading-snug text-muted-foreground">
-              You can change it anytime from your account settings.
+              Change choice anytime from your "You" settings.
             </p>
           </div>
         </div>
