@@ -439,7 +439,7 @@ function AuthPage() {
         </div>
 
         <div className="mt-6 flex flex-col items-center text-center">
-          <p className="text-[13px] font-semibold text-foreground">Join the</p>
+          <p className="text-[13px] font-semibold text-foreground">Be a part of the</p>
           <img
             src={wakeUpMovement.url}
             alt="Wake Up Movement"
