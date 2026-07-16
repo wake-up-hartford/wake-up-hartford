@@ -553,7 +553,7 @@ function ShareSlideshow({ data }: { data: Found }) {
   };
 
   return (
-    <div className="space-y-3 lg:mx-auto lg:w-1/3">
+    <div className="space-y-3 lg:mx-auto lg:w-1/2 xl:w-[45%]">
       <div className="aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground shadow-soft">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-70">
