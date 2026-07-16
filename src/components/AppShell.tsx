@@ -172,7 +172,7 @@ export function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; 
         <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>
       )}
       <h1 className="font-display text-3xl leading-tight text-foreground">{title}</h1>
-      {subtitle && <p className="mt-2 text-[15px] font-bold leading-relaxed text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{subtitle}</p>}
     </div>
   );
 }
