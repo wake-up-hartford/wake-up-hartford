@@ -87,7 +87,7 @@ function NeighborhoodPage() {
         <>
           <SectionHeader
             title="Learn About Your Neighborhood"
-            subtitle="Enter an address or tap a tract on the map. Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA."
+            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a tract on the map.</strong> Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA.</>}
           />
           <div id="neighborhood-lookup">
             <Card className="mb-5">
