@@ -90,7 +90,7 @@ function AboutPage() {
           </p>
         </CollapsibleSection>
 
-        <CollapsibleSection id="partners" title="Our Partners" open={!!openSections["partners"]} onOpenChange={(open) => handleOpenChange("partners", open)}>
+        <CollapsibleSection id="partners" title="Who are our partners?" open={!!openSections["partners"]} onOpenChange={(open) => handleOpenChange("partners", open)}>
           <ul className="list-disc space-y-2 pl-5">
             <li><strong>NAACP Greater Hartford Branch</strong> — Organizational lead and community anchor</li>
             <li><strong>CT Data Collaborative</strong> — Primary data infrastructure and technical partner</li>
