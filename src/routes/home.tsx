@@ -564,7 +564,7 @@ function ShareSlideshow({ data }: { data: Found }) {
             <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
             <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
           </div>
-          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up wednesday</p>
+          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up hartford</p>
         </div>
       </div>
 
