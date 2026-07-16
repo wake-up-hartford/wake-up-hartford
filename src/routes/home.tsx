@@ -287,16 +287,15 @@ function HomePage() {
                 <p className="text-sm opacity-80">Hartford, CT · Year built and unit count not available</p>
               </div>
             </div>
-            <div className="mt-3">
+            <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
               <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
                 <AddressLocationMap address={found.address.display} />
               </Suspense>
-            </div>
-            <div className="mt-3">
               <Suspense fallback={<div className="h-[180px] rounded-xl bg-black/20 animate-pulse" />}>
                 <AddressStreetView address={found.address.display} />
               </Suspense>
             </div>
+
           </Card>
 
           <Tabs defaultValue="story" className="w-full">
