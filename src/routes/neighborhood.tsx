@@ -535,7 +535,7 @@ function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => v
     <div id="census-lookup">
       <Card className="mb-5">
         <p className="mb-3 text-[12px] text-muted-foreground">
-          Enter a real US street address (no PO boxes, intersections, or place names).
+          Enter a real Hartford street address (no PO boxes, intersections, or place names).
         </p>
 
         <form onSubmit={handleLookup} className="flex flex-col gap-2">
@@ -610,14 +610,14 @@ function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => v
 
         {result && (
           <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Census tract</p>
-            <p className="mt-1 font-display text-xl text-card-foreground">{result.tractName}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Neighborhood</p>
+            <p className="mt-1 font-display text-xl text-card-foreground">{result.name}</p>
             <p className="mt-1 text-[12px] text-muted-foreground">{result.address}</p>
           </div>
         )}
 
         <p className="mt-3 text-[10px] text-muted-foreground">
-          Address lookup via the US Census Bureau Geocoder.
+          Address lookup via the US Census Bureau Geocoder; neighborhood assignment via the CT Data Collaborative crosswalk.
         </p>
       </Card>
     </div>
@@ -643,7 +643,7 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
   );
 }
 
-function TakeAction({ tract }: { tract: Tract }) {
+function TakeAction({ place }: { place: Neighborhood }) {
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
       <div className="flex items-start gap-3">
@@ -653,17 +653,11 @@ function TakeAction({ tract }: { tract: Tract }) {
         <div className="flex-1">
           <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
           <p className="mt-1 text-sm text-foreground/80">
-            Find help, email your rep, or share this report — tailored to what this tract needs most.
+            Find help, email your rep, or share this report — tailored to what this neighborhood needs most.
           </p>
           <Link
             to="/neighborhood-actions"
-            search={{
-              state: tract.state,
-              county: tract.county,
-              tract: tract.tract,
-              name: tract.tractName,
-              neighborhood: tract.neighborhood ?? "",
-            }}
+            search={{ neighborhood: place.name }}
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
           >
             Take action
