@@ -118,30 +118,16 @@ function NeighborhoodPage() {
 
           {indicators.length > 0 && (
             <TractStoryDialog
-              tractName={tract.tractName}
-              neighborhood={tract.neighborhood ?? `Tract ${tract.tractName}`}
+              neighborhood={place.name}
               indicators={indicators}
-              stateFips={tract.state}
+              stateFips="09"
             />
 
           )}
 
-          {data?.error && (
+          {result?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-destructive">{data.error}</p>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                  className="shrink-0"
-                >
-                  {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-                  {isFetching ? "Retrying…" : "Retry"}
-                </Button>
-              </div>
+              <p className="text-sm text-destructive">{result.error}</p>
             </Card>
           )}
 
@@ -154,22 +140,22 @@ function NeighborhoodPage() {
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
-              <NeighborhoodDetailed indicators={indicators} loading={isLoading} />
+              <NeighborhoodDetailed indicators={indicators} loading={false} />
             </TabsContent>
             <TabsContent value="share" className="mt-4">
-              <NeighborhoodShare tract={tract} indicators={indicators} />
+              <NeighborhoodShare place={place} indicators={indicators} />
             </TabsContent>
             <TabsContent value="print" className="mt-4">
-              <NeighborhoodPrint tract={tract} indicators={indicators} />
+              <NeighborhoodPrint place={place} indicators={indicators} />
             </TabsContent>
           </Tabs>
 
-          <TakeAction tract={tract} />
+          <TakeAction place={place} />
 
           <div className="mt-6 flex justify-center">
             <button
               type="button"
-              onClick={() => setTract(null)}
+              onClick={() => setPlace(null)}
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-card-foreground hover:bg-muted/50 transition-colors"
             >
               <MapPin className="h-4 w-4" /> Choose another neighborhood
