@@ -10,18 +10,19 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
-import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { buildNeighborhoodIndicators, DATA_SOURCE_LABEL, type Indicator } from "@/lib/neighborhood-indicators";
+import { geocodeAddressToNeighborhood } from "@/lib/neighborhood-lookup.functions";
 import { suggestHartfordAddresses } from "@/lib/address-lookup.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
-const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
+const HartfordNeighborhoodMap = lazy(() => import("@/components/HartfordNeighborhoodMap"));
 
 export const Route = createFileRoute("/neighborhood")({
   head: () => ({
