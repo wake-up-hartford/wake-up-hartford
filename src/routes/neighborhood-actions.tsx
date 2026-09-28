@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import {
@@ -104,7 +102,7 @@ function ActionsPage() {
         cta={
           <Link
             to="/find-help"
-            search={{ state, county, tract, name, neighborhood }}
+            search={{ neighborhood }}
           >
             <Button size="sm">
               Start checklist <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
@@ -130,7 +128,7 @@ function ActionsPage() {
               </Button>
             </Link>
           }
-          tag="Recommended for this tract"
+          tag="Recommended for this neighborhood"
         />
       )}
 
@@ -176,9 +174,9 @@ function ActionsPage() {
         cta={
           <a
             href={`mailto:hello@wakeupwednesday.org?subject=${encodeURIComponent(
-              `Ground-truth: ${tractLabel}`,
+              `Ground-truth: ${label}`,
             )}&body=${encodeURIComponent(
-              `Tract ${tractName} — what the data gets wrong:\n\n`,
+              `${label} — what the data gets wrong:\n\n`,
             )}`}
           >
             <Button size="sm" variant="outline">
