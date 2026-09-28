@@ -159,7 +159,7 @@ export const VETTED_RESOURCES: Resource[] = [
   },
 ];
 
-// Map indicator keys (from tract-indicators.functions.ts) to resource tag priorities.
+// Map indicator keys (from neighborhood-indicators.ts) to resource tag priorities.
 export const INDICATOR_TO_TAGS: Record<string, ResourceTag[]> = {
   child_poverty: ["food", "income", "youth"],
   median_income: ["jobs", "income"],
