@@ -471,16 +471,16 @@ function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
 }
 
-function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
+function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => void }) {
   const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  const [city, setCity] = useState("Hartford");
+  const [state, setState] = useState("CT");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<Tract | null>(null);
+  const [result, setResult] = useState<Neighborhood | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [debounced, setDebounced] = useState("");
-  const lookupAddress = useServerFn(geocodeAddressToTract);
+  const lookupAddress = useServerFn(geocodeAddressToNeighborhood);
   const suggest = useServerFn(suggestHartfordAddresses);
 
   useEffect(() => {
@@ -497,50 +497,38 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
 
   const canSubmit = street.trim().length > 2 && city.trim().length > 1 && state.trim().length >= 2;
 
-  const pickSuggestion = async (s: { display: string; normalized: string }) => {
-    setStreet(s.display);
-    setCity((c) => c || "Hartford");
-    setState((st) => st || "CT");
-    setSuggestOpen(false);
-    const q = `${s.display}, Hartford, CT`;
+  const runLookup = async (q: string) => {
     setLoading(true);
     setError(null);
     setResult(null);
     try {
       const resolved = await lookupAddress({ data: { address: q } });
-      if (resolved.error) {
-        setError(resolved.error);
+      if (resolved.error || !resolved.neighborhood) {
+        setError(resolved.error ?? "Couldn't find a Hartford neighborhood for that address.");
         return;
       }
-      setResult(resolved);
-      onResolved(resolved);
+      const picked: Neighborhood = { name: resolved.neighborhood, address: resolved.address };
+      setResult(picked);
+      onResolved(picked);
     } catch {
-      setError("Couldn't reach the Census geocoder. Please try again.");
+      setError("Couldn't reach the address lookup service. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const pickSuggestion = async (s: { display: string; normalized: string }) => {
+    setStreet(s.display);
+    setCity((c) => c || "Hartford");
+    setState((st) => st || "CT");
+    setSuggestOpen(false);
+    await runLookup(`${s.display}, Hartford, CT`);
+  };
+
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    const q = `${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()}`;
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      const resolved = await lookupAddress({ data: { address: q } });
-      if (resolved.error) {
-        setError(resolved.error);
-        return;
-      }
-      setResult(resolved);
-      onResolved(resolved);
-    } catch {
-      setError("Couldn't reach the Census geocoder. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    await runLookup(`${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()}`);
   };
 
   return (
