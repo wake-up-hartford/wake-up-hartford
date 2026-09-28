@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import {
@@ -16,13 +14,9 @@ import {
 import { useMemo, type ComponentType } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
-import { getTractIndicators } from "@/lib/tract-indicators.functions";
+import { buildNeighborhoodIndicators } from "@/lib/neighborhood-indicators";
 
 const search = z.object({
-  state: fallback(z.string().regex(/^\d{2}$/), "09").default("09"),
-  county: fallback(z.string().regex(/^\d{3}$/), "003").default("003"),
-  tract: fallback(z.string().regex(/^\d{6}$/), "500100").default("500100"),
-  name: fallback(z.string(), "").default(""),
   neighborhood: fallback(z.string(), "").default(""),
 });
 
@@ -49,31 +43,27 @@ export const Route = createFileRoute("/neighborhood-actions")({
 });
 
 function ActionsPage() {
-  const { state, county, tract, name, neighborhood } = Route.useSearch();
-  const tractName = name || tract;
-  const tractLabel = neighborhood || `Tract ${tractName}`;
+  const { neighborhood } = Route.useSearch();
+  const label = neighborhood || "Your neighborhood";
 
-  const fetchIndicators = useServerFn(getTractIndicators);
-  const { data, isLoading } = useQuery({
-    queryKey: ["tract-indicators", state, county, tract],
-    queryFn: () => fetchIndicators({ data: { state, county, tract } }),
-    staleTime: 1000 * 60 * 60,
-  });
+  const result = useMemo(
+    () => (neighborhood ? buildNeighborhoodIndicators(neighborhood) : null),
+    [neighborhood],
+  );
 
-  const indicators = data?.indicators ?? [];
+  const indicators = result?.indicators ?? [];
   const concerns = useMemo(
     () => indicators.filter((i) => i.severity === "concern"),
     [indicators],
   );
-  const rentBurdenRed = concerns.some((i) => i.key === "rent_burden");
-  const housingAgeRed = concerns.some((i) => i.key === "housing_age" || i.key === "age_of_housing");
+  const rentBurdenRed = concerns.some((i) => i.key === "severe_rent");
+  const housingAgeRed = concerns.some((i) => i.key === "pre1960");
 
   return (
     <AppShell>
       <div className="mb-4">
         <Link
           to="/neighborhood"
-          search={{ state, county, tract, name, neighborhood }}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" /> Back to report
@@ -81,10 +71,11 @@ function ActionsPage() {
       </div>
 
       <SectionHeader
-        eyebrow={tractLabel}
+        eyebrow={label}
         title="Take action for your neighborhood"
-        subtitle="Things you can do right now, tailored to what the data shows about this tract."
+        subtitle="Things you can do right now, tailored to what the data shows about this neighborhood."
       />
+
 
       {/* For you */}
       <GroupHeader>For you & your neighbors</GroupHeader>
@@ -111,7 +102,7 @@ function ActionsPage() {
         cta={
           <Link
             to="/find-help"
-            search={{ state, county, tract, name, neighborhood }}
+            search={{ neighborhood }}
           >
             <Button size="sm">
               Start checklist <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
@@ -137,7 +128,7 @@ function ActionsPage() {
               </Button>
             </Link>
           }
-          tag="Recommended for this tract"
+          tag="Recommended for this neighborhood"
         />
       )}
 
@@ -183,9 +174,9 @@ function ActionsPage() {
         cta={
           <a
             href={`mailto:hello@wakeupwednesday.org?subject=${encodeURIComponent(
-              `Ground-truth: ${tractLabel}`,
+              `Ground-truth: ${label}`,
             )}&body=${encodeURIComponent(
-              `Tract ${tractName} — what the data gets wrong:\n\n`,
+              `${label} — what the data gets wrong:\n\n`,
             )}`}
           >
             <Button size="sm" variant="outline">

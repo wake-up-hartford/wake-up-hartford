@@ -15,13 +15,13 @@ import { ListenButton } from "@/components/ListenButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/lib/language";
 import { generateTractStory, type Tone } from "@/lib/tract-story.functions";
-import type { Indicator } from "@/lib/tract-indicators.functions";
+import type { Indicator } from "@/lib/neighborhood-indicators";
 
 
 const TONE: Tone = "warm";
 
 type Props = {
-  tractName: string;
+  tractName?: string;
   neighborhood: string;
   indicators: Indicator[];
   stateFips?: string;
@@ -62,6 +62,7 @@ function writeCache(key: string, story: string) {
 }
 
 export function TractStoryDialog({ tractName, neighborhood, indicators, stateFips }: Props) {
+  const storyName = tractName ?? neighborhood;
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [cachedStory, setCachedStory] = useState<string | null>(null);
@@ -76,14 +77,14 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
     const fingerprint = indicators
       .map((i) => `${i.key}=${i.value}|${i.severity}`)
       .join(";");
-    return `${stateFips ?? "00"}:${tractName}:${tone}:${language}:${fingerprint}`;
-  }, [tractName, stateFips, tone, language, indicators]);
+    return `${stateFips ?? "00"}:${storyName}:${tone}:${language}:${fingerprint}`;
+  }, [storyName, stateFips, tone, language, indicators]);
 
   const mutation = useMutation({
     mutationFn: () =>
       generate({
         data: {
-          tractName,
+          tractName: storyName,
           neighborhood,
           stateFips,
           tone,
@@ -161,7 +162,7 @@ export function TractStoryDialog({ tractName, neighborhood, indicators, stateFip
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
-            {neighborhood} — Tract {tractName}
+            {neighborhood}
           </DialogTitle>
           <p className="text-xs text-muted-foreground">An AI-written story, grounded in the indicators on this page.</p>
         </DialogHeader>

@@ -10,26 +10,27 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   if (severity === "concern") return <AlertOctagon className={className} aria-label="Concern" />;
   return <Minus className={className} aria-label="Neutral" />;
 }
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { AppShell, Card, SectionHeader } from "@/components/AppShell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
-import { geocodeAddressToTract, getTractIndicators, type Indicator } from "@/lib/tract-indicators.functions";
+import { buildNeighborhoodIndicators, DATA_SOURCE_LABEL, type Indicator } from "@/lib/neighborhood-indicators";
+import { geocodeAddressToNeighborhood } from "@/lib/neighborhood-lookup.functions";
 import { suggestHartfordAddresses } from "@/lib/address-lookup.functions";
 import { TractStoryDialog } from "@/components/TractStoryDialog";
 import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
-const TargetTractMap = lazy(() => import("@/components/TargetTractMap"));
+const HartfordNeighborhoodMap = lazy(() => import("@/components/HartfordNeighborhoodMap"));
 
 export const Route = createFileRoute("/neighborhood")({
   head: () => ({
     meta: [
       { title: "Your Neighborhood — Wake Up Wednesday" },
-      { name: "description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { name: "description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
       { property: "og:title", content: "Your Neighborhood — Wake Up Wednesday" },
-      { property: "og:description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { property: "og:description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
       { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
       { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
     ],
@@ -40,37 +41,31 @@ export const Route = createFileRoute("/neighborhood")({
   component: NeighborhoodPage,
 });
 
-type Tract = { address: string; state: string; county: string; tract: string; tractName: string; neighborhood?: string };
+type Neighborhood = { name: string; address: string };
 
 function NeighborhoodPage() {
   const { save } = useStoredAddress();
-  const [tract, setTract] = useState<Tract | null>(null);
+  const [place, setPlace] = useState<Neighborhood | null>(null);
 
-  const fetchIndicators = useServerFn(getTractIndicators);
-  const { data, isLoading, isError, isFetching, refetch } = useQuery({
-    queryKey: ["tract-indicators", tract?.state, tract?.county, tract?.tract],
-    queryFn: () => fetchIndicators({ data: { state: tract!.state, county: tract!.county, tract: tract!.tract } }),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!tract,
-    retry: 2,
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
-  });
+  const result = useMemo(
+    () => (place ? buildNeighborhoodIndicators(place.name) : null),
+    [place],
+  );
 
-  const handleResolved = (t: Tract) => {
-    setTract(t);
-    save(t.address);
+  const handleResolved = (n: Neighborhood) => {
+    setPlace(n);
+    save(n.address);
   };
 
-  const indicators = data?.indicators ?? [];
-  const byKey = (k: string) => indicators.find((i) => i.key === k);
+  const indicators = result?.indicators ?? [];
 
   return (
     <AppShell>
       <div className="mb-4 flex items-center gap-4">
-        {tract ? (
+        {place ? (
           <button
             type="button"
-            onClick={() => setTract(null)}
+            onClick={() => setPlace(null)}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" /> Choose another neighborhood
@@ -83,11 +78,11 @@ function NeighborhoodPage() {
       </div>
 
 
-      {!tract && (
+      {!place && (
         <>
           <SectionHeader
             title="Learn About Your Neighborhood"
-            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a tract on the map.</strong> Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA.</>}
+            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a neighborhood on the map.</strong> Data covers all 17 City of Hartford neighborhoods, supplied by the CT Data Collaborative.</>}
           />
           <div id="neighborhood-lookup">
             <Card className="mb-5">
@@ -98,11 +93,11 @@ function NeighborhoodPage() {
                 </TabsList>
                 <TabsContent value="map" className="mt-3">
                   <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
-                    <TargetTractMap selectedTract={null} onSelect={(t) => { trackEvent("neighborhood_map_tract_click", { tract: t.tract }); handleResolved(t); }} />
+                    <HartfordNeighborhoodMap selectedNeighborhood={null} onSelect={(n) => { trackEvent("neighborhood_map_click", { neighborhood: n.name }); handleResolved(n); }} />
                   </Suspense>
                 </TabsContent>
                 <TabsContent value="address" className="mt-3">
-                  <CensusTractLookup onResolved={(t) => { trackEvent("neighborhood_address_submit", { tract: t.tract }); handleResolved(t); }} />
+                  <NeighborhoodLookup onResolved={(n) => { trackEvent("neighborhood_address_submit", { neighborhood: n.name }); handleResolved(n); }} />
                 </TabsContent>
               </Tabs>
             </Card>
@@ -112,40 +107,27 @@ function NeighborhoodPage() {
       )}
 
 
-      {tract && (
+      {place && (
         <>
           <SectionHeader
-            eyebrow={`Census Tract ${tract.tractName}`}
-            title={tract.neighborhood ?? "Your neighborhood"}
-            subtitle="Live indicators for this tract, from the Census Bureau and USDA."
+            eyebrow="Hartford neighborhood"
+            title={place.name}
+            subtitle="Indicators for this neighborhood, from the CT Data Collaborative (2024 ACS 5-year estimates)."
           />
+
 
           {indicators.length > 0 && (
             <TractStoryDialog
-              tractName={tract.tractName}
-              neighborhood={tract.neighborhood ?? `Tract ${tract.tractName}`}
+              neighborhood={place.name}
               indicators={indicators}
-              stateFips={tract.state}
+              stateFips="09"
             />
 
           )}
 
-          {data?.error && (
+          {result?.error && (
             <Card className="mb-4 border-destructive/30 bg-destructive/5">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-destructive">{data.error}</p>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => refetch()}
-                  disabled={isFetching}
-                  className="shrink-0"
-                >
-                  {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-                  {isFetching ? "Retrying…" : "Retry"}
-                </Button>
-              </div>
+              <p className="text-sm text-destructive">{result.error}</p>
             </Card>
           )}
 
@@ -158,22 +140,22 @@ function NeighborhoodPage() {
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
-              <NeighborhoodDetailed indicators={indicators} loading={isLoading} />
+              <NeighborhoodDetailed indicators={indicators} loading={false} />
             </TabsContent>
             <TabsContent value="share" className="mt-4">
-              <NeighborhoodShare tract={tract} indicators={indicators} />
+              <NeighborhoodShare place={place} indicators={indicators} />
             </TabsContent>
             <TabsContent value="print" className="mt-4">
-              <NeighborhoodPrint tract={tract} indicators={indicators} />
+              <NeighborhoodPrint place={place} indicators={indicators} />
             </TabsContent>
           </Tabs>
 
-          <TakeAction tract={tract} />
+          <TakeAction place={place} />
 
           <div className="mt-6 flex justify-center">
             <button
               type="button"
-              onClick={() => setTract(null)}
+              onClick={() => setPlace(null)}
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-card-foreground hover:bg-muted/50 transition-colors"
             >
               <MapPin className="h-4 w-4" /> Choose another neighborhood
@@ -254,7 +236,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
       <Card>
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where data comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          All numbers are pulled live from the US Census Bureau's American Community Survey (ACS 5-year, 2022). Comparisons are against the Connecticut statewide ACS figure.
+          Numbers are supplied by the CT Data Collaborative, who aggregate the US Census Bureau's American Community Survey (ACS 5-year, 2024) to Hartford's 17 neighborhoods. Comparisons are against the Connecticut statewide figure.
           "Watch" or "Concern" doesn't mean a neighborhood is bad — it flags something worth knowing about and
           talking through on Wake Up Wednesday.
         </p>
@@ -270,10 +252,10 @@ function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
   return {};
 }
 
-function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
+function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicators: Indicator[] }) {
   const slides = [
     { eyebrow: "Coming soon", title: "[[this slide show to be replaced by videos of neighborhoods]]", body: "", compare: null as string | null, severity: null as Indicator["severity"] | null },
-    { eyebrow: "Wake Up Hartford", title: `See the story of ${tract.neighborhood ?? tract.tractName}, told in data.`, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
+    { eyebrow: "Wake Up Hartford", title: `See the story of ${place.name}, told in data.`, body: "Hartford, Connecticut", compare: null as string | null, severity: null as Indicator["severity"] | null },
     ...indicators.map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
@@ -288,7 +270,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
 
   const handleShare = async () => {
     const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
-    const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
+    const text = `${place.name} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
     const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
     if (result) {
       setShareStatus(result);
@@ -350,11 +332,11 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
 
       {(() => {
         const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
-        const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
+        const text = `${place.name} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
         const url = typeof window !== "undefined" ? window.location.href : "";
         const payload = `${text}\n${url}`;
         const sms = `sms:?&body=${encodeURIComponent(payload)}`;
-        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + (tract.neighborhood ?? tract.tractName))}&body=${encodeURIComponent(payload)}`;
+        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + place.name)}&body=${encodeURIComponent(payload)}`;
         return (
           <div className="grid grid-cols-2 gap-2">
             <a
@@ -386,7 +368,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
   );
 }
 
-function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
+function NeighborhoodPrint({ place, indicators }: { place: Neighborhood; indicators: Indicator[] }) {
   const handlePrint = async () => {
     const shareUrl = `${window.location.origin}/neighborhood`;
     let qrDataUrl = "";
@@ -400,7 +382,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
           `<tr><td><strong>${escapeHtml(ind.value)}</strong></td><td>${escapeHtml(ind.label)}</td><td>${escapeHtml(ind.note)}</td><td><span class="pill ${ind.severity}">${ind.severity}</span></td></tr>`,
       )
       .join("");
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(tract.neighborhood ?? tract.tractName)}</title>
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(place.name)}</title>
 <style>
   @page { size: letter; margin: 0.6in; }
   * { box-sizing: border-box; }
@@ -423,8 +405,8 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
   <div class="header">
     <div class="titles">
       <p class="eyebrow">Wake Up Wednesday · Greater Hartford Branch NAACP</p>
-      <h1>${escapeHtml(tract.neighborhood ?? tract.tractName)}</h1>
-      <p class="sub">Census Tract ${escapeHtml(tract.tractName)} · ${escapeHtml(tract.address)}</p>
+      <h1>${escapeHtml(place.name)}</h1>
+      <p class="sub">Hartford, Connecticut</p>
     </div>
     ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code"><div>Scan to view<br>or share</div></div>` : ""}
   </div>
@@ -435,7 +417,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
   </tbody></table>
 
   <p style="font-family: Arial, sans-serif; font-size: 10px; color:#555; margin-top: 10px;">
-    Source: US Census Bureau, American Community Survey 5-year (2022).
+    Source: ${escapeHtml(DATA_SOURCE_LABEL)}.
   </p>
 
   <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
@@ -470,8 +452,8 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
 
       <Card>
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
-        <h3 className="mt-2 font-display text-lg text-card-foreground">{tract.neighborhood ?? tract.tractName}</h3>
-        <p className="text-xs text-muted-foreground">Census Tract {tract.tractName}</p>
+        <h3 className="mt-2 font-display text-lg text-card-foreground">{place.name}</h3>
+        <p className="text-xs text-muted-foreground">Hartford, Connecticut</p>
         <ul className="mt-3 space-y-1.5 text-xs">
           {indicators.map((ind) => (
             <li key={ind.key} className="flex items-center justify-between gap-2 text-card-foreground">
@@ -489,16 +471,16 @@ function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]!));
 }
 
-function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
+function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => void }) {
   const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
+  const [city, setCity] = useState("Hartford");
+  const [state, setState] = useState("CT");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<Tract | null>(null);
+  const [result, setResult] = useState<Neighborhood | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [debounced, setDebounced] = useState("");
-  const lookupAddress = useServerFn(geocodeAddressToTract);
+  const lookupAddress = useServerFn(geocodeAddressToNeighborhood);
   const suggest = useServerFn(suggestHartfordAddresses);
 
   useEffect(() => {
@@ -515,57 +497,45 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
 
   const canSubmit = street.trim().length > 2 && city.trim().length > 1 && state.trim().length >= 2;
 
-  const pickSuggestion = async (s: { display: string; normalized: string }) => {
-    setStreet(s.display);
-    setCity((c) => c || "Hartford");
-    setState((st) => st || "CT");
-    setSuggestOpen(false);
-    const q = `${s.display}, Hartford, CT`;
+  const runLookup = async (q: string) => {
     setLoading(true);
     setError(null);
     setResult(null);
     try {
       const resolved = await lookupAddress({ data: { address: q } });
-      if (resolved.error) {
-        setError(resolved.error);
+      if (resolved.error || !resolved.neighborhood) {
+        setError(resolved.error ?? "Couldn't find a Hartford neighborhood for that address.");
         return;
       }
-      setResult(resolved);
-      onResolved(resolved);
+      const picked: Neighborhood = { name: resolved.neighborhood, address: resolved.address };
+      setResult(picked);
+      onResolved(picked);
     } catch {
-      setError("Couldn't reach the Census geocoder. Please try again.");
+      setError("Couldn't reach the address lookup service. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const pickSuggestion = async (s: { display: string; normalized: string }) => {
+    setStreet(s.display);
+    setCity((c) => c || "Hartford");
+    setState((st) => st || "CT");
+    setSuggestOpen(false);
+    await runLookup(`${s.display}, Hartford, CT`);
+  };
+
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    const q = `${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()}`;
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      const resolved = await lookupAddress({ data: { address: q } });
-      if (resolved.error) {
-        setError(resolved.error);
-        return;
-      }
-      setResult(resolved);
-      onResolved(resolved);
-    } catch {
-      setError("Couldn't reach the Census geocoder. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    await runLookup(`${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()}`);
   };
 
   return (
     <div id="census-lookup">
       <Card className="mb-5">
         <p className="mb-3 text-[12px] text-muted-foreground">
-          Enter a real US street address (no PO boxes, intersections, or place names).
+          Enter a real Hartford street address (no PO boxes, intersections, or place names).
         </p>
 
         <form onSubmit={handleLookup} className="flex flex-col gap-2">
@@ -640,14 +610,14 @@ function CensusTractLookup({ onResolved }: { onResolved: (t: Tract) => void }) {
 
         {result && (
           <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Census tract</p>
-            <p className="mt-1 font-display text-xl text-card-foreground">{result.tractName}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Neighborhood</p>
+            <p className="mt-1 font-display text-xl text-card-foreground">{result.name}</p>
             <p className="mt-1 text-[12px] text-muted-foreground">{result.address}</p>
           </div>
         )}
 
         <p className="mt-3 text-[10px] text-muted-foreground">
-          Address lookup via the US Census Bureau Geocoder.
+          Address lookup via the US Census Bureau Geocoder; neighborhood assignment via the CT Data Collaborative crosswalk.
         </p>
       </Card>
     </div>
@@ -673,7 +643,7 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
   );
 }
 
-function TakeAction({ tract }: { tract: Tract }) {
+function TakeAction({ place }: { place: Neighborhood }) {
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
       <div className="flex items-start gap-3">
@@ -683,17 +653,11 @@ function TakeAction({ tract }: { tract: Tract }) {
         <div className="flex-1">
           <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
           <p className="mt-1 text-sm text-foreground/80">
-            Find help, email your rep, or share this report — tailored to what this tract needs most.
+            Find help, email your rep, or share this report — tailored to what this neighborhood needs most.
           </p>
           <Link
             to="/neighborhood-actions"
-            search={{
-              state: tract.state,
-              county: tract.county,
-              tract: tract.tract,
-              name: tract.tractName,
-              neighborhood: tract.neighborhood ?? "",
-            }}
+            search={{ neighborhood: place.name }}
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
           >
             Take action
