@@ -81,7 +81,7 @@ function FindHelpPage() {
       <div className="mb-4">
         <Link
           to="/neighborhood-actions"
-          search={{ state, county, tract, name, neighborhood }}
+          search={{ neighborhood }}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" /> Back to actions
@@ -192,7 +192,7 @@ function FindHelpPage() {
       <div className="mt-6">
         <Link
           to="/neighborhood-actions"
-          search={{ state, county, tract, name, neighborhood }}
+          search={{ neighborhood }}
         >
           <Button variant="outline" size="sm">
             <ChevronLeft className="mr-1.5 h-3.5 w-3.5" /> Back to all actions

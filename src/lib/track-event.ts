@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 export type TrackedEventName =
   | "neighborhood_address_submit"
   | "neighborhood_map_tract_click"
+  | "neighborhood_map_click"
   | "home_address_submit"
   | "home_map_address_click"
   | "life_survey_start";
