@@ -66,13 +66,19 @@ function sentencePct(
   const ratio = ctRaw > 0 ? localRaw / ctRaw : null;
   const higher = d > 0;
   let magnitude: string;
-  if (ratio && ratio >= 2) magnitude = higher ? "more than double" : "less than half";
-  else if (ratio && ratio >= 1.5) magnitude = `a lot ${higher ? "higher" : "lower"}`;
-  else if (ratio && ratio > 0 && ratio <= 0.5) magnitude = "less than half";
-  else if (ratio && ratio > 0 && ratio <= 0.67) magnitude = "a lot lower";
+  let connector = "than";
+  if (ratio && ratio >= 2) {
+    magnitude = "more than double";
+    connector = "";
+  } else if (ratio && ratio >= 1.5) magnitude = `a lot ${higher ? "higher" : "lower"}`;
+  else if (ratio && ratio > 0 && ratio <= 0.5) {
+    magnitude = "less than half";
+    connector = "";
+  } else if (ratio && ratio > 0 && ratio <= 0.67) magnitude = "a lot lower";
   else if (absD >= 5) magnitude = `noticeably ${higher ? "higher" : "lower"}`;
   else magnitude = `a little ${higher ? "higher" : "lower"}`;
-  return `At ${fmtPct(localRaw, decimals)}, ${opts.subject} is ${magnitude} than Connecticut overall (${ctStr}) — ${Math.round(absD)} points ${higher ? "above" : "below"} the state.`;
+  const tail = connector ? `${magnitude} ${connector}` : magnitude;
+  return `At ${fmtPct(localRaw, decimals)}, ${opts.subject} is ${tail} Connecticut overall (${ctStr}) — ${Math.round(absD)} points ${higher ? "above" : "below"} the state.`;
 }
 
 function incomeSentence(n: GeoStats, ct: GeoStats): string {
