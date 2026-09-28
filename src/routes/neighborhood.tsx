@@ -368,7 +368,7 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
   );
 }
 
-function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
+function NeighborhoodPrint({ place, indicators }: { place: Neighborhood; indicators: Indicator[] }) {
   const handlePrint = async () => {
     const shareUrl = `${window.location.origin}/neighborhood`;
     let qrDataUrl = "";
@@ -382,7 +382,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
           `<tr><td><strong>${escapeHtml(ind.value)}</strong></td><td>${escapeHtml(ind.label)}</td><td>${escapeHtml(ind.note)}</td><td><span class="pill ${ind.severity}">${ind.severity}</span></td></tr>`,
       )
       .join("");
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(tract.neighborhood ?? tract.tractName)}</title>
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Wake Up Wednesday — ${escapeHtml(place.name)}</title>
 <style>
   @page { size: letter; margin: 0.6in; }
   * { box-sizing: border-box; }
@@ -405,8 +405,8 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
   <div class="header">
     <div class="titles">
       <p class="eyebrow">Wake Up Wednesday · Greater Hartford Branch NAACP</p>
-      <h1>${escapeHtml(tract.neighborhood ?? tract.tractName)}</h1>
-      <p class="sub">Census Tract ${escapeHtml(tract.tractName)} · ${escapeHtml(tract.address)}</p>
+      <h1>${escapeHtml(place.name)}</h1>
+      <p class="sub">Hartford, Connecticut</p>
     </div>
     ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code"><div>Scan to view<br>or share</div></div>` : ""}
   </div>
@@ -417,7 +417,7 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
   </tbody></table>
 
   <p style="font-family: Arial, sans-serif; font-size: 10px; color:#555; margin-top: 10px;">
-    Source: US Census Bureau, American Community Survey 5-year (2022).
+    Source: ${escapeHtml(DATA_SOURCE_LABEL)}.
   </p>
 
   <footer><span>${escapeHtml(shareUrl)}</span><span>Generated ${new Date().toLocaleDateString()}</span></footer>
@@ -452,8 +452,8 @@ function NeighborhoodPrint({ tract, indicators }: { tract: Tract; indicators: In
 
       <Card>
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
-        <h3 className="mt-2 font-display text-lg text-card-foreground">{tract.neighborhood ?? tract.tractName}</h3>
-        <p className="text-xs text-muted-foreground">Census Tract {tract.tractName}</p>
+        <h3 className="mt-2 font-display text-lg text-card-foreground">{place.name}</h3>
+        <p className="text-xs text-muted-foreground">Hartford, Connecticut</p>
         <ul className="mt-3 space-y-1.5 text-xs">
           {indicators.map((ind) => (
             <li key={ind.key} className="flex items-center justify-between gap-2 text-card-foreground">
