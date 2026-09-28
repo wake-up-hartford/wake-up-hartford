@@ -28,9 +28,9 @@ export const Route = createFileRoute("/neighborhood")({
   head: () => ({
     meta: [
       { title: "Your Neighborhood — Wake Up Wednesday" },
-      { name: "description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { name: "description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
       { property: "og:title", content: "Your Neighborhood — Wake Up Wednesday" },
-      { property: "og:description", content: "Live census-tract indicators and a plain-language report card for your neighborhood." },
+      { property: "og:description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
       { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
       { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
     ],
@@ -41,37 +41,31 @@ export const Route = createFileRoute("/neighborhood")({
   component: NeighborhoodPage,
 });
 
-type Tract = { address: string; state: string; county: string; tract: string; tractName: string; neighborhood?: string };
+type Neighborhood = { name: string; address: string };
 
 function NeighborhoodPage() {
   const { save } = useStoredAddress();
-  const [tract, setTract] = useState<Tract | null>(null);
+  const [place, setPlace] = useState<Neighborhood | null>(null);
 
-  const fetchIndicators = useServerFn(getTractIndicators);
-  const { data, isLoading, isError, isFetching, refetch } = useQuery({
-    queryKey: ["tract-indicators", tract?.state, tract?.county, tract?.tract],
-    queryFn: () => fetchIndicators({ data: { state: tract!.state, county: tract!.county, tract: tract!.tract } }),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!tract,
-    retry: 2,
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
-  });
+  const result = useMemo(
+    () => (place ? buildNeighborhoodIndicators(place.name) : null),
+    [place],
+  );
 
-  const handleResolved = (t: Tract) => {
-    setTract(t);
-    save(t.address);
+  const handleResolved = (n: Neighborhood) => {
+    setPlace(n);
+    save(n.address);
   };
 
-  const indicators = data?.indicators ?? [];
-  const byKey = (k: string) => indicators.find((i) => i.key === k);
+  const indicators = result?.indicators ?? [];
 
   return (
     <AppShell>
       <div className="mb-4 flex items-center gap-4">
-        {tract ? (
+        {place ? (
           <button
             type="button"
-            onClick={() => setTract(null)}
+            onClick={() => setPlace(null)}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" /> Choose another neighborhood
@@ -84,11 +78,11 @@ function NeighborhoodPage() {
       </div>
 
 
-      {!tract && (
+      {!place && (
         <>
           <SectionHeader
             title="Learn About Your Neighborhood"
-            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a tract on the map.</strong> Highlighted tracts are Greater Hartford NAACP's primary focus. FYI: You can look up any address in USA.</>}
+            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a neighborhood on the map.</strong> Data covers all 17 City of Hartford neighborhoods, supplied by the CT Data Collaborative.</>}
           />
           <div id="neighborhood-lookup">
             <Card className="mb-5">
@@ -99,11 +93,11 @@ function NeighborhoodPage() {
                 </TabsList>
                 <TabsContent value="map" className="mt-3">
                   <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
-                    <TargetTractMap selectedTract={null} onSelect={(t) => { trackEvent("neighborhood_map_tract_click", { tract: t.tract }); handleResolved(t); }} />
+                    <HartfordNeighborhoodMap selectedNeighborhood={null} onSelect={(n) => { trackEvent("neighborhood_map_click", { neighborhood: n.name }); handleResolved(n); }} />
                   </Suspense>
                 </TabsContent>
                 <TabsContent value="address" className="mt-3">
-                  <CensusTractLookup onResolved={(t) => { trackEvent("neighborhood_address_submit", { tract: t.tract }); handleResolved(t); }} />
+                  <NeighborhoodLookup onResolved={(n) => { trackEvent("neighborhood_address_submit", { neighborhood: n.name }); handleResolved(n); }} />
                 </TabsContent>
               </Tabs>
             </Card>
@@ -113,13 +107,14 @@ function NeighborhoodPage() {
       )}
 
 
-      {tract && (
+      {place && (
         <>
           <SectionHeader
-            eyebrow={`Census Tract ${tract.tractName}`}
-            title={tract.neighborhood ?? "Your neighborhood"}
-            subtitle="Live indicators for this tract, from the Census Bureau and USDA."
+            eyebrow="Hartford neighborhood"
+            title={place.name}
+            subtitle="Indicators for this neighborhood, from the CT Data Collaborative (2024 ACS 5-year estimates)."
           />
+
 
           {indicators.length > 0 && (
             <TractStoryDialog
