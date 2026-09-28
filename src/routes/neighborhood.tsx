@@ -252,10 +252,10 @@ function slideBg(s: Indicator["severity"] | null): React.CSSProperties {
   return {};
 }
 
-function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: Indicator[] }) {
+function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicators: Indicator[] }) {
   const slides = [
     { eyebrow: "Coming soon", title: "[[this slide show to be replaced by videos of neighborhoods]]", body: "", compare: null as string | null, severity: null as Indicator["severity"] | null },
-    { eyebrow: "Wake Up Hartford", title: `See the story of ${tract.neighborhood ?? tract.tractName}, told in data.`, body: `Census Tract ${tract.tractName}`, compare: null as string | null, severity: null as Indicator["severity"] | null },
+    { eyebrow: "Wake Up Hartford", title: `See the story of ${place.name}, told in data.`, body: "Hartford, Connecticut", compare: null as string | null, severity: null as Indicator["severity"] | null },
     ...indicators.map((ind) => ({
       eyebrow: ind.label,
       title: ind.value,
@@ -270,7 +270,7 @@ function NeighborhoodShare({ tract, indicators }: { tract: Tract; indicators: In
 
   const handleShare = async () => {
     const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
-    const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
+    const text = `${place.name} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
     const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
     if (result) {
       setShareStatus(result);
