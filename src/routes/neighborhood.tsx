@@ -332,11 +332,11 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
 
       {(() => {
         const concerns = indicators.filter((c) => c.severity === "concern").map((c) => c.label).join(", ");
-        const text = `${tract.neighborhood ?? tract.tractName} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
+        const text = `${place.name} — ${concerns ? `concerns: ${concerns}.` : "neighborhood report card."} See more on Wake Up Wednesday.`;
         const url = typeof window !== "undefined" ? window.location.href : "";
         const payload = `${text}\n${url}`;
         const sms = `sms:?&body=${encodeURIComponent(payload)}`;
-        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + (tract.neighborhood ?? tract.tractName))}&body=${encodeURIComponent(payload)}`;
+        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + place.name)}&body=${encodeURIComponent(payload)}`;
         return (
           <div className="grid grid-cols-2 gap-2">
             <a
