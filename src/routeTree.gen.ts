@@ -9,110 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SurveyRouteImport } from './routes/survey'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SecurityDepositLetterRouteImport } from './routes/security-deposit-letter'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PlansRouteImport } from './routes/plans'
-import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
-import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
-import { Route as LifeRouteImport } from './routes/life'
-import { Route as LandlordLetterRouteImport } from './routes/landlord-letter'
-import { Route as HomeActionsRouteImport } from './routes/home-actions'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as FindHelpRouteImport } from './routes/find-help'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as FindHelpRouteImport } from './routes/find-help'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as HomeActionsRouteImport } from './routes/home-actions'
+import { Route as LandlordLetterRouteImport } from './routes/landlord-letter'
+import { Route as LifeRouteImport } from './routes/life'
+import { Route as NeighborhoodRouteImport } from './routes/neighborhood'
+import { Route as NeighborhoodActionsRouteImport } from './routes/neighborhood-actions'
+import { Route as PlansRouteImport } from './routes/plans'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SecurityDepositLetterRouteImport } from './routes/security-deposit-letter'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SurveyRouteImport } from './routes/survey'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
-import { Route as OnboardingAddressRouteImport } from './routes/onboarding.address'
-import { Route as AdminSurveysRouteImport } from './routes/admin.surveys'
-import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
-import { Route as AdminReportingRouteImport } from './routes/admin.reporting'
 import { Route as AdminAdminsRouteImport } from './routes/admin.admins'
+import { Route as AdminReportingRouteImport } from './routes/admin.reporting'
+import { Route as AdminSurveyResultsRouteImport } from './routes/admin.survey-results'
+import { Route as AdminSurveysRouteImport } from './routes/admin.surveys'
+import { Route as OnboardingAddressRouteImport } from './routes/onboarding.address'
+import { Route as PlanPlanIdRouteImport } from './routes/plan.$planId'
 
-const SurveyRoute = SurveyRouteImport.update({
-  id: '/survey',
-  path: '/survey',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SecurityDepositLetterRoute = SecurityDepositLetterRouteImport.update({
-  id: '/security-deposit-letter',
-  path: '/security-deposit-letter',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlansRoute = PlansRouteImport.update({
-  id: '/plans',
-  path: '/plans',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeighborhoodActionsRoute = NeighborhoodActionsRouteImport.update({
-  id: '/neighborhood-actions',
-  path: '/neighborhood-actions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NeighborhoodRoute = NeighborhoodRouteImport.update({
-  id: '/neighborhood',
-  path: '/neighborhood',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LifeRoute = LifeRouteImport.update({
-  id: '/life',
-  path: '/life',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LandlordLetterRoute = LandlordLetterRouteImport.update({
-  id: '/landlord-letter',
-  path: '/landlord-letter',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HomeActionsRoute = HomeActionsRouteImport.update({
-  id: '/home-actions',
-  path: '/home-actions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FindHelpRoute = FindHelpRouteImport.update({
-  id: '/find-help',
-  path: '/find-help',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -120,9 +45,84 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FindHelpRoute = FindHelpRouteImport.update({
+  id: '/find-help',
+  path: '/find-help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeActionsRoute = HomeActionsRouteImport.update({
+  id: '/home-actions',
+  path: '/home-actions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandlordLetterRoute = LandlordLetterRouteImport.update({
+  id: '/landlord-letter',
+  path: '/landlord-letter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifeRoute = LifeRouteImport.update({
+  id: '/life',
+  path: '/life',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeighborhoodRoute = NeighborhoodRouteImport.update({
+  id: '/neighborhood',
+  path: '/neighborhood',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NeighborhoodActionsRoute = NeighborhoodActionsRouteImport.update({
+  id: '/neighborhood-actions',
+  path: '/neighborhood-actions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlansRoute = PlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityDepositLetterRoute = SecurityDepositLetterRouteImport.update({
+  id: '/security-deposit-letter',
+  path: '/security-deposit-letter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SurveyRoute = SurveyRouteImport.update({
+  id: '/survey',
+  path: '/survey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -130,24 +130,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
-  id: '/plan/$planId',
-  path: '/plan/$planId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingAddressRoute = OnboardingAddressRouteImport.update({
-  id: '/onboarding/address',
-  path: '/onboarding/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminSurveysRoute = AdminSurveysRouteImport.update({
-  id: '/surveys',
-  path: '/surveys',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSurveyResultsRoute = AdminSurveyResultsRouteImport.update({
-  id: '/survey-results',
-  path: '/survey-results',
+const AdminAdminsRoute = AdminAdminsRouteImport.update({
+  id: '/admins',
+  path: '/admins',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminReportingRoute = AdminReportingRouteImport.update({
@@ -155,10 +140,25 @@ const AdminReportingRoute = AdminReportingRouteImport.update({
   path: '/reporting',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminsRoute = AdminAdminsRouteImport.update({
-  id: '/admins',
-  path: '/admins',
+const AdminSurveyResultsRoute = AdminSurveyResultsRouteImport.update({
+  id: '/survey-results',
+  path: '/survey-results',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminSurveysRoute = AdminSurveysRouteImport.update({
+  id: '/surveys',
+  path: '/surveys',
+  getParentRoute: () => AdminRoute,
+} as any)
+const OnboardingAddressRoute = OnboardingAddressRouteImport.update({
+  id: '/onboarding/address',
+  path: '/onboarding/address',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanPlanIdRoute = PlanPlanIdRouteImport.update({
+  id: '/plan/$planId',
+  path: '/plan/$planId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -350,116 +350,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/survey': {
-      id: '/survey'
-      path: '/survey'
-      fullPath: '/survey'
-      preLoaderRoute: typeof SurveyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/security-deposit-letter': {
-      id: '/security-deposit-letter'
-      path: '/security-deposit-letter'
-      fullPath: '/security-deposit-letter'
-      preLoaderRoute: typeof SecurityDepositLetterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/plans': {
-      id: '/plans'
-      path: '/plans'
-      fullPath: '/plans'
-      preLoaderRoute: typeof PlansRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neighborhood-actions': {
-      id: '/neighborhood-actions'
-      path: '/neighborhood-actions'
-      fullPath: '/neighborhood-actions'
-      preLoaderRoute: typeof NeighborhoodActionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/neighborhood': {
-      id: '/neighborhood'
-      path: '/neighborhood'
-      fullPath: '/neighborhood'
-      preLoaderRoute: typeof NeighborhoodRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/life': {
-      id: '/life'
-      path: '/life'
-      fullPath: '/life'
-      preLoaderRoute: typeof LifeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/landlord-letter': {
-      id: '/landlord-letter'
-      path: '/landlord-letter'
-      fullPath: '/landlord-letter'
-      preLoaderRoute: typeof LandlordLetterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home-actions': {
-      id: '/home-actions'
-      path: '/home-actions'
-      fullPath: '/home-actions'
-      preLoaderRoute: typeof HomeActionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/find-help': {
-      id: '/find-help'
-      path: '/find-help'
-      fullPath: '/find-help'
-      preLoaderRoute: typeof FindHelpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -469,11 +364,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/find-help': {
+      id: '/find-help'
+      path: '/find-help'
+      fullPath: '/find-help'
+      preLoaderRoute: typeof FindHelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home-actions': {
+      id: '/home-actions'
+      path: '/home-actions'
+      fullPath: '/home-actions'
+      preLoaderRoute: typeof HomeActionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landlord-letter': {
+      id: '/landlord-letter'
+      path: '/landlord-letter'
+      fullPath: '/landlord-letter'
+      preLoaderRoute: typeof LandlordLetterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/life': {
+      id: '/life'
+      path: '/life'
+      fullPath: '/life'
+      preLoaderRoute: typeof LifeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neighborhood': {
+      id: '/neighborhood'
+      path: '/neighborhood'
+      fullPath: '/neighborhood'
+      preLoaderRoute: typeof NeighborhoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/neighborhood-actions': {
+      id: '/neighborhood-actions'
+      path: '/neighborhood-actions'
+      fullPath: '/neighborhood-actions'
+      preLoaderRoute: typeof NeighborhoodActionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plans': {
+      id: '/plans'
+      path: '/plans'
+      fullPath: '/plans'
+      preLoaderRoute: typeof PlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security-deposit-letter': {
+      id: '/security-deposit-letter'
+      path: '/security-deposit-letter'
+      fullPath: '/security-deposit-letter'
+      preLoaderRoute: typeof SecurityDepositLetterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/survey': {
+      id: '/survey'
+      path: '/survey'
+      fullPath: '/survey'
+      preLoaderRoute: typeof SurveyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -483,32 +483,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/plan/$planId': {
-      id: '/plan/$planId'
-      path: '/plan/$planId'
-      fullPath: '/plan/$planId'
-      preLoaderRoute: typeof PlanPlanIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/address': {
-      id: '/onboarding/address'
-      path: '/onboarding/address'
-      fullPath: '/onboarding/address'
-      preLoaderRoute: typeof OnboardingAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/surveys': {
-      id: '/admin/surveys'
-      path: '/surveys'
-      fullPath: '/admin/surveys'
-      preLoaderRoute: typeof AdminSurveysRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/survey-results': {
-      id: '/admin/survey-results'
-      path: '/survey-results'
-      fullPath: '/admin/survey-results'
-      preLoaderRoute: typeof AdminSurveyResultsRouteImport
+    '/admin/admins': {
+      id: '/admin/admins'
+      path: '/admins'
+      fullPath: '/admin/admins'
+      preLoaderRoute: typeof AdminAdminsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/reporting': {
@@ -518,12 +497,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportingRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/admins': {
-      id: '/admin/admins'
-      path: '/admins'
-      fullPath: '/admin/admins'
-      preLoaderRoute: typeof AdminAdminsRouteImport
+    '/admin/survey-results': {
+      id: '/admin/survey-results'
+      path: '/survey-results'
+      fullPath: '/admin/survey-results'
+      preLoaderRoute: typeof AdminSurveyResultsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/surveys': {
+      id: '/admin/surveys'
+      path: '/surveys'
+      fullPath: '/admin/surveys'
+      preLoaderRoute: typeof AdminSurveysRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/onboarding/address': {
+      id: '/onboarding/address'
+      path: '/onboarding/address'
+      fullPath: '/onboarding/address'
+      preLoaderRoute: typeof OnboardingAddressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan/$planId': {
+      id: '/plan/$planId'
+      path: '/plan/$planId'
+      fullPath: '/plan/$planId'
+      preLoaderRoute: typeof PlanPlanIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
