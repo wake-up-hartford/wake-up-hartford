@@ -57,16 +57,24 @@
   --color-step-resource-muted: var(--step-resource-muted);
   --color-pill: var(--pill);
   --color-pill-foreground: var(--pill-foreground);
-  --font-display: "Unbounded", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --color-pink: var(--pink);
+  --color-plum: var(--plum);
+  --color-plum-foreground: var(--plum-foreground);
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+  --font-script: "Pacifico", cursive;
 }
 
 :root {
   --radius: 1rem;
 
   /* Warm cream background, deep ink foreground */
-  --background: oklch(0.985 0.012 85);
-  --foreground: oklch(0.22 0.04 260);
+  --background: #FFFDF9;
+  --foreground: #241A33;
+  --pink: #EC4899;
+  --plum: #241A33;
+  --plum-foreground: #FFFFFF;
+  --pop-border: #241A33;
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.22 0.04 260);
@@ -75,7 +83,7 @@
   --popover-foreground: oklch(0.22 0.04 260);
 
   /* Brand purple — civic, bold (from "WEDNESDAY") */
-  --primary: oklch(0.36 0.19 300);
+  --primary: #7C3AED;
   --primary-foreground: oklch(0.985 0.012 85);
 
   /* Soft warm sand */
@@ -86,11 +94,11 @@
   --muted-foreground: oklch(0.48 0.05 290);
 
   /* Sky blue accent (from "UP" arrow) */
-  --accent: oklch(0.74 0.13 230);
-  --accent-foreground: oklch(0.985 0.012 85);
+  --accent: #0EA5E9;
+  --accent-foreground: #FFFFFF;
 
   /* Brand orange (from "Wake") — replaces gold token */
-  --gold: oklch(0.76 0.17 60);
+  --gold: #F97316;
   --gold-foreground: oklch(0.22 0.04 290);
 
   --success: oklch(0.62 0.12 155);
@@ -102,7 +110,7 @@
 
   --border: oklch(0.9 0.02 80);
   --input: oklch(0.9 0.02 80);
-  --ring: oklch(0.36 0.19 300);
+  --ring: #7C3AED;
 
   /* Step rows: warm tan surface on the white card — darker for visible contrast */
   --step-surface: oklch(0.92 0.05 75);
@@ -119,8 +127,12 @@
 
 .dark {
   /* Deep midnight-purple, drawn from the logo's "WEDNESDAY" */
-  --background: oklch(0.17 0.06 295);
-  --foreground: oklch(0.97 0.01 85);
+  --background: #241A33;
+  --foreground: #FFFDF9;
+  --pink: #F472B6;
+  --plum: #120C1C;
+  --plum-foreground: #FFFFFF;
+  --pop-border: #120C1C;
   /* Cream cards on midnight purple — strong contrast */
   --card: oklch(0.96 0.02 85);
   --card-foreground: oklch(0.22 0.05 290);
@@ -162,8 +174,8 @@
   }
   h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -194,6 +206,14 @@
     outline: 2px solid var(--ring);
     outline-offset: -1px;
   }
+  .font-script { font-family: var(--font-script); font-weight: 400; letter-spacing: 0; }
+  .pop-card { border: 1.5px solid var(--pop-border); box-shadow: 4px 4px 0 0 var(--pop-shadow, var(--accent)); }
+  .pop-cyan { --pop-shadow: var(--accent); }
+  .pop-pink { --pop-shadow: var(--pink); }
+  .pop-orange { --pop-shadow: var(--gold); }
+  .pop-purple { --pop-shadow: var(--primary); }
+  .pop-btn { border: 1.5px solid var(--pop-border); box-shadow: 3px 3px 0 0 var(--pop-border); transition: transform .15s, box-shadow .15s; }
+  .pop-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 0 var(--pop-border); }
   /* Lighter opaque popup backgrounds */
   .bg-gold-popup { background-color: oklch(0.83 0.15 60); }
   .bg-primary-popup { background-color: oklch(0.48 0.16 300); }

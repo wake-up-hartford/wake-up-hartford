@@ -38,9 +38,9 @@ function Landing() {
   return (
     <main className="min-h-dvh bg-background text-foreground">
       <div className="w-full px-4 pt-4 text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-sm">
+        <span className="inline-block rounded-full border-[1.5px] border-plum bg-card px-4 py-1 text-xs font-semibold uppercase tracking-wider text-plum">
           Greater Hartford NAACP presents
-        </p>
+        </span>
       </div>
       <img
         src={wakeUpLogo.url}
@@ -53,13 +53,20 @@ function Landing() {
         <em>This site will guide you through ACTIONS to improve...</em>
       </p>
 
+      <h2 className="mx-auto mt-6 max-w-lg px-6 text-center font-display text-2xl font-extrabold uppercase leading-tight sm:text-3xl">
+        <span className="text-accent">See it.</span>{" "}
+        <span className="text-pink">Name it.</span>{" "}
+        <span className="font-script normal-case text-gold">Fix</span>{" "}
+        <span className="text-primary">it.</span>
+      </h2>
+
       {/* Triangle of pillar circles */}
       <section className="mx-auto flex max-w-md flex-col items-center px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
         <Circle
           id="life"
           label="Your Life"
           popup="Tell us what you're facing. Get a plan that's built for you."
-          className="bg-accent text-accent-foreground opacity-90"
+          className="pop-card pop-pink bg-accent text-accent-foreground"
           popupClassName="bg-accent-popup text-accent-foreground"
           delay={300}
           active={activeCircle === "life"}
@@ -71,7 +78,7 @@ function Landing() {
             id="home"
             label="Your Home"
             popup="Look up your address; Learn your rights."
-            className="bg-primary text-primary-foreground opacity-90"
+            className="pop-card pop-orange bg-primary text-primary-foreground"
             popupClassName="bg-primary-popup text-primary-foreground"
             delay={1100}
             active={activeCircle === "home"}
@@ -82,7 +89,7 @@ function Landing() {
             id="neighborhood"
             label="Your Neighborhood"
             popup="Your block has a story. See the data behind it."
-            className="bg-gold text-gold-foreground opacity-90"
+            className="pop-card pop-cyan bg-gold text-gold-foreground"
             popupClassName="bg-gold-popup text-gold-foreground"
             delay={1900}
             active={activeCircle === "neighborhood"}
@@ -92,30 +99,30 @@ function Landing() {
         </div>
         <Link
           to="/dashboard"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-amber-600"
+          className="pop-btn mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold uppercase tracking-wide text-plum"
         >
           Click to get started →
         </Link>
       </section>
 
       {/* Event strip */}
-      <section className="border-y border-gold/30 bg-gold/10">
+      <section className="mx-4 mb-8 rounded-3xl bg-plum text-plum-foreground sm:mx-auto sm:max-w-3xl pop-card pop-pink">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-plum">
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/85">
-                Join us
+              <p className="w-fit rounded-full bg-pink px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-plum-foreground">
+                01 · Join us
               </p>
-              <h3 className="font-display text-xl leading-tight">Every Wednesday</h3>
-              <p className="text-sm text-foreground/80">
+              <h3 className="mt-1 font-display text-xl leading-tight">Every <span className="font-script font-normal text-gold">Wednesday</span></h3>
+              <p className="text-sm text-plum-foreground/85">
                 <a
                   href="https://www.google.com/maps/place/Unity+Plaza/data=!4m2!3m1!1s0x0:0xcee017a08e0cd643?sa=X&ved=1t:2428&ictx=111"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-foreground"
+                  className="underline hover:text-gold"
                 >
                   Unity Plaza · Barbour Street · Hartford
                 </a>
@@ -180,7 +187,7 @@ function Circle({
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={active}
-        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full shadow-soft transition-transform duration-300 ease-out hover:scale-105 ${className}`}
+        className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
         <span className="font-display text-[13px] sm:text-base font-bold leading-[1.1] text-center px-2">
