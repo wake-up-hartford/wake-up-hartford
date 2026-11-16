@@ -115,7 +115,7 @@ function Landing() {
             </div>
             <div>
               <p className="w-fit rounded-full bg-pink px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-plum-foreground">
-                01 · Join us
+                JOIN US
               </p>
               <h3 className="mt-1 font-display text-xl leading-tight">Every <span className="font-script font-normal text-gold">Wednesday</span></h3>
               <p className="text-sm text-plum-foreground/85">
