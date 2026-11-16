@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794845042763,
+      "tag": "0000_lock_down_city_data_and_storage",
+      "breakpoints": true
+    }
+  ]
+}

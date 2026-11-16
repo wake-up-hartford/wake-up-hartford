@@ -1,0 +1,14 @@
+DROP POLICY IF EXISTS "public read 311" ON public.hartford_311_complaints;
+DROP POLICY IF EXISTS "public read violations" ON public.hartford_code_violations;
+REVOKE SELECT ON public.hartford_311_complaints FROM anon, authenticated;
+REVOKE SELECT ON public.hartford_code_violations FROM anon, authenticated;
+GRANT ALL ON public.hartford_311_complaints TO service_role;
+GRANT ALL ON public.hartford_code_violations TO service_role;
+DROP POLICY IF EXISTS "deck-assets: deny authenticated delete" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny anon delete" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny authenticated update" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny anon update" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny authenticated insert" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny anon insert" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny authenticated select" ON storage.objects;
+DROP POLICY IF EXISTS "deck-assets: deny anon select" ON storage.objects;
