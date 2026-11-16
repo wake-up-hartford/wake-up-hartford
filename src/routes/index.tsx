@@ -100,7 +100,7 @@ function Landing() {
         </div>
         <Link
           to="/dashboard"
-          className="pop-btn mt-8 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold uppercase tracking-wide text-plum"
+          className="pop-btn mt-8 inline-flex items-center gap-2 rounded-full bg-pink px-6 py-3 text-sm font-bold uppercase tracking-wide text-plum-foreground"
         >
           Click to get started →
         </Link>
