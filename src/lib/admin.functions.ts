@@ -306,25 +306,35 @@ export const revokeAdmin = createServerFn({ method: "POST" })
 
 export const getReportingData = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((d: { excludeAdmins?: boolean } | undefined) => ({ excludeAdmins: !!d?.excludeAdmins }))
+  .handler(async ({ context, data: input }) => {
     await assertAdmin(context.userId);
 
     const sinceDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [profiles, intake, plans, steps] = await Promise.all([
+    const [profilesRaw, intakeRaw, plansRaw, stepsRaw, roles] = await Promise.all([
       supabaseAdmin
         .from("profiles")
         .select("id, created_at, language_pref, sms_alerts"),
       supabaseAdmin
         .from("intake_responses")
-        .select("id, created_at, tract_fips"),
+        .select("id, created_at, tract_fips, user_id"),
       supabaseAdmin
         .from("stabilization_plans")
-        .select("id, generated_at"),
+        .select("id, generated_at, user_id"),
       supabaseAdmin
         .from("plan_steps")
-        .select("id, completed_at, resource_id"),
+        .select("id, completed_at, resource_id, plan_id"),
+      supabaseAdmin.from("user_roles").select("user_id").eq("role", "admin"),
     ]);
+
+    const adminIds = new Set((roles.data ?? []).map((r) => r.user_id));
+    const ex = input.excludeAdmins;
+    const profiles = { data: (profilesRaw.data ?? []).filter((r) => !ex || !adminIds.has(r.id)) };
+    const intake = { data: (intakeRaw.data ?? []).filter((r) => !ex || !adminIds.has(r.user_id)) };
+    const plans = { data: (plansRaw.data ?? []).filter((r) => !ex || !adminIds.has(r.user_id)) };
+    const planIds = new Set(plans.data.map((r) => r.id));
+    const steps = { data: (stepsRaw.data ?? []).filter((r) => !ex || planIds.has(r.plan_id)) };
 
     const dayKey = (iso: string | null | undefined) => (iso ? iso.slice(0, 10) : null);
     const bucket = (
@@ -399,5 +409,6 @@ export const getReportingData = createServerFn({ method: "GET" })
       smsOptIn,
       totalProfiles: profiles.data?.length ?? 0,
       resources,
+      excludedAdmins: ex ? adminIds.size : 0,
     };
   });

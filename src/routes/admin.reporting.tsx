@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Label } from "@/components/ui/label";
 import {
   ResponsiveContainer,
   LineChart,
@@ -70,7 +71,11 @@ function downloadCsv(filename: string, rows: Array<Record<string, unknown>>) {
 
 function AdminReportingPage() {
   const fetchData = useServerFn(getReportingData);
-  const q = useQuery({ queryKey: ["admin-reporting"], queryFn: () => fetchData({}) });
+  const [excludeAdmins, setExcludeAdmins] = useState(true);
+  const q = useQuery({
+    queryKey: ["admin-reporting", excludeAdmins],
+    queryFn: () => fetchData({ data: { excludeAdmins } }),
+  });
 
   const langData = useMemo(() => {
     if (!q.data) return [];
@@ -89,6 +94,16 @@ function AdminReportingPage() {
 
   return (
     <AdminLayout title="Reporting">
+      <Card className="p-4 mb-6 flex items-center justify-between gap-4">
+        <div>
+          <Label htmlFor="exclude-admins" className="text-sm font-medium">Exclude admin & team accounts</Label>
+          <p className="text-xs text-muted-foreground">
+            Hides sign-ups, surveys, plans and steps from anyone with admin access.
+            {q.data && excludeAdmins ? ` (${q.data.excludedAdmins} admin accounts hidden)` : ""}
+          </p>
+        </div>
+        <input id="exclude-admins" type="checkbox" className="h-5 w-5 accent-primary" checked={excludeAdmins} onChange={(e) => setExcludeAdmins(e.target.checked)} />
+      </Card>
       {q.isLoading && <div className="text-muted-foreground">Loading…</div>}
       {q.data && (
         <div className="space-y-6">
