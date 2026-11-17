@@ -165,8 +165,7 @@ function PillarCard({
       className="flex h-full min-h-[150px] flex-col rounded-2xl border-[1.5px] border-pop-border bg-card p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4"
       style={{ boxShadow: `4px 4px 0 ${shadow}` }}
     >
-      <span className="grid h-9 w-9 place-items-center rounded-lg text-[15px] font-bold text-plum-foreground sm:h-11 sm:w-11 sm:text-lg" style={{ background: shadow }}>{num}</span>
-      <p className="mt-2 font-display text-[11px] font-extrabold uppercase leading-tight tracking-tight break-words text-card-foreground min-h-[2.5em] flex items-end sm:text-lg">{title}</p>
+      <p className="font-display text-[14px] font-extrabold uppercase leading-tight tracking-tight break-words text-card-foreground min-h-[2.5em] flex items-end sm:text-lg"><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
       <p className="mt-0.5 text-[11px] leading-snug text-card-foreground/75 sm:text-[13px]">{body}</p>
       {progress != null && (
         <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-label={`Plan ${progress}% complete`}>
