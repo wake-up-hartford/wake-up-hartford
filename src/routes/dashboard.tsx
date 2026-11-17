@@ -78,7 +78,7 @@ function DashboardPage() {
     <AppShell>
       <h1 className="mt-2 font-display text-4xl font-extrabold uppercase leading-none tracking-tight">
         {user ? "Welcome back," : "Welcome,"}
-        <span className="mt-1 block font-script text-5xl normal-case leading-tight text-pink">
+        <span className="block font-script text-5xl normal-case leading-none text-pink">
           <span className="relative inline-block">
             {user && firstName ? firstName : "neighbor"}
             <svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" className="absolute -bottom-1 left-0 h-2.5 w-full text-pink">
@@ -87,11 +87,11 @@ function DashboardPage() {
           </span>
         </span>
       </h1>
-      <p className="mt-4 text-[14px] leading-relaxed text-foreground/80">
+      <p className="mt-2 text-[14px] leading-snug text-foreground/80">
         This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
       </p>
 
-      <form onSubmit={submit} className="mt-4">
+      <form onSubmit={submit} className="mt-3">
         <label htmlFor="dash-address" className="mb-1.5 block text-[13px] font-semibold text-foreground">
           Enter your Hartford address
         </label>
@@ -115,7 +115,7 @@ function DashboardPage() {
         </div>
       </form>
 
-      <p className="mb-3 mt-7 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
+      <p className="mb-3 mt-5 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
       <div className="grid grid-cols-3 gap-3">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
