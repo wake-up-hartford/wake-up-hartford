@@ -101,7 +101,7 @@ function DashboardPage() {
       <div className="grid grid-cols-2 gap-3">
         <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" sub="Request needed repairs from your landlord." />
         <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" sub="Get your deposit back." />
-        <ToolCard href="tel:211" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
+        <ToolCard href="https://www.211ct.org/" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
         <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" sub="Connect with trusted Hartford organizations." />
       </div>
       <Footer />
@@ -162,7 +162,7 @@ function ToolCard({
       <span className="mt-0.5 block text-[11px] leading-snug text-card-foreground/70">{sub}</span>
     </span>
   </>);
-  return href ? <a href={href} className={cls}>{body}</a> : <Link to={to!} className={cls}>{body}</Link>;
+  return href ? <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{body}</a> : <Link to={to!} className={cls}>{body}</Link>;
 }
 
 function Footer() {
