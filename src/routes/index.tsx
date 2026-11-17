@@ -28,12 +28,35 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+// A tap on a phone also fires mouse-style events; only a real mouse or pen
+// should count as hovering.
+const isMousePointer = (e: { pointerType: string }) =>
+  e.pointerType === "mouse" || e.pointerType === "pen";
+
+// Desktops and laptops with a mouse can hover; phones and tablets cannot.
+function useCanHover() {
+  const [canHover, setCanHover] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHover(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return canHover;
+}
+
 function Landing() {
   const { user } = useAuth();
   const [activeCircle, setActiveCircle] = useState<string | null>(null);
+  const canHover = useCanHover();
 
   const toggle = (id: string) =>
     setActiveCircle((cur) => (cur === id ? null : id));
+
+  const activate = (id: string) => setActiveCircle(id);
+  const deactivate = (id: string) =>
+    setActiveCircle((cur) => (cur === id ? null : cur));
 
   return (
     <main className="min-h-dvh bg-background text-foreground">
@@ -72,6 +95,9 @@ function Landing() {
           delay={300}
           active={activeCircle === "life"}
           onToggle={toggle}
+          onActivate={() => activate("life")}
+          onDeactivate={() => deactivate("life")}
+          canHover={canHover}
           stackClass="z-10"
         />
         <div className="flex items-center justify-center gap-1 -mt-3 sm:-mt-4">
@@ -84,6 +110,9 @@ function Landing() {
             delay={1100}
             active={activeCircle === "home"}
             onToggle={toggle}
+            onActivate={() => activate("home")}
+            onDeactivate={() => deactivate("home")}
+            canHover={canHover}
             stackClass="z-10"
           />
           <Circle
@@ -95,6 +124,9 @@ function Landing() {
             delay={1900}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
+            onActivate={() => activate("neighborhood")}
+            onDeactivate={() => deactivate("neighborhood")}
+            canHover={canHover}
             stackClass="z-10"
           />
         </div>
@@ -164,6 +196,9 @@ function Circle({
   delay,
   active,
   onToggle,
+  onActivate,
+  onDeactivate,
+  canHover,
   stackClass = "",
 }: {
   id: string;
@@ -174,19 +209,40 @@ function Circle({
   delay: number;
   active: boolean;
   onToggle: (id: string) => void;
+  onActivate: () => void;
+  onDeactivate: () => void;
+  canHover: boolean;
   stackClass?: string;
 }) {
+  // On a phone there is no hover, so the popup opens on tap and closes
+  // itself after a few seconds. On a desktop, hovering controls it directly.
   useEffect(() => {
-    if (!active) return;
+    if (canHover || !active) return;
     const t = setTimeout(() => onToggle(id), 6000);
     return () => clearTimeout(t);
-  }, [active, id, onToggle]);
+  }, [active, canHover, id, onToggle]);
 
   return (
     <div className={`relative ${stackClass} ${active ? "z-20" : ""}`}>
       <button
         type="button"
-        onClick={() => onToggle(id)}
+        onClick={canHover ? onActivate : () => onToggle(id)}
+        onPointerEnter={
+          canHover
+            ? (e) => {
+                if (isMousePointer(e)) onActivate();
+              }
+            : undefined
+        }
+        onPointerLeave={
+          canHover
+            ? (e) => {
+                if (isMousePointer(e)) onDeactivate();
+              }
+            : undefined
+        }
+        onFocus={canHover ? onActivate : undefined}
+        onBlur={canHover ? onDeactivate : undefined}
         aria-expanded={active}
         className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
@@ -199,7 +255,7 @@ function Circle({
       {active && (
         <div
           role="dialog"
-          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName} !text-primary-foreground`}
+          className={`${canHover ? "popup-in" : "popup-cover"} pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName} !text-primary-foreground`}
         >
           {popup}
         </div>
