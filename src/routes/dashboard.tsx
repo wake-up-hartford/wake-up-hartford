@@ -77,7 +77,7 @@ function DashboardPage() {
   return (
     <AppShell>
       <div className="rounded-3xl border-[1.5px] border-pop-border bg-plum px-5 py-5 text-plum-foreground shadow-[4px_4px_0_var(--gold)]">
-        <h1 className="font-display text-3xl uppercase leading-tight tracking-tight">
+        <h1 className="whitespace-nowrap font-display text-[22px] uppercase leading-tight tracking-tight sm:text-3xl">
           <span className="text-gold">See It.</span>{" "}
           <span className="text-accent">Name It.</span>{" "}
           <span className="text-plum-foreground">Fix It.</span>
