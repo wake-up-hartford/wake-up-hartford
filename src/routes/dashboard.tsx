@@ -76,21 +76,20 @@ function DashboardPage() {
 
   return (
     <AppShell>
-      <div className="rounded-3xl border-[1.5px] border-pop-border bg-plum px-5 py-5 text-plum-foreground shadow-[4px_4px_0_var(--gold)]">
-        <h1 className="whitespace-nowrap font-display text-[22px] uppercase leading-tight tracking-tight sm:text-3xl">
-          <span className="text-gold">See It.</span>{" "}
-          <span className="text-accent">Name It.</span>{" "}
-          <span className="text-plum-foreground">Fix It.</span>
-        </h1>
-        <p className="mt-2 text-[13px] leading-relaxed text-plum-foreground/80">
-          Built for Hartford residents — to understand your home, your neighborhood, and your options. <strong>Then take ACTION to make change.</strong>
-        </p>
-      </div>
-
-      <h2 className="mt-6 font-display text-2xl uppercase leading-tight">
-        {user ? "Welcome back," : "Welcome,"}{" "}
-        <span className="font-script normal-case text-primary">{user && firstName ? firstName : "neighbor"}</span>
-      </h2>
+      <h1 className="mt-2 font-display text-4xl font-extrabold uppercase leading-none tracking-tight">
+        {user ? "Welcome back," : "Welcome,"}
+        <span className="mt-1 block font-script text-5xl normal-case leading-tight text-pink">
+          <span className="relative inline-block">
+            {user && firstName ? firstName : "neighbor"}
+            <svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" className="absolute -bottom-1 left-0 h-2.5 w-full text-pink">
+              <path d="M2 9 C 60 2, 140 2, 198 7" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+            </svg>
+          </span>
+        </span>
+      </h1>
+      <p className="mt-4 text-[14px] leading-relaxed text-foreground/80">
+        This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
+      </p>
 
       <form onSubmit={submit} className="mt-4">
         <label htmlFor="dash-address" className="mb-1.5 block text-[13px] font-semibold text-foreground">
