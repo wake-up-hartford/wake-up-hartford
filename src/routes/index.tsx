@@ -88,7 +88,7 @@ function Landing() {
           />
           <Circle
             id="neighborhood"
-            label="Your Neighborhood"
+            label="Your Block"
             popup="Your block has a story. See the data behind it."
             className="pop-card pop-cyan bg-gold text-gold-foreground"
             popupClassName="bg-gold-popup text-gold-foreground"
