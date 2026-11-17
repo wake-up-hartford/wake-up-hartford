@@ -262,7 +262,7 @@ ${tenantName || "[Your name]"}
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             rows={4}
-            className={letterInputClass}
+            className={`${letterInputClass} !rounded-xl placeholder:italic`}
             placeholder="Example: The radiator in the front bedroom has not produced heat since Nov 1. My children have been sleeping in coats."
           />
         </Field>
