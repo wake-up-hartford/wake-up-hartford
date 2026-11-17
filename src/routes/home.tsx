@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, Play, Share2, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, MessageSquare, Loader2, BarChart3 } from "lucide-react";
+import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, Loader2, BarChart3 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -13,7 +13,6 @@ import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
 import { lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
 import { getCoverageSummary, refreshCensusTracts } from "@/lib/coverage.functions";
-import { shareOrCopy } from "@/lib/share";
 import { trackEvent } from "@/lib/track-event";
 
 const PickAddressMap = lazy(() =>
@@ -304,18 +303,14 @@ function HomePage() {
           </Card>
 
           <Tabs defaultValue="story" className="w-full">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">3 ways to view Home data</p>
-            <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-full border-[1.5px] border-pop-border bg-secondary/60 p-1">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">2 ways to view Home data</p>
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-1 rounded-full border-[1.5px] border-pop-border bg-secondary/60 p-1">
               <TabsTrigger value="story" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Report Card</TabsTrigger>
-              <TabsTrigger value="share" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Share</TabsTrigger>
               <TabsTrigger value="print" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Print</TabsTrigger>
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
               <DetailedReport data={found} />
-            </TabsContent>
-            <TabsContent value="share" className="mt-4">
-              <ShareSlideshow data={found} />
             </TabsContent>
             <TabsContent value="print" className="mt-4">
               <PrintReport data={found} />
@@ -537,89 +532,6 @@ function DetailedReport({ data }: { data: Found }) {
           )}
         </PlainLanguage>
       </ExpandableIndicator>
-    </div>
-  );
-}
-
-function ShareSlideshow({ data }: { data: Found }) {
-  const slides = [
-    { eyebrow: "Wake Up Hartford", title: data.address.display, body: "Hartford, CT" },
-    { eyebrow: "Code violations", title: `${data.counts.violationsOpen} code violations open`, body: "From city housing inspectors." },
-    { eyebrow: "311 complaints", title: `${data.counts.complaints12mo} complaints to 311 in the last 12 months`, body: data.counts.topComplaintType ? `Top issue: ${data.counts.topComplaintType}` : "No top category on record." },
-  ];
-  const [i, setI] = useState(0);
-  const slide = slides[i];
-
-  const [shareStatus, setShareStatus] = useState<null | "copied" | "error">(null);
-  const handleShare = async () => {
-    const text = `${data.address.display} — ${data.counts.violationsOpen} open code violations, ${data.counts.complaints12mo} 311 complaints in the last year. See more on Wake Up Wednesday.`;
-    const result = await shareOrCopy({ title: "Wake Up Wednesday", text });
-    if (result) {
-      setShareStatus(result);
-      setTimeout(() => setShareStatus(null), 2500);
-    }
-  };
-
-  return (
-    <div className="space-y-3 lg:mx-auto lg:w-1/2 xl:w-[45%]">
-      <div className="pop-card pop-pink aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground">
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-85">
-            <span>{slide.eyebrow}</span>
-            <span>{i + 1} / {slides.length}</span>
-          </div>
-          <div className="flex flex-1 flex-col justify-center min-h-0 overflow-hidden">
-            <p className="font-display text-3xl leading-tight break-words sm:text-4xl">{slide.title}</p>
-            <p className="mt-3 text-sm leading-relaxed opacity-90 break-words sm:text-base">{slide.body}</p>
-          </div>
-          <p className="text-[10px] uppercase tracking-wider opacity-60">naacp greater hartford · wake up hartford</p>
-        </div>
-      </div>
-
-
-
-      <div className="flex items-center justify-between gap-2">
-        <button
-          onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
-          className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
-        >
-          <Play className="h-3.5 w-3.5 rotate-180" /> Prev
-        </button>
-        <button
-          onClick={() => setI((x) => (x + 1) % slides.length)}
-          className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
-        >
-          <Play className="h-3.5 w-3.5" /> Next
-        </button>
-      </div>
-
-      {(() => {
-        const text = `${data.address.display} — ${data.counts.violationsOpen} open code violations, ${data.counts.complaints12mo} 311 complaints in the last year. See more on Wake Up Wednesday.`;
-        const url = typeof window !== "undefined" ? window.location.href : "";
-        const payload = `${text}\n${url}`;
-        const sms = `sms:?&body=${encodeURIComponent(payload)}`;
-        const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + data.address.display)}&body=${encodeURIComponent(payload)}`;
-        return (
-          <div className="grid grid-cols-2 gap-2">
-            <a href={sms} className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground">
-              <MessageSquare className="h-4 w-4" />
-              Text this
-            </a>
-            <a href={mailto} className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-gold px-4 py-3 text-sm font-semibold text-gold-foreground">
-              <Mail className="h-4 w-4" />
-              Email this
-            </a>
-          </div>
-        );
-      })()}
-
-      <Button onClick={handleShare} variant="outline" className="w-full" size="lg">
-        <Share2 className="h-4 w-4" />
-        {shareStatus === "copied" ? "Copied to clipboard!" : shareStatus === "error" ? "Couldn't copy — try selecting manually" : "More share options"}
-      </Button>
-      <p className="text-center text-xs text-muted-foreground">
-        Auto-generated cards you can post to Instagram, Facebook, or send to a neighbor.
-      </p>
     </div>
   );
 }
