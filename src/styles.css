@@ -60,6 +60,7 @@
   --color-pink: var(--pink);
   --color-plum: var(--plum);
   --color-plum-foreground: var(--plum-foreground);
+  --color-pop-border: var(--pop-border);
   --font-display: "Poppins", system-ui, sans-serif;
   --font-sans: "Poppins", system-ui, sans-serif;
   --font-script: "Pacifico", cursive;
