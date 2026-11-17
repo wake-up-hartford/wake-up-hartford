@@ -91,6 +91,15 @@ function friendlyAuthError(err: unknown, context: "signin" | "signup" | "reset" 
 
 type View = "choose" | "signin" | "signup" | "forgot" | "pending";
 
+const inputCls =
+  "w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+
+const primaryBtn =
+  "pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60";
+
+const secondaryBtn =
+  "pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground";
+
 function AuthPage() {
   const nav = useNavigate();
   const [view, setView] = useState<View>("choose");
@@ -295,36 +304,36 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
-        <div className="mt-8 flex flex-col items-center text-center">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
+        <div className="pop-card pop-cyan mt-8 flex flex-col items-center rounded-2xl bg-card p-5 text-center text-card-foreground">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent/20 text-accent">
             <MailCheck className="h-7 w-7" />
           </div>
-          <h1 className="font-display text-3xl leading-tight text-foreground">Check your email</h1>
-          <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
+          <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight">Check your email</h1>
+          <p className="mt-3 text-[14px] leading-relaxed text-card-foreground/80">
             We sent a confirmation link to
           </p>
-          <p className="mt-1 text-[15px] font-semibold text-foreground">{pendingEmail}</p>
-          <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+          <p className="mt-1 text-[15px] font-semibold">{pendingEmail}</p>
+          <p className="mt-3 text-[13px] leading-relaxed text-card-foreground/70">
             Click the link in that email to activate your account, then come back here to sign in.
           </p>
 
           <button
             onClick={handleResend}
             disabled={busy || resendCooldown > 0}
-            className="mt-6 w-full rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-amber-500 hover:text-white disabled:opacity-50"
+            className={`${secondaryBtn} mt-6`}
           >
             {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend confirmation email"}
           </button>
 
           <button
             onClick={() => { setView("signup"); setError(null); }}
-            className="mt-3 text-[13px] text-muted-foreground hover:text-foreground"
+            className="mt-3 text-[13px] text-card-foreground/70 hover:text-card-foreground"
           >
             Use a different email
           </button>
           <button
             onClick={() => { setView("signin"); setError(null); }}
-            className="mt-2 text-[13px] text-muted-foreground hover:text-foreground"
+            className="mt-2 text-[13px] text-card-foreground/70 hover:text-card-foreground"
           >
             I already confirmed — sign in
           </button>
@@ -343,11 +352,11 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back to sign in
         </button>
-        <h1 className="font-display text-3xl leading-tight text-foreground">Reset your password</h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+        <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-foreground">Reset your password</h1>
+        <p className="mt-3 text-[13px] leading-snug text-foreground/80">
           Enter the email for your account and we'll send you a link to set a new password.
         </p>
-        <form onSubmit={handleForgot} className="mt-5 space-y-3">
+        <form onSubmit={handleForgot} className="pop-card pop-purple mt-5 space-y-3 rounded-2xl bg-card p-4 text-card-foreground">
           <label htmlFor="forgot-email" className="sr-only">Email</label>
           <input
             id="forgot-email"
@@ -356,13 +365,13 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            className={inputCls}
           />
           {error && <p className="text-[13px] text-destructive">{error}</p>}
           <button
             type="submit"
             disabled={busy}
-            className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
+            className={primaryBtn}
           >
             {busy ? "Sending…" : "Send reset link"}
           </button>
@@ -385,12 +394,12 @@ function AuthPage() {
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <div className="mt-6 space-y-3">
-          <h1 className="font-display text-3xl leading-tight text-foreground">Sign In...</h1>
-          <p className="text-[14px] leading-relaxed text-muted-foreground">
+          <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-foreground">Sign In...</h1>
+          <p className="text-[13px] leading-snug text-foreground/80">
             ...to get free resources, save your Life Plan and be part of a movement that's changing Hartford.
           </p>
-          <div className="space-y-2 pt-1">
-            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+          <div className="pop-card pop-pink space-y-2 rounded-2xl bg-card p-4 text-card-foreground">
+            <label className="flex items-start gap-2 text-[13px] leading-snug">
               <input
                 type="checkbox"
                 checked={optIn}
@@ -398,11 +407,11 @@ function AuthPage() {
                   setOptIn(e.target.checked);
                   if (e.target.checked) setOptOut(false);
                 }}
-                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+                className="mt-0.5 h-4 w-4 rounded border-pop-border accent-pink"
               />
               <span>Yes, NAACP can send me resources and updates.</span>
             </label>
-            <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+            <label className="flex items-start gap-2 text-[13px] leading-snug">
               <input
                 type="checkbox"
                 checked={optOut}
@@ -410,11 +419,11 @@ function AuthPage() {
                   setOptOut(e.target.checked);
                   if (e.target.checked) setOptIn(false);
                 }}
-                className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+                className="mt-0.5 h-4 w-4 rounded border-pop-border accent-pink"
               />
               <span>No, I do not want to receive resources and updates.</span>
             </label>
-            <p className="text-[12px] leading-snug text-muted-foreground">
+            <p className="text-[12px] leading-snug text-card-foreground/70">
               Change choice anytime from your "You" settings.
             </p>
           </div>
@@ -423,7 +432,7 @@ function AuthPage() {
         <div className="mt-6 space-y-3">
           <button
             onClick={() => { setView("signup"); setError(null); }}
-            className="flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[15px] font-semibold text-white shadow-soft hover:bg-amber-600"
+            className={primaryBtn}
           >
             Sign up with Google or email
           </button>
@@ -432,7 +441,7 @@ function AuthPage() {
           </div>
           <button
             onClick={() => { setView("signin"); setError(null); }}
-            className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-5 py-3 text-[15px] font-semibold text-card-foreground shadow-soft hover:bg-amber-500 hover:text-white disabled:opacity-50"
+            className={secondaryBtn}
           >
             Already Registered? Sign In
           </button>
@@ -460,14 +469,14 @@ function AuthPage() {
         >
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
-        <h1 className="font-display text-3xl leading-tight text-foreground">Sign in</h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+        <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-foreground">Sign in</h1>
+        <p className="mt-3 text-[13px] leading-snug text-foreground/80">
           Welcome back. Use Google or the email and password you signed up with.
         </p>
 
         <button
           onClick={handleGoogle}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-amber-500 hover:text-white"
+          className={`${secondaryBtn} mt-5`}
         >
           Continue with Google
         </button>
@@ -476,7 +485,7 @@ function AuthPage() {
           <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
         </div>
 
-        <form onSubmit={handleEmail} className="space-y-3">
+        <form onSubmit={handleEmail} className="pop-card pop-orange space-y-3 rounded-2xl bg-card p-4 text-card-foreground">
           <label htmlFor="signin-email" className="sr-only">Email</label>
           <input
             id="signin-email"
@@ -485,7 +494,7 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            className={inputCls}
           />
           <label htmlFor="signin-password" className="sr-only">Password</label>
           <input
@@ -495,13 +504,13 @@ function AuthPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+            className={inputCls}
           />
           {error && <p className="text-[13px] text-destructive">{error}</p>}
           <button
             type="submit"
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
+            className={primaryBtn}
           >
             {busy ? "Working…" : "Sign in"}
           </button>
@@ -534,14 +543,14 @@ function AuthPage() {
       >
         <ChevronLeft className="h-4 w-4" /> Back
       </button>
-      <h1 className="font-display text-3xl leading-tight text-foreground">Create your account</h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
+      <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-foreground">Create your account</h1>
+      <p className="mt-3 text-[13px] leading-snug text-foreground/80">
         Sign up with Google for one-tap access, or create an account with your email and a password.
       </p>
 
       <button
         onClick={handleGoogle}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-[14px] font-semibold text-card-foreground shadow-soft hover:bg-amber-500 hover:text-white"
+        className={`${secondaryBtn} mt-5`}
       >
         Continue with Google
       </button>
@@ -550,7 +559,7 @@ function AuthPage() {
         <span className="h-px flex-1 bg-border" /> or sign up with email <span className="h-px flex-1 bg-border" />
       </div>
 
-      <form onSubmit={handleEmail} className="space-y-3">
+      <form onSubmit={handleEmail} className="pop-card pop-orange space-y-3 rounded-2xl bg-card p-4 text-card-foreground">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label htmlFor="signup-first" className="sr-only">First name</label>
@@ -560,7 +569,7 @@ function AuthPage() {
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="First name (optional)"
               autoComplete="given-name"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+              className={inputCls}
             />
           </div>
           <div>
@@ -571,7 +580,7 @@ function AuthPage() {
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Last name (optional)"
               autoComplete="family-name"
-              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+              className={inputCls}
             />
           </div>
         </div>
@@ -583,7 +592,7 @@ function AuthPage() {
           onChange={(e) => setPhone(e.target.value)}
           placeholder="Cell phone (optional)"
           autoComplete="tel"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          className={inputCls}
         />
         <label htmlFor="signup-email" className="sr-only">Email</label>
         <input
@@ -593,7 +602,7 @@ function AuthPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          className={inputCls}
         />
         <label htmlFor="signup-email-confirm" className="sr-only">Confirm email</label>
         <input
@@ -604,7 +613,7 @@ function AuthPage() {
           onChange={(e) => setEmailConfirm(e.target.value)}
           onPaste={(e) => { e.preventDefault(); setError("Please retype your email to confirm it."); }}
           placeholder="Confirm email"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          className={inputCls}
         />
         <label htmlFor="signup-password" className="sr-only">Password</label>
         <input
@@ -615,11 +624,11 @@ function AuthPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-[14px] text-foreground"
+          className={inputCls}
         />
         {showPwHelp && (
-          <div className="rounded-lg border border-border bg-muted/30 p-3 text-[12px] text-muted-foreground">
-            <p className="mb-1 font-semibold text-foreground">Password must:</p>
+          <div className="rounded-xl border-[1.5px] border-pop-border bg-step-surface p-3 text-[12px] text-step-surface-muted">
+            <p className="mb-1 font-semibold text-step-surface-foreground">Password must:</p>
             <ul className="list-disc space-y-0.5 pl-4">
               <li>Be at least 8 characters long</li>
               <li>Include upper &amp; lowercase letters, a number, and a symbol</li>
@@ -627,7 +636,7 @@ function AuthPage() {
             </ul>
           </div>
         )}
-        <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+        <label className="flex items-start gap-2 text-[13px] leading-snug text-card-foreground">
           <input
             type="checkbox"
             checked={optIn}
@@ -635,11 +644,11 @@ function AuthPage() {
               setOptIn(e.target.checked);
               if (e.target.checked) setOptOut(false);
             }}
-            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+            className="mt-0.5 h-4 w-4 rounded border-border accent-pink"
           />
           <span>Yes, NAACP can send me resources and updates.</span>
         </label>
-        <label className="flex items-start gap-2 text-[13px] leading-snug text-foreground">
+        <label className="flex items-start gap-2 text-[13px] leading-snug text-card-foreground">
           <input
             type="checkbox"
             checked={optOut}
@@ -647,20 +656,20 @@ function AuthPage() {
               setOptOut(e.target.checked);
               if (e.target.checked) setOptIn(false);
             }}
-            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500"
+            className="mt-0.5 h-4 w-4 rounded border-border accent-pink"
           />
           <span>No, I do not want to receive resources and updates.</span>
         </label>
-        <p className="text-[12px] leading-snug text-muted-foreground">
+        <p className="text-[12px] leading-snug text-card-foreground/70">
           You can change it anytime from your account settings.
         </p>
-        <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-foreground" : "text-muted-foreground"}`}>
+        <label className={`flex items-start gap-2 text-[13px] leading-snug ${phone.trim() ? "text-card-foreground" : "text-card-foreground/60"}`}>
           <input
             type="checkbox"
             checked={smsOptIn && !!phone.trim()}
             onChange={(e) => setSmsOptIn(e.target.checked)}
             disabled={!phone.trim()}
-            className="mt-0.5 h-4 w-4 rounded border-border accent-amber-500 disabled:opacity-50"
+            className="mt-0.5 h-4 w-4 rounded border-border accent-pink disabled:opacity-50"
           />
           <span>
             It's OK to text me follow-ups about my plan and Hartford updates. Msg/data rates may apply.
@@ -671,7 +680,7 @@ function AuthPage() {
         <button
           type="submit"
           disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
+          className={primaryBtn}
         >
           {busy ? "Working…" : "Create account"}
         </button>
