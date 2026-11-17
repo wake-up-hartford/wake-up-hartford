@@ -116,7 +116,7 @@ function DashboardPage() {
       </form>
 
       <p className="mb-3 mt-5 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-[1fr_1fr_1.2fr] gap-2.5">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
           icon={HeartHandshake} title="Your Life" body="Stability, health, safety" shadow="var(--pink)" tint="text-pink" time="~5–8 min"
