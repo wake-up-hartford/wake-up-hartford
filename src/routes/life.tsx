@@ -74,10 +74,10 @@ const SECTIONS: Section[] = [
     id: "housing",
     name: "Housing",
     icon: HomeIcon,
-    gradient: "from-emerald-500 to-emerald-600",
-    accentText: "text-emerald-700",
-    tint: "bg-emerald-50",
-    color: "#059669",
+    gradient: "from-accent to-primary",
+    accentText: "text-card-foreground",
+    tint: "bg-accent/10",
+    color: "var(--accent)",
     questions: [
       {
         id: "h1",
@@ -120,10 +120,10 @@ const SECTIONS: Section[] = [
     id: "food",
     name: "Food",
     icon: Utensils,
-    gradient: "from-orange-400 to-amber-500",
-    accentText: "text-orange-700",
-    tint: "bg-orange-50",
-    color: "#ea580c",
+    gradient: "from-gold to-pink",
+    accentText: "text-card-foreground",
+    tint: "bg-gold/10",
+    color: "var(--gold)",
     questions: [
       {
         id: "f1",
@@ -155,10 +155,10 @@ const SECTIONS: Section[] = [
     id: "health",
     name: "Health",
     icon: Heart,
-    gradient: "from-rose-400 to-pink-500",
-    accentText: "text-rose-700",
-    tint: "bg-rose-50",
-    color: "#e11d48",
+    gradient: "from-pink to-primary",
+    accentText: "text-card-foreground",
+    tint: "bg-pink/10",
+    color: "var(--pink)",
     questions: [
       {
         id: "he1",
@@ -203,10 +203,10 @@ const SECTIONS: Section[] = [
     id: "income",
     name: "Income",
     icon: Briefcase,
-    gradient: "from-blue-500 to-sky-600",
-    accentText: "text-blue-700",
-    tint: "bg-blue-50",
-    color: "#2563eb",
+    gradient: "from-primary to-accent",
+    accentText: "text-card-foreground",
+    tint: "bg-primary/10",
+    color: "var(--primary)",
     questions: [
       {
         id: "i1",
@@ -251,10 +251,10 @@ const SECTIONS: Section[] = [
     id: "debt",
     name: "Debt",
     icon: CreditCard,
-    gradient: "from-purple-500 to-violet-600",
-    accentText: "text-purple-700",
-    tint: "bg-purple-50",
-    color: "#7c3aed",
+    gradient: "from-accent to-primary",
+    accentText: "text-card-foreground",
+    tint: "bg-accent/10",
+    color: "var(--accent)",
     questions: [
       {
         id: "d1",
@@ -295,10 +295,10 @@ const SECTIONS: Section[] = [
     id: "legal",
     name: "Legal",
     icon: Scale,
-    gradient: "from-green-500 to-teal-600",
-    accentText: "text-green-700",
-    tint: "bg-green-50",
-    color: "#16a34a",
+    gradient: "from-gold to-pink",
+    accentText: "text-card-foreground",
+    tint: "bg-gold/10",
+    color: "var(--gold)",
     questions: [
       {
         id: "l1",
@@ -332,10 +332,10 @@ const SECTIONS: Section[] = [
     id: "safety",
     name: "Safety",
     icon: Shield,
-    gradient: "from-fuchsia-400 to-purple-500",
-    accentText: "text-fuchsia-700",
-    tint: "bg-fuchsia-50",
-    color: "#c026d3",
+    gradient: "from-pink to-primary",
+    accentText: "text-card-foreground",
+    tint: "bg-pink/10",
+    color: "var(--pink)",
     questions: [
       {
         id: "s1",
@@ -366,10 +366,10 @@ const SECTIONS: Section[] = [
     id: "support",
     name: "Community",
     icon: Users,
-    gradient: "from-teal-400 to-cyan-600",
-    accentText: "text-teal-700",
-    tint: "bg-teal-50",
-    color: "#0d9488",
+    gradient: "from-primary to-accent",
+    accentText: "text-card-foreground",
+    tint: "bg-primary/10",
+    color: "var(--primary)",
     questions: [
       {
         id: "su1",
@@ -414,6 +414,29 @@ const SECTIONS: Section[] = [
 ];
 
 type Answers = Record<string, string[]>;
+
+/* Pink script word with the hand-drawn swoosh, as used on the dashboard greeting. */
+function ScriptWord({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="relative inline-block">
+      {children}
+      <svg
+        viewBox="0 0 200 12"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        className="absolute -bottom-1 left-0 h-2.5 w-full text-pink"
+      >
+        <path
+          d="M2 9 C 60 2, 140 2, 198 7"
+          stroke="currentColor"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
+  );
+}
 
 /* ---------- Top component ---------- */
 
@@ -496,14 +519,14 @@ function LifePage() {
       {stage === "intro" && (
         <Link
           to="/plans"
-          className="mt-5 flex items-center gap-3 rounded-xl border border-transparent px-4 py-3 transition active:scale-[0.99]"
+          className="tool-card mt-5 flex items-center gap-3 rounded-xl bg-card px-4 py-3 transition active:scale-[0.99]"
         >
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary-deep">
             <FileText className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-display text-[15px] leading-tight text-foreground">My plans</p>
-            <p className="text-[12px] text-muted-foreground">Stabilization plans you've created.</p>
+            <p className="font-display text-[15px] leading-tight text-card-foreground">My plans</p>
+            <p className="text-[12px] text-card-foreground/70">Stabilization plans you've created.</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
@@ -520,26 +543,29 @@ function LifePage() {
 function IntroScreen({ onBegin }: { onBegin: () => void }) {
   return (
     <div>
-      <h1 className="font-display text-3xl leading-tight text-foreground">
-        Build Your Path to Stability
+      <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
+        Build Your Path to
+        <span className="block font-script text-4xl normal-case leading-none text-pink sm:text-5xl">
+          <ScriptWord>Stability</ScriptWord>
+        </span>
       </h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 text-[13px] leading-snug text-foreground/80">
         Life gets hard. Answer a few questions — about 5 to 8 minutes — and we'll build you a free Action Plan for the next 30 days, with real Connecticut resources to help you move forward.
       </p>
 
-      <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4">
-        <h2 className="font-display text-base leading-tight text-foreground">What you'll get</h2>
-        <ul className="mt-2 space-y-1.5 text-[13px] text-foreground">
+      <div className="pop-card pop-pink mt-6 rounded-2xl bg-card p-4">
+        <h2 className="font-display text-base leading-tight text-card-foreground">What you'll get</h2>
+        <ul className="mt-2 space-y-1.5 text-[13px] text-card-foreground">
           <li className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <span>A plan made for your situation</span>
           </li>
           <li className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <span>Real Hartford and Connecticut resources</span>
           </li>
           <li className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <span>Steps you can start this week</span>
           </li>
         </ul>
@@ -547,12 +573,12 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
 
       <button
         onClick={onBegin}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-5 font-display text-[20px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99]"
+        className="pop-btn mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-4 font-display text-[18px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
       >
         Click to Start Survey <ArrowRight className="h-5 w-5" />
       </button>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <div className="pop-card pop-orange mt-6 rounded-2xl bg-card p-5">
         <h2 className="font-display text-lg leading-tight text-card-foreground">
           Survey covers 8 areas of life
         </h2>
@@ -565,7 +591,7 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
             return (
               <div key={s.id} className="flex flex-col items-center gap-1.5">
                 <span
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-pop-border text-primary-foreground"
                   style={{ backgroundColor: s.color }}
                 >
                   <Icon className="h-5 w-5" />
@@ -579,10 +605,10 @@ function IntroScreen({ onBegin }: { onBegin: () => void }) {
         </div>
       </div>
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
-        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-blue-200" />
+      <div className="pop-card pop-purple mt-6 flex items-start gap-3 rounded-2xl bg-plum p-4 text-plum-foreground">
+        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-plum-foreground/80" />
         <div>
-          <h2 className="mb-1 font-display text-[16px] font-semibold text-white">Trust</h2>
+          <h2 className="mb-1 font-display text-[16px] font-semibold text-plum-foreground">Trust</h2>
           <p className="text-[15px] leading-relaxed">
             We know trust matters. Your answers are private and secure. We will never share or sell your information.
           </p>
@@ -691,10 +717,10 @@ function SurveyScreen({
           </span>
           <span className="text-[11px] text-muted-foreground">{pct}%</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+        <div className="h-2 w-full overflow-hidden rounded-full border border-pop-border/20 bg-secondary">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-blue-600 transition-all"
-            style={{ width: `${pct}%` }}
+            className="h-full rounded-full transition-all"
+            style={{ width: `${pct}%`, background: section.color }}
           />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
@@ -704,9 +730,9 @@ function SurveyScreen({
 
 
       {/* Category badge */}
-      <div className="mb-4 inline-flex items-center gap-2.5 rounded-2xl border border-border bg-transparent px-4 py-2.5">
+      <div className="mb-4 inline-flex items-center gap-2.5 rounded-full border-[1.5px] border-pop-border bg-card px-4 py-2.5">
         <span
-          className="flex h-8 w-8 items-center justify-center rounded-full text-white"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground"
           style={{ backgroundColor: section.color }}
         >
           <Icon className="h-4 w-4" />
@@ -714,7 +740,7 @@ function SurveyScreen({
         <span className={`text-[15px] font-semibold ${section.accentText}`}>
           {section.name}
         </span>
-        <span className="text-[12px] font-semibold text-foreground">
+        <span className="text-[12px] font-semibold text-card-foreground">
           · Q{questionIdx + 1} of {section.questions.length}
         </span>
       </div>
@@ -740,7 +766,7 @@ function SurveyScreen({
               className={`group flex w-full items-center gap-3 rounded-xl border px-3.5 py-2 text-left transition-all ${
                 isSel
                   ? "border-transparent shadow-soft"
-                  : "border-border bg-card"
+                  : "border-pop-border/25 bg-card"
               }`}
               style={
                 isSel
@@ -766,17 +792,17 @@ function SurveyScreen({
               <span
                 className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 ${
                   question.type === "single" ? "rounded-full" : "rounded"
-                } group-hover:border-white`}
+                } group-hover:border-primary-foreground`}
                 style={{
                   borderColor: isSel ? section.color : "var(--border)",
                   backgroundColor: isSel ? section.color : "transparent",
                 }}
               >
                 {isSel && (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={3} />
                 )}
               </span>
-              <span className="text-[14px] leading-snug text-card-foreground group-hover:text-[var(--primary-foreground)]">{opt}</span>
+              <span className="text-[14px] leading-snug text-card-foreground group-hover:text-plum">{opt}</span>
             </button>
           );
         })}
@@ -785,14 +811,14 @@ function SurveyScreen({
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={goBack}
-          className="flex items-center gap-1 rounded-xl border border-border bg-card px-4 py-3 text-[14px] font-semibold text-card-foreground disabled:opacity-40"
+          className="pop-btn flex items-center gap-1 rounded-full bg-card px-4 py-3 text-[14px] font-semibold text-card-foreground disabled:opacity-40"
         >
           <ChevronLeft className="h-4 w-4" /> Back
         </button>
         <button
           onClick={goNext}
           disabled={!canContinue}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${section.gradient} px-4 py-3 text-[14px] font-semibold text-white shadow-soft transition-all disabled:opacity-40`}
+          className="pop-btn flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-[14px] font-bold text-primary-foreground transition-all disabled:opacity-60"
         >
           {isLastQuestion ? "Finish Survey" : "Continue"} <ArrowRight className="h-4 w-4" />
         </button>
@@ -862,24 +888,29 @@ function SummaryScreen({
   return (
     <div>
       <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-soft">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-[1.5px] border-pop-border bg-pink text-primary-foreground shadow-[4px_4px_0_var(--pop-border)]">
           <CheckCircle2 className="h-7 w-7" />
         </div>
-        <h1 className="font-display text-3xl text-foreground">Survey Complete</h1>
+        <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
+          Survey
+          <span className="block font-script text-4xl normal-case leading-none text-pink sm:text-5xl">
+            <ScriptWord>Complete</ScriptWord>
+          </span>
+        </h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
           Here's a preview of your priority areas.
         </p>
       </div>
 
       {priorities.length > 0 && (
-        <div className="mb-5 rounded-2xl border border-blue-900/30 bg-[oklch(0.22_0.08_260)] p-4 text-blue-50">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-blue-200">
+        <div className="pop-card pop-purple mb-5 rounded-2xl bg-plum p-4 text-plum-foreground">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-plum-foreground/70">
             Your stated priorities
           </p>
           <ul className="space-y-1.5">
             {priorities.map((p) => (
               <li key={p} className="flex items-start gap-2 text-[14px]">
-                <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-300" />
+                <ArrowRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-plum-foreground/80" />
                 <span>{p}</span>
               </li>
             ))}
@@ -893,12 +924,12 @@ function SummaryScreen({
           if (items.length === 0) return null;
           const group =
             level === "high"
-              ? { label: "High Priority", dot: "bg-red-500", text: "text-red-700", bg: "bg-red-50", border: "border-red-200" }
+              ? { label: "High Priority", dot: "bg-destructive", text: "text-card-foreground", bg: "bg-card", border: "pop-pink" }
               : level === "moderate"
-                ? { label: "Moderate Priority", dot: "bg-amber-500", text: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200" }
-                : { label: "Stable / Monitoring", dot: "bg-emerald-500", text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200" };
+                ? { label: "Moderate Priority", dot: "bg-warning", text: "text-card-foreground", bg: "bg-card", border: "pop-orange" }
+                : { label: "Stable / Monitoring", dot: "bg-success", text: "text-card-foreground", bg: "bg-card", border: "pop-cyan" };
           return (
-            <div key={level} className={`rounded-2xl border ${group.border} ${group.bg} p-4 shadow-soft`}>
+            <div key={level} className={`pop-card ${group.border} rounded-2xl bg-card p-4`}>
               <div className="mb-3 flex items-center gap-2">
                 <span className={`h-2 w-2 rounded-full ${group.dot}`} />
                 <span className={`text-[11px] font-semibold uppercase tracking-wider ${group.text}`}>
@@ -917,7 +948,7 @@ function SummaryScreen({
                       className="flex items-center gap-2"
                     >
                       <span
-                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white"
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-[1.5px] border-pop-border text-primary-foreground"
                         style={{ backgroundColor: s.color }}
                       >
                         <Icon className="h-3.5 w-3.5" />
@@ -936,7 +967,7 @@ function SummaryScreen({
 
 
       {showSignInPrompt && (
-        <div className="mb-5 rounded-2xl border border-amber-300/40 bg-amber-50 p-4 text-amber-950 shadow-soft">
+        <div className="pop-card pop-orange mb-5 rounded-2xl bg-card p-4 text-card-foreground">
           <p className="text-[14px] font-semibold">Want to save or share your plan?</p>
           <p className="mt-1 text-[13px] leading-relaxed">
             Sign in first so your plan is saved to your account. We'll bring you right back here to generate it.
@@ -944,11 +975,11 @@ function SummaryScreen({
           <Link
             to="/auth"
             onClick={handleSignInToSave}
-            className="mt-3 inline-flex items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-[13px] font-semibold text-white hover:bg-amber-600"
+            className="pop-btn mt-3 inline-flex items-center justify-center rounded-full bg-pink px-4 py-2 text-[13px] font-bold text-primary-foreground"
           >
             Sign in to save or share
           </Link>
-          <p className="mt-2 text-[12px] text-amber-900/80">
+          <p className="mt-2 text-[12px] text-card-foreground/70">
             Or skip and generate your plan below — you can save it later.
           </p>
         </div>
@@ -956,7 +987,9 @@ function SummaryScreen({
 
 
       <div className="mb-5">
-        <h3 className="text-4xl font-bold tracking-tight text-amber-500">Next step</h3>
+        <h3 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight">
+          Next <span className="font-script text-4xl normal-case text-pink">step</span>
+        </h3>
         <p className="mt-2 text-[14px] leading-relaxed text-foreground/80">
           We're building your plan now, based on what you told us — with specific
           resources, steps, and timelines. No sign-in needed. You can save or share
@@ -970,7 +1003,7 @@ function SummaryScreen({
 
       <button
         onClick={onRestart}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-transparent px-5 py-3 text-[14px] font-semibold text-muted-foreground hover:bg-secondary/50"
+        className="pop-btn mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-card px-5 py-3 text-[14px] font-semibold text-foreground"
       >
         Start Over <ChevronRight className="h-4 w-4" />
       </button>
@@ -1040,11 +1073,11 @@ function PlanGenerator({
   };
 
   return (
-    <div className="mb-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+    <div className="pop-card pop-cyan mb-5 rounded-2xl bg-card p-5">
       <h3 className="font-display text-[18px] leading-tight text-card-foreground">
         A few last questions
       </h3>
-      <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+      <p className="mt-1 text-[13px] leading-relaxed text-card-foreground/70">
         Helps plan pick resources that fit your life.
       </p>
 
@@ -1065,7 +1098,7 @@ function PlanGenerator({
 
         <div>
           <Label>Hours per week you can spend on this plan: {hours}</Label>
-          <input type="range" min={1} max={15} value={hours} onChange={(e) => setHours(Number(e.target.value))} className="w-full" />
+          <input type="range" min={1} max={15} value={hours} onChange={(e) => setHours(Number(e.target.value))} className="w-full accent-primary" />
         </div>
 
         <div>
@@ -1107,23 +1140,23 @@ function PlanGenerator({
             className="input" />
         </div>
 
-        {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>}
+        {error && <p className="rounded-lg bg-destructive/10 px-3 py-2 text-[12px] text-destructive">{error}</p>}
 
         <button onClick={handleGenerate} disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
+          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 text-[14px] font-bold text-primary-foreground transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
           {busy ? "Building your plan…" : (<><Sparkles className="h-4 w-4" /> Generate my 30-day plan</>)}
         </button>
-        <p className="text-center text-[12px] text-muted-foreground">
+        <p className="text-center text-[12px] text-card-foreground/70">
           Your plan is made by AI, then it's yours to use.
         </p>
-        {busy && <p className="text-center text-[12px] text-muted-foreground">This takes about 10 seconds.</p>}
+        {busy && <p className="text-center text-[12px] text-card-foreground/70">This takes about 10 seconds.</p>}
       </div>
     </div>
   );
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">{children}</label>;
+  return <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wide text-card-foreground/70">{children}</label>;
 }
 
 function NumberField({ label, value, setValue, min, max }: { label: string; value: number; setValue: (n: number) => void; min: number; max: number }) {
