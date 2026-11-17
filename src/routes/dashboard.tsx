@@ -85,17 +85,9 @@ function DashboardPage() {
       </div>
 
 
-      <h3 className="mb-3 mt-10 border-t border-border pt-5 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Quick Tools</h3>
-      <div className="grid grid-cols-2 gap-3">
-        <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" sub="Request needed repairs from your landlord." />
-        <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" sub="Get your deposit back." />
-        <ToolCard href="tel:211" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
-        <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" sub="Connect with trusted Hartford organizations." />
-      </div>
-
-      <div className="mt-8 flex justify-center">
+      <div className="mt-6 flex justify-center">
         {!user ? (
-          <Link to="/auth" className="inline-flex items-center justify-center rounded-full border-[1.5px] border-pop-border bg-gold px-8 py-3 text-[14px] font-bold text-gold-foreground shadow-[4px_4px_0_var(--pop-border)] hover:opacity-90">
+          <Link to="/auth" className="inline-flex items-center justify-center rounded-full border-[1.5px] border-pop-border bg-pink px-8 py-3 text-[14px] font-bold text-primary-foreground shadow-[4px_4px_0_var(--pop-border)] hover:opacity-90">
             Register to stay in touch
           </Link>
         ) : (
@@ -103,6 +95,14 @@ function DashboardPage() {
             See Your Profile
           </Link>
         )}
+      </div>
+
+      <h3 className="mb-3 mt-10 border-t border-border pt-5 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Quick Tools</h3>
+      <div className="grid grid-cols-2 gap-3">
+        <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" sub="Request needed repairs from your landlord." />
+        <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" sub="Get your deposit back." />
+        <ToolCard href="tel:211" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
+        <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" sub="Connect with trusted Hartford organizations." />
       </div>
       <Footer />
       <Link to="/about" className="mt-4 block text-center text-[13px] text-muted-foreground underline hover:text-foreground">
