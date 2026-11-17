@@ -104,6 +104,8 @@
   /* Brand orange (from "Wake") — replaces gold token */
   --gold: #F97316;
   --gold-foreground: oklch(0.22 0.04 290);
+  /* Slightly deeper orange for primary button fills */
+  --btn-orange: #EA580C;
 
   --success: oklch(0.62 0.12 155);
   --success-foreground: oklch(0.985 0 0);
@@ -155,6 +157,8 @@
   /* Brand orange — for the gold token */
   --gold: oklch(0.78 0.18 60);
   --gold-foreground: oklch(0.17 0.06 295);
+  /* Slightly deeper orange for primary button fills */
+  --btn-orange: oklch(0.70 0.17 55);
   --success: oklch(0.72 0.16 155);
   --success-foreground: oklch(0.17 0.06 295);
   --warning: oklch(0.78 0.17 70);
@@ -220,8 +224,8 @@
   .pop-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 0 var(--pop-border); }
   /* PREVIEW SWITCH: primary buttons in brand orange instead of pink.
      Delete these two rules to go back to pink. */
-  .pop-btn.bg-pink { background-color: var(--gold); }
-  .pop-btn.bg-pink:hover { background-color: color-mix(in oklab, var(--gold) 85%, var(--pop-border)); }
+  .pop-btn.bg-pink { background-color: var(--btn-orange); }
+  .pop-btn.bg-pink:hover { background-color: color-mix(in oklab, var(--btn-orange) 85%, var(--pop-border)); }
   /* Primary starting-point cards: heaviest border + colored offset shadow, lifts on hover */
   .pillar-card {
     border: 2px solid var(--pop-border);
