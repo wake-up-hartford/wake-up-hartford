@@ -90,8 +90,8 @@ function Landing() {
             id="neighborhood"
             label="Your Block"
             popup="Your block has a story. See the data behind it."
-            className="pop-card pop-cyan bg-gold text-gold-foreground"
-            popupClassName="bg-gold-popup text-gold-foreground"
+            className="pop-card pop-cyan bg-pink text-primary-foreground"
+            popupClassName="bg-pink text-primary-foreground"
             delay={1900}
             active={activeCircle === "neighborhood"}
             onToggle={toggle}
