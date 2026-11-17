@@ -20,6 +20,7 @@ import {
 import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ScriptWord } from "@/components/ScriptWord";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { generateStabilizationPlan } from "@/lib/stabilization-plan.functions";
 import { trackEvent } from "@/lib/track-event";
@@ -27,16 +28,17 @@ import { trackEvent } from "@/lib/track-event";
 export const Route = createFileRoute("/life")({
   head: () => ({
     meta: [
-      { title: "Your Life — Stabilization Survey" },
+      { title: "Your Life — Build Your Plan | Wake Up Hartford" },
       {
         name: "description",
         content:
           "A confidential first step toward building your personal stability plan.",
       },
-      { property: "og:title", content: "Your Life — Stabilization Survey" },
+      { property: "og:title", content: "Your Life — Build Your Plan | Wake Up Hartford" },
       { property: "og:description", content: "A confidential first step toward building your personal stability plan." },
       { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/life" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/life" },
@@ -847,13 +849,6 @@ function SummaryScreen({
   onRestart: () => void;
 }) {
   const priorities = answers["su3"] ?? [];
-  const { user, isAnonymous } = useAuth();
-  const showSignInPrompt = !user || isAnonymous;
-  const handleSignInToSave = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("wuw:postAuthRedirect", "/life");
-    }
-  };
 
 
   const ranked = useMemo(() => {
@@ -865,19 +860,36 @@ function SummaryScreen({
 
   return (
     <div>
+      <ol aria-label="Your plan progress" className="mb-6 grid grid-cols-3 gap-2 text-center text-[12px] leading-snug">
+        <li className="border-b-4 border-purple pb-3 text-foreground">
+          <CheckCircle2 aria-hidden="true" className="mx-auto mb-1 h-5 w-5 text-purple" />
+          <span className="font-semibold">1. Assessment</span>
+          <span className="mt-1 block text-muted-foreground">Done</span>
+        </li>
+        <li aria-current="step" className="border-b-4 border-pink pb-3 text-foreground">
+          <Sparkles aria-hidden="true" className="mx-auto mb-1 h-5 w-5 text-pink" />
+          <span className="font-semibold">2. Customize &amp; Generate</span>
+          <span className="mt-1 block text-muted-foreground">Next step</span>
+        </li>
+        <li className="border-b-4 border-border pb-3 text-muted-foreground">
+          <FileText aria-hidden="true" className="mx-auto mb-1 h-5 w-5" />
+          <span className="font-semibold">3. Your 30-Day Plan</span>
+          <span className="mt-1 block">Up next</span>
+        </li>
+      </ol>
       <div className="mb-6 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-[1.5px] border-pop-border bg-pink text-primary-foreground shadow-[4px_4px_0_var(--pop-border)]">
-          <CheckCircle2 className="h-7 w-7" />
-        </div>
         <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
-          Survey
+          Your focus
           <span className="block font-script text-4xl normal-case leading-none text-pink sm:text-5xl">
-            <ScriptWord>Complete</ScriptWord>
+            <ScriptWord>Areas</ScriptWord>
           </span>
         </h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">
-          Here's a preview of your priority areas.
+          Here is what you told us. Next, answer a few quick questions to generate your personalized 30-day plan.
         </p>
+        <Button asChild className="pop-btn mt-4 h-auto whitespace-normal rounded-full bg-pink px-5 py-3 font-bold text-primary-foreground hover:bg-orange">
+          <a href="#tailor-plan">Continue to step 2 <ArrowRight className="h-4 w-4" /></a>
+        </Button>
       </div>
 
       {priorities.length > 0 && (
@@ -944,35 +956,7 @@ function SummaryScreen({
       </div>
 
 
-      {showSignInPrompt && (
-        <div className="pop-card pop-orange mb-5 rounded-2xl bg-card p-4 text-card-foreground">
-          <p className="text-[14px] font-semibold">Want to save or share your plan?</p>
-          <p className="mt-1 text-[13px] leading-relaxed">
-            Sign in first so your plan is saved to your account. We'll bring you right back here to generate it.
-          </p>
-          <Link
-            to="/auth"
-            onClick={handleSignInToSave}
-            className="pop-btn mt-3 inline-flex items-center justify-center rounded-full bg-pink px-4 py-2 text-[13px] font-bold text-primary-foreground"
-          >
-            Sign in to save or share
-          </Link>
-          <p className="mt-2 text-[12px] text-card-foreground/70">
-            Or skip and generate your plan below — you can save it later.
-          </p>
-        </div>
-      )}
-
-
       <div className="mb-5">
-        <h3 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight">
-          Next <span className="font-script text-4xl normal-case text-pink">step</span>
-        </h3>
-        <p className="mt-2 text-[14px] leading-relaxed text-foreground/80">
-          We're building your plan now, based on what you told us — with specific
-          resources, steps, and timelines. No sign-in needed. You can save or share
-          it later.
-        </p>
         <PlanGenerator
           scores={Object.fromEntries(ranked.map(({ s, score }) => [s.id, score === "high" ? "high" : score === "moderate" ? "moderate" : "stable"]))}
           priorities={priorities}
@@ -1051,12 +1035,12 @@ function PlanGenerator({
   };
 
   return (
-    <div className="pop-card pop-cyan mb-5 rounded-2xl bg-card p-5">
-      <h3 className="font-display text-[18px] leading-tight text-card-foreground">
-        A few last questions
-      </h3>
+    <div id="tailor-plan" className="pop-card pop-cyan mb-5 scroll-mt-6 rounded-2xl bg-card p-5">
+      <h2 className="font-display text-[18px] leading-tight text-card-foreground">
+        Step 2: Tailor your action plan
+      </h2>
       <p className="mt-1 text-[13px] leading-relaxed text-card-foreground/70">
-        Helps plan pick resources that fit your life.
+        Answer these questions, then select Generate my 30-day plan to get resources and steps that fit your life. No sign-in needed.
       </p>
 
       <div className="mt-4 space-y-4">
@@ -1120,10 +1104,10 @@ function PlanGenerator({
 
         {error && <p className="rounded-lg bg-destructive/10 px-3 py-2 text-[12px] text-destructive">{error}</p>}
 
-        <button onClick={handleGenerate} disabled={busy}
-          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 text-[14px] font-bold text-primary-foreground transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
+        <Button onClick={handleGenerate} disabled={busy}
+          className="pop-btn flex h-auto w-full items-center justify-center gap-2 whitespace-normal rounded-full bg-pink px-5 py-3 text-[14px] font-bold text-primary-foreground hover:bg-orange transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60">
           {busy ? "Building your plan…" : (<><Sparkles className="h-4 w-4" /> Generate my 30-day plan</>)}
-        </button>
+        </Button>
         <p className="text-center text-[12px] text-card-foreground/70">
           Your plan is made by AI, then it's yours to use.
         </p>
