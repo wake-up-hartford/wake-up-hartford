@@ -58,7 +58,7 @@ function RotatingMessages() {
 }
 
 const NAV = [
-  { to: "/", label: "Start", icon: Home },
+  { to: "/dashboard", label: "Start", icon: Home },
   { to: "/life", label: "Life", icon: HeartHandshake },
   { to: "/home", label: "Home", icon: Building2 },
   { to: "/neighborhood", label: "Neighb.", icon: Trees },
