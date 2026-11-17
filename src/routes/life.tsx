@@ -1044,7 +1044,7 @@ function PlanGenerator({
       </p>
 
       <div className="mt-4 space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 grid-rows-[auto_auto] gap-x-3">
           <NumberField label="Adults in household" value={adults} setValue={setAdults} min={1} max={10} />
           <NumberField label="CHILDREN IN HOUSEHOLD" value={children} setValue={setChildren} min={0} max={10} />
         </div>
@@ -1123,7 +1123,7 @@ function Label({ children }: { children: React.ReactNode }) {
 
 function NumberField({ label, value, setValue, min, max }: { label: string; value: number; setValue: (n: number) => void; min: number; max: number }) {
   return (
-    <div>
+    <div className="row-span-2 grid min-w-0 grid-rows-subgrid">
       <Label>{label}</Label>
       <div className="flex items-center gap-2">
         <button type="button" aria-label={`Decrease ${label}`} onClick={() => setValue(Math.max(min, value - 1))} className="flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-secondary text-base leading-none text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">−</button>
