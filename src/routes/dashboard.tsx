@@ -128,10 +128,10 @@ function DashboardPage() {
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
       <div className="grid grid-cols-2 gap-3">
-        <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" />
-        <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" />
-        <ToolCard href="tel:211" icon={Phone} label="Crisis & 211 Help" />
-        <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" />
+        <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" sub="Request needed repairs from your landlord." />
+        <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" sub="Get your deposit back." />
+        <ToolCard href="tel:211" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
+        <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" sub="Connect with trusted Hartford organizations." />
       </div>
 
       <div className="mt-8 flex justify-center">
@@ -185,10 +185,16 @@ function PillarCard({
 }
 
 function ToolCard({
-  to, href, icon: Icon, label,
-}: { to?: "/landlord-letter" | "/security-deposit-letter" | "/find-help"; href?: string; icon: React.ComponentType<{ className?: string }>; label: string }) {
-  const cls = "flex items-center gap-2 rounded-2xl border-[1.5px] border-pop-border bg-card px-3 py-3 text-[13px] font-semibold text-card-foreground shadow-[3px_3px_0_var(--pop-border)] transition active:translate-x-[2px] active:translate-y-[2px]";
-  const body = (<><Icon className="h-4 w-4 shrink-0 text-primary" /><span className="leading-tight">{label}</span></>);
+  to, href, icon: Icon, label, sub,
+}: { to?: "/landlord-letter" | "/security-deposit-letter" | "/find-help"; href?: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; label: string; sub: string }) {
+  const cls = "flex items-start gap-2 rounded-2xl border-[1.5px] border-pop-border bg-card px-3 py-3 shadow-[3px_3px_0_var(--pop-border)] transition active:translate-x-[2px] active:translate-y-[2px]";
+  const body = (<>
+    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary-deep" strokeWidth={2.5} />
+    <span className="min-w-0">
+      <span className="block text-[13px] font-semibold leading-tight text-card-foreground">{label}</span>
+      <span className="mt-0.5 block text-[11px] leading-snug text-card-foreground/70">{sub}</span>
+    </span>
+  </>);
   return href ? <a href={href} className={cls}>{body}</a> : <Link to={to!} className={cls}>{body}</Link>;
 }
 

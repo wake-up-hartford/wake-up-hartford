@@ -29,6 +29,7 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-deep: var(--primary-deep);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -85,6 +86,8 @@
 
   /* Brand purple — civic, bold (from "WEDNESDAY") */
   --primary: #7C3AED;
+  /* Deeper purple for icons on cream/white card surfaces */
+  --primary-deep: #4C1D95;
   --primary-foreground: oklch(0.985 0.012 85);
 
   /* Soft warm sand */
