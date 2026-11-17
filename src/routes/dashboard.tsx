@@ -92,7 +92,8 @@ function DashboardPage() {
         This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
       </p>
 
-      <form onSubmit={submit} className="mt-3">
+      <p className="mb-2 mt-4 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
+      <form onSubmit={submit}>
         <label htmlFor="dash-address" className="mb-1.5 block text-[13px] font-semibold text-foreground">
           Enter your Hartford address
         </label>
@@ -116,8 +117,7 @@ function DashboardPage() {
         </div>
       </form>
 
-      <p className="mb-3 mt-5 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="mt-5 grid grid-cols-3 gap-2.5">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
           icon={HeartHandshake} title="Your Life" body="Stability, health, safety" tone="life" time="~5–8 min"
