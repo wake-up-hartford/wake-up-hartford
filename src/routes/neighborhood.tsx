@@ -11,7 +11,8 @@ function SeverityIcon({ severity, className = "h-5 w-5" }: SeverityIconProps) {
   return <Minus className={className} aria-label="Neutral" />;
 }
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
-import { AppShell, Card, SectionHeader } from "@/components/AppShell";
+import { AppShell, Card } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useStoredAddress } from "@/lib/address-store";
@@ -80,19 +81,24 @@ function NeighborhoodPage() {
 
       {!place && (
         <>
-          <SectionHeader
-            title="Learn About Your Neighborhood"
-            subtitle={<><strong className="font-semibold text-foreground">Enter an address or tap a neighborhood on the map.</strong> Data covers all 17 City of Hartford neighborhoods, supplied by the CT Data Collaborative.</>}
-          />
+          <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
+            Learn About Your
+            <span className="block font-script text-4xl normal-case leading-none text-pink sm:text-5xl">
+              <ScriptWord>Neighborhood</ScriptWord>
+            </span>
+          </h1>
+          <p className="mt-3 text-[13px] leading-snug text-foreground/80">
+            <strong className="font-semibold text-foreground">Enter an address or tap a neighborhood on the map.</strong> Data covers all 17 City of Hartford neighborhoods, supplied by the CT Data Collaborative.
+          </p>
           <div id="neighborhood-lookup">
-            <Card className="mb-5">
+            <Card className="pop-orange mb-5 mt-6">
               <Tabs defaultValue="address">
-                <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1">
-                  <TabsTrigger value="address" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Enter Address</TabsTrigger>
-                  <TabsTrigger value="map" className="py-1.5 text-[12px] font-semibold text-foreground data-[state=active]:text-primary">Click from Map</TabsTrigger>
+                <TabsList className="grid h-auto w-full grid-cols-2 gap-1 rounded-full border-[1.5px] border-pop-border bg-step-surface p-1">
+                  <TabsTrigger value="address" className="rounded-full py-1.5 text-xs font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Enter Address</TabsTrigger>
+                  <TabsTrigger value="map" className="rounded-full py-1.5 text-xs font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Click from Map</TabsTrigger>
                 </TabsList>
                 <TabsContent value="map" className="mt-3">
-                  <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl border border-border text-sm text-muted-foreground">Loading map…</div>}>
+                  <Suspense fallback={<div className="flex h-[320px] items-center justify-center rounded-xl bg-step-surface text-sm text-step-surface-muted">Loading map…</div>}>
                     <HartfordNeighborhoodMap selectedNeighborhood={null} onSelect={(n) => { trackEvent("neighborhood_map_click", { neighborhood: n.name }); handleResolved(n); }} />
                   </Suspense>
                 </TabsContent>
@@ -109,11 +115,9 @@ function NeighborhoodPage() {
 
       {place && (
         <>
-          <SectionHeader
-            eyebrow="Hartford neighborhood"
-            title={place.name}
-            subtitle="Indicators for this neighborhood, from the CT Data Collaborative (2024 ACS 5-year estimates)."
-          />
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Hartford neighborhood</p>
+          <h1 className="mt-1 font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-foreground sm:text-4xl">{place.name}</h1>
+          <p className="mt-2 text-[13px] leading-snug text-foreground/80">Indicators for this neighborhood, from the CT Data Collaborative (2024 ACS 5-year estimates).</p>
 
 
           {indicators.length > 0 && (
@@ -126,17 +130,17 @@ function NeighborhoodPage() {
           )}
 
           {result?.error && (
-            <Card className="mb-4 border-destructive/30 bg-destructive/5">
+            <Card className="pop-pink mb-4 mt-4">
               <p className="text-sm text-destructive">{result.error}</p>
             </Card>
           )}
 
-          <Tabs defaultValue="story" className="w-full">
+          <Tabs defaultValue="story" className="mt-5 w-full">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">3 ways to view Neighborhood data</p>
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
-              <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
-              <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
+            <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-full border-[1.5px] border-pop-border bg-step-surface p-1">
+              <TabsTrigger value="story" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Report Card</TabsTrigger>
+              <TabsTrigger value="share" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Share</TabsTrigger>
+              <TabsTrigger value="print" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Print</TabsTrigger>
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
@@ -156,7 +160,7 @@ function NeighborhoodPage() {
             <button
               type="button"
               onClick={() => setPlace(null)}
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-card-foreground hover:bg-muted/50 transition-colors"
+              className="pop-btn inline-flex items-center gap-2 rounded-full bg-card px-4 py-2.5 text-sm font-semibold text-card-foreground"
             >
               <MapPin className="h-4 w-4" /> Choose another neighborhood
             </button>
@@ -194,7 +198,7 @@ function SeverityLegend() {
     { dot: "bg-muted-foreground/60", label: "Gray", desc: "No comparison available" },
   ];
   return (
-    <Card className="bg-card/95">
+    <Card className="pop-cyan">
       <h3 className="mb-2 font-display text-base text-card-foreground">What the colors mean</h3>
       <ul className="space-y-1.5">
         {items.map((i) => (
@@ -233,7 +237,7 @@ function NeighborhoodDetailed({ indicators, loading }: { indicators: Indicator[]
         </div>
         );
       })}
-      <Card>
+      <Card className="pop-purple">
         <h3 className="mb-2 font-display text-lg text-card-foreground">Where data comes from</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">
           Numbers are supplied by the CT Data Collaborative, who aggregate the US Census Bureau's American Community Survey (ACS 5-year, 2024) to Hartford's 17 neighborhoods. Comparisons are against the Connecticut statewide figure.
@@ -284,7 +288,7 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
   return (
     <div className="space-y-3">
       <div
-        className={`aspect-square overflow-hidden rounded-2xl p-6 shadow-soft ${hasTint ? "text-primary-foreground" : "bg-gradient-to-br from-gray-700 to-gray-800 text-white"}`}
+        className={`pop-card pop-pink aspect-square overflow-hidden rounded-2xl p-6 ${hasTint ? "text-primary-foreground" : "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"}`}
         style={tintStyle}
       >
         <div className="flex h-full flex-col">
@@ -316,7 +320,7 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
           type="button"
           aria-label="Previous slide"
           onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="pop-btn inline-flex min-h-11 items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
         >
           <Play className="h-3.5 w-3.5 rotate-180" /> Prev
         </button>
@@ -324,7 +328,7 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
           type="button"
           aria-label="Next slide"
           onClick={() => setI((x) => (x + 1) % slides.length)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="pop-btn inline-flex min-h-11 items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
         >
           <Play className="h-3.5 w-3.5" /> Next
         </button>
@@ -341,14 +345,14 @@ function NeighborhoodShare({ place, indicators }: { place: Neighborhood; indicat
           <div className="grid grid-cols-2 gap-2">
             <a
               href={sms}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+              className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground"
             >
               <MessageSquare className="h-4 w-4" />
               Text this
             </a>
             <a
               href={mailto}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90"
+              className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-gold px-4 py-3 text-sm font-semibold text-gold-foreground"
             >
               <Mail className="h-4 w-4" />
               Email this
@@ -432,7 +436,7 @@ function NeighborhoodPrint({ place, indicators }: { place: Neighborhood; indicat
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="pop-purple">
         <div className="flex items-start gap-3">
           <Printer className="mt-0.5 h-5 w-5 text-primary" />
           <div className="flex-1">
@@ -442,15 +446,20 @@ function NeighborhoodPrint({ place, indicators }: { place: Neighborhood; indicat
             </p>
           </div>
         </div>
-        <Button onClick={handlePrint} className="mt-4 w-full" size="lg" disabled={indicators.length === 0}>
+        <button
+          type="button"
+          onClick={handlePrint}
+          disabled={indicators.length === 0}
+          className="pop-btn mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
+        >
           <Printer className="h-4 w-4" /> Open print preview
-        </Button>
+        </button>
         <p className="mt-2 text-center text-xs text-muted-foreground">
           In the print dialog, choose <strong>Save as PDF</strong> to download a copy.
         </p>
       </Card>
 
-      <Card>
+      <Card className="pop-orange">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
         <h3 className="mt-2 font-display text-lg text-card-foreground">{place.name}</h3>
         <p className="text-xs text-muted-foreground">Hartford, Connecticut</p>
@@ -533,93 +542,95 @@ function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => v
 
   return (
     <div id="census-lookup">
-      <Card className="mb-5">
-        <p className="mb-3 text-[12px] text-muted-foreground">
-          Enter a real Hartford street address (no PO boxes, intersections, or place names).
-        </p>
+      <p className="mb-3 text-[12px] text-muted-foreground">
+        Enter a real Hartford street address (no PO boxes, intersections, or place names).
+      </p>
 
-        <form onSubmit={handleLookup} className="flex flex-col gap-2">
-          <label htmlFor="lookup-street" className="sr-only">Street address</label>
-          <div className="relative">
-            <input
-              id="lookup-street"
-              type="text"
-              value={street}
-              onChange={(e) => { setStreet(e.target.value); setSuggestOpen(true); }}
-              onFocus={() => setSuggestOpen(true)}
-              onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
-              placeholder="Street address (e.g. 1234 Main St)"
-              autoComplete="off"
-              role="combobox"
-              aria-expanded={suggestOpen && suggestions.length > 0}
-              aria-autocomplete="list"
-              className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-            {suggestOpen && suggestions.length > 0 && (
-              <ul
-                role="listbox"
-                className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-xl border border-border bg-card shadow-lg"
-              >
-                {suggestions.map((s) => (
-                  <li key={s.normalized}>
-                    <button
-                      type="button"
-                      onMouseDown={(e) => { e.preventDefault(); pickSuggestion(s); }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-foreground hover:bg-secondary/60"
-                    >
-                      <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
-                      <span className="truncate">{s.display}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <label htmlFor="lookup-city" className="sr-only">City</label>
-            <input
-              id="lookup-city"
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="City"
-              autoComplete="address-level2"
-              className="min-w-0 flex-1 rounded-lg border border-border bg-card px-3 py-2.5 text-[14px] text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-            <label htmlFor="lookup-state" className="sr-only">State</label>
-            <input
-              id="lookup-state"
-              type="text"
-              value={state}
-              onChange={(e) => setState(e.target.value.slice(0, 2))}
-              placeholder="ST"
-              maxLength={2}
-              autoComplete="address-level1"
-              className="w-14 shrink-0 rounded-lg border border-border bg-card px-2 py-2.5 text-center text-[14px] uppercase text-card-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-          <Button type="submit" disabled={loading || !canSubmit} size="lg">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-            {loading ? "Looking up…" : "Look up"}
-          </Button>
-        </form>
+      <form onSubmit={handleLookup} className="flex flex-col gap-2">
+        <label htmlFor="lookup-street" className="sr-only">Street address</label>
+        <div className="relative">
+          <input
+            id="lookup-street"
+            type="text"
+            value={street}
+            onChange={(e) => { setStreet(e.target.value); setSuggestOpen(true); }}
+            onFocus={() => setSuggestOpen(true)}
+            onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
+            placeholder="Street address (e.g. 1234 Main St)"
+            autoComplete="off"
+            role="combobox"
+            aria-expanded={suggestOpen && suggestions.length > 0}
+            aria-autocomplete="list"
+            className="w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-3 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          {suggestOpen && suggestions.length > 0 && (
+            <ul
+              role="listbox"
+              className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-xl border-[1.5px] border-pop-border bg-step-resource shadow-lg"
+            >
+              {suggestions.map((s) => (
+                <li key={s.normalized}>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); pickSuggestion(s); }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-step-resource-foreground hover:bg-step-surface"
+                  >
+                    <MapPin className="h-4 w-4 shrink-0 text-step-resource-muted" />
+                    <span className="truncate">{s.display}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="flex gap-2">
+          <label htmlFor="lookup-city" className="sr-only">City</label>
+          <input
+            id="lookup-city"
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="City"
+            autoComplete="address-level2"
+            className="min-w-0 flex-1 rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <label htmlFor="lookup-state" className="sr-only">State</label>
+          <input
+            id="lookup-state"
+            type="text"
+            value={state}
+            onChange={(e) => setState(e.target.value.slice(0, 2))}
+            placeholder="ST"
+            maxLength={2}
+            autoComplete="address-level1"
+            className="w-16 shrink-0 rounded-full border-[1.5px] border-pop-border bg-step-resource px-2 py-2.5 text-center text-[14px] uppercase text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={loading || !canSubmit}
+          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
+        >
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+          {loading ? "Looking up…" : "Look up"}
+        </button>
+      </form>
 
-        {error && (
-          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12px] text-red-700">{error}</p>
-        )}
+      {error && (
+        <p className="mt-3 rounded-lg bg-destructive/10 px-3 py-2 text-[12px] text-destructive">{error}</p>
+      )}
 
-        {result && (
-          <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Neighborhood</p>
-            <p className="mt-1 font-display text-xl text-card-foreground">{result.name}</p>
-            <p className="mt-1 text-[12px] text-muted-foreground">{result.address}</p>
-          </div>
-        )}
+      {result && (
+        <div className="mt-3 rounded-xl border-[1.5px] border-pop-border bg-step-surface p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Neighborhood</p>
+          <p className="mt-1 font-display text-xl text-step-surface-foreground">{result.name}</p>
+          <p className="mt-1 text-[12px] text-step-surface-muted">{result.address}</p>
+        </div>
+      )}
 
-        <p className="mt-3 text-[10px] text-muted-foreground">
-          Address lookup via the US Census Bureau Geocoder; neighborhood assignment via the CT Data Collaborative crosswalk.
-        </p>
-      </Card>
+      <p className="mt-3 text-[10px] text-muted-foreground">
+        Address lookup via the US Census Bureau Geocoder; neighborhood assignment via the CT Data Collaborative crosswalk.
+      </p>
     </div>
   );
 }
@@ -645,20 +656,20 @@ function Stat({ icon: Icon, label, value, small, loading }: { icon: React.Compon
 
 function TakeAction({ place }: { place: Neighborhood }) {
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
+    <div className="pop-card pop-orange mt-8 overflow-hidden rounded-2xl bg-card p-5 text-card-foreground">
       <div className="flex items-start gap-3">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
           <Megaphone className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
-          <p className="mt-1 text-sm text-foreground/80">
+          <p className="mt-1 text-sm text-card-foreground/80">
             Find help, email your rep, or share this report — tailored to what this neighborhood needs most.
           </p>
           <Link
             to="/neighborhood-actions"
             search={{ neighborhood: place.name }}
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+            className="pop-btn mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[16px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
           >
             Take action
             <ArrowRight className="h-4 w-4" />
