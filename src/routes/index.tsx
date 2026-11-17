@@ -141,7 +141,7 @@ function Landing() {
           Greater Hartford Branch NAACP
         </p>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          in collaboration with CT Data Collaborative and Farnam Associates, LLC.
+          in collaboration with Farnam Associates, LLC. and CT Data Collaborative 
         </p>
         <Link
           to="/about"
