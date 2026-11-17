@@ -5,7 +5,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { AppShell, Card, SectionHeader, SeverityPill } from "@/components/AppShell";
+import { AppShell, Card, SeverityPill } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
@@ -139,7 +140,7 @@ function HomePage() {
         {active && (
           <button
             onClick={handleReset}
-            className="ml-auto inline-flex items-center gap-1.5 text-sm text-[#dfddce] hover:opacity-80 transition-opacity"
+            className="ml-auto inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-opacity hover:opacity-80"
           >
             <Search className="h-3.5 w-3.5" /> Look up new address
           </button>
@@ -147,12 +148,12 @@ function HomePage() {
       </div>
 
       <Collapsible>
-        <div className="mb-4 rounded-lg border border-dashed border-warning/40 bg-warning/10 px-3 py-2 text-xs text-foreground">
+        <div className="mb-4 rounded-xl border-[1.5px] border-warning/45 bg-warning/12 px-3.5 py-2.5 text-xs text-foreground">
           <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 text-left">
             <span className="inline-flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5 text-warning-foreground" />
               <span className="font-semibold">Beta — partial data.</span>
-              <span className="text-muted-foreground">Tap to learn more</span>
+              <span className="text-foreground/70">Tap to learn more</span>
             </span>
             <ChevronDown className="h-3.5 w-3.5 transition-transform group-data-[state=open]:rotate-180" />
           </CollapsibleTrigger>
@@ -167,31 +168,35 @@ function HomePage() {
 
       {!active && (
         <>
-          <SectionHeader
-            eyebrow="Your home"
-            title="Look up any Hartford address"
-            subtitle="Type an address (yours, a friend's, a place you might rent) or drop a pin on the map."
-          />
+          <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
+            Look Up Any Hartford
+            <span className="block font-script text-4xl normal-case leading-none text-pink sm:text-5xl">
+              <ScriptWord>Address</ScriptWord>
+            </span>
+          </h1>
+          <p className="mt-3 text-[13px] leading-snug text-foreground/80">
+            Type an address (yours, a friend's, a place you might rent) or drop a pin on the map.
+          </p>
 
 
-          <Card className="mb-5">
+          <Card className="pop-orange mb-5 mt-6">
             <Tabs defaultValue="address" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-auto bg-secondary/60 p-1 mb-4">
-                <TabsTrigger value="address" className="py-1.5 text-xs font-semibold text-foreground data-[state=active]:text-gold">
+              <TabsList className="mb-4 grid h-auto w-full grid-cols-2 gap-1 rounded-full border-[1.5px] border-pop-border bg-step-surface p-1">
+                <TabsTrigger value="address" className="rounded-full py-1.5 text-xs font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   Enter Address
                 </TabsTrigger>
-                <TabsTrigger value="map" className="py-1.5 text-xs font-semibold text-foreground data-[state=active]:text-gold">
+                <TabsTrigger value="map" className="rounded-full py-1.5 text-xs font-semibold uppercase tracking-wide text-step-surface-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   Pick on Map
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="address">
                 <form onSubmit={handleSubmit} className="space-y-3">
-                  <label htmlFor="addr" className="block text-sm font-semibold text-foreground">
+                  <label htmlFor="addr" className="block text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Home address
                   </label>
                   <div className="relative">
-                    <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                    <div className="flex items-center gap-2 rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
                       <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
                       <input
                         id="addr"
@@ -200,7 +205,7 @@ function HomePage() {
                         onFocus={handleFocus}
                         onBlur={() => setTimeout(() => setSuggestOpen(false), 150)}
                         placeholder=""
-                        className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/60" : "text-foreground"}`}
+                        className={`w-full bg-transparent text-base outline-none ${query === EXAMPLE_TEXT ? "text-muted-foreground/80" : "text-foreground"}`}
                         autoComplete="off"
                         inputMode="text"
                         role="combobox"
@@ -218,7 +223,7 @@ function HomePage() {
                             <button
                               type="button"
                               onMouseDown={(e) => { e.preventDefault(); pickSuggestion(s); }}
-                              className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm text-foreground hover:bg-secondary/60"
+                              className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm text-foreground hover:bg-step-surface"
                             >
                               <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
                               <span className="truncate">{s.display}</span>
@@ -230,16 +235,16 @@ function HomePage() {
                   </div>
                   <button
                     type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]"
+                    className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[16px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
                   >
                     See the report
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-5 w-5" />
                   </button>
                 </form>
               </TabsContent>
 
               <TabsContent value="map">
-                <Suspense fallback={<div className="h-[320px] rounded-xl bg-secondary/40 animate-pulse" />}>
+                <Suspense fallback={<div className="h-[320px] rounded-xl bg-step-surface animate-pulse" />}>
                   <PickAddressMap
                     onPick={(addr) => {
                       trackEvent("home_map_address_click", { address: addr });
@@ -278,11 +283,11 @@ function HomePage() {
         <>
           <BuildingStoryDialog data={found} />
 
-          <Card className="mb-5 bg-primary text-primary-foreground">
+          <Card className="pop-orange mb-5 bg-primary text-primary-foreground">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 opacity-80" />
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] uppercase tracking-wider opacity-70">Showing</p>
+                <p className="text-[11px] uppercase tracking-wider opacity-85">Showing</p>
                 <h1 className="truncate font-display text-lg">{found.address.display}</h1>
                 <p className="text-sm opacity-80">Hartford, CT · Year built and unit count not available</p>
               </div>
@@ -299,11 +304,11 @@ function HomePage() {
           </Card>
 
           <Tabs defaultValue="story" className="w-full">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">3 ways to view Home data</p>
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-secondary/60 p-1">
-              <TabsTrigger value="story" className="py-1.5 text-[11px] font-semibold">Report Card</TabsTrigger>
-              <TabsTrigger value="share" className="py-1.5 text-[11px] font-semibold">Share</TabsTrigger>
-              <TabsTrigger value="print" className="py-1.5 text-[11px] font-semibold">Print</TabsTrigger>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">3 ways to view Home data</p>
+            <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-full border-[1.5px] border-pop-border bg-secondary/60 p-1">
+              <TabsTrigger value="story" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Report Card</TabsTrigger>
+              <TabsTrigger value="share" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Share</TabsTrigger>
+              <TabsTrigger value="print" className="rounded-full py-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Print</TabsTrigger>
             </TabsList>
 
             <TabsContent value="story" className="mt-4">
@@ -342,7 +347,7 @@ function CoverageSummaryCard({
       ? `${Math.round((coverage.withNeighborhood / coverage.total) * 100)}%`
       : "—";
   return (
-    <Card className="mb-5 mt-5">
+    <Card className="pop-purple mb-5 mt-5">
       <div className="flex items-start gap-3">
         <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
         <div className="min-w-0 flex-1">
@@ -366,7 +371,7 @@ function CoverageSummaryCard({
               <button
                 onClick={onRefresh}
                 disabled={isRefreshing}
-                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+                className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground transition disabled:opacity-50"
               >
                 {isRefreshing ? (
                   <>
@@ -391,18 +396,21 @@ function CoverageSummaryCard({
 
 function NotFoundState({ query, onReset }: { query: string; onReset: () => void }) {
   return (
-    <Card className="mb-5">
+    <Card className="pop-pink mb-5">
       <div className="flex items-start gap-3">
-        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-warning-foreground" />
         <div className="flex-1">
           <h2 className="font-display text-lg leading-tight">No records found</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             We couldn't find <strong className="text-foreground">{query}</strong> in Hartford's code enforcement or 311 records.
             Try a different spelling, or just the street number and street name (e.g. "555 Main St").
           </p>
-          <Button onClick={onReset} className="mt-4 w-full" size="lg">
+          <button
+            onClick={onReset}
+            className="pop-btn mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
+          >
             <Search className="h-4 w-4" /> Try another address
-          </Button>
+          </button>
         </div>
       </div>
     </Card>
@@ -430,7 +438,7 @@ function ExpandableIndicator({
 }) {
   return (
     <Collapsible defaultOpen={defaultOpen} asChild>
-      <Card className="p-0 overflow-hidden">
+      <Card className={`p-0 overflow-hidden ${severity === "concern" ? "pop-pink" : severity === "watch" ? "pop-orange" : "pop-cyan"}`}>
         <CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-1 text-left sm:px-4 sm:py-1">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-1 sm:gap-2">
@@ -554,9 +562,9 @@ function ShareSlideshow({ data }: { data: Found }) {
 
   return (
     <div className="space-y-3 lg:mx-auto lg:w-1/2 xl:w-[45%]">
-      <div className="aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground shadow-soft">
+      <div className="pop-card pop-pink aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-6 text-primary-foreground">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-70">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] opacity-85">
             <span>{slide.eyebrow}</span>
             <span>{i + 1} / {slides.length}</span>
           </div>
@@ -573,13 +581,13 @@ function ShareSlideshow({ data }: { data: Found }) {
       <div className="flex items-center justify-between gap-2">
         <button
           onClick={() => setI((x) => (x - 1 + slides.length) % slides.length)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
+          className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
         >
           <Play className="h-3.5 w-3.5 rotate-180" /> Prev
         </button>
         <button
           onClick={() => setI((x) => (x + 1) % slides.length)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
+          className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
         >
           <Play className="h-3.5 w-3.5" /> Next
         </button>
@@ -593,11 +601,11 @@ function ShareSlideshow({ data }: { data: Found }) {
         const mailto = `mailto:?subject=${encodeURIComponent("Wake Up Wednesday — " + data.address.display)}&body=${encodeURIComponent(payload)}`;
         return (
           <div className="grid grid-cols-2 gap-2">
-            <a href={sms} className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90">
+            <a href={sms} className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground">
               <MessageSquare className="h-4 w-4" />
               Text this
             </a>
-            <a href={mailto} className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground shadow-soft hover:opacity-90">
+            <a href={mailto} className="pop-btn inline-flex items-center justify-center gap-2 rounded-full bg-gold px-4 py-3 text-sm font-semibold text-gold-foreground">
               <Mail className="h-4 w-4" />
               Email this
             </a>
@@ -699,7 +707,7 @@ function PrintReport({ data }: { data: Found }) {
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className="pop-purple">
         <div className="flex items-start gap-3">
           <Printer className="mt-0.5 h-5 w-5 text-primary" />
           <div className="flex-1">
@@ -709,21 +717,24 @@ function PrintReport({ data }: { data: Found }) {
             </p>
           </div>
         </div>
-        <Button onClick={handlePrint} className="mt-4 w-full" size="lg">
+        <button
+          onClick={handlePrint}
+          className="pop-btn mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
+        >
           <Printer className="h-4 w-4" /> Open print preview
-        </Button>
+        </button>
         <p className="mt-2 text-center text-xs text-muted-foreground">
           In the print dialog, choose <strong>Save as PDF</strong> to download a copy.
         </p>
       </Card>
 
-      <div className="rounded-2xl border border-border bg-card p-5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Preview</p>
+      <div className="pop-card pop-orange rounded-2xl bg-card p-5 text-card-foreground">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-card-foreground/70">Preview</p>
         <h3 className="mt-2 font-display text-lg">{data.address.display}</h3>
-        <p className="text-xs text-muted-foreground">Hartford, CT · Owner: {owner}</p>
+        <p className="text-xs text-card-foreground/70">Hartford, CT · Owner: {owner}</p>
         <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">Code violations</div><div className="font-display text-2xl">{c.violationsOpen}</div></div>
-          <div className="rounded-md border border-border p-2"><div className="text-muted-foreground">311 complaints</div><div className="font-display text-2xl">{c.complaints12mo}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-card-foreground/70">Code violations</div><div className="font-display text-2xl">{c.violationsOpen}</div></div>
+          <div className="rounded-md border border-border p-2"><div className="text-card-foreground/70">311 complaints</div><div className="font-display text-2xl">{c.complaints12mo}</div></div>
         </div>
       </div>
     </div>
@@ -735,7 +746,7 @@ function LandlordCard({ data }: { data: Found }) {
   const p = data.portfolio;
   const NA = <span className="text-muted-foreground/70 italic">Not available</span>;
   return (
-    <Card className="mb-5">
+    <Card className="pop-purple mb-5">
       <div className="flex items-start gap-3">
         <Building2 className="mt-0.5 h-5 w-5 text-primary" />
         <div className="min-w-0 flex-1">
@@ -749,8 +760,8 @@ function LandlordCard({ data }: { data: Found }) {
           </div>
 
           {p && (
-            <div className="mt-4 rounded-xl border border-border bg-secondary/40 p-3">
-              <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="mt-4 rounded-xl border border-pop-border/25 bg-step-surface p-3">
+              <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-step-surface-muted">
                 <Briefcase className="h-3.5 w-3.5" /> This owner's full Hartford portfolio
               </p>
               <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
@@ -765,7 +776,7 @@ function LandlordCard({ data }: { data: Found }) {
 
           <Link
             to="/landlord-letter"
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-[14px] font-semibold text-gold-foreground shadow-soft transition active:scale-[0.99]"
+            className="pop-btn mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]"
           >
             <Mail className="h-4 w-4" />
             Write a Letter of Complaint to your Landlord
@@ -800,19 +811,19 @@ function escapeHtml(s: string) {
 
 function TakeAction() {
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-gold/40 bg-gold/15 p-5">
+    <div className="pop-card pop-orange mt-8 overflow-hidden rounded-2xl bg-card p-5 text-card-foreground">
       <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-[1.5px] border-pop-border bg-gold text-gold-foreground">
           <Megaphone className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <h3 className="font-display text-xl leading-tight">Ready to do something?</h3>
-          <p className="mt-1 text-sm text-foreground/80">
+          <p className="mt-1 text-sm text-card-foreground/80">
             Report a problem, get free legal help, or join your neighbors at Unity Plaza.
           </p>
-          <Link to="/home-actions" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-base font-semibold text-primary-foreground transition active:scale-[0.99]">
+          <Link to="/home-actions" className="pop-btn mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[16px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99]">
             Take action
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </div>
@@ -822,7 +833,7 @@ function TakeAction() {
 
 function PlainLanguage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-4 rounded-xl bg-secondary/70 p-3.5 text-sm leading-relaxed text-secondary-foreground">
+    <div className="mt-4 rounded-xl border border-border bg-gold/12 p-3.5 text-sm leading-relaxed text-card-foreground">
       {children}
     </div>
   );

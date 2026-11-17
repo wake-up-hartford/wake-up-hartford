@@ -81,7 +81,7 @@ export function BuildingStoryDialog({ data }: { data: Found }) {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="mb-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/20"
+          className="pop-btn mb-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-card px-4 py-2.5 text-sm font-semibold text-card-foreground transition-transform active:scale-[0.99]"
         >
           <Sparkles className="h-4 w-4" />
           Read the story of this building

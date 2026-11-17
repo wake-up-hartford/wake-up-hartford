@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState, useEffect, type ComponentType } from "react";
 import { AppShell } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 import { useAuth } from "@/hooks/use-auth";
 import { generateStabilizationPlan } from "@/lib/stabilization-plan.functions";
 import { trackEvent } from "@/lib/track-event";
@@ -414,29 +415,6 @@ const SECTIONS: Section[] = [
 ];
 
 type Answers = Record<string, string[]>;
-
-/* Pink script word with the hand-drawn swoosh, as used on the dashboard greeting. */
-function ScriptWord({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="relative inline-block">
-      {children}
-      <svg
-        viewBox="0 0 200 12"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-        className="absolute -bottom-1 left-0 h-2.5 w-full text-pink"
-      >
-        <path
-          d="M2 9 C 60 2, 140 2, 198 7"
-          stroke="currentColor"
-          strokeWidth="3"
-          fill="none"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  );
-}
 
 /* ---------- Top component ---------- */
 
