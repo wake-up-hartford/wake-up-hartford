@@ -71,7 +71,7 @@ function Landing() {
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
       <p className="mx-auto max-w-md px-6 pb-0 text-center text-sm font-medium text-foreground/80 sm:max-w-lg whitespace-pre-line sm:text-base">
-        Learn the facts about your neighborhood and your home and&nbsp;get the tools to stabilize your life.
+        Learn facts about your neighborhood and your home and&nbsp;get the tools to stabilize your life.
       </p>
       <h2 className="mx-auto my-4 max-w-lg px-6 text-center font-display text-2xl font-extrabold uppercase leading-tight sm:text-3xl">
         <span className="text-accent">See it.</span>{" "}
