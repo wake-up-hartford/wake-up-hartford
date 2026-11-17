@@ -85,7 +85,7 @@ function DashboardPage() {
       </div>
 
 
-      <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
+      <h3 className="mb-3 mt-10 border-t border-border pt-5 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Quick Tools</h3>
       <div className="grid grid-cols-2 gap-3">
         <ToolCard to="/landlord-letter" icon={FileText} label="Repair Letter" sub="Request needed repairs from your landlord." />
         <ToolCard to="/security-deposit-letter" icon={FileText} label="Security Deposit Letter" sub="Get your deposit back." />
@@ -131,8 +131,8 @@ function PillarCard({
   const t = PILLAR_TONES[tone];
   const inner = (
     <div
-      className={`flex h-full flex-col rounded-2xl border-[1.5px] border-pop-border p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4 ${t.bg}`}
-      style={{ boxShadow: `4px 4px 0 ${t.shadow}` }}
+      className={`pillar-card flex h-full flex-col rounded-2xl p-3 sm:p-4 ${t.bg}`}
+      style={{ "--pop-shadow": t.shadow } as React.CSSProperties}
     >
       <p className={`font-display font-extrabold uppercase leading-tight tracking-tight break-words flex min-h-[43px] items-end sm:min-h-[56px] ${t.fg} ${titleClass}`}><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
       <p className={`mt-0.5 min-h-[2.4em] text-[11px] leading-snug ${t.soft} sm:text-[13px]`}>{body}</p>
@@ -154,7 +154,7 @@ function PillarCard({
 function ToolCard({
   to, href, icon: Icon, label, sub,
 }: { to?: "/landlord-letter" | "/security-deposit-letter" | "/find-help"; href?: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; label: string; sub: string }) {
-  const cls = "flex items-start gap-2 rounded-2xl border-[1.5px] border-pop-border bg-card px-3 py-3 shadow-[3px_3px_0_var(--pop-border)] transition active:translate-x-[2px] active:translate-y-[2px]";
+  const cls = "tool-card flex items-start gap-2 rounded-xl bg-card px-3 py-2.5";
   const body = (<>
     <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary-deep" strokeWidth={2.5} />
     <span className="min-w-0">

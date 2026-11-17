@@ -218,6 +218,21 @@
   .pop-purple { --pop-shadow: var(--primary); }
   .pop-btn { border: 1.5px solid var(--pop-border); box-shadow: 3px 3px 0 0 var(--pop-border); transition: transform .15s, box-shadow .15s; }
   .pop-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 0 var(--pop-border); }
+  /* Primary starting-point cards: heaviest border + colored offset shadow, lifts on hover */
+  .pillar-card {
+    border: 2px solid var(--pop-border);
+    box-shadow: 6px 6px 0 0 var(--pop-shadow, var(--accent));
+    transition: transform .15s, box-shadow .15s;
+  }
+  .pillar-card:hover { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 0 var(--pop-shadow, var(--accent)); }
+  .pillar-card:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 0 var(--pop-shadow, var(--accent)); }
+  /* Secondary utility cards: hairline border, no offset shadow */
+  .tool-card {
+    border: 1px solid color-mix(in oklab, var(--pop-border) 32%, transparent);
+    transition: transform .15s, border-color .15s;
+  }
+  .tool-card:hover { border-color: var(--pop-border); }
+  .tool-card:active { transform: translate(1px,1px); }
   /* Lighter opaque popup backgrounds */
   .bg-gold-popup { background-color: oklch(0.83 0.15 60); }
   .bg-primary-popup { background-color: oklch(0.48 0.16 300); }
