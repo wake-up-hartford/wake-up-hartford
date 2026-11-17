@@ -102,10 +102,10 @@
   --accent-foreground: #FFFFFF;
 
   /* Brand orange (from "Wake") — replaces gold token */
-  --gold: #F97316;
+  --gold: #EB7530;
   --gold-foreground: oklch(0.22 0.04 290);
-  /* Slightly deeper orange for primary button fills */
-  --btn-orange: #EA580C;
+  /* Primary button fills use the same brand orange */
+  --btn-orange: #EB7530;
 
   --success: oklch(0.62 0.12 155);
   --success-foreground: oklch(0.985 0 0);
@@ -155,10 +155,10 @@
   --accent: oklch(0.78 0.14 230);
   --accent-foreground: oklch(0.17 0.06 295);
   /* Brand orange — for the gold token */
-  --gold: oklch(0.78 0.18 60);
+  --gold: oklch(0.689 0.166 47.3);
   --gold-foreground: oklch(0.17 0.06 295);
-  /* Slightly deeper orange for primary button fills */
-  --btn-orange: oklch(0.70 0.17 55);
+  /* Primary button fills use the same brand orange */
+  --btn-orange: oklch(0.689 0.166 47.3);
   --success: oklch(0.72 0.16 155);
   --success-foreground: oklch(0.17 0.06 295);
   --warning: oklch(0.78 0.17 70);
@@ -242,7 +242,7 @@
   .tool-card:hover { border-color: var(--pop-border); }
   .tool-card:active { transform: translate(1px,1px); }
   /* Lighter opaque popup backgrounds */
-  .bg-gold-popup { background-color: oklch(0.83 0.15 60); }
+  .bg-gold-popup { background-color: oklch(0.83 0.13 47); }
   .bg-primary-popup { background-color: oklch(0.48 0.16 300); }
   .bg-accent-popup { background-color: oklch(0.80 0.11 230); }
 }
