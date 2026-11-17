@@ -191,14 +191,14 @@ function Circle({
         className={`circle-fly-in flex h-32 w-32 sm:h-40 sm:w-40 shrink-0 items-center justify-center rounded-full transition-transform duration-300 ease-out hover:scale-105 ${className}`}
         style={{ animationDelay: `${delay}ms` }}
       >
-        <span className="font-display text-[13px] sm:text-base font-bold leading-[1.1] text-center px-2">
+        <span className="font-display text-[17px] sm:text-[21px] font-extrabold leading-[1.1] text-center px-1 text-primary-foreground">
           {label}
         </span>
       </button>
       {active && (
         <div
           role="dialog"
-          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName}`}
+          className={`popup-cover pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-full px-5 text-center text-sm sm:text-base font-medium leading-snug shadow-soft ${popupClassName} !text-primary-foreground`}
         >
           {popup}
         </div>
