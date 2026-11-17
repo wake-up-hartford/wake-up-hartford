@@ -165,7 +165,7 @@ function PillarCard({
       className="flex h-full min-h-[150px] flex-col rounded-2xl border-[1.5px] border-pop-border bg-card p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4"
       style={{ boxShadow: `4px 4px 0 ${shadow}` }}
     >
-      <p className="font-display text-[14px] font-extrabold uppercase leading-tight tracking-tight break-words min-h-[2.5em] flex items-end sm:text-lg" style={{ color: `color-mix(in oklab, ${shadow} 70%, black)` }}><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
+      <p className="font-display text-[14px] font-extrabold uppercase leading-tight tracking-tight break-words min-h-[2.5em] flex items-end sm:text-lg" style={{ color: shadow }}><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
       <p className="mt-0.5 text-[11px] leading-snug text-card-foreground/75 sm:text-[13px]">{body}</p>
       {progress != null && (
         <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-label={`Plan ${progress}% complete`}>
