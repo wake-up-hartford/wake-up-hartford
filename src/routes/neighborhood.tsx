@@ -609,7 +609,7 @@ function NeighborhoodLookup({ onResolved }: { onResolved: (n: Neighborhood) => v
         <button
           type="submit"
           disabled={loading || !canSubmit}
-          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
+          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3.5 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:cursor-not-allowed"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
           {loading ? "Looking up…" : "Look up"}
