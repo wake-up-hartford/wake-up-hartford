@@ -91,7 +91,7 @@ function DashboardPage() {
             Register to stay in touch
           </Link>
         ) : (
-          <Link to="/profile" className="inline-flex items-center justify-center rounded-full border-[1.5px] border-pop-border bg-primary px-8 py-3 text-[14px] font-bold text-primary-foreground shadow-[4px_4px_0_var(--pop-border)] hover:opacity-90">
+          <Link to="/profile" className="inline-flex items-center justify-center rounded-full border-[1.5px] border-pop-border bg-pink px-8 py-3 text-[14px] font-bold text-primary-foreground shadow-[4px_4px_0_var(--pop-border)] hover:opacity-90">
             See Your Profile
           </Link>
         )}
