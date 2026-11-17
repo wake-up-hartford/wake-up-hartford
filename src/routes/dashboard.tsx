@@ -93,7 +93,16 @@ function DashboardPage() {
       </p>
 
       <p className="mb-2 mt-4 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
-      <form onSubmit={submit}>
+      <div className="grid grid-cols-3 gap-2.5">
+        <PillarCard
+          num="01" to={latest ? undefined : "/life"} planId={latest?.id}
+          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" tone="life" time="~5–8 min"
+          progress={pct}
+        />
+        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" tone="home" time="~30 sec" />
+        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Block" body="Report card for your neighborhood" tone="block" time="~1 min" />
+      </div>
+      <form onSubmit={submit} className="mt-6">
         <label htmlFor="dash-address" className="mb-1.5 block text-[13px] font-semibold text-foreground">
           Enter your Hartford address
         </label>
@@ -117,15 +126,6 @@ function DashboardPage() {
         </div>
       </form>
 
-      <div className="mt-5 grid grid-cols-3 gap-2.5">
-        <PillarCard
-          num="01" to={latest ? undefined : "/life"} planId={latest?.id}
-          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" tone="life" time="~5–8 min"
-          progress={pct}
-        />
-        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" tone="home" time="~30 sec" />
-        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Block" body="Report card for your neighborhood" tone="block" time="~1 min" />
-      </div>
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
       <div className="grid grid-cols-2 gap-3">
