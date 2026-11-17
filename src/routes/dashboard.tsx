@@ -87,7 +87,7 @@ function DashboardPage() {
           </span>
         </span>
       </h1>
-      <p className="mt-2 text-[14px] leading-snug text-foreground/80">
+      <p className="mt-3 text-[14px] leading-snug text-foreground/80">
         This app is built for Hartford residents — to help you understand your home, your neighborhood, and your options. Then take ACTION to make change.
       </p>
 
