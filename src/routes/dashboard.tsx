@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Trees, HeartHandshake, FileText, MapPin, Check, ArrowRight, Phone, LifeBuoy } from "lucide-react";
+import { Building2, Trees, HeartHandshake, FileText, MapPin, Check, ArrowRight, ChevronRight, Phone, LifeBuoy } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useStoredAddress } from "@/lib/address-store";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,11 +120,11 @@ function DashboardPage() {
       <div className="grid grid-cols-3 gap-3">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
-          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" shadow="var(--accent)" tint="text-accent"
+          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" shadow="var(--pink)" tint="text-pink" time="~5–8 min"
           progress={pct}
         />
-        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" shadow="var(--primary)" tint="text-primary" />
-        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Neighborhood" body="Report card for your block" shadow="var(--gold)" tint="text-gold" />
+        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" shadow="var(--gold)" tint="text-gold" time="~30 sec" />
+        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Neighborhood" body="Report card for your block" shadow="var(--accent)" tint="text-accent" time="~1 min" />
       </div>
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
@@ -155,28 +155,29 @@ function DashboardPage() {
 }
 
 function PillarCard({
-  num, to, planId, icon: Icon, title, body, shadow, tint, progress,
+  num, to, planId, title, body, shadow, progress, time,
 }: {
   num: string; to?: "/home" | "/neighborhood" | "/life"; planId?: string;
   icon: React.ComponentType<{ className?: string }>;
-  title: string; body: string; shadow: string; tint: string; progress?: number | null;
+  title: string; body: string; shadow: string; tint: string; progress?: number | null; time: string;
 }) {
   const inner = (
     <div
-      className="flex aspect-square h-full flex-col rounded-2xl border-[1.5px] border-pop-border bg-card p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4"
+      className="flex h-full min-h-[150px] flex-col rounded-2xl border-[1.5px] border-pop-border bg-card p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4"
       style={{ boxShadow: `4px 4px 0 ${shadow}` }}
     >
-      <div className="flex items-center justify-between">
-        <span className="rounded-full bg-plum px-2 py-0.5 text-[10px] font-bold text-plum-foreground">{num}</span>
-        <Icon className={`h-5 w-5 ${tint}`} />
-      </div>
-      <p className={`mt-auto font-display font-bold text-[13px] uppercase leading-tight sm:text-base ${tint}`}>{title}</p>
+      <span className="grid h-9 w-9 place-items-center rounded-lg text-[15px] font-bold text-plum-foreground sm:h-11 sm:w-11 sm:text-lg" style={{ background: shadow }}>{num}</span>
+      <p className="mt-2 font-display text-[11px] font-extrabold uppercase leading-tight tracking-tight break-words text-card-foreground sm:text-lg">{title}</p>
       <p className="mt-0.5 text-[11px] leading-snug text-card-foreground/75 sm:text-[13px]">{body}</p>
       {progress != null && (
         <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-label={`Plan ${progress}% complete`}>
-          <div className="h-full bg-accent" style={{ width: `${progress}%` }} />
+          <div className="h-full" style={{ width: `${progress}%`, background: shadow }} />
         </div>
       )}
+      <div className="mt-auto flex items-center justify-between pt-2 text-[11px] text-card-foreground/70 sm:text-[13px]">
+        <span>{time}</span>
+        <ChevronRight className="h-5 w-5 text-card-foreground" strokeWidth={2.5} />
+      </div>
     </div>
   );
   if (planId) return <Link to="/plan/$planId" params={{ planId }} className="block">{inner}</Link>;
