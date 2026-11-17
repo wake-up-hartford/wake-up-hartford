@@ -155,7 +155,7 @@ function DashboardPage() {
 
 // Pillar card tones — same pairings as the Start page circles
 const PILLAR_TONES = {
-  life: { bg: "bg-accent", fg: "text-accent-foreground", soft: "text-accent-foreground/75", softer: "text-accent-foreground/70", shadow: "var(--pink)" },
+  life: { bg: "bg-accent", fg: "text-primary-foreground", soft: "text-primary-foreground/85", softer: "text-primary-foreground/80", shadow: "var(--pink)" },
   home: { bg: "bg-primary", fg: "text-primary-foreground", soft: "text-primary-foreground/75", softer: "text-primary-foreground/70", shadow: "var(--gold)" },
   block: { bg: "bg-gold", fg: "text-primary-foreground", soft: "text-primary-foreground/85", softer: "text-primary-foreground/80", shadow: "var(--accent)" },
 } as const;
