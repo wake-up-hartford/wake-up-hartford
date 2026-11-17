@@ -38,7 +38,6 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 
 function DashboardPage() {
   const { user } = useAuth();
-  const firstName = getFirstName(user);
   const navigate = useNavigate();
   const { address: storedAddress } = useStoredAddress();
   const fetchPlans = useServerFn(listMyPlans);
@@ -48,14 +47,16 @@ function DashboardPage() {
     enabled: !!user,
     staleTime: 60 * 1000,
   });
-  const { data: profileAddress } = useQuery({
-    queryKey: ["profile-address", user?.id],
+  const { data: profile } = useQuery({
+    queryKey: ["profile-greeting", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("street_address").eq("id", user!.id).maybeSingle();
-      return (data?.street_address as string | null) ?? null;
+      const { data } = await supabase.from("profiles").select("street_address, first_name").eq("id", user!.id).maybeSingle();
+      return data;
     },
   });
+  const profileAddress = profile?.street_address ?? null;
+  const firstName = profile?.first_name?.trim() || getFirstName(user);
   const savedAddress = storedAddress || profileAddress || "";
   const [query, setQuery] = useState("");
   const [touched, setTouched] = useState(false);
