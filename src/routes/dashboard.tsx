@@ -1,10 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Trees, HeartHandshake, FileText, MapPin, Check, ArrowRight, ChevronRight, Phone, LifeBuoy } from "lucide-react";
+import { Building2, Trees, HeartHandshake, FileText, ChevronRight, Phone, LifeBuoy } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { useStoredAddress } from "@/lib/address-store";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { listMyPlans } from "@/lib/stabilization-plan.functions";
@@ -38,8 +36,6 @@ function getFirstName(user: ReturnType<typeof useAuth>["user"]): string | null {
 
 function DashboardPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const { address: storedAddress } = useStoredAddress();
   const fetchPlans = useServerFn(listMyPlans);
   const { data: plansData } = useQuery({
     queryKey: ["my-plans"],
@@ -51,29 +47,14 @@ function DashboardPage() {
     queryKey: ["profile-greeting", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("street_address, first_name").eq("id", user!.id).maybeSingle();
+      const { data } = await supabase.from("profiles").select("first_name").eq("id", user!.id).maybeSingle();
       return data;
     },
   });
-  const profileAddress = profile?.street_address ?? null;
   const firstName = profile?.first_name?.trim() || getFirstName(user);
-  const savedAddress = storedAddress || profileAddress || "";
-  const [query, setQuery] = useState("");
-  const [touched, setTouched] = useState(false);
-  useEffect(() => {
-    if (!touched && savedAddress) setQuery(savedAddress);
-  }, [savedAddress, touched]);
 
   const latest = plansData?.plans[0] as { id: string; totalSteps?: number; doneSteps?: number } | undefined;
   const pct = latest && latest.totalSteps ? Math.round(((latest.doneSteps ?? 0) / latest.totalSteps) * 100) : null;
-  const isSaved = !!savedAddress && query === savedAddress;
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const v = query.trim();
-    if (v) window.location.assign(`/home?address=${encodeURIComponent(v)}`);
-    else navigate({ to: "/home" });
-  };
 
   return (
     <AppShell>
@@ -102,29 +83,6 @@ function DashboardPage() {
         <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" tone="home" time="~30 sec" />
         <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Block" body="Report card for your neighborhood" tone="block" time="~1 min" />
       </div>
-      <form onSubmit={submit} className="mt-6">
-        <label htmlFor="dash-address" className="mb-1.5 block text-[13px] font-semibold text-foreground">
-          Enter your Hartford address
-        </label>
-        <div className="flex items-center gap-2 rounded-full border-[1.5px] border-pop-border bg-card p-1.5 pl-4 shadow-[4px_4px_0_var(--pop-border)]">
-          <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <input
-            id="dash-address"
-            value={query}
-            onChange={(e) => { setTouched(true); setQuery(e.target.value); }}
-            placeholder="Start typing your street address..."
-            className="min-w-0 flex-1 bg-transparent text-[15px] text-card-foreground outline-none placeholder:text-muted-foreground"
-          />
-          {isSaved && (
-            <span className="hidden items-center gap-1 text-[11px] font-semibold text-emerald-700 sm:inline-flex">
-              <Check className="h-3.5 w-3.5" /> Saved
-            </span>
-          )}
-          <button type="submit" className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gold px-4 py-2 text-[13px] font-bold text-gold-foreground hover:opacity-90">
-            Your Home <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </form>
 
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
