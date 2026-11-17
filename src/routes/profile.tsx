@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Globe, FileText, MessageSquare, ChevronRight, ShieldCheck, CheckCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 import { useAuth } from "@/hooks/use-auth";
 import { getMyProfile, updateMyProfile } from "@/lib/profile.functions";
 import { checkIsAdmin } from "@/lib/admin.functions";
@@ -116,8 +117,13 @@ function ProfilePage() {
       <Link to="/dashboard" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="h-4 w-4" /> Dashboard
       </Link>
-      <h1 className="font-display text-3xl text-foreground">Your Profile</h1>
-      <p className="mt-2 text-[14px] text-muted-foreground">View and update your info.</p>
+      <h1 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
+        Your
+        <span className="ml-2 font-script normal-case text-pink">
+          <ScriptWord>Profile</ScriptWord>
+        </span>
+      </h1>
+      <p className="mt-3 text-[13px] leading-snug text-foreground/80">View and update your info.</p>
 
       {/* Stats */}
       <section className="mt-5 grid grid-cols-2 gap-3">
@@ -125,11 +131,13 @@ function ProfilePage() {
           icon={FileText}
           value={data?.stats.plans ?? 0}
           label="Life Plans created"
+          pop="pop-cyan"
         />
         <StatCard
           icon={CheckCircle}
           value={data?.stats.completedSteps ?? 0}
           label="Steps completed"
+          pop="pop-pink"
         />
       </section>
 
@@ -137,10 +145,10 @@ function ProfilePage() {
         <Link
           to="/plan/$planId"
           params={{ planId: data.stats.mostRecentPlanId }}
-          className="mt-3 flex items-center justify-between rounded-xl border border-border bg-card p-3 text-card-foreground shadow-soft transition-colors hover:bg-muted/50"
+          className="pop-card pop-purple mt-3 flex items-center justify-between rounded-2xl bg-card p-3.5 text-card-foreground"
         >
-          <span className="text-[14px] font-medium text-card-foreground">Back to your most recent plan</span>
-          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          <span className="text-[14px] font-semibold text-card-foreground">Back to your most recent plan</span>
+          <ArrowRight className="h-4 w-4 text-primary" />
         </Link>
       )}
 
@@ -151,16 +159,16 @@ function ProfilePage() {
           {/* Combined Profile + Contact form */}
           <form
             onSubmit={handleSavePhone}
-            className="mt-6 space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground sm:p-4"
+            className="pop-card pop-orange mt-6 space-y-3 rounded-2xl bg-card p-4 text-card-foreground sm:p-5"
           >
             <h2 className="font-display text-lg text-card-foreground">Profile & contact</h2>
 
             {isAnonymous && (
-              <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-[13px] text-amber-900">
+              <div className="rounded-xl border-[1.5px] border-pop-border bg-step-surface p-3 text-[13px] text-step-surface-foreground">
                 <p className="mb-2">Sign in or create an account to update your profile and contact info.</p>
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-amber-600"
+                  className="pop-btn inline-flex items-center gap-1 rounded-full bg-pink px-4 py-2 text-[13px] font-bold uppercase tracking-wide text-primary-foreground"
                 >
                   Sign in
                 </Link>
@@ -175,7 +183,7 @@ function ProfilePage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   maxLength={100}
-                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  className="w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                   placeholder="First"
                 />
               </Field>
@@ -185,7 +193,7 @@ function ProfilePage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   maxLength={100}
-                  className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:border-accent focus:outline-none"
+                  className="w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                   placeholder="Last"
                 />
               </Field>
@@ -199,7 +207,7 @@ function ProfilePage() {
                 type="email"
                 value={user?.email ?? ""}
                 readOnly
-                className="w-full rounded-lg border border-card-foreground/20 bg-white/60 px-3 py-2 text-[14px] text-card-foreground/70"
+                className="w-full rounded-full border-[1.5px] border-pop-border bg-step-surface px-4 py-2.5 text-[14px] text-step-surface-muted"
               />
             </Field>
 
@@ -215,8 +223,8 @@ function ProfilePage() {
                 placeholder="(555) 123-4567"
                 aria-invalid={!phoneValid}
                 aria-describedby={!phoneValid ? "phone-error" : "phone-dev-note"}
-                className={`w-full rounded-lg border bg-white px-3 py-2 text-[14px] text-card-foreground placeholder:text-card-foreground/40 focus:outline-none ${
-                  phoneValid ? "border-card-foreground/20 focus:border-accent" : "border-destructive focus:border-destructive"
+                className={`w-full rounded-full border-[1.5px] bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground placeholder:text-step-resource-muted focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                  phoneValid ? "border-pop-border focus:border-primary" : "border-destructive focus:border-destructive"
                 }`}
               />
             </Field>
@@ -243,7 +251,7 @@ function ProfilePage() {
                 id="language_pref"
                 value={languagePref}
                 onChange={(e) => setLanguagePref(e.target.value)}
-                className="w-full rounded-lg border border-card-foreground/20 bg-white px-3 py-2 text-[14px] text-card-foreground focus:border-accent focus:outline-none"
+                className="w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-[14px] text-step-resource-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -253,7 +261,7 @@ function ProfilePage() {
             <button
               type="submit"
               disabled={savingPhone || !phoneValid || isAnonymous}
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[14px] font-semibold text-accent-foreground shadow-soft hover:opacity-90 disabled:opacity-60"
+              className="pop-btn inline-flex items-center gap-2 rounded-full bg-pink px-5 py-2.5 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
             >
               <Save className="h-4 w-4" /> {savingPhone ? "Saving…" : "Save"}
             </button>
@@ -264,32 +272,32 @@ function ProfilePage() {
           {/* Survey link */}
           <Link
             to="/survey"
-            className="mt-4 flex items-center gap-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 p-4 text-white shadow-soft transition-transform active:scale-[0.99]"
+            className="pop-card pop-pink mt-4 flex items-center gap-3 rounded-2xl bg-card p-4 text-card-foreground transition-transform active:scale-[0.99]"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pink/20 text-pink">
               <MessageSquare className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-[15px] text-white">Got 30 seconds?</p>
-              <p className="text-[12px] text-white/85">Tap to tell us what you think.</p>
+              <p className="font-display text-[15px] text-card-foreground">Got 30 seconds?</p>
+              <p className="text-[12px] text-card-foreground/70">Tap to tell us what you think.</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-white/80" />
+            <ChevronRight className="h-4 w-4 text-card-foreground/60" />
           </Link>
 
           {/* Admin link */}
           {admin.data?.isAdmin && (
             <Link
               to="/admin"
-              className="mt-4 flex items-center gap-3 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 text-foreground shadow-soft transition-transform active:scale-[0.99]"
+              className="pop-card pop-purple mt-4 flex items-center gap-3 rounded-2xl bg-card p-4 text-card-foreground transition-transform active:scale-[0.99]"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-display text-[15px] text-foreground">Admin</p>
-                <p className="text-[12px] text-muted-foreground">View survey results and analytics.</p>
+                <p className="font-display text-[15px] text-card-foreground">Admin</p>
+                <p className="text-[12px] text-card-foreground/70">View survey results and analytics.</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 text-card-foreground/60" />
             </Link>
           )}
         </>
@@ -329,13 +337,15 @@ function StatCard({
   icon: Icon,
   value,
   label,
+  pop,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   value: number;
   label: string;
+  pop: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-card-foreground">
+    <div className={`pop-card ${pop} flex flex-col items-center gap-1 rounded-2xl bg-card p-3 text-card-foreground`}>
       <span className="text-[11px] uppercase tracking-wide text-card-foreground/70">{label}</span>
       <p className="font-display text-2xl text-primary tabular-nums">{value.toLocaleString()}</p>
     </div>
