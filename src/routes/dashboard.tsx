@@ -116,14 +116,14 @@ function DashboardPage() {
       </form>
 
       <p className="mb-3 mt-5 text-[14px] font-semibold text-foreground/85">Tap one to get started:</p>
-      <div className="grid grid-cols-[1fr_1fr_1.2fr] gap-2.5">
+      <div className="grid grid-cols-3 gap-2.5">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
           icon={HeartHandshake} title="Your Life" body="Stability, health, safety" tone="life" time="~5–8 min"
           progress={pct}
         />
         <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" tone="home" time="~30 sec" />
-        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Neighborhood" body="Report card for your block" tone="block" time="~1 min" titleClass="text-[14px] sm:text-lg" />
+        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Block" body="Report card for your neighborhood" tone="block" time="~1 min" />
       </div>
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
@@ -157,7 +157,7 @@ function DashboardPage() {
 const PILLAR_TONES = {
   life: { bg: "bg-accent", fg: "text-accent-foreground", soft: "text-accent-foreground/75", softer: "text-accent-foreground/70", shadow: "var(--pink)" },
   home: { bg: "bg-primary", fg: "text-primary-foreground", soft: "text-primary-foreground/75", softer: "text-primary-foreground/70", shadow: "var(--gold)" },
-  block: { bg: "bg-gold", fg: "text-gold-foreground", soft: "text-gold-foreground/75", softer: "text-gold-foreground/70", shadow: "var(--accent)" },
+  block: { bg: "bg-gold", fg: "text-primary-foreground", soft: "text-primary-foreground/85", softer: "text-primary-foreground/80", shadow: "var(--accent)" },
 } as const;
 
 function PillarCard({
