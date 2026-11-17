@@ -142,7 +142,7 @@ export function BuildingStoryDialog({ data }: { data: Found }) {
         </div>
 
         <p className="border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
-          AI-generated from city housing, court, utility, and 311 records (demo data in this preview). May contain errors — verify before citing.
+          AI-generated from city housing and 311 records (demo data in this preview). May contain errors — verify before citing.
         </p>
 
         <DialogFooter className="gap-2 sm:gap-2">

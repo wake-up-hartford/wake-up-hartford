@@ -13,14 +13,14 @@ Each address needs one shared ID that links all of its records together. That ID
 2. **Property details** for each parcel: year built, number of units, owner or landlord name and owner mailing address, assessed value and property type.
 3. **Code violations** with parcel ID, date, type and status. These replace the current copies.
 4. **311 complaints** with parcel ID, date and category, covering the full time period.
-5. **Evictions** with filings by parcel or address and date. The app has no eviction data today.
-6. **Utility shutoffs**, if CTData can share them.
-7. **How updates will work**: how often the data refreshes, where we get it from (a public link or shared access), and a short guide to the fields.
+5. **How updates will work**: how often the data refreshes, where we get it from (a public link or shared access), and a short guide to the fields.
 
-The full list is in the spreadsheet already made for CTData (ctdata-your-home-data-points.xlsx), with missing items highlighted in yellow.
+**Out of scope:** evictions and utility shutoffs. We are not building these into Your Home, so they are not part of the ask to CTData.
+
+The full list is in the spreadsheet already made for CTData (ctdata-your-home-data-points_v2.xlsx), with missing items highlighted in yellow.
 
 ## When the data arrives (optional build step)
 - Load the parcel list and make the parcel ID the main way homes are matched.
 - Swap the old violation and 311 copies for the CTData data.
-- Add year built, number of units and evictions to the Your Home report.
+- Add year built and number of units to the Your Home report.
 - If CTData makes its files public, set up automatic updates.

@@ -7,7 +7,7 @@ Wake Up Wednesday helps Hartford residents see real data about their housing and
 ## Pages
 
 - [Home](/): See it, name it, fix it — the entry point to the guide.
-- [Your Home](/home): Look up any Hartford address. See code violations, evictions, utility shutoffs, and 311 complaints in plain language.
+- [Your Home](/home): Look up any Hartford address. See code violations and 311 complaints in plain language.
 - [Take action on your home](/home-actions): Concrete steps to improve your housing situation.
 - [Your Neighborhood](/neighborhood): A report card for your block — air, schools, safety, access.
 - [Take action for your neighborhood](/neighborhood-actions): Concrete actions based on the neighborhood data.
