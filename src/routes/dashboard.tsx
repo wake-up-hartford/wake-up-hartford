@@ -119,11 +119,11 @@ function DashboardPage() {
       <div className="grid grid-cols-[1fr_1fr_1.2fr] gap-2.5">
         <PillarCard
           num="01" to={latest ? undefined : "/life"} planId={latest?.id}
-          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" shadow="var(--pink)" tint="text-pink" time="~5–8 min"
+          icon={HeartHandshake} title="Your Life" body="Stability, health, safety" tone="life" time="~5–8 min"
           progress={pct}
         />
-        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" shadow="var(--gold)" tint="text-gold" time="~30 sec" />
-        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Neighborhood" body="Report card for your block" shadow="var(--accent)" tint="text-accent" time="~1 min" titleClass="text-[14px] sm:text-lg" />
+        <PillarCard num="02" to="/home" icon={Building2} title="Your Home" body="Code issues & landlords" tone="home" time="~30 sec" />
+        <PillarCard num="03" to="/neighborhood" icon={Trees} title="Your Neighborhood" body="Report card for your block" tone="block" time="~1 min" titleClass="text-[14px] sm:text-lg" />
       </div>
 
       <h3 className="mb-3 mt-8 font-display text-lg uppercase">Quick Tools</h3>
@@ -153,30 +153,38 @@ function DashboardPage() {
   );
 }
 
+// Pillar card tones — same pairings as the Start page circles
+const PILLAR_TONES = {
+  life: { bg: "bg-accent", fg: "text-accent-foreground", soft: "text-accent-foreground/75", softer: "text-accent-foreground/70", shadow: "var(--pink)" },
+  home: { bg: "bg-primary", fg: "text-primary-foreground", soft: "text-primary-foreground/75", softer: "text-primary-foreground/70", shadow: "var(--gold)" },
+  block: { bg: "bg-gold", fg: "text-gold-foreground", soft: "text-gold-foreground/75", softer: "text-gold-foreground/70", shadow: "var(--accent)" },
+} as const;
+
 function PillarCard({
-  num, to, planId, title, body, shadow, progress, time,
+  num, to, planId, title, body, progress, time, tone,
   titleClass = "text-[17px] sm:text-xl",
 }: {
   num: string; to?: "/home" | "/neighborhood" | "/life"; planId?: string;
   icon: React.ComponentType<{ className?: string }>;
-  title: string; body: string; shadow: string; tint: string; progress?: number | null; time: string;
-  titleClass?: string;
+  title: string; body: string; time: string; tone: keyof typeof PILLAR_TONES;
+  progress?: number | null; titleClass?: string;
 }) {
+  const t = PILLAR_TONES[tone];
   const inner = (
     <div
-      className="flex h-full flex-col rounded-2xl border-[1.5px] border-pop-border bg-card p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4"
-      style={{ boxShadow: `4px 4px 0 ${shadow}` }}
+      className={`flex h-full flex-col rounded-2xl border-[1.5px] border-pop-border p-2.5 transition active:translate-x-[2px] active:translate-y-[2px] sm:p-4 ${t.bg}`}
+      style={{ boxShadow: `4px 4px 0 ${t.shadow}` }}
     >
-      <p className={`font-display font-extrabold uppercase leading-tight tracking-tight break-words flex min-h-[43px] items-end sm:min-h-[56px] ${titleClass}`} style={{ color: shadow }}><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
-      <p className="mt-0.5 min-h-[2.4em] text-[11px] leading-snug text-card-foreground/75 sm:text-[13px]">{body}</p>
+      <p className={`font-display font-extrabold uppercase leading-tight tracking-tight break-words flex min-h-[43px] items-end sm:min-h-[56px] ${t.fg} ${titleClass}`}><span>{title.split(" ")[0]}<br />{title.split(" ").slice(1).join(" ")}</span></p>
+      <p className={`mt-0.5 min-h-[2.4em] text-[11px] leading-snug ${t.soft} sm:text-[13px]`}>{body}</p>
       {progress != null && (
-        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-label={`Plan ${progress}% complete`}>
-          <div className="h-full" style={{ width: `${progress}%`, background: shadow }} />
+        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-pop-border/15" aria-label={`Plan ${progress}% complete`}>
+          <div className="h-full" style={{ width: `${progress}%`, background: t.shadow }} />
         </div>
       )}
-      <div className="mt-auto flex items-center justify-between pt-2 text-[11px] text-card-foreground/70 sm:text-[13px]">
+      <div className={`mt-auto flex items-center justify-between pt-2 text-[11px] ${t.softer} sm:text-[13px]`}>
         <span>{time}</span>
-        <ChevronRight className="h-5 w-5 text-card-foreground" strokeWidth={2.5} />
+        <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
       </div>
     </div>
   );
