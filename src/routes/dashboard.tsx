@@ -170,7 +170,7 @@ function PillarCard({
         <span className="rounded-full bg-plum px-2 py-0.5 text-[10px] font-bold text-plum-foreground">{num}</span>
         <Icon className={`h-5 w-5 ${tint}`} />
       </div>
-      <p className={`mt-auto font-display text-[13px] uppercase leading-tight sm:text-base ${tint}`}>{title}</p>
+      <p className={`mt-auto font-display font-bold text-[13px] uppercase leading-tight sm:text-base ${tint}`}>{title}</p>
       <p className="mt-0.5 text-[11px] leading-snug text-card-foreground/75 sm:text-[13px]">{body}</p>
       {progress != null && (
         <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-label={`Plan ${progress}% complete`}>
