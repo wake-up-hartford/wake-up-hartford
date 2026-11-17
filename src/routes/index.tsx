@@ -192,7 +192,8 @@ function Circle({
         style={{ animationDelay: `${delay}ms` }}
       >
         <span className="font-display text-[17px] sm:text-[21px] font-extrabold leading-[1.1] text-center px-1 text-primary-foreground">
-          {label}
+          <span className="block">{label.split(" ")[0]}</span>
+          <span className="block text-[26px] sm:text-[32px]">{label.split(" ").slice(1).join(" ")}</span>
         </span>
       </button>
       {active && (
