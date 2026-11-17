@@ -218,6 +218,10 @@
   .pop-purple { --pop-shadow: var(--primary); }
   .pop-btn { border: 1.5px solid var(--pop-border); box-shadow: 3px 3px 0 0 var(--pop-border); transition: transform .15s, box-shadow .15s; }
   .pop-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 0 var(--pop-border); }
+  /* PREVIEW SWITCH: primary buttons in brand orange instead of pink.
+     Delete these two rules to go back to pink. */
+  .pop-btn.bg-pink { background-color: var(--gold); }
+  .pop-btn.bg-pink:hover { background-color: color-mix(in oklab, var(--gold) 85%, var(--pop-border)); }
   /* Primary starting-point cards: heaviest border + colored offset shadow, lifts on hover */
   .pillar-card {
     border: 2px solid var(--pop-border);
