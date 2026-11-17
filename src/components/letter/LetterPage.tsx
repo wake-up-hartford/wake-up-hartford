@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 /** Shared input styling used across all letter forms. */
 export const letterInputClass =
-  "w-full rounded-lg border border-border bg-[#e8dcc0] text-stone-900 placeholder:text-stone-500 px-3 py-2 text-[14px]";
+  "w-full rounded-full border-[1.5px] border-pop-border bg-step-resource px-4 py-2.5 text-step-resource-foreground placeholder:text-step-resource-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-[14px]";
 
 /** Labeled form field wrapper used inside letter forms. */
 export function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -92,10 +92,10 @@ export function LetterPage({
       </Link>
 
       <header className="mb-6 print:hidden">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-pink">
           {eyebrow}
         </p>
-        <h1 className="font-display text-3xl leading-tight text-foreground">{title}</h1>
+        <h1 className="font-display text-3xl font-extrabold uppercase leading-tight text-foreground">{title}</h1>
         <p className="mt-2 text-[14px] leading-relaxed text-muted-foreground">{intro}</p>
       </header>
 
@@ -116,13 +116,13 @@ export function LetterPage({
       <pre id="print-letter" className="hidden">{letter}</pre>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 print:hidden">
-        <Button onClick={handlePrint} size="lg" className="w-full">
+        <Button onClick={handlePrint} size="lg" className="pop-btn w-full rounded-full bg-pink font-bold text-primary-foreground hover:bg-pink/90">
           <Printer className="h-4 w-4" /> Print
         </Button>
-        <Button onClick={handleEmail} size="lg" variant="secondary" className="w-full">
+        <Button onClick={handleEmail} size="lg" variant="secondary" className="pop-btn w-full rounded-full bg-card text-card-foreground hover:bg-gold/30">
           <Mail className="h-4 w-4" /> Email
         </Button>
-        <Button onClick={handleCopy} size="lg" variant="secondary" className="w-full">
+        <Button onClick={handleCopy} size="lg" variant="secondary" className="pop-btn w-full rounded-full bg-card text-card-foreground hover:bg-gold/30">
           <Copy className="h-4 w-4" />
           {copyStatus === "copied"
             ? "Copied!"

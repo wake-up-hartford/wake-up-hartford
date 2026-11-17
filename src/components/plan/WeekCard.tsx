@@ -55,7 +55,7 @@ export function WeekCard({
               className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
                 isCustom
                   ? "bg-accent/15 text-accent hover:bg-accent/25"
-                  : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                  : "bg-pink/15 text-pink hover:bg-pink/25"
               }`}
             >
               <Calendar className="h-3 w-3" />

@@ -26,14 +26,14 @@ export const Route = createFileRoute("/plans")({
 });
 
 const DOMAIN_COLORS: Record<string, string> = {
-  housing: "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/30",
-  food: "bg-orange-500/20 text-orange-200 ring-1 ring-orange-400/30",
-  health: "bg-rose-500/20 text-rose-200 ring-1 ring-rose-400/30",
-  income: "bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/30",
-  debt: "bg-yellow-500/20 text-yellow-100 ring-1 ring-yellow-400/30",
-  legal: "bg-indigo-500/20 text-indigo-200 ring-1 ring-indigo-400/30",
-  safety: "bg-red-500/20 text-red-200 ring-1 ring-red-400/30",
-  support: "bg-sky-500/20 text-sky-200 ring-1 ring-sky-400/30",
+  housing: "bg-gold/20 text-gold ring-1 ring-gold/40",
+  food: "bg-gold/20 text-gold ring-1 ring-gold/40",
+  health: "bg-pink/15 text-pink ring-1 ring-pink/40",
+  income: "bg-primary/15 text-primary ring-1 ring-primary/40",
+  debt: "bg-primary/15 text-primary ring-1 ring-primary/40",
+  legal: "bg-accent/15 text-accent ring-1 ring-accent/40",
+  safety: "bg-pink/15 text-pink ring-1 ring-pink/40",
+  support: "bg-accent/15 text-accent ring-1 ring-accent/40",
 };
 const domainClass = (d: string) =>
   DOMAIN_COLORS[d.toLowerCase()] ?? "bg-accent/15 text-accent ring-1 ring-accent/20";
@@ -135,7 +135,7 @@ function PlansPage() {
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-background/40">
                       <div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
+                        className="h-full bg-pink transition-all"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -163,7 +163,7 @@ function PlansPage() {
 
       <Link
         to="/life"
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft"
+        className="mt-6 pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
       >
         <FilePlus className="h-4 w-4" /> Start a new survey
       </Link>

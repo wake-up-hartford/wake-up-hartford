@@ -149,7 +149,7 @@ function OnboardingAddressPage() {
         <button
           type="submit"
           disabled={busy}
-          className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-5 py-3 text-[14px] font-semibold text-white shadow-soft disabled:opacity-50"
+          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60 disabled:opacity-50"
         >
           {busy ? "Saving…" : "Continue"}
         </button>

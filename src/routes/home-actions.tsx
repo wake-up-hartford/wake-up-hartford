@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, FileText, Phone, Scale, ShieldCheck, ClipboardList, Landmark, DollarSign } from "lucide-react";
-import { AppShell, SectionHeader } from "@/components/AppShell";
+import { AppShell } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 
 export const Route = createFileRoute("/home-actions")({
   head: () => ({
@@ -103,11 +104,12 @@ function HomeActionsPage() {
         </Link>
       </div>
 
-      <SectionHeader
-        eyebrow="Your Home"
-        title="Take action"
-        subtitle="Small steps add up. Pick one to start today."
-      />
+      <header className="mb-2">
+        <h1 className="font-display text-[26px] font-extrabold uppercase leading-tight text-foreground">
+          Take action for your <span className="font-script normal-case text-pink"><ScriptWord>Home</ScriptWord></span>
+        </h1>
+        <p className="mt-3 text-[15px] text-muted-foreground">Small steps add up. Pick one to start today.</p>
+      </header>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         {ACTIONS.map((a) => (
@@ -123,13 +125,13 @@ function HomeActionsPage() {
 }
 
 const cardClass =
-  "flex h-full flex-col rounded-2xl border border-gold/40 bg-card p-5 text-left transition hover:border-gold hover:shadow-md active:scale-[0.99]";
+  "flex h-full flex-col pop-card pop-orange rounded-2xl bg-card p-5 text-left transition active:scale-[0.99]";
 
 const primaryPillClass =
-  "inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90";
+  "pop-btn inline-flex items-center gap-1 rounded-full bg-pink px-3 py-1.5 text-xs font-bold text-primary-foreground";
 
 const secondaryPillClass =
-  "inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted/80";
+  "inline-flex items-center gap-1 pop-btn rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-card-foreground hover:bg-gold/30";
 
 function ActionCard({ action }: { action: Action }) {
   const Icon = action.icon;
@@ -142,7 +144,7 @@ function ActionCard({ action }: { action: Action }) {
   const inner = (
     <>
       <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-gold-foreground">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1">

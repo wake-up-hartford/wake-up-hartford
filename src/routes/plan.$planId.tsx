@@ -86,7 +86,7 @@ function PlanPage() {
         </p>
         <Link
           to="/auth"
-          className="inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+          className="inline-flex items-center justify-center pop-btn rounded-full bg-pink px-5 py-3 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
         >
           Sign in
         </Link>
@@ -161,7 +161,7 @@ function PlanPage() {
                 window.localStorage.setItem("wuw:authIntent", "save");
               }
             }}
-            className="mt-6 flex w-full items-center justify-center rounded-xl bg-amber-500 px-5 py-3 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+            className="mt-6 flex w-full items-center justify-center pop-btn rounded-full bg-pink px-5 py-3 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
           >
             Sign in to return to this plan
           </Link>

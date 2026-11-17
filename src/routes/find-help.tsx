@@ -3,7 +3,8 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { ChevronLeft, Phone, ExternalLink, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { AppShell, Card, SectionHeader } from "@/components/AppShell";
+import { AppShell, Card } from "@/components/AppShell";
+import { ScriptWord } from "@/components/ScriptWord";
 import { Button } from "@/components/ui/button";
 import { VETTED_RESOURCES, type Resource, type ResourceTag } from "@/data/vetted-resources";
 
@@ -60,7 +61,7 @@ const NEEDS: NeedOption[] = [
 function FindHelpPage() {
   const { state, county, tract, name, neighborhood } = Route.useSearch();
   const tractName = name || tract;
-  const tractLabel = neighborhood || `Tract ${tractName}`;
+  const tractLabel = neighborhood || "Hartford";
   const [selected, setSelected] = useState<Set<ResourceTag>>(new Set());
 
   const toggle = (id: ResourceTag) => {
@@ -88,14 +89,16 @@ function FindHelpPage() {
         </Link>
       </div>
 
-      <SectionHeader
-        eyebrow={tractLabel}
-        title="Find help near you"
-        subtitle="Check what you need. We'll show vetted Connecticut organizations that can help — all free or low-cost."
-      />
+      <header className="mb-5">
+        <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em] text-pink">{tractLabel}</p>
+        <h1 className="font-display text-[26px] font-extrabold uppercase leading-tight text-foreground">
+          Find help <span className="font-script normal-case text-pink"><ScriptWord>near you</ScriptWord></span>
+        </h1>
+        <p className="mt-3 text-[15px] text-muted-foreground">Check what you need. We'll show vetted Connecticut organizations that can help — all free or low-cost.</p>
+      </header>
 
       <Card className="mb-5">
-        <p className="mb-3 uppercase tracking-[0.18em] text-gold font-bold text-sm">
+        <p className="mb-3 uppercase tracking-[0.18em] text-primary font-bold text-sm">
           What do you need help with?
         </p>
         <p className="mb-3 text-sm text-muted-foreground">
@@ -111,13 +114,13 @@ function FindHelpPage() {
                 onClick={() => toggle(n.id)}
                 className={`flex items-start gap-3 rounded-xl border p-3 text-left transition ${
                   on
-                    ? "border-emerald-400/60 bg-emerald-500/10"
+                    ? "border-pink bg-pink/10"
                     : "border-border bg-card/60 hover:border-foreground/30"
                 }`}
               >
                 <span
                   className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border ${
-                    on ? "border-emerald-400 bg-emerald-400 text-emerald-950" : "border-border/40 bg-background/40"
+                    on ? "border-pink bg-pink text-primary-foreground" : "border-border/40 bg-background/40"
                   }`}
                   aria-hidden
                 >
@@ -154,7 +157,7 @@ function FindHelpPage() {
           <div className="space-y-5">
             {grouped.map((group) => (
               <div key={group.tag}>
-                <h4 className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-gold">
+                <h4 className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-primary">
                   {group.label}
                 </h4>
                 <div className="space-y-2.5">
@@ -182,7 +185,7 @@ function FindHelpPage() {
             <div>
               <p className="font-semibold text-card-foreground">Pick at least one need above</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                In a hurry? Call <a href="tel:211" className="text-emerald-300 underline">2-1-1</a> — Connecticut's free 24/7 referral line.
+                In a hurry? Call <a href="tel:211" className="font-semibold text-pink underline">2-1-1</a> — Connecticut's free 24/7 referral line.
               </p>
             </div>
           </div>
@@ -228,11 +231,11 @@ function ResourceRow({ resource }: { resource: Resource }) {
     <div className="rounded-xl border border-border bg-card/60 p-3">
       <p className="font-semibold text-card-foreground">{resource.name}</p>
       <p className="mt-1 text-sm text-foreground">{resource.description}</p>
-      <div className="mt-2 flex flex-wrap gap-3 text-sm text-[#ed9954]">
+      <div className="mt-2 flex flex-wrap gap-3 text-sm">
         {resource.phone && (
           <a
             href={`tel:${resource.phone.replace(/[^0-9]/g, "")}`}
-            className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200"
+            className="inline-flex items-center gap-1 font-semibold text-pink hover:underline"
           >
             <Phone className="h-3.5 w-3.5" /> {resource.phone}
           </a>
@@ -242,7 +245,7 @@ function ResourceRow({ resource }: { resource: Resource }) {
             href={resource.url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-gold hover:text-amber-200"
+            className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
           >
             <ExternalLink className="h-3.5 w-3.5" /> Website
           </a>

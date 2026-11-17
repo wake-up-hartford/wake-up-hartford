@@ -24,7 +24,7 @@ export function PlanHeader({
         <h1 className="font-display text-3xl leading-tight text-foreground">Your 30-Day Plan</h1>
       </div>
       {generatedAt && (
-        <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-gold">
+        <p className="mt-1 inline-flex items-center gap-1 text-[12px] text-primary">
           <Calendar className="h-3 w-3" />
           Created on {new Date(generatedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </p>
@@ -32,7 +32,7 @@ export function PlanHeader({
       {!user && (
         <Link
           to="/auth"
-          className="mt-3 inline-flex items-center justify-center rounded-xl bg-amber-500 px-5 py-2.5 text-[14px] font-semibold text-white shadow-soft hover:bg-amber-600"
+          className="mt-3 pop-btn inline-flex items-center justify-center rounded-full bg-pink px-5 py-2.5 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
         >
           Sign In to receive plan via text/email
         </Link>
@@ -50,10 +50,10 @@ export function PlanHeader({
       </p>
       <div className="mt-3">
         <div className="mb-1 flex items-center justify-between">
-          <span className="text-[12px] font-semibold uppercase tracking-wider text-emerald-600">{done} of {total} steps completed</span>
-          <span className="text-[12px] font-semibold text-emerald-600">{total ? Math.round((done / total) * 100) : 0}%</span>
+          <span className="text-[12px] font-semibold uppercase tracking-wider text-pink">{done} of {total} steps completed</span>
+          <span className="text-[12px] font-semibold text-pink">{total ? Math.round((done / total) * 100) : 0}%</span>
         </div>
-        <Progress value={total ? (done / total) * 100 : 0} className="h-2.5 bg-emerald-100 [&>[role=progressbar]]:bg-emerald-500" />
+        <Progress value={total ? (done / total) * 100 : 0} className="h-2.5 bg-pink/15 [&>[role=progressbar]]:bg-pink" />
       </div>
     </div>
   );

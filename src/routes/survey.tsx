@@ -177,7 +177,7 @@ function SurveyPage() {
         <Link to="/profile" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" /> Account
         </Link>
-        <div className="mt-8 rounded-xl border border-border bg-card p-6 text-card-foreground text-center">
+        <div className="mt-8 pop-card pop-pink rounded-2xl bg-card p-6 text-card-foreground text-center">
           <CheckCircle2 className="mx-auto h-10 w-10 text-accent" />
           <h1 className="mt-3 font-display text-2xl">Thank you</h1>
           <p className="mt-2 text-[14px] text-muted-foreground">
@@ -223,7 +223,7 @@ function SurveyPage() {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {/* Q1 */}
-        <div className="space-y-3 rounded-xl border border-border bg-card p-3 text-card-foreground">
+        <div className="space-y-3 pop-card pop-cyan rounded-2xl bg-card p-4 text-card-foreground">
           <h2 className="font-display text-base">1. How easy is this app to use?</h2>
           <div className="flex justify-between text-[11px] text-card-foreground/60">
             <span>Very hard</span>
@@ -249,25 +249,25 @@ function SurveyPage() {
         </div>
 
         {/* Q2 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+        <div className="space-y-2 pop-card pop-cyan rounded-2xl bg-card p-4 text-card-foreground">
           <h2 className="font-display text-base">2. Did you run into any technical problems?</h2>
           <RadioCard options={TECH_OPTIONS} value={techIssue} onChange={setTechIssue} name="tech_issue" />
         </div>
 
         {/* Q3 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+        <div className="space-y-2 pop-card pop-cyan rounded-2xl bg-card p-4 text-card-foreground">
           <h2 className="font-display text-base">3. How did you first hear about this app?</h2>
           <RadioCard options={PROMPT_OPTIONS} value={prompt} onChange={setPrompt} name="prompt" />
         </div>
 
         {/* Q4 */}
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3 text-card-foreground">
+        <div className="space-y-2 pop-card pop-cyan rounded-2xl bg-card p-4 text-card-foreground">
           <h2 className="font-display text-base">4. Which of these have you used? (check all that apply)</h2>
           <CheckboxCard options={FEATURE_OPTIONS} values={features} onToggle={toggleFeature} />
         </div>
 
         {/* Optional comment */}
-        <div className="rounded-xl border border-border bg-card p-3 text-card-foreground">
+        <div className="pop-card pop-cyan rounded-2xl bg-card p-4 text-card-foreground">
           <label htmlFor="comment" className="mb-1.5 block text-[12px] font-medium text-card-foreground/70">
             Anything else? (optional)
           </label>
@@ -284,7 +284,7 @@ function SurveyPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 px-4 py-3 text-[15px] font-semibold text-white shadow-soft transition-transform active:scale-[0.99] disabled:opacity-60"
+          className="pop-btn flex w-full items-center justify-center gap-2 rounded-full bg-pink px-5 py-3 font-display text-[15px] font-bold uppercase tracking-wide text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60 transition-transform active:scale-[0.99] disabled:opacity-60"
         >
           <Send className="h-4 w-4" /> {submitting ? "Submitting…" : "Submit"}
         </button>
