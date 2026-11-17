@@ -3,8 +3,26 @@ import { useEffect, useRef, useState } from "react";
 type LatLng = { lat: number; lng: number };
 
 let mapsLoader: Promise<void> | null = null;
+let mapsAuthFailed = false;
+const authListeners = new Set<() => void>();
+
+/** The Google key only works on approved sites; skip the request elsewhere. */
+function isAuthorizedHost(): boolean {
+  const h = window.location.hostname;
+  return h.endsWith(".lovable.app") || h.endsWith(".lovableproject.com") || h.endsWith("wakeupwednesday.org");
+}
+
 function loadMaps(): Promise<void> {
   if (typeof window === "undefined") return Promise.reject(new Error("no window"));
+  if (mapsAuthFailed || !isAuthorizedHost()) return Promise.reject(new Error("Maps not authorized here"));
+  const gw = window as unknown as Record<string, unknown>;
+  if (!gw.gm_authFailure) {
+    // Google calls this when the key is rejected for this site.
+    gw.gm_authFailure = () => {
+      mapsAuthFailed = true;
+      authListeners.forEach((fn) => fn());
+    };
+  }
   const w = window as unknown as { google?: { maps?: unknown } };
   if (w.google?.maps) return Promise.resolve();
   if (mapsLoader) return mapsLoader;
@@ -45,6 +63,10 @@ export function AddressStreetView({ address }: { address: string }) {
   useEffect(() => {
     let cancelled = false;
     setStatus("loading");
+    const onAuthFail = () => {
+      if (!cancelled) setStatus("error");
+    };
+    authListeners.add(onAuthFail);
     (async () => {
       try {
         const pos = await geocode(address);
@@ -53,13 +75,16 @@ export function AddressStreetView({ address }: { address: string }) {
           return;
         }
         await loadMaps();
-        if (cancelled || !ref.current) return;
+        if (cancelled || !ref.current || mapsAuthFailed) {
+          if (!cancelled && mapsAuthFailed) setStatus("error");
+          return;
+        }
         const g = (window as unknown as { google: any }).google;
         const svService = new g.maps.StreetViewService();
         svService.getPanorama(
           { location: pos, radius: 80, source: g.maps.StreetViewSource.OUTDOOR },
           (data: any, s: string) => {
-            if (cancelled || !ref.current) return;
+            if (cancelled || !ref.current || mapsAuthFailed) return;
             if (s !== "OK" || !data?.location?.latLng) {
               setStatus("none");
               return;
@@ -86,6 +111,7 @@ export function AddressStreetView({ address }: { address: string }) {
     })();
     return () => {
       cancelled = true;
+      authListeners.delete(onAuthFail);
     };
   }, [address]);
 
