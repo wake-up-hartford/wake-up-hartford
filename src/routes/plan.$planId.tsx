@@ -76,20 +76,35 @@ function PlanPage() {
     return <AppShell><p className="text-muted-foreground">Loading your plan…</p></AppShell>;
   }
   if (error || !data || !plan) {
+    const signedIn = !!user && !isAnonymous;
     return (
       <AppShell>
         <p className="text-destructive mb-3">
           {(error as Error)?.message ?? "Couldn't load this plan."}
         </p>
         <p className="text-sm text-muted-foreground mb-4">
-          If this plan is on your account, sign in to view it.
+          {signedIn
+            ? "This plan isn't on your account — it may have been made while you were browsing as a guest."
+            : "If this plan is on your account, sign in to view it."}
         </p>
-        <Link
-          to="/auth"
-          className="inline-flex items-center justify-center pop-btn rounded-full bg-pink px-5 py-3 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
-        >
-          Sign in
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          {signedIn && (
+            <Link
+              to="/plans"
+              className="inline-flex items-center justify-center pop-btn rounded-full bg-pink px-5 py-3 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
+            >
+              Go to my plans
+            </Link>
+          )}
+          {!signedIn && (
+            <Link
+              to="/auth"
+              className="inline-flex items-center justify-center pop-btn rounded-full bg-pink px-5 py-3 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
       </AppShell>
     );
   }

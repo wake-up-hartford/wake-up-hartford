@@ -277,6 +277,33 @@ export const deletePlan = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// When a visitor creates a plan as a guest (anonymous session) and then signs
+// into an existing account, the plan stays attached to the anonymous user and
+// becomes unreachable. This moves those rows onto the signed-in account.
+export const claimGuestPlans = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ guestUserId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    if (data.guestUserId === userId) return { ok: true, moved: 0 };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: guest, error: guestErr } = await supabaseAdmin.auth.admin.getUserById(data.guestUserId);
+    if (guestErr || !guest?.user?.is_anonymous) return { ok: true, moved: 0 };
+
+    const { data: moved, error } = await supabaseAdmin
+      .from("stabilization_plans")
+      .update({ user_id: userId })
+      .eq("user_id", data.guestUserId)
+      .select("id");
+    if (error) throw new Error("Couldn't move your guest plan.");
+
+    await supabaseAdmin.from("plan_steps").update({ user_id: userId }).eq("user_id", data.guestUserId);
+    await supabaseAdmin.from("intake_responses").update({ user_id: userId }).eq("user_id", data.guestUserId);
+
+    return { ok: true, moved: moved?.length ?? 0 };
+  });
+
 export const listMyPlans = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {

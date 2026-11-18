@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { ChevronLeft, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { AppShell } from "@/components/AppShell";
+import { claimGuestPlans } from "@/lib/stabilization-plan.functions";
 import wakeUpMovement from "@/assets/HARTFORD_3.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
@@ -116,6 +118,30 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+  const claimGuest = useServerFn(claimGuestPlans);
+
+  // If the visitor made a plan as a guest, move it onto the account they
+  // just signed into. The guest user id is stashed in localStorage before
+  // sign-in (it survives the Google OAuth round-trip).
+  const claimGuestPlansFor = async () => {
+    if (typeof window === "undefined") return;
+    const guestId = window.localStorage.getItem("wuw:guestUserId");
+    if (!guestId) return;
+    window.localStorage.removeItem("wuw:guestUserId");
+    try {
+      await claimGuest({ data: { guestUserId: guestId } });
+    } catch {
+      // Non-fatal: worst case the guest plan stays on the guest session.
+    }
+  };
+
+  const stashGuestUserId = async () => {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const anon = sessionData.session?.user;
+    if (anon?.is_anonymous && typeof window !== "undefined") {
+      window.localStorage.setItem("wuw:guestUserId", anon.id);
+    }
+  };
 
   const ALLOWED_POST_AUTH_PATHS = ["/life", "/plans", "/dashboard", "/onboarding/address"];
 
@@ -149,12 +175,14 @@ function AuthPage() {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session && !session.user.is_anonymous) {
+        await claimGuestPlansFor();
         const target = await resolveDestinationForUser(session.user.id, consumePostAuthRedirect());
         nav({ to: target, replace: true });
       }
     });
     supabase.auth.getUser().then(async ({ data, error }) => {
       if (!error && data.user && !data.user.is_anonymous) {
+        await claimGuestPlansFor();
         const target = await resolveDestinationForUser(data.user.id, consumePostAuthRedirect());
         nav({ to: target, replace: true });
       }
@@ -178,6 +206,7 @@ function AuthPage() {
 
   const handleGoogle = async () => {
     setError(null);
+    await stashGuestUserId();
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin + peekPostAuthRedirect(),
     });
@@ -240,8 +269,10 @@ function AuthPage() {
           setPassword("");
         }
       } else {
+        await stashGuestUserId();
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        await claimGuestPlansFor();
         const uid = data.user?.id;
         const target = uid
           ? await resolveDestinationForUser(uid, consumePostAuthRedirect())
