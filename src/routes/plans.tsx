@@ -101,19 +101,20 @@ function PlansPage() {
         {data?.plans.length === 0 && (
           <p className="text-[14px] text-muted-foreground">No plans yet. Take the survey to create your first one.</p>
         )}
-        {data?.plans.map((p) => {
+        {data?.plans.map((p, i) => {
           const pct = p.totalSteps > 0 ? Math.round((p.doneSteps / p.totalSteps) * 100) : 0;
+          const popColor = ["pop-orange", "pop-pink", "pop-purple", "pop-cyan"][i % 4];
           return (
             <div
               key={p.id}
-              className="relative rounded-xl border border-border bg-[oklch(0.23_0.06_295)] transition-colors hover:bg-[oklch(0.30_0.06_295)]"
+              className={`pop-card ${popColor} relative rounded-xl bg-card`}
             >
               <button
                 type="button"
                 onClick={(e) => handleDelete(e, p.id)}
                 disabled={deletingId === p.id}
                 aria-label="Delete plan"
-                className="absolute right-2 top-2 z-10 rounded-md p-2 text-muted-foreground hover:bg-background/40 hover:text-red-300 disabled:opacity-50"
+                className="absolute right-2 top-2 z-10 rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-destructive disabled:opacity-50"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -122,7 +123,7 @@ function PlansPage() {
                 params={{ planId: p.id }}
                 className="flex flex-col gap-2 p-4 pr-12"
               >
-                <p className="font-display text-[16px] leading-tight text-white">
+                <p className="font-display text-[16px] font-bold leading-tight text-card-foreground">
                   Plan Created {new Date(p.generated_at).toLocaleDateString()}
                 </p>
                 {p.totalWeeks > 0 && (
@@ -131,9 +132,9 @@ function PlansPage() {
                       <span>
                         Week {p.currentWeek} of {p.totalWeeks} · {p.doneSteps} of {p.totalSteps} steps done
                       </span>
-                      <span className="font-medium text-foreground">{pct}%</span>
+                      <span className="font-medium text-card-foreground">{pct}%</span>
                     </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-background/40">
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full bg-pink transition-all"
                         style={{ width: `${pct}%` }}
