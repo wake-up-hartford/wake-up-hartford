@@ -85,7 +85,7 @@ function DashboardPage() {
       </div>
 
 
-      <div className="mt-10 flex justify-center border-t border-border pt-6">
+      <div className="mt-10 flex justify-center rounded-2xl bg-plum px-4 py-6">
         {!user ? (
           <Link to="/auth" className="pop-btn inline-flex items-center justify-center rounded-full bg-pink px-8 py-3 text-[14px] font-bold text-primary-foreground hover:opacity-90">
             Register to stay in touch
