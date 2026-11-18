@@ -1,10 +1,8 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { Home, Building2, Trees, HeartHandshake, User, LogOut } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMyProfile } from "@/lib/profile.functions";
+import { useQueryClient } from "@tanstack/react-query";
 import wuwLogo from "@/assets/wake-up-hartford.png.asset.json";
 
 const ROTATING_MESSAGES = [
@@ -67,15 +65,6 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const { user, isAnonymous } = useAuth();
-  const fetchProfile = useServerFn(getMyProfile);
-  const { data: profileData } = useQuery({
-    queryKey: ["my-profile"],
-    queryFn: () => fetchProfile({}),
-    enabled: !!user && !isAnonymous,
-    staleTime: 60_000,
-  });
-  const mostRecentPlanId = profileData?.stats?.mostRecentPlanId ?? null;
   return (
     <div className="min-h-dvh overflow-x-hidden bg-background bg-grain">
       <header className="sticky top-0 z-30 border-b-[1.5px] border-plum bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -106,18 +95,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t-[1.5px] border-plum bg-background/95 backdrop-blur">
         <ul className="mx-auto grid w-full max-w-xl lg:max-w-4xl grid-cols-5 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
-            const isLife = to === "/life";
-            const linkProps =
-              isLife && mostRecentPlanId
-                ? ({ to: "/plan/$planId", params: { planId: mostRecentPlanId } } as const)
-                : ({ to } as const);
-            const active =
-              pathname === to ||
-              (isLife && mostRecentPlanId && pathname === `/plan/${mostRecentPlanId}`);
+            const active = pathname === to;
             return (
               <li key={to}>
                 <Link
-                  {...linkProps}
+                  to={to}
                   className={`my-1.5 flex flex-col items-center gap-0.5 rounded-full py-2 text-[11px] font-semibold transition-colors ${
                     active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
