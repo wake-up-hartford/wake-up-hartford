@@ -300,6 +300,7 @@ export const claimGuestPlans = createServerFn({ method: "POST" })
 
     await supabaseAdmin.from("plan_steps").update({ user_id: userId }).eq("user_id", data.guestUserId);
     await supabaseAdmin.from("intake_responses").update({ user_id: userId }).eq("user_id", data.guestUserId);
+    await supabaseAdmin.from("app_usage_survey_responses").update({ user_id: userId }).eq("user_id", data.guestUserId);
 
     return { ok: true, moved: moved?.length ?? 0 };
   });
