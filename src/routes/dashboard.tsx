@@ -97,7 +97,7 @@ function DashboardPage() {
         )}
       </div>
 
-      <h3 className="mb-3 mt-10 border-t border-border pt-5 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Quick Tools</h3>
+      <h3 className="mb-3 mt-10 text-[13px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Quick Tools</h3>
       <div className="grid grid-cols-2 gap-3">
         <ToolCard href="https://www.211ct.org/" icon={Phone} label="Crisis & 211 Help" sub="Get immediate support and local resources." />
         <ToolCard to="/find-help" icon={LifeBuoy} label="Find Local Help" sub="Connect with trusted Hartford organizations." />
