@@ -280,27 +280,37 @@ export const deletePlan = createServerFn({ method: "POST" })
 // When a visitor creates a plan as a guest (anonymous session) and then signs
 // into an existing account, the plan stays attached to the anonymous user and
 // becomes unreachable. This moves those rows onto the signed-in account.
+//
+// The caller must prove they held the guest session by sending the guest's
+// own access token. A guest user id alone isn't enough: anyone who learned
+// the id, or the next person on a shared computer, could otherwise claim
+// someone else's plan and Life survey answers.
 export const claimGuestPlans = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => z.object({ guestUserId: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ guestAccessToken: z.string().min(1).max(4096) }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     const { userId } = context;
-    if (data.guestUserId === userId) return { ok: true, moved: 0 };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: guest, error: guestErr } = await supabaseAdmin.auth.admin.getUserById(data.guestUserId);
+    // Supabase checks the token's signature, expiry and session, and returns
+    // the user it belongs to. Only that guest's rows can move.
+    const { data: guest, error: guestErr } = await supabaseAdmin.auth.getUser(data.guestAccessToken);
     if (guestErr || !guest?.user?.is_anonymous) return { ok: true, moved: 0 };
+    const guestUserId = guest.user.id;
+    if (guestUserId === userId) return { ok: true, moved: 0 };
 
     const { data: moved, error } = await supabaseAdmin
       .from("stabilization_plans")
       .update({ user_id: userId })
-      .eq("user_id", data.guestUserId)
+      .eq("user_id", guestUserId)
       .select("id");
     if (error) throw new Error("Couldn't move your guest plan.");
 
-    await supabaseAdmin.from("plan_steps").update({ user_id: userId }).eq("user_id", data.guestUserId);
-    await supabaseAdmin.from("intake_responses").update({ user_id: userId }).eq("user_id", data.guestUserId);
-    await supabaseAdmin.from("app_usage_survey_responses").update({ user_id: userId }).eq("user_id", data.guestUserId);
+    await supabaseAdmin.from("plan_steps").update({ user_id: userId }).eq("user_id", guestUserId);
+    await supabaseAdmin.from("intake_responses").update({ user_id: userId }).eq("user_id", guestUserId);
+    await supabaseAdmin.from("app_usage_survey_responses").update({ user_id: userId }).eq("user_id", guestUserId);
 
     return { ok: true, moved: moved?.length ?? 0 };
   });
