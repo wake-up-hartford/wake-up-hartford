@@ -220,6 +220,14 @@ The tables, access rules and storage buckets are defined in two places in your r
 - **`supabase/migrations/`** holds 25 migrations from Lovable. They build all 11 tables and the `deck-assets` bucket.
 - **`drizzle/migrations/`** holds one migration from November 16. It turns off public read access to the code-violation and 311 tables, and removes the `deck-assets` storage rules. `supabase db push` doesn't run Drizzle migrations, so without the next step the new database would leave those two tables open to the public.
 
+**Table permissions also need their own migration.** The live database got its table permissions from Supabase's old automatic defaults, which no migration recorded, and new Supabase projects don't add them. Without them, signed-in users and guests can't read or save their own profile, Life survey answers or plans, and the admin reports and guest-plan transfer fail. The migration `supabase/migrations/20261119204401_grant_account_table_permissions.sql` grants them:
+
+- **Signed-in users and guests** get only what the app does with each account table. Row-level security still limits each person to their own rows.
+- **The server** gets full access to every table.
+- **Visitors who aren't signed in** get nothing.
+
+It's already in `supabase/migrations/`, so step 2 pushes it with the others.
+
 1. **Copy the Drizzle migration into `supabase/migrations/`.** In Claude Code:
 
    > Recreate drizzle/migrations/0000\_lock\_down\_city\_data\_and\_storage.sql as a new file in supabase/migrations, named with a timestamp later than every existing migration there. Keep the SQL unchanged. Make the change on its own branch and show me the diff.
@@ -233,6 +241,17 @@ The tables, access rules and storage buckets are defined in two places in your r
 3. **Check the result.**
    - Open the Supabase **Table Editor** and confirm every table from your Phase 1 list is there, still empty.
    - Under **Authentication → Policies**, confirm `hartford_code_violations` and `hartford_311_complaints` have no "public read" policy.
+   - Check the table permissions. In Claude Code:
+
+     > Run a read-only check of what the anon, authenticated and service\_role roles can do on every table in the public schema, and show it as a table.
+
+     Expect this result:
+
+     | Role | Should be able to |
+     | --- | --- |
+     | `anon` (not signed in) | nothing on any table |
+     | `authenticated` (signed in, including guests) | read, add and change `profiles`; read and add `intake_responses`; read, add and delete `stabilization_plans`; read, add, change and delete `plan_steps`; read and add `survey_responses`, `app_usage_survey_responses` and `user_events`; read `user_roles`; nothing on the three city-data tables |
+     | `service_role` (the server) | read, add, change and delete on all 11 tables |
 
 ### 4.3 Export the data from Lovable
 
@@ -272,7 +291,7 @@ The app uses three kinds of sign-in: email and password, Google, and guest sessi
 
 1. Open **Authentication → Sign In / Providers**.
    - Turn on **Email**.
-   - Turn on **anonymous sign-ins**. Guests building a 30-day plan depend on this. If it's off, the guest flow breaks.
+   - Turn on **anonymous sign-ins**. Guests building a 30-day plan depend on this. If it's off, the guest flow breaks. It also lets anyone create unlimited guest accounts, so CAPTCHA protection follows after launch (Phase 8).
 2. **Set up Google sign-in with your own credentials**, because Lovable's don't transfer.
    - In the Google Cloud console, under the project email, create an OAuth client of type **Web application**.
    - Add the callback URL that Supabase shows on its Google provider page.
@@ -331,6 +350,23 @@ In Claude Code:
 
 You'll give it the Supabase values and the keys from 4.7. Now the local site uses the new database. You can safely sign up test users and submit test forms.
 
+### 4.11 Review who can see and change what
+
+Turning on anonymous sign-ins (4.5) matters for security: a guest gets the same database role as a signed-in user, so every rule written for signed-in users applies to guests too. Review the access rules once the backend is in place. In Claude Code:
+
+> Review the row-level security policies, table permissions and database functions on all tables in the new Supabase project, plus the app's server functions that use the service role key. Tell me in plain language what a signed-in user or guest can read and change, and flag anything that would let someone see or edit another user's data or read admin-only tables. Don't change anything.
+
+The first review, on November 19, found:
+
+- **The access rules themselves are sound.** Each person can read and change only their own profile, Life survey answers, plans and survey responses. Only admins can read everyone's usage events and app surveys, and no one can make themselves an admin. Every admin page checks the caller's session and admin role on the server.
+- **Missing table permissions.** These would have broken the app. Fixed by the permissions migration in 4.2.
+- **The guest-plan transfer could give one person's plan to someone else.** When a guest signs in to an existing account, the app moves the guest's plan and Life survey answers onto that account. It accepted any guest's ID, so the next person to sign in on a shared computer could receive a previous resident's plan. The fix, in pull request #7, requires the guest's own sign-in token, accepted for 15 minutes, instead of an ID. Merge it only after it's type-checked and the guest sign-in flow passes on the local copy (Phase 6 has the check).
+- **Two smaller notes:**
+  - A guest who leaves a shared computer without signing out leaves their session in the browser. Phase 7 adds a "This isn't my computer / Start over" button for this.
+  - Any signed-in user can check whether a given account ID is an admin. Nothing else is revealed, and IDs are random.
+
+Run the review again after any change to the database's access rules, and before cut-over.
+
 ## Phase 5: Put the new copy online (2–4 hours)
 
 Netlify builds the site from GitHub and republishes it automatically every time a change is merged. At the end of this phase, the new copy is live at a temporary `something.netlify.app` address. That copy runs on the new Supabase backend.
@@ -382,6 +418,7 @@ Open the Lovable site and the Netlify copy in two browser windows. Walk through 
 - [ ] **AI text:** a neighborhood story, a building story and an advocacy letter all generate, and read in plain language.
 - [ ] **Story Player:** audio plays in English and Spanish.
 - [ ] **Guest 30-day plan:** take the Life survey without signing in, get a plan, then sign up. The plan should still be there.
+- [ ] **Guest plan, existing account:** as a guest, make a plan, then sign in to an existing account with a password, and again with Google. The plan should move to that account each time. Then, as a new guest, make a plan and start a sign-in without finishing it. If someone else signs in on that browser more than 15 minutes later, they shouldn't receive the guest's plan (4.11).
 - [ ] **Sign-in:** a new account can sign up and sign in with a password, Google sign-in works, and password reset sends an email.
 - [ ] **Admin:** an admin who signed up again and got the role back (4.5) can open the admin pages and reports.
 - [ ] New users are sent to address onboarding, and the NAACP opt-in box is unchecked by default.
@@ -420,6 +457,7 @@ Cut-over copies the latest data across one final time and points the public at t
 - [ ] **Check the export timing.** At least 24 hours must have passed since your last Lovable database export.
 - [ ] **Tell the team the window.** Ask partners not to send people to the site during that time.
 - [ ] **Clear out test data.** List the test accounts and test records in Supabase that need deleting.
+- [ ] **Add a "This isn't my computer / Start over" button.** Residents often use shared computers, and a guest who walks away leaves their plan open in the browser for the next person (4.11). The button signs the visitor out, clears the guest session and anything the app saved in the browser, and returns to the start. Build it with Claude Code on its own branch, then test it on the pull request's Netlify preview before cut-over.
 
 ### Cut-over window
 
@@ -460,6 +498,7 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 - [ ] Update any QR codes, flyers, social posts or emails that point straight at the lovable.app address, so they use the subdomain or the Wake Up Wednesday page.
 - [ ] Delete test accounts and test records from Supabase.
 - [ ] Confirm backup coverage on your Supabase plan. Free plans include limited backups. Upgrade before you rely on the site for anything you can't afford to lose.
+- [ ] Turn on CAPTCHA protection for sign-ins, including anonymous sign-ins. With anonymous sign-ins on, anyone can create unlimited guest accounts, and Supabase recommends CAPTCHA to stop automated abuse. Pick a provider (hCaptcha or Cloudflare Turnstile), add its keys under **Authentication → Attack Protection**, and ask Claude Code to add the CAPTCHA widget to the sign-in page and the guest flow. Until then, keep Supabase's default rate limits on.
 
 ### After 2–4 clean weeks
 
