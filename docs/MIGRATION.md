@@ -298,7 +298,7 @@ In Claude Code:
 
 > Make these changes on one branch and show me the diff. (1) In src/lib/tract-story.functions.ts, building-story.functions.ts, stabilization-plan.functions.ts and action-letter.functions.ts, replace calls to Lovable's AI gateway with direct calls to the Google Gemini API, using a GEMINI\_API\_KEY environment variable. Switch from gemini-3-flash-preview to the current stable Gemini Flash model, and keep the prompts unchanged. (2) In src/components/AddressStreetView.tsx, read the Google Maps browser key from VITE\_GOOGLE\_MAPS\_BROWSER\_KEY and the tracking ID from VITE\_GOOGLE\_MAPS\_TRACKING\_ID, instead of the Lovable connector variables VITE\_LOVABLE\_CONNECTOR\_GOOGLE\_MAPS\_BROWSER\_KEY and VITE\_LOVABLE\_CONNECTOR\_GOOGLE\_MAPS\_TRACKING\_ID. (3) In src/routes/auth.tsx, switch Google sign-in from Lovable's library (lovable.auth.signInWithOAuth) to Supabase's own Google sign-in (supabase.auth.signInWithOAuth). Then remove src/integrations/lovable and the @lovable.dev/cloud-auth-js package. (4) Remove src/integrations/supabase/previewAuthStorage.ts, which only handles sign-ins inside Lovable's editor, and have the Supabase client use the browser's standard storage. (5) Replace every hard-coded lovable.app address with a single site address setting, VITE\_SITE\_URL. That covers page metadata and canonical links in src/routes, the sitemap, the plan PDF and the README. If a file can't read the setting, such as public/robots.txt, list it. (6) Search for any other Lovable-only service and list what you find. Leave the build package, @lovable.dev/vite-tanstack-config, for Phase 5.
 
-**Which lovable.app address is live?** The code uses two, `wake-up-hartford.lovable.app` and `wake-up-hartford-guide.lovable.app`. Check which one the live site uses, and set `VITE_SITE_URL` to it until cut-over.
+**The live address is `wake-up-hartford.lovable.app`.** Set `VITE_SITE_URL` to `https://wake-up-hartford.lovable.app` until cut-over. Some pages still use the old `wake-up-hartford-guide.lovable.app` address, and the change above replaces those too.
 
 Then compare a few neighborhood stories, a building story, an advocacy letter and a 30-day plan against the Lovable site. It's the same model family, so they should read about the same.
 
@@ -332,7 +332,7 @@ Netlify builds the site from GitHub and republishes it automatically every time 
    | `VITE_SUPABASE_PROJECT_ID` and `SUPABASE_PROJECT_ID` | new project ID |
    | `VITE_GOOGLE_MAPS_BROWSER_KEY` | your Google Maps key |
    | `VITE_GOOGLE_MAPS_TRACKING_ID` | the Google Maps tracking ID |
-   | `VITE_SITE_URL` | the live lovable.app address until cut-over (see 4.9) |
+   | `VITE_SITE_URL` | `https://wake-up-hartford.lovable.app` until cut-over |
    | `SUPABASE_SERVICE_ROLE_KEY` | new service role key (secret) |
    | `GEMINI_API_KEY` | your Gemini key (secret) |
    | `ELEVENLABS_API_KEY` | your ElevenLabs key (secret) |
