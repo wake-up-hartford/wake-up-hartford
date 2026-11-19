@@ -24,7 +24,7 @@ This makes it easier to:
 1. **Prepare** (3–5 hours). Decide who owns each account and set up GitHub, Supabase and hosting accounts. *Waiting: getting sign-off from NAACP on account ownership.*
 2. **Take stock and copy the code** (3–4 hours). List everything the app uses and copy the code to GitHub.
 3. **Set up the new editing tool** (3–5 hours). Switch from Lovable's editor to Claude Code for future changes.
-4. **Move the data** (14–26 hours). Rebuild the database in Supabase and copy over data, user accounts, files and server functions. *Waiting: Lovable emails the data export when it's ready, and allows only one export per 24 hours.*
+4. **Move the data** (14–26 hours). Rebuild the database in Supabase, copy over the city data, and set up sign-in and server functions. *Waiting: Lovable emails the data export when it's ready, and allows only one export per 24 hours.*
 5. **Put the new copy online** (2–4 hours). Publish it at a temporary web address, then at its permanent address on wakeupwednesday.org. *Waiting: a new web address can take up to 48 hours to work everywhere, so set it up early.*
 6. **Test side by side** (6–10 hours, plus about 1 hour per volunteer). Compare the new copy with the current site, feature by feature. *Waiting: scheduling volunteer testers.*
 7. **Switch over** (3–5 hours, including a 1–2 hour window when the site is quiet). Do a final data sync and point the link on wakeupwednesday.org to the new site.
@@ -34,7 +34,7 @@ This makes it easier to:
 
 - A decision on which accounts are held by NAACP Greater Hartford
 - 2–4 volunteers for an hour of testing in step 6
-- A short heads-up to any registered users if they need to reset their password
+- A heads-up to admins and testers that they'll sign up again on the new site, because today's accounts are test accounts and don't move
 
 Hours are estimates, and working full-time compresses the calendar but not the waiting periods. Step 4 is the most likely to run long, depending on how much data and how many user accounts the app holds.
 
@@ -59,7 +59,11 @@ Gemini (AI text), ElevenLabs (audio) and Google Maps usage are separate, usage-b
 - **Story Player audio:** ElevenLabs, called from the app's server.
 - **Not present:** Supabase Edge Functions and scheduled jobs. The one storage bucket isn't used by the app.
 
-**Decisions made:** use Gemini directly, and move Google sign-in from Lovable's library to Supabase's own Google sign-in.
+**Decisions made:**
+
+- Use Gemini directly.
+- Move Google sign-in from Lovable's library to Supabase's own Google sign-in.
+- Move only the city data: addresses, code violations and 311 complaints. Every account, plan, survey response and usage event on the Lovable site is test data, and the site isn't promoted to residents before the move, so none of it comes across. Admins sign up again on the new site.
 
 ### Decisions to make first
 
@@ -241,15 +245,26 @@ This is your **practice export**. You'll take a final one at cut-over, and Lovab
 
 ### 4.4 Restore the data into Supabase
 
-The export is a compressed PostgreSQL backup file, not something you paste into a web page. It includes user accounts with their password hashes, so users keep their existing passwords. In Claude Code:
+The export is a compressed PostgreSQL backup file, not something you paste into a web page. It holds the whole Lovable database, including test accounts, Supabase's internal tables and Lovable's stored secrets. Only the city data comes across:
 
-> Install PostgreSQL client tools with zstd support. Then inspect the Lovable export at \<file path> with pg\_restore --list. Restore the data, including auth users, into our Supabase database using the connection string I'll paste. Don't use --clean. The schema already exists, so restore data only, and reset the sequences afterward. Explain your plan before running anything.
+| Table | Rows (November 19 export) |
+| --- | --- |
+| `hartford_addresses` | 10,156 |
+| `hartford_code_violations` | 32,348 |
+| `hartford_311_complaints` | 6,186 |
+
+Everything else stays behind: accounts, profiles, plans, intake answers, survey responses, usage events, admin roles, sign-in sessions and history, storage records, and Lovable's secrets.
+
+In Claude Code:
+
+> Install PostgreSQL client tools with zstd support. Then inspect the Lovable export at \<file path> with pg\_restore --list. Restore only the data for hartford\_addresses, hartford\_code\_violations and hartford\_311\_complaints, addresses first, plus their two id sequences, into our Supabase database. Restore data only, in a single transaction, and don't use --clean. Use the database password from .env.local without printing it. Explain your plan before running anything, and delete any temporary SQL file afterward.
 
 Then check the restore:
 
-- [ ] Row counts match the Lovable tables for each table.
-- [ ] The **Authentication → Users** list shows your existing users.
-- [ ] Related records still link up, such as an address with its sign-up.
+- [x] Row counts match the export for each of the three tables.
+- [x] Every code violation and 311 complaint links to an address that exists.
+- [x] Each id sequence is at or above its table's highest id.
+- [x] The account tables are still empty, and the code-violation and 311 tables still can't be read publicly.
 
 ### 4.5 Set up sign-in
 
@@ -264,7 +279,10 @@ The app uses three kinds of sign-in: email and password, Google, and guest sessi
    - Paste the client ID and secret into that page.
    - Claude Code can walk you through this.
 3. In **Authentication → URL Configuration**, add `http://localhost:8080` (or whatever port your Preview uses) to the redirect URLs.
-4. **Google sign-in moves off Lovable.** Today the sign-in page sends Google sign-ins through Lovable's sign-in library. In 4.9, it switches to Supabase's own Google sign-in, using the credentials from step 2. Check in Phase 6 that an existing Google user still reaches their old account. Anyone who can't get in can use "Forgot password" with their email.
+4. **Google sign-in moves off Lovable.** Today the sign-in page sends Google sign-ins through Lovable's sign-in library. In 4.9, it switches to Supabase's own Google sign-in, using the credentials from step 2. No accounts move from Lovable (see 4.4), so everyone, Google users included, signs up again on the new site.
+5. **Give admins their role again.** Admin roles don't move either. Once each admin has signed up on the new site, ask Claude Code:
+
+   > Give the account with email \<email> the admin role in the new Supabase project. Show me the change before running it.
 
 ### 4.6 Save the storage files
 
@@ -364,7 +382,8 @@ Open the Lovable site and the Netlify copy in two browser windows. Walk through 
 - [ ] **AI text:** a neighborhood story, a building story and an advocacy letter all generate, and read in plain language.
 - [ ] **Story Player:** audio plays in English and Spanish.
 - [ ] **Guest 30-day plan:** take the Life survey without signing in, get a plan, then sign up. The plan should still be there.
-- [ ] **Sign-in:** an existing account signs in with its old password, Google sign-in works, and password reset sends an email.
+- [ ] **Sign-in:** a new account can sign up and sign in with a password, Google sign-in works, and password reset sends an email.
+- [ ] **Admin:** an admin who signed up again and got the role back (4.5) can open the admin pages and reports.
 - [ ] New users are sent to address onboarding, and the NAACP opt-in box is unchecked by default.
 - [ ] Opening a deep link directly, then refreshing, doesn't show a 404.
 - [ ] Netlify's function logs and the browser console show no errors while you test.
@@ -408,7 +427,7 @@ Cut-over copies the latest data across one final time and points the public at t
 2. **Take the final export** in Lovable (**More → Database → Manage → Settings → Export data**) and download it.
 3. **Reload the new database.** In Claude Code:
 
-   > Empty the data tables and auth users in the new Supabase project, then restore the data from the final Lovable export at \<file path>, the same way as the practice restore. Reset sequences, then compare row counts against the export.
+   > Empty hartford\_311\_complaints, hartford\_code\_violations and hartford\_addresses in the new Supabase project, in that order, then restore those three tables from the final Lovable export at \<file path>, the same way as the practice restore in 4.4. Leave every other table alone, so accounts and plans made on the new site stay. Reset the two id sequences, then compare row counts against the export.
 4. **Copy any files** added to storage since your practice copy.
 5. **Turn on scheduled jobs** in Supabase.
 6. **Point the repository at the new backend.** In Claude Code:
