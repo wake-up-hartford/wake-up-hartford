@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
+import wakeUpLogo from "@/assets/wake-up-hartford.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,7 +66,7 @@ function Landing() {
         </span>
       </div>
       <img
-        src={wakeUpLogo.url}
+        src={wakeUpLogo}
         alt="Wake Up Hartford"
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />
