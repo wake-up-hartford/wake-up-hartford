@@ -475,6 +475,12 @@ Cut-over copies the latest data across one final time and points the public at t
     1. On the **Branding** page, set the app home page to `https://hartford.wakeupwednesday.org`, add the privacy policy link, and add `wakeupwednesday.org` to **Authorized domains**.
     2. Click **Publish app** (on the **Audience** page in current versions of the console).
     3. Sign in with Google from an account that isn't a test user, to confirm it works.
+- [ ] **Set up a custom email (SMTP) provider in Supabase**, so sign-up confirmation and password-reset emails reach residents. Supabase's built-in email is for testing only: it sends only to addresses on the project's Supabase team, and only a few emails an hour. Without this, a resident who signs up with a password or forgets it never gets the email.
+    1. Create an account with an email provider, such as Resend, Postmark or Amazon SES, under the project email.
+    2. Verify wakeupwednesday.org with the provider. It gives you DNS records (SPF and DKIM) to add where the domain's DNS is managed. These help keep the emails out of spam.
+    3. In Supabase, go to **Authentication → Emails**, open **SMTP Settings** and turn on custom SMTP. Enter the provider's host, port, username and password. Set the sender to an address such as `no-reply@wakeupwednesday.org`, with the sender name "Wake Up Wednesday". The SMTP password goes only in Supabase, never in the repository.
+    4. Under **Authentication → Rate Limits**, raise the email limit to fit expected sign-ups.
+    5. Sign up and reset a password with addresses that aren't on the Supabase team, such as a Gmail and an Outlook address. Confirm both emails arrive, aren't in spam, and their links open the subdomain.
 - [ ] **Raise the Supabase anonymous sign-in rate limit before any group event at a shared location.** Under **Authentication → Rate Limits**, anonymous sign-ins are limited to 30 per hour per IP address. At a library, school or community event, everyone shares one IP address, so the 31st guest in an hour can't start a plan. Raise it a day ahead, and lower it again afterward.
 - [ ] **Consider a daily cap on Google Maps loads.** Under **Google Maps Platform → Quotas**, set a per-day limit on map loads for the Maps JavaScript API, so a traffic spike or misuse of the key can't run up the bill. Set it comfortably above normal use, so maps don't stop loading on a busy day.
 
