@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { AppShell } from "@/components/AppShell";
 import { claimGuestPlans } from "@/lib/stabilization-plan.functions";
-import wakeUpMovement from "@/assets/HARTFORD_3.png.asset.json";
+import wakeUpMovement from "@/assets/wake-up-movement.png";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -482,7 +482,7 @@ function AuthPage() {
         <div className="mt-6 flex flex-col items-center text-center">
           <p className="text-[13px] font-semibold text-foreground">Be a part of the</p>
           <img
-            src={wakeUpMovement.url}
+            src={wakeUpMovement}
             alt="Wake Up Movement"
             className="mt-2 w-48 max-w-full"
           />
@@ -728,7 +728,7 @@ function AuthPage() {
       <div className="mt-6 flex flex-col items-center text-center">
         <p className="text-[13px] font-semibold text-foreground">Join the</p>
         <img
-          src={wakeUpMovement.url}
+          src={wakeUpMovement}
           alt="Wake Up Movement"
           className="mt-2 w-48 max-w-full"
         />

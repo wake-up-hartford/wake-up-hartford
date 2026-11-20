@@ -340,6 +340,8 @@ In Claude Code:
 - `wake-up-hartford.lovable.app` is the live address. Set `VITE_SITE_URL` to `https://wake-up-hartford.lovable.app` until cut-over.
 - `wake-up-hartford-guide.lovable.app` is an old address that's no longer used. Some pages still point to it, so this step also fixes them.
 
+**Lovable-hosted images.** Images added through Lovable's editor live on Lovable's own hosting, not in the repository. The code points to them through `src/assets/*.png.asset.json` files with a `/__l5e/assets-v1/...` address that only lovable.app serves, so they break everywhere else. Do this first, while Lovable still serves them: download each image into `src/assets`, import it directly, and delete its `.asset.json` file. On November 20 this covered two images: the Wake Up Hartford logo (`wake-up-hartford.png`) and the Wake Up Movement image on the sign-in page (`wake-up-movement.png`).
+
 Then compare a few neighborhood stories, a building story, an advocacy letter and a 30-day plan against the Lovable site. It's the same model family, so they should read about the same.
 
 ### 4.10 Point your local copy at the new backend
