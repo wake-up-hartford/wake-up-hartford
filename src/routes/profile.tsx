@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -17,11 +18,11 @@ export const Route = createFileRoute("/profile")({
       { name: "description", content: "Manage your Wake Up Wednesday profile and saved plans." },
       { property: "og:title", content: "Your Account — Wake Up Wednesday" },
       { property: "og:description", content: "Manage your Wake Up Wednesday profile and saved plans." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/profile" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/profile") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/profile" },
+      { rel: "canonical", href: siteUrl("/profile") },
     ],
   }),
   component: ProfilePage,

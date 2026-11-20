@@ -388,7 +388,7 @@ Netlify builds the site from GitHub and republishes it automatically every time 
    | `VITE_SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_PUBLISHABLE_KEY` | new publishable key |
    | `VITE_SUPABASE_PROJECT_ID` and `SUPABASE_PROJECT_ID` | new project ID |
    | `VITE_GOOGLE_MAPS_BROWSER_KEY` | your Google Maps key |
-   | `VITE_GOOGLE_MAPS_TRACKING_ID` | the Google Maps tracking ID |
+   | `VITE_GOOGLE_MAPS_TRACKING_ID` | optional; leave unset. It was Lovable's usage-tracking label for its own Maps connector |
    | `VITE_SITE_URL` | `https://wake-up-hartford.lovable.app` until cut-over |
    | `SUPABASE_SERVICE_ROLE_KEY` | new service role key (secret) |
    | `GEMINI_API_KEY` | your Gemini key (secret) |

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
@@ -23,11 +24,11 @@ export const Route = createFileRoute("/plan/$planId")({
       { name: "description", content: "Your personalized 30-day stabilization plan with step-by-step actions." },
       { property: "og:title", content: "Your 30-Day Plan — Wake Up Wednesday" },
       { property: "og:description", content: "Your personalized 30-day stabilization plan with step-by-step actions." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/plan" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/plan") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/plan" },
+      { rel: "canonical", href: siteUrl("/plan") },
     ],
   }),
   component: PlanPage,
