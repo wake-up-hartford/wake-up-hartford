@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { ChevronLeft, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { AppShell } from "@/components/AppShell";
 import { claimGuestPlans } from "@/lib/stabilization-plan.functions";
 import wakeUpMovement from "@/assets/HARTFORD_3.png.asset.json";
@@ -207,10 +206,14 @@ function AuthPage() {
   const handleGoogle = async () => {
     setError(null);
     await stashGuestUserId();
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + peekPostAuthRedirect(),
+    // Supabase's own Google sign-in. Google returns to this page, whose
+    // auth listener moves any guest plan and then sends the visitor to the
+    // destination saved in localStorage (wuw:postAuthRedirect).
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + "/auth" },
     });
-    if (result.error) setError(result.error.message);
+    if (error) setError(error.message);
   };
 
 
