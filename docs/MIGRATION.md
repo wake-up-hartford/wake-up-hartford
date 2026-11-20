@@ -458,6 +458,18 @@ Cut-over copies the latest data across one final time and points the public at t
 - [ ] **Tell the team the window.** Ask partners not to send people to the site during that time.
 - [ ] **Clear out test data.** List the test accounts and test records in Supabase that need deleting.
 - [ ] **Add a "This isn't my computer / Start over" button.** Residents often use shared computers, and a guest who walks away leaves their plan open in the browser for the next person (4.11). The button signs the visitor out, clears the guest session and anything the app saved in the browser, and returns to the start. Build it with Claude Code on its own branch, then test it on the pull request's Netlify preview before cut-over.
+- [ ] **Create a privacy policy page**, for example at `/privacy`, and link to it from the footer and the sign-up form. Google sign-in needs its address (next item). The app has no privacy page yet. The About page has a short "Privacy & Data Use" section to borrow the tone from, but it can't be reused as written:
+    - It says addresses aren't stored, but address onboarding saves the street address and ZIP code to each profile.
+    - It leaves out names, phone numbers, text-alert choices, saved Life survey answers, usage events and app survey responses.
+    - It doesn't name the outside services: Google Gemini writes plans from Life survey answers, ElevenLabs reads stories aloud, and Google Maps, Street View and Google sign-in load from Google.
+
+    Ask Claude Code to draft the page from what the app actually collects and shares, then have an NAACP leader review it. Update the About page section to match, or link it to the new page.
+- [ ] **Publish the Google sign-in app in Google Cloud.** Until then it stays in Testing, and only listed test users can use Google sign-in. Do this once the subdomain and the privacy page are live. In the Google Cloud console, under the project email, open **Google Auth Platform**:
+    1. On the **Branding** page, set the app home page to `https://hartford.wakeupwednesday.org`, add the privacy policy link, and add `wakeupwednesday.org` to **Authorized domains**.
+    2. Click **Publish app** (on the **Audience** page in current versions of the console).
+    3. Sign in with Google from an account that isn't a test user, to confirm it works.
+- [ ] **Raise the Supabase anonymous sign-in rate limit before any group event at a shared location.** Under **Authentication → Rate Limits**, anonymous sign-ins are limited to 30 per hour per IP address. At a library, school or community event, everyone shares one IP address, so the 31st guest in an hour can't start a plan. Raise it a day ahead, and lower it again afterward.
+- [ ] **Consider a daily cap on Google Maps loads.** Under **Google Maps Platform → Quotas**, set a per-day limit on map loads for the Maps JavaScript API, so a traffic spike or misuse of the key can't run up the bill. Set it comfortably above normal use, so maps don't stop loading on a busy day.
 
 ### Cut-over window
 
