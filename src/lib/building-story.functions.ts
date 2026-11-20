@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { GEMINI_CHAT_URL, GEMINI_MODEL } from "@/lib/gemini";
 
 
 const Input = z.object({
@@ -26,7 +27,7 @@ const Input = z.object({
 export const generateBuildingStory = createServerFn({ method: "POST" })
   .inputValidator((input) => Input.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return { story: null, error: "AI service is not configured." };
 
     const b = data.building;
@@ -63,11 +64,11 @@ Do NOT use fancy or literary phrasing ("paints a picture," "tells a story," "wov
 Length: 2 short paragraphs, about 90-140 words total. Plain prose, no headings, no bullets. Cut anything not essential.${languageLine}`;
 
     try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const res = await fetch(GEMINI_CHAT_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: GEMINI_MODEL,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: `${facts}\n\nWrite the story of this building based only on these records.` },
@@ -78,7 +79,7 @@ Length: 2 short paragraphs, about 90-140 words total. Plain prose, no headings, 
       if (res.status === 429) return { story: null, error: "Too many requests — please try again in a moment." };
       if (res.status === 402) return { story: null, error: "AI credits depleted. Please contact the site administrator." };
       if (!res.ok) {
-        console.error("AI gateway error", res.status, await res.text());
+        console.error("Gemini API error", res.status, await res.text());
         return { story: null, error: `AI service error (${res.status}).` };
       }
 
