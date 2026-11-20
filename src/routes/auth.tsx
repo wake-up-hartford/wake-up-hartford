@@ -121,25 +121,48 @@ function AuthPage() {
   const claimGuest = useServerFn(claimGuestPlans);
 
   // If the visitor made a plan as a guest, move it onto the account they
-  // just signed into. The guest user id is stashed in localStorage before
-  // sign-in (it survives the Google OAuth round-trip).
+  // just signed into. Right before sign-in, the guest session's access token
+  // is stashed in localStorage (it survives the Google OAuth round-trip). The
+  // server uses it as proof that this visitor really was that guest.
+  const GUEST_CLAIM_KEY = "wuw:guestClaim";
+  const GUEST_CLAIM_MAX_AGE_MS = 15 * 60 * 1000;
+
+  const clearGuestClaim = () => {
+    if (typeof window === "undefined") return;
+    window.localStorage.removeItem(GUEST_CLAIM_KEY);
+    window.localStorage.removeItem("wuw:guestUserId"); // older format, no longer used
+  };
+
   const claimGuestPlansFor = async () => {
     if (typeof window === "undefined") return;
-    const guestId = window.localStorage.getItem("wuw:guestUserId");
-    if (!guestId) return;
-    window.localStorage.removeItem("wuw:guestUserId");
+    const raw = window.localStorage.getItem(GUEST_CLAIM_KEY);
+    clearGuestClaim();
+    if (!raw) return;
+    let stash: { token?: unknown; savedAt?: unknown };
     try {
-      await claimGuest({ data: { guestUserId: guestId } });
+      stash = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    // Ignore a stale stash, such as one left behind by an abandoned sign-in
+    // on a shared computer.
+    if (typeof stash.token !== "string" || typeof stash.savedAt !== "number") return;
+    if (Date.now() - stash.savedAt > GUEST_CLAIM_MAX_AGE_MS) return;
+    try {
+      await claimGuest({ data: { guestAccessToken: stash.token } });
     } catch {
       // Non-fatal: worst case the guest plan stays on the guest session.
     }
   };
 
-  const stashGuestUserId = async () => {
+  const stashGuestClaim = async () => {
     const { data: sessionData } = await supabase.auth.getSession();
-    const anon = sessionData.session?.user;
-    if (anon?.is_anonymous && typeof window !== "undefined") {
-      window.localStorage.setItem("wuw:guestUserId", anon.id);
+    const session = sessionData.session;
+    if (session?.user?.is_anonymous && typeof window !== "undefined") {
+      window.localStorage.setItem(
+        GUEST_CLAIM_KEY,
+        JSON.stringify({ token: session.access_token, savedAt: Date.now() }),
+      );
     }
   };
 
@@ -206,7 +229,7 @@ function AuthPage() {
 
   const handleGoogle = async () => {
     setError(null);
-    await stashGuestUserId();
+    await stashGuestClaim();
     // Supabase's own Google sign-in. Google returns to this page, whose
     // auth listener moves any guest plan and then sends the visitor to the
     // destination saved in localStorage (wuw:postAuthRedirect).
@@ -214,7 +237,10 @@ function AuthPage() {
       provider: "google",
       options: { redirectTo: window.location.origin + "/auth" },
     });
-    if (error) setError(error.message);
+    if (error) {
+      clearGuestClaim();
+      setError(error.message);
+    }
   };
 
 
@@ -273,9 +299,12 @@ function AuthPage() {
           setPassword("");
         }
       } else {
-        await stashGuestUserId();
+        await stashGuestClaim();
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          clearGuestClaim();
+          throw error;
+        }
         await claimGuestPlansFor();
         const uid = data.user?.id;
         const target = uid
