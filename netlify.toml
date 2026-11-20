@@ -1,0 +1,14 @@
+# Netlify build settings. The app's settings (Supabase, Gemini, Maps and so
+# on) are entered in Netlify under Site configuration → Environment variables,
+# never in this file.
+
+[build]
+  # bun.lock is the only lock file. Install exactly what it lists, then build.
+  command = "bun install --frozen-lockfile && bun run build"
+  # Pages and browser files. @netlify/vite-plugin-tanstack-start turns the
+  # server part of the build (pages and server functions) into a Netlify Function.
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+  BUN_VERSION = "1.4.5"
