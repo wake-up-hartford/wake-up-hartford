@@ -53,41 +53,57 @@ export const geocodeAddressToNeighborhood = createServerFn({ method: "POST" })
         };
       };
 
-      const match = json?.result?.addressMatches?.[0];
-      if (!match) {
+      const matches = json?.result?.addressMatches ?? [];
+      if (matches.length === 0) {
         return {
           ...empty,
           error: "No match found. Try a more complete Hartford street address.",
         };
       }
 
-      const t = match.geographies?.["Census Tracts"]?.[0];
-      const matched = match.matchedAddress ?? data.address;
-      if (!t?.STATE || !t?.COUNTY || !t?.TRACT) {
+      // Nearby towns (East Hartford, Wethersfield, Newington and others) also
+      // use "Hartford" as their mailing city, so one address can match several
+      // places. Use the first match that falls in a City of Hartford tract.
+      const candidates = matches.map((match) => {
+        const t = match.geographies?.["Census Tracts"]?.[0];
+        const fips =
+          t?.STATE && t?.COUNTY && t?.TRACT
+            ? String(t.STATE).padStart(2, "0") +
+              String(t.COUNTY).padStart(3, "0") +
+              String(t.TRACT).padStart(6, "0")
+            : "";
+        return {
+          address: match.matchedAddress ?? data.address,
+          fips,
+          neighborhood: fips ? TRACT_TO_NEIGHBORHOOD[fips] : undefined,
+        };
+      });
+
+      const inHartford = candidates.find((c) => c.neighborhood);
+      if (inHartford) {
+        return {
+          address: inHartford.address,
+          neighborhood: inHartford.neighborhood!,
+          tractFips: inHartford.fips,
+        };
+      }
+
+      const first = candidates[0];
+      if (!first.fips) {
         return {
           ...empty,
-          address: matched,
+          address: first.address,
           error: "Address matched but no neighborhood could be determined.",
         };
       }
 
-      const fips =
-        String(t.STATE).padStart(2, "0") +
-        String(t.COUNTY).padStart(3, "0") +
-        String(t.TRACT).padStart(6, "0");
-
-      const neighborhood = TRACT_TO_NEIGHBORHOOD[fips];
-      if (!neighborhood) {
-        return {
-          address: matched,
-          neighborhood: "",
-          tractFips: fips,
-          error:
-            "That address is outside the City of Hartford. Neighborhood data currently covers Hartford's 17 neighborhoods.",
-        };
-      }
-
-      return { address: matched, neighborhood, tractFips: fips };
+      return {
+        address: first.address,
+        neighborhood: "",
+        tractFips: first.fips,
+        error:
+          "That address is outside the City of Hartford. Neighborhood data currently covers Hartford's 17 neighborhoods.",
+      };
     } catch (err) {
       console.error("geocodeAddressToNeighborhood failed", err);
       return {
