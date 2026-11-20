@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { ChevronLeft, Phone, ExternalLink, Search } from "lucide-react";
@@ -28,11 +29,11 @@ export const Route = createFileRoute("/find-help")({
       },
       { property: "og:title", content: "Find Help — Wake Up Wednesday" },
       { property: "og:description", content: "Tell us what you need and we'll show vetted Connecticut organizations that can help." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/find-help" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/find-help") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/find-help" },
+      { rel: "canonical", href: siteUrl("/find-help") },
     ],
   }),
   component: FindHelpPage,

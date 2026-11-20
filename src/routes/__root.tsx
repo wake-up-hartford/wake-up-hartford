@@ -1,6 +1,7 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import logoAsset from "@/assets/wake-up-hartford.png";
+import { SITE_URL, siteUrl } from "@/lib/site";
 import {
   Outlet,
   Link,
@@ -96,8 +97,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Wake Up Wednesday — Greater Hartford Branch NAACP" },
       { name: "twitter:description", content: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT." },
-      { property: "og:image", content: "https://wake-up-hartford.lovable.app/og-image.jpg" },
-      { name: "twitter:image", content: "https://wake-up-hartford.lovable.app/og-image.jpg" },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
+      { name: "twitter:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -118,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Wake Up Wednesday",
-          url: "https://wake-up-hartford.lovable.app",
+          url: SITE_URL,
           description: "Plain-language information about your home, neighborhood, and life resources in Hartford, CT.",
           publisher: {
             "@type": "Organization",

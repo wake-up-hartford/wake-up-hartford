@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, TrendingUp, DollarSign, Home as HomeIcon, Printer, Share2, Play, MapPin, Search, Loader2, Megaphone, ArrowRight, ShieldCheck, AlertTriangle, AlertOctagon, Minus, Mail, MessageSquare } from "lucide-react";
@@ -32,11 +33,11 @@ export const Route = createFileRoute("/neighborhood")({
       { name: "description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
       { property: "og:title", content: "Your Neighborhood — Wake Up Wednesday" },
       { property: "og:description", content: "A plain-language report card for each of Hartford's 17 neighborhoods." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/neighborhood") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/neighborhood" },
+      { rel: "canonical", href: siteUrl("/neighborhood") },
     ],
   }),
   component: NeighborhoodPage,

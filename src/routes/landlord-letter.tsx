@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/AppShell";
 import { Field, LetterPage, letterInputClass } from "@/components/letter/LetterPage";
@@ -16,11 +17,11 @@ export const Route = createFileRoute("/landlord-letter")({
       },
       { property: "og:title", content: "Letter of Complaint to Your Landlord — Wake Up Wednesday" },
       { property: "og:description", content: "Generate a clear, written letter of complaint to your landlord about unsafe or unhealthy conditions in your home." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/landlord-letter" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/landlord-letter") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/landlord-letter" },
+      { rel: "canonical", href: siteUrl("/landlord-letter") },
     ],
   }),
   component: LandlordLetterPage,

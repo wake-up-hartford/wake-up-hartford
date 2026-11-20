@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { SITE_HOST } from "@/lib/site";
 
 type LatLng = { lat: number; lng: number };
 
@@ -6,10 +7,20 @@ let mapsLoader: Promise<void> | null = null;
 let mapsAuthFailed = false;
 const authListeners = new Set<() => void>();
 
-/** The Google key only works on approved sites; skip the request elsewhere. */
+/**
+ * The Google key only works on the sites it's restricted to in Google Cloud;
+ * skip the request elsewhere. Keep this in step with the key's restrictions.
+ */
 function isAuthorizedHost(): boolean {
   const h = window.location.hostname;
-  return h.endsWith(".lovable.app") || h.endsWith(".lovableproject.com") || h.endsWith("wakeupwednesday.org");
+  return (
+    h === "localhost" ||
+    h === "127.0.0.1" ||
+    h === SITE_HOST ||
+    h.endsWith(".netlify.app") ||
+    h === "wakeupwednesday.org" ||
+    h.endsWith(".wakeupwednesday.org")
+  );
 }
 
 function loadMaps(): Promise<void> {
@@ -26,14 +37,16 @@ function loadMaps(): Promise<void> {
   const w = window as unknown as { google?: { maps?: unknown } };
   if (w.google?.maps) return Promise.resolve();
   if (mapsLoader) return mapsLoader;
-  const key = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY;
-  const channel = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID;
+  const key = import.meta.env.VITE_GOOGLE_MAPS_BROWSER_KEY;
+  // Optional Google Maps usage-reporting channel. Leave it unset unless you
+  // want to label this site's usage in Google Cloud reports.
+  const channel = import.meta.env.VITE_GOOGLE_MAPS_TRACKING_ID;
   if (!key) return Promise.reject(new Error("Missing Google Maps browser key"));
   mapsLoader = new Promise<void>((resolve, reject) => {
-    const cbName = "__lovableInitMaps_" + Math.random().toString(36).slice(2);
+    const cbName = "__initGoogleMaps_" + Math.random().toString(36).slice(2);
     (window as unknown as Record<string, unknown>)[cbName] = () => resolve();
     const s = document.createElement("script");
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&callback=${cbName}${channel ? `&channel=${channel}` : ""}`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&loading=async&callback=${cbName}${channel ? `&channel=${encodeURIComponent(channel)}` : ""}`;
     s.async = true;
     s.onerror = () => reject(new Error("Failed to load Google Maps"));
     document.head.appendChild(s);

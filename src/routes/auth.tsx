@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ChevronLeft, MailCheck } from "lucide-react";
@@ -16,12 +17,12 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Sign in or create an account on Wake Up Wednesday." },
       { property: "og:title", content: "Sign in — Wake Up Wednesday" },
       { property: "og:description", content: "Sign in or create an account on Wake Up Wednesday." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/auth" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/auth") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
       { name: "robots", content: "noindex, nofollow" },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/auth" },
+      { rel: "canonical", href: siteUrl("/auth") },
     ],
   }),
   component: AuthPage,
