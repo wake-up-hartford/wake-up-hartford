@@ -387,21 +387,25 @@ Netlify builds the site from GitHub and republishes it automatically every time 
    - In Netlify, choose **Add new site → Import an existing project → GitHub**.
    - Authorize Netlify and pick the `wake-up-hartford` repository.
    - Choose `main` as the branch to deploy.
-3. **Set the environment variables** before the first build, under **Site configuration → Environment variables**. Use the *new* values. Mark the ones labeled "(secret)" as secret.
+3. **Set the environment variables** before the first build, under **Site configuration → Environment variables**. Use the *new* values. Mark only the three labeled "(secret)" as secret.
 
    | Variable | Value |
    | --- | --- |
    | `VITE_SUPABASE_URL` and `SUPABASE_URL` | `https://<new id>.supabase.co` |
    | `VITE_SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_PUBLISHABLE_KEY` | new publishable key |
-   | `VITE_SUPABASE_PROJECT_ID` and `SUPABASE_PROJECT_ID` | new project ID |
    | `VITE_GOOGLE_MAPS_BROWSER_KEY` | your Google Maps key |
-   | `VITE_GOOGLE_MAPS_TRACKING_ID` | optional; leave unset. It was Lovable's usage-tracking label for its own Maps connector |
    | `VITE_SITE_URL` | `https://wake-up-hartford.lovable.app` until cut-over |
    | `SUPABASE_SERVICE_ROLE_KEY` | new service role key (secret) |
    | `GEMINI_API_KEY` | your Gemini key (secret) |
    | `ELEVENLABS_API_KEY` | your ElevenLabs key (secret) |
 
-   Netlify's values override the old ones still in the repository's `.env` file, so the live Lovable site isn't affected.
+   - **The `VITE_` settings are built into the browser code.** That's intended: they're public values. So don't mark them as secret. Netlify scans the build for secret values and would stop it.
+   - **The secret settings stay on the server.** The server reads them when it runs, and they never reach the browser.
+   - **Set all four `VITE_` settings.** If one is missing, the build quietly uses the old Lovable value still in the repository's `.env` file. Netlify's values override that file, so the live Lovable site isn't affected.
+   - **Leave these out:**
+       - `VITE_SUPABASE_PROJECT_ID` and `SUPABASE_PROJECT_ID`: the code doesn't read them.
+       - `VITE_GOOGLE_MAPS_TRACKING_ID`: optional, best left unset. It was Lovable's usage-tracking label for its own Maps connector.
+       - `NODE_VERSION` and `BUN_VERSION`: these are set in `netlify.toml`.
 4. **Deploy.** Click **Deploy site**. Your temporary address appears when the build finishes. You can rename it under **Site configuration**, for example to `wake-up-hartford.netlify.app`.
 5. **Allow the new address.**
    - In Supabase, go to **Authentication → URL Configuration** and add the Netlify address to the redirect URLs.
