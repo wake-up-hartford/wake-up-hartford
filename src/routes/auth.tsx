@@ -1,13 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ChevronLeft, MailCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { AppShell } from "@/components/AppShell";
 import { claimGuestPlans } from "@/lib/stabilization-plan.functions";
-import wakeUpMovement from "@/assets/HARTFORD_3.png.asset.json";
+import wakeUpMovement from "@/assets/wake-up-movement.png";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -16,12 +16,12 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Sign in or create an account on Wake Up Wednesday." },
       { property: "og:title", content: "Sign in — Wake Up Wednesday" },
       { property: "og:description", content: "Sign in or create an account on Wake Up Wednesday." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/auth" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/auth") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
       { name: "robots", content: "noindex, nofollow" },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/auth" },
+      { rel: "canonical", href: siteUrl("/auth") },
     ],
   }),
   component: AuthPage,
@@ -230,12 +230,16 @@ function AuthPage() {
   const handleGoogle = async () => {
     setError(null);
     await stashGuestClaim();
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + peekPostAuthRedirect(),
+    // Supabase's own Google sign-in. Google returns to this page, whose
+    // auth listener moves any guest plan and then sends the visitor to the
+    // destination saved in localStorage (wuw:postAuthRedirect).
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + "/auth" },
     });
-    if (result.error) {
+    if (error) {
       clearGuestClaim();
-      setError(result.error.message);
+      setError(error.message);
     }
   };
 
@@ -510,7 +514,7 @@ function AuthPage() {
         <div className="mt-6 flex flex-col items-center text-center">
           <p className="text-[13px] font-semibold text-foreground">Be a part of the</p>
           <img
-            src={wakeUpMovement.url}
+            src={wakeUpMovement}
             alt="Wake Up Movement"
             className="mt-2 w-48 max-w-full"
           />
@@ -756,7 +760,7 @@ function AuthPage() {
       <div className="mt-6 flex flex-col items-center text-center">
         <p className="text-[13px] font-semibold text-foreground">Join the</p>
         <img
-          src={wakeUpMovement.url}
+          src={wakeUpMovement}
           alt="Wake Up Movement"
           className="mt-2 w-48 max-w-full"
         />

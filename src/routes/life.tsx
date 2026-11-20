@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ChevronLeft,
@@ -36,12 +37,12 @@ export const Route = createFileRoute("/life")({
       },
       { property: "og:title", content: "Your Life — Build Your Plan | Wake Up Hartford" },
       { property: "og:description", content: "A confidential first step toward building your personal stability plan." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/life" },
+      { property: "og:url", content: siteUrl("/life") },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/life" },
+      { rel: "canonical", href: siteUrl("/life") },
     ],
   }),
   component: LifePage,

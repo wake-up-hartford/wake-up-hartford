@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/reset-password")({
       { name: "robots", content: "noindex, nofollow" },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/reset-password" },
+      { rel: "canonical", href: siteUrl("/reset-password") },
     ],
   }),
   component: ResetPasswordPage,

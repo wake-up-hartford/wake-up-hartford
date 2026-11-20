@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { ArrowRight, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import wakeUpLogo from "@/assets/wake-up-hartford.png.asset.json";
+import wakeUpLogo from "@/assets/wake-up-hartford.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,11 +19,11 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "See the facts. Find the resources. Build the plan.",
       },
-      { property: "og:url", content: "https://wake-up-hartford.lovable.app/" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford.lovable.app/" },
+      { rel: "canonical", href: siteUrl("/") },
     ],
   }),
   component: Landing,
@@ -66,7 +67,7 @@ function Landing() {
         </span>
       </div>
       <img
-        src={wakeUpLogo.url}
+        src={wakeUpLogo}
         alt="Wake Up Hartford"
         className="block w-full h-auto sm:max-w-md sm:mx-auto md:max-w-lg lg:max-w-xl"
       />

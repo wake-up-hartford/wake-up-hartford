@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { ChevronLeft, Send, CheckCircle2 } from "lucide-react";
@@ -14,11 +15,11 @@ export const Route = createFileRoute("/survey")({
       { name: "description", content: "Help us improve Wake Up Wednesday by sharing your feedback." },
       { property: "og:title", content: "Quick Survey — Wake Up Wednesday" },
       { property: "og:description", content: "Help us improve Wake Up Wednesday by sharing your feedback." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/survey" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/survey") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/survey" },
+      { rel: "canonical", href: siteUrl("/survey") },
     ],
   }),
   component: SurveyPage,

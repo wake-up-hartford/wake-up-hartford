@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 
 import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, Loader2, BarChart3 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -32,11 +33,11 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Look up any Hartford address. See live code violations and 311 complaints from city open data." },
       { property: "og:title", content: "Your Home — Wake Up Wednesday" },
       { property: "og:description", content: "Look up any Hartford address and see live code violations and 311 complaints in plain language." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/home" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/home") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/home" },
+      { rel: "canonical", href: siteUrl("/home") },
     ],
   }),
   component: HomePage,

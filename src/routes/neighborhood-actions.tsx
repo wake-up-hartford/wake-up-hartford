@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { siteUrl } from "@/lib/site";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import {
@@ -32,11 +33,11 @@ export const Route = createFileRoute("/neighborhood-actions")({
       },
       { property: "og:title", content: "Take Action — Wake Up Wednesday" },
       { property: "og:description", content: "Concrete actions you can take based on what the data shows about your neighborhood." },
-      { property: "og:url", content: "https://wake-up-hartford-guide.lovable.app/neighborhood-actions" },
-      { property: "og:image", content: "https://wake-up-hartford-guide.lovable.app/og-image.jpg" },
+      { property: "og:url", content: siteUrl("/neighborhood-actions") },
+      { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
     links: [
-      { rel: "canonical", href: "https://wake-up-hartford-guide.lovable.app/neighborhood-actions" },
+      { rel: "canonical", href: siteUrl("/neighborhood-actions") },
     ],
   }),
   component: ActionsPage,
