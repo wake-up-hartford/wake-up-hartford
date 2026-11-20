@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { GEMINI_CHAT_URL, GEMINI_MODEL } from "@/lib/gemini";
 
 const IndicatorInput = z.object({
   key: z.string(),
@@ -25,7 +26,7 @@ const Input = z.object({
 export const draftAdvocacyLetter = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return { letter: null, error: "AI service is not configured." };
     }
@@ -71,14 +72,14 @@ ${indicatorLines}
 Draft the email now.`;
 
     try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const res = await fetch(GEMINI_CHAT_URL, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: GEMINI_MODEL,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
@@ -90,7 +91,7 @@ Draft the email now.`;
       if (res.status === 402) return { letter: null, error: "AI credits depleted. Contact the site administrator." };
       if (!res.ok) {
         const text = await res.text();
-        console.error("AI gateway error", res.status, text);
+        console.error("Gemini API error", res.status, text);
         return { letter: null, error: `AI service error (${res.status}).` };
       }
 
