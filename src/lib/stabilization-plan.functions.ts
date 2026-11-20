@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import resources from "@/data/ct-resources.json";
+import { GEMINI_CHAT_URL, GEMINI_MODEL } from "@/lib/gemini";
 
 type Resource = (typeof resources)[number];
 
@@ -94,8 +95,8 @@ export const generateStabilizationPlan = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI gateway not configured");
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("AI service is not configured.");
 
     const picked = pickResourcesFor(data.survey, data.followup);
     const resourceList = picked.map((r) => ({
@@ -135,14 +136,14 @@ Generate the 30-day plan as JSON matching this shape:
 }
 Return ONLY valid JSON, no markdown.`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch(GEMINI_CHAT_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: GEMINI_MODEL,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: userPrompt },
@@ -153,7 +154,7 @@ Return ONLY valid JSON, no markdown.`;
 
     if (!aiRes.ok) {
       const txt = await aiRes.text();
-      console.error("AI gateway error", aiRes.status, txt);
+      console.error("Gemini API error", aiRes.status, txt);
       if (aiRes.status === 429) throw new Error("Too many requests — please try again in a minute.");
       if (aiRes.status === 402) throw new Error("AI credits exhausted — contact the site admin.");
       throw new Error("Couldn't generate plan. Please try again.");

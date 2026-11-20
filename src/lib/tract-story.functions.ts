@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { GEMINI_CHAT_URL, GEMINI_MODEL } from "@/lib/gemini";
 
 
 const IndicatorInput = z.object({
@@ -60,7 +61,7 @@ const STATE_BY_FIPS: Record<string, { name: string; abbr: string }> = {
 export const generateTractStory = createServerFn({ method: "POST" })
   .inputValidator((input) => Input.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return { story: null, error: "AI service is not configured." };
     }
@@ -128,14 +129,14 @@ Write the story of this neighborhood based only on these indicators.`;
 
 
     try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const res = await fetch(GEMINI_CHAT_URL, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: GEMINI_MODEL,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
@@ -151,7 +152,7 @@ Write the story of this neighborhood based only on these indicators.`;
       }
       if (!res.ok) {
         const text = await res.text();
-        console.error("AI gateway error", res.status, text);
+        console.error("Gemini API error", res.status, text);
         return { story: null, error: `AI service error (${res.status}).` };
       }
 
