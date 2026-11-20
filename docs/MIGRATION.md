@@ -375,7 +375,11 @@ Netlify builds the site from GitHub and republishes it automatically every time 
 
    > This is a TanStack Start app with server functions. Its build comes from Lovable's @lovable.dev/vite-tanstack-config package, which sets up the Vite plugins for Cloudflare. Replace it with a standard vite.config.ts that sets up the plugins the app needs directly, keeps the server entry at src/server.ts, and drops Lovable's editor-only plugins. Remove the package. Then configure the app to build and deploy on Netlify with Node 22, including its server functions, and check that the build works locally. Open a pull request.
 
-   Review and merge it. If Netlify proves difficult, Cloudflare Workers is the fallback, since the project already has a Cloudflare configuration file.
+   **Build with Bun, not npm.** Lovable installs packages with Bun, so `bun.lock` is the up-to-date lock file. `package-lock.json` is out of date: it's missing packages the app now uses and has older versions of others, so `npm ci` refuses to run. If both files are present, Netlify may pick npm. Include these in the same pull request:
+
+   > Delete the outdated package-lock.json so bun.lock is the only lock file. Configure Netlify to install and build with Bun, using bun install --frozen-lockfile and bun run build, and pin the Bun version with a BUN\_VERSION environment variable in netlify.toml. Check that bun run build works locally.
+
+   Review and merge it. In the first Netlify build log, confirm that it installed with Bun, not npm. If Netlify proves difficult, Cloudflare Workers is the fallback, since the project already has a Cloudflare configuration file.
 2. **Connect the repository.**
    - In Netlify, choose **Add new site → Import an existing project → GitHub**.
    - Authorize Netlify and pick the `wake-up-hartford` repository.
