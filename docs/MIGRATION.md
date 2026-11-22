@@ -393,6 +393,16 @@ Netlify builds the site from GitHub and republishes it automatically every time 
    - In Netlify, choose **Add new site → Import an existing project → GitHub**.
    - Authorize Netlify and pick the `wake-up-hartford` repository.
    - Choose `main` as the branch to deploy.
+
+   **Netlify's free plan doesn't build private repositories owned by a GitHub organization.** The first deploy stops during "Initializing" with "Organization-owned private repository detected", and the build is skipped. Pick one fix:
+   - **Upgrade the Netlify team to Pro.** The repository stays private. Then click **Retry deploy**.
+   - **Make the repository public.** It's free, but anyone can then read the code and its full history. Before switching:
+       - Ask Claude Code to scan every version of every file, on every branch, for keys, passwords and personal data.
+       - Get an NAACP leader's OK.
+
+     Then change it in GitHub under **Settings → General → Danger Zone → Change visibility**, and push a new commit so Netlify picks up the change. GitHub may then flag the old Lovable keys in `.env`. That's expected: they're public browser keys.
+
+   Avoid moving the repository to a personal account. "Before you start" sets it up in an organization with an NAACP person as a second owner, so the project doesn't depend on one personal account.
 3. **Set the environment variables** before the first build, under **Site configuration → Environment variables**. Use the *new* values. Mark only the three labeled "(secret)" as secret.
 
    | Variable | Value |
