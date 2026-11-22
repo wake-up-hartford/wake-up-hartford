@@ -383,6 +383,12 @@ Netlify builds the site from GitHub and republishes it automatically every time 
    > Delete the outdated package-lock.json so bun.lock is the only lock file. Configure Netlify to install and build with Bun, using bun install --frozen-lockfile and bun run build, and pin the Bun version with a BUN\_VERSION environment variable in netlify.toml. Check that bun run build works locally.
 
    Review and merge it. In the first Netlify build log, confirm that it installed with Bun, not npm. If Netlify proves difficult, Cloudflare Workers is the fallback, since the project already has a Cloudflare configuration file.
+
+   **After this merge, Lovable can no longer build the project.** Lovable's editor builds with the package this step removes. So from now on:
+   - Make every change with Claude Code.
+   - Don't click Publish in Lovable again. A Publish from Lovable would fail or misbehave.
+
+   `wake-up-hartford.lovable.app` keeps running the last version published from Lovable, on its own Lovable Cloud backend, until it's retired in Phase 8.
 2. **Connect the repository.**
    - In Netlify, choose **Add new site → Import an existing project → GitHub**.
    - Authorize Netlify and pick the `wake-up-hartford` repository.
@@ -501,22 +507,18 @@ Cut-over copies the latest data across one final time and points the public at t
 
    > Update .env and supabase/config.toml to the new Supabase project's URL, project ID and publishable key, then commit and push to main.
 
-   Because Lovable is still synced, the Lovable copy now uses the new backend too. Click **Publish** in Lovable once, so `wake-up-hartford.lovable.app` also runs on the new data. From then on, both addresses show the same live data.
+   Netlify's settings already point the site at the new backend. This step makes the repository's own fallback values match, so a missing Netlify setting can't quietly fall back to the old Lovable project.
 7. **Change the site address setting.** In Netlify, set `VITE_SITE_URL` to `https://hartford.wakeupwednesday.org`, then redeploy, because `VITE_` values are baked in at build time. Update `.env.local` to match. If 4.9 listed any file that can't read the setting, such as `public/robots.txt`, ask Claude Code to update its address too.
 8. **Point the Wake Up Wednesday link at the new site.** Change the link on wakeupwednesday.org to the subdomain.
 9. **Test from the Wake Up Wednesday page.** Click through the link and repeat a short version of the Phase 6 checklist: address search, neighborhood, story, sign-up and sign-in.
 
-Visitors who still reach the lovable.app address see the same live data, so nothing breaks for anyone using an old link.
+The lovable.app address keeps running on its own until it's retired in Phase 8. It stays on the old Lovable Cloud backend, so it doesn't show the new site's data, and accounts or plans made on one site don't appear on the other. Anyone who reaches it through an old link still gets a working site. Phase 8 lists the links to update so people move to the new one.
 
 ### If something goes wrong
 
-The old Lovable Cloud backend is untouched until Phase 8.
+lovable.app and its Lovable Cloud backend keep running, untouched, until Phase 8. To roll back, point the Wake Up Wednesday link back to the lovable.app address.
 
-1. Revert the step 6 commit, which points the code back at the old backend.
-2. Publish in Lovable.
-3. Point the Wake Up Wednesday link back to the lovable.app address.
-
-Any records written to the new database during the window would need copying back, which is one more reason to keep the window short.
+Accounts and plans made on the new site during the window won't appear on lovable.app, which is one more reason to keep the window short.
 
 ## Phase 8: Wrap up and retire Lovable (2–3 hours, after a 2–4 week safety period)
 
@@ -532,7 +534,7 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 ### After 2–4 clean weeks
 
 1. **Archive the last Lovable export and storage files.** Download them, check they open, and store them in the organization's Google Drive.
-2. **Retire the lovable.app address.** Optionally, publish a short "We've moved" page there first. Then **unpublish** the site in Lovable.
+2. **Retire the lovable.app address.** **Unpublish** the site in Lovable. Lovable can't build the project after Phase 5, so publishing a "We've moved" page there first isn't an option.
 3. **Remove the Lovable Cloud database.** This is permanent, and it also deletes any exports saved in Lovable storage. Do step 1 first.
 4. **Disconnect Git sync** in **Project settings → Git**. The GitHub repository stays and becomes the only copy that matters.
 5. **Change or cancel the Lovable subscription.** Moving the site doesn't cancel billing on its own.
