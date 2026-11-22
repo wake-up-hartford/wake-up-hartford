@@ -429,7 +429,7 @@ Netlify builds the site from GitHub and republishes it automatically every time 
 
 **Useful extra:** Netlify builds a private preview link for every pull request. You and reviewers can then check a change before it goes live.
 
-**Set up the permanent address now.** In Netlify, open **Domain management → Add a domain** and enter the subdomain, for example `hartford.wakeupwednesday.org`. Have the wakeupwednesday.org DNS manager add the CNAME record Netlify shows you, and leave the main site's existing records alone. Netlify sets up HTTPS automatically. Then, in Supabase, add the subdomain to the redirect URLs. Doing this now means the address is working long before cut-over, with no DNS wait on the day.
+**Set up the permanent address now.** In Netlify, open **Domain management → Add a domain** and enter the subdomain, for example `hartford.wakeupwednesday.org`. Have Daniel, who manages wakeupwednesday.org's DNS, add the CNAME record Netlify shows you, and leave the main site's existing records alone. If you can, send Daniel the email service's DNS records in the same request (Phase 7, "Switch email to a proper email service"), so all the new records go in at once. Netlify sets up HTTPS automatically. Then, in Supabase, add the subdomain to the redirect URLs. Doing this now means the address is working long before cut-over, with no DNS wait on the day.
 
 **Optional:** ask Claude Code to add a "Back to Wake Up Wednesday" link in the app's header or footer, so visitors can move between the two sites.
 
@@ -495,12 +495,20 @@ Cut-over copies the latest data across one final time and points the public at t
     1. On the **Branding** page, set the app home page to `https://hartford.wakeupwednesday.org`, add the privacy policy link, and add `wakeupwednesday.org` to **Authorized domains**.
     2. Click **Publish app** (on the **Audience** page in current versions of the console).
     3. Sign in with Google from an account that isn't a test user, to confirm it works.
-- [ ] **Set up a custom email (SMTP) provider in Supabase**, so sign-up confirmation and password-reset emails reach residents. Supabase's built-in email is for testing only: it sends only to addresses on the project's Supabase team, and only a few emails an hour. Without this, a resident who signs up with a password or forgets it never gets the email.
-    1. Create an account with an email provider, such as Resend, Postmark or Amazon SES, under the project email.
-    2. Verify wakeupwednesday.org with the provider. It gives you DNS records (SPF and DKIM) to add where the domain's DNS is managed. These help keep the emails out of spam.
-    3. In Supabase, go to **Authentication → Emails**, open **SMTP Settings** and turn on custom SMTP. Enter the provider's host, port, username and password. Set the sender to an address such as `no-reply@wakeupwednesday.org`, with the sender name "Wake Up Wednesday". The SMTP password goes only in Supabase, never in the repository.
+- [ ] **Switch email to a proper email service on wakeupwednesday.org**, so sign-up confirmation and password-reset emails reliably reach residents.
+
+    **For now, Gmail sends the emails.** Supabase sends through Gmail SMTP, using the project Gmail account and a Gmail app password. Supabase's built-in email couldn't do the job: it sends only to addresses on the project's Supabase team, and only a few emails an hour. Gmail is fine for testing, but it isn't right for launch:
+    - The emails come from a gmail.com address, not wakeupwednesday.org.
+    - Gmail limits how many emails it sends a day.
+    - The emails are more likely to land in spam.
+
+    **Before launch:**
+    1. Create an account with an email service, such as Resend, Postmark or Amazon SES, under the project email.
+    2. Add wakeupwednesday.org in the service. It gives you DNS records (SPF and DKIM) that prove the emails really come from the domain, which keeps them out of spam. Send these to Daniel, who manages wakeupwednesday.org's DNS. Ideally send them together with the `hartford` CNAME record from Phase 5, so the DNS changes happen in one go.
+    3. Once the service shows the domain as verified, go to Supabase **Authentication → Emails**, open **SMTP Settings**, and replace the Gmail details with the service's host, port, username and password. Set the sender to an address such as `no-reply@wakeupwednesday.org`, with the sender name "Wake Up Wednesday". SMTP passwords, Gmail's included, go only in Supabase, never in the repository.
     4. Under **Authentication → Rate Limits**, raise the email limit to fit expected sign-ups.
-    5. Sign up and reset a password with addresses that aren't on the Supabase team, such as a Gmail and an Outlook address. Confirm both emails arrive, aren't in spam, and their links open the subdomain.
+    5. Sign up and reset a password with addresses that aren't on the Supabase team, such as a Gmail and an Outlook address. Confirm both emails arrive from wakeupwednesday.org, aren't in spam, and their links open the subdomain.
+    6. Delete the Gmail app password in the project Google account (**Security → App passwords**), so it can't be used again.
 - [ ] **Raise the Supabase anonymous sign-in rate limit before any group event at a shared location.** Under **Authentication → Rate Limits**, anonymous sign-ins are limited to 30 per hour per IP address. At a library, school or community event, everyone shares one IP address, so the 31st guest in an hour can't start a plan. Raise it a day ahead, and lower it again afterward.
 - [ ] **Consider a daily cap on Google Maps loads.** Under **Google Maps Platform → Quotas**, set a per-day limit on map loads for the Maps JavaScript API, so a traffic spike or misuse of the key can't run up the bill. Set it comfortably above normal use, so maps don't stop loading on a busy day.
 
