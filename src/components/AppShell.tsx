@@ -92,7 +92,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <LogoutButton />
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t-[1.5px] border-plum bg-background/95 backdrop-blur">
+      <nav data-bottom-nav className="fixed inset-x-0 bottom-0 z-30 border-t-[1.5px] border-plum bg-background/95 backdrop-blur">
         <ul className="mx-auto grid w-full max-w-xl lg:max-w-4xl grid-cols-5 px-4 sm:px-5">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to;
