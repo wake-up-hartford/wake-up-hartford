@@ -147,11 +147,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// Netlify inserts an HTML comment and a line break into <head> on the live site.
+// React can't match that line break to the page it built, so it throws a
+// hydration error (#418) and rebuilds the whole page in the browser. This
+// removes comments and whitespace-only text from <head> before React starts.
+// React never puts either in <head> itself.
+const STRIP_HOST_HEAD_NODES = `(function(){var h=document.head;if(!h)return;var n=h.firstChild;while(n){var next=n.nextSibling;if(n.nodeType===8||(n.nodeType===3&&!/\\S/.test(n.data)))h.removeChild(n);n=next;}})();`;
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
       <head>
         <HeadContent />
+        {/* Must stay inline, right after HeadContent, so it runs before React starts. */}
+        <script dangerouslySetInnerHTML={{ __html: STRIP_HOST_HEAD_NODES }} />
       </head>
       <body>
         {children}
