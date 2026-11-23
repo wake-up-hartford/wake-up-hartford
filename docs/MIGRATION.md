@@ -442,17 +442,17 @@ Open the Lovable site and the Netlify copy in two browser windows. Walk through 
 
 ### Your own pass (2–3 hours)
 
-- [ ] Home page loads with the right fonts and colors, on desktop and phone.
-- [ ] **Your Home:** an address search returns the right parcel, code violations, 311 complaints and Street View image.
-- [ ] **My Neighborhood:** neighborhood data loads for several Hartford neighborhoods.
+- [x] Home page loads with the right fonts and colors, on desktop and phone.
+- [x] **Your Home:** an address search returns the right parcel, code violations, 311 complaints and Street View image.
+- [x] **My Neighborhood:** neighborhood data loads for several Hartford neighborhoods.
 - [ ] **AI text:** a neighborhood story, a building story and an advocacy letter all generate, and read in plain language.
-- [ ] **Story Player:** audio plays in English and Spanish.
+- [x] **Story Player:** audio plays in English and Spanish.
 - [ ] **Guest 30-day plan:** take the Life survey without signing in, get a plan, then sign up. The plan should still be there.
 - [ ] **Guest plan, existing account:** as a guest, make a plan, then sign in to an existing account with a password, and again with Google. The plan should move to that account each time. Then, as a new guest, make a plan and start a sign-in without finishing it. If someone else signs in on that browser more than 15 minutes later, they shouldn't receive the guest's plan (4.11).
 - [x] **Sign-in:** a new account can sign up and sign in with a password, Google sign-in works, and password reset sends an email.
 - [ ] **Admin:** an admin who signed up again and got the role back (4.5) can open the admin pages and reports.
-- [ ] New users are sent to address onboarding, and the NAACP opt-in box is unchecked by default.
-- [ ] Opening a deep link directly, then refreshing, doesn't show a 404.
+- [x] New users are sent to address onboarding, and the NAACP opt-in box is unchecked by default.
+- [x] Opening a deep link directly, then refreshing, doesn't show a 404.
 - [ ] Netlify's function logs and the browser console show no errors while you test.
 
 ### Volunteer pass (about 1 hour each)
