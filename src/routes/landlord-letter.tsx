@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/components/AppShell";
 import { Field, LetterPage, letterInputClass } from "@/components/letter/LetterPage";
 import { useStoredAddress } from "@/lib/address-store";
-import { lookupAddress } from "@/lib/mock-data";
+import { usePropertyOwner } from "@/hooks/use-property-owner";
 
 export const Route = createFileRoute("/landlord-letter")({
   head: () => ({
@@ -42,24 +42,23 @@ const ISSUE_OPTIONS = [
 
 function LandlordLetterPage() {
   const { address } = useStoredAddress();
-  const lookup = useMemo(() => (address ? lookupAddress(address) : null), [address]);
-  const lookupLandlordAddress = lookup?.landlordContact.mailingAddress ?? "";
+  const { owner } = usePropertyOwner(address);
 
   const [tenantName, setTenantName] = useState("");
   const [unit, setUnit] = useState("");
   const [tenantAddress, setTenantAddress] = useState(address ?? "");
   const [tenantPhone, setTenantPhone] = useState("");
   const [tenantEmail, setTenantEmail] = useState("");
-  const [landlordName, setLandlordName] = useState(lookup?.landlord ?? "");
-  const [landlordAddress, setLandlordAddress] = useState(lookupLandlordAddress);
+  const [landlordName, setLandlordName] = useState("");
+  // The city's records have no owner mailing address, so the resident fills this in.
+  const [landlordAddress, setLandlordAddress] = useState("");
 
-  // Autofill tenant + landlord fields once the stored address resolves from localStorage.
+  // Autofill the tenant address and the owner's name once they load.
   useEffect(() => {
     if (address && !tenantAddress) setTenantAddress(address);
-    if (lookup?.landlord && !landlordName) setLandlordName(lookup.landlord);
-    if (lookupLandlordAddress && !landlordAddress) setLandlordAddress(lookupLandlordAddress);
+    if (owner && !landlordName) setLandlordName(owner);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, lookup]);
+  }, [address, owner]);
   const [issues, setIssues] = useState<Set<string>>(new Set());
   const [details, setDetails] = useState("");
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
