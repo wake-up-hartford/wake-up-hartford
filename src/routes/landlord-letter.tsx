@@ -230,7 +230,10 @@ ${tenantName || "[Your name]"}
             placeholder="ABC Property Management"
           />
         </Field>
-        <Field label="Landlord mailing address">
+        <Field
+          label="Landlord mailing address"
+          note="We fill in the owner from city records. That's often a company (LLC), which may not be who handles repairs. If you pay rent to a property manager, use their name and address instead."
+        >
           <textarea
             value={landlordAddress}
             onChange={(e) => setLandlordAddress(e.target.value)}
