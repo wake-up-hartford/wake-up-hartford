@@ -220,6 +220,11 @@ function AuthPage() {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
+  // Confirmation links return to this page, like Google sign-in does. Its auth
+  // listener then sends new users without an address to onboarding, and
+  // everyone else to the page they were heading to (wuw:postAuthRedirect).
+  const confirmRedirectUrl = (): string => window.location.origin + "/auth";
+
   const peekPostAuthRedirect = (): string => {
     if (typeof window === "undefined") return "/dashboard";
     const target = window.localStorage.getItem("wuw:postAuthRedirect");
@@ -263,17 +268,20 @@ function AuthPage() {
         const isAnon = !!anonSession?.user?.is_anonymous;
 
         if (isAnon) {
-          const { error: updErr } = await supabase.auth.updateUser({
-            email,
-            password,
-            data: {
-              first_name: firstName || null,
-              last_name: lastName || null,
-              phone: phone || null,
-              opt_in_updates: optIn,
-              sms_alerts: smsOptIn && !!phone.trim(),
+          const { error: updErr } = await supabase.auth.updateUser(
+            {
+              email,
+              password,
+              data: {
+                first_name: firstName || null,
+                last_name: lastName || null,
+                phone: phone || null,
+                opt_in_updates: optIn,
+                sms_alerts: smsOptIn && !!phone.trim(),
+              },
             },
-          });
+            { emailRedirectTo: confirmRedirectUrl() },
+          );
           if (updErr) throw updErr;
           setPendingEmail(email);
           setView("pending");
@@ -290,7 +298,7 @@ function AuthPage() {
                 opt_in_updates: optIn,
                 sms_alerts: smsOptIn && !!phone.trim(),
               },
-              emailRedirectTo: window.location.origin + peekPostAuthRedirect(),
+              emailRedirectTo: confirmRedirectUrl(),
             },
           });
           if (error) throw error;
@@ -341,7 +349,11 @@ function AuthPage() {
     if (resendCooldown > 0) return;
     setBusy(true);
     try {
-      const { error } = await supabase.auth.resend({ type: "signup", email: pendingEmail });
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: pendingEmail,
+        options: { emailRedirectTo: confirmRedirectUrl() },
+      });
       if (error) throw error;
       toast.success("Confirmation email resent.");
       setResendCooldown(30);
