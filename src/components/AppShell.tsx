@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Building2, Trees, HeartHandshake, User, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
 import wuwLogo from "@/assets/wake-up-hartford.png";
+import { GoToMenu } from "@/components/GoToMenu";
 
 const ROTATING_MESSAGES = [
   "Concentrated poverty is not natural. It is produced by policy choices.",
@@ -55,14 +56,6 @@ function RotatingMessages() {
   );
 }
 
-const NAV = [
-  { to: "/dashboard", label: "Start", icon: Home },
-  { to: "/life", label: "Life", icon: HeartHandshake },
-  { to: "/home", label: "Home", icon: Building2 },
-  { to: "/neighborhood", label: "Neighb.", icon: Trees },
-  { to: "/profile", label: "You", icon: User },
-] as const;
-
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   return (
@@ -80,38 +73,21 @@ export function AppShell({ children }: { children: ReactNode }) {
               className="h-14 sm:h-16 lg:h-20 w-auto"
             />
           </Link>
-          <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right shrink-0">
-            Greater Hartford<br />Branch NAACP
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-widest text-muted-foreground leading-tight hidden sm:block text-right shrink-0">
+              Greater Hartford<br />Branch NAACP
+            </span>
+            <GoToMenu />
+          </div>
         </div>
         {pathname !== "/" && <RotatingMessages />}
       </header>
 
-      <main className="mx-auto w-full max-w-xl lg:max-w-4xl px-4 pb-28 pt-6 sm:px-5">
+      {/* pb-24 leaves room at the end of the page for Netlify's badge in the bottom corner. */}
+      <main className="mx-auto w-full max-w-xl lg:max-w-4xl px-4 pb-24 pt-6 sm:px-5">
         {children}
         <LogoutButton />
       </main>
-
-      <nav data-bottom-nav className="fixed inset-x-0 bottom-0 z-30 border-t-[1.5px] border-plum bg-background/95 backdrop-blur">
-        <ul className="mx-auto grid w-full max-w-xl lg:max-w-4xl grid-cols-5 px-4 sm:px-5">
-          {NAV.map(({ to, label, icon: Icon }) => {
-            const active = pathname === to;
-            return (
-              <li key={to}>
-                <Link
-                  to={to}
-                  className={`my-1.5 flex flex-col items-center gap-0.5 rounded-full py-2 text-[11px] font-semibold transition-colors ${
-                    active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 ${active ? "stroke-[2.4]" : ""}`} />
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
     </div>
   );
 }
