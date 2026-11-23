@@ -402,6 +402,8 @@ Netlify builds the site from GitHub and republishes it automatically every time 
 
      Then change it in GitHub under **Settings → General → Danger Zone → Change visibility**, and push a new commit so Netlify picks up the change. GitHub may then flag the old Lovable keys in `.env`. That's expected: they're public browser keys.
 
+     Once it's public, turn on GitHub's **secret scanning** and **push protection** under **Settings → Advanced Security** (called **Code security** on some accounts). GitHub then flags any key that's pushed by mistake, and blocks most before they land. The history stays public for good, so if a real key ever leaks, replace it: deleting it from the code isn't enough.
+
    Avoid moving the repository to a personal account. "Before you start" sets it up in an organization with an NAACP person as a second owner, so the project doesn't depend on one personal account.
 3. **Set the environment variables** before the first build, under **Site configuration → Environment variables**. Use the *new* values. Mark only the three labeled "(secret)" as secret.
 
@@ -425,6 +427,7 @@ Netlify builds the site from GitHub and republishes it automatically every time 
 4. **Deploy.** Click **Deploy site**. Your temporary address appears when the build finishes. You can rename it under **Site configuration**, for example to `wake-up-hartford.netlify.app`.
 5. **Allow the new address.**
    - In Supabase, go to **Authentication → URL Configuration** and add the Netlify address to the redirect URLs.
+   - On the same page, set the **Site URL** to the Netlify address. Supabase falls back to it for the links in sign-up and password-reset emails, so it mustn't stay on `localhost`. It changes to the permanent address at cut-over (Phase 7, step 7).
    - Add the Netlify address to the Google Maps key's allowed websites too.
 
 **Useful extra:** Netlify builds a private preview link for every pull request. You and reviewers can then check a change before it goes live.
@@ -462,6 +465,8 @@ Ask 2–4 people to use the Netlify address on their own phones. Choose people w
 
 Ask them to note anything broken, slow or confusing in a shared form or doc. Testers should use made-up details for any sign-up, and you'll delete those test records before cut-over.
 
+**Google sign-in for volunteers.** Until the Google sign-in app is published (Phase 7), only listed test users can sign in with Google. Everyone else sees "Access blocked". Before the pass, add each volunteer's Google address in the Google Cloud console, under the project email: **Google Auth Platform → Audience → Test users**. You can list up to 100. Volunteers who aren't listed can sign up with an email and password instead.
+
 ### Fixing problems
 
 For each issue, open a Claude Code session and describe it:
@@ -479,7 +484,8 @@ Cut-over copies the latest data across one final time and points the public at t
 ### A few days before
 
 - [ ] **Confirm the subdomain works** over HTTPS. If you didn't set it up in Phase 5, do that now and allow up to 48 hours for it to work everywhere.
-- [ ] **Allow sign-in from the subdomain.** In Supabase, go to **Authentication → URL Configuration**. Set the **Site URL** to the subdomain and confirm it's in the redirect URLs.
+- [ ] **Upgrade the Google Cloud account before its free trial ends**, around February 12, 2027 (about 85 days from November 19, 2026). Do this on time even if launch comes later. When the trial ends, Google pauses the account, and Google Maps, Street View, Gemini's AI text and Google sign-in stop working on the new site. In the Google Cloud console, under the project email, click **Activate** (or **Upgrade**) at the top of the page, or go to **Billing** and upgrade there.
+- [ ] **Allow sign-in from the subdomain.** In Supabase, go to **Authentication → URL Configuration** and add the subdomain to the redirect URLs. Leave the **Site URL** on the Netlify address until the cut-over window (step 7).
 - [ ] **Check where the Wake Up Wednesday link points.** Note whether the link on wakeupwednesday.org goes to the lovable.app address today, and who can edit that page.
 - [ ] **Check the export timing.** At least 24 hours must have passed since your last Lovable database export.
 - [ ] **Tell the team the window.** Ask partners not to send people to the site during that time.
@@ -526,7 +532,7 @@ Cut-over copies the latest data across one final time and points the public at t
    > Update .env and supabase/config.toml to the new Supabase project's URL, project ID and publishable key, then commit and push to main.
 
    Netlify's settings already point the site at the new backend. This step makes the repository's own fallback values match, so a missing Netlify setting can't quietly fall back to the old Lovable project.
-7. **Change the site address setting.** In Netlify, set `VITE_SITE_URL` to `https://hartford.wakeupwednesday.org`, then redeploy, because `VITE_` values are baked in at build time. Update `.env.local` to match. If 4.9 listed any file that can't read the setting, such as `public/robots.txt`, ask Claude Code to update its address too.
+7. **Change the site address setting.** In Netlify, set `VITE_SITE_URL` to `https://hartford.wakeupwednesday.org`, then redeploy, because `VITE_` values are baked in at build time. Update `.env.local` to match. In Supabase, under **Authentication → URL Configuration**, change the **Site URL** to `https://hartford.wakeupwednesday.org` too. If 4.9 listed any file that can't read the setting, such as `public/robots.txt`, ask Claude Code to update its address too.
 8. **Point the Wake Up Wednesday link at the new site.** Change the link on wakeupwednesday.org to the subdomain.
 9. **Test from the Wake Up Wednesday page.** Click through the link and repeat a short version of the Phase 6 checklist: address search, neighborhood, story, sign-up and sign-in.
 
@@ -546,6 +552,7 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 
 - [ ] Update any QR codes, flyers, social posts or emails that point straight at the lovable.app address, so they use the subdomain or the Wake Up Wednesday page.
 - [ ] Delete test accounts and test records from Supabase.
+- [ ] **Move ElevenLabs to a project-owned account.** The Story Player still uses the ElevenLabs key from Lovable. Create an ElevenLabs account under the project email, choose a plan that fits the expected audio use, and make a new API key. If the app uses voices from the old account's voice library, add them to the new account first. Then put the new key in Netlify's `ELEVENLABS_API_KEY` setting (marked secret) and in `.env.local`, redeploy, and play a story in English and Spanish.
 - [ ] Confirm backup coverage on your Supabase plan. Free plans include limited backups. Upgrade before you rely on the site for anything you can't afford to lose.
 - [ ] Turn on CAPTCHA protection for sign-ins, including anonymous sign-ins. With anonymous sign-ins on, anyone can create unlimited guest accounts, and Supabase recommends CAPTCHA to stop automated abuse. Pick a provider (hCaptcha or Cloudflare Turnstile), add its keys under **Authentication → Attack Protection**, and ask Claude Code to add the CAPTCHA widget to the sign-in page and the guest flow. Until then, keep Supabase's default rate limits on.
 
@@ -557,6 +564,7 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 4. **Disconnect Git sync** in **Project settings → Git**. The GitHub repository stays and becomes the only copy that matters.
 5. **Change or cancel the Lovable subscription.** Moving the site doesn't cancel billing on its own.
 6. **Replace any API keys** that were ever stored in Lovable with new ones, then update them in Supabase.
+7. **Delete the old Lovable ElevenLabs key** in the ElevenLabs account it came from. Once lovable.app is unpublished (step 2) and the new site uses the project's own key, nothing needs it.
 
 ### How changes work from now on
 
