@@ -247,15 +247,6 @@
   .bg-accent-popup { background-color: oklch(0.80 0.11 230); }
 }
 
-/* Netlify's free plan adds a "Powered by Netlify" badge to the bottom-right
-   corner of every page. On pages with the bottom navigation, it covered the
-   Home, Neighb. and You tabs. This lifts the badge to sit just above the
-   navigation (67.5px tall). The badge stays visible; only its position changes.
-   If Netlify renames the frame, the badge simply returns to the corner. */
-body:has([data-bottom-nav]) #nl-badge-frame {
-  bottom: 68px !important;
-}
-
 @media print {
   body * { visibility: hidden !important; }
   #print-letter, #print-letter *,

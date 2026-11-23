@@ -15,7 +15,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
 
@@ -147,6 +146,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// The site follows the device's light or dark setting, and switches if the
+// visitor changes it. Runs at the top of <head> so the page never flashes the
+// wrong colors. The server always sends class="dark" on <html>, so React is
+// told not to warn when this script changes it.
+const FOLLOW_DEVICE_THEME = `(function(){try{var m=window.matchMedia("(prefers-color-scheme: dark)");var a=function(){document.documentElement.classList.toggle("dark",m.matches)};a();if(m.addEventListener)m.addEventListener("change",a);}catch(e){}})();`;
+
 // Netlify inserts an HTML comment and a line break into <head> on the live site.
 // React can't match that line break to the page it built, so it throws a
 // hydration error (#418) and rebuilds the whole page in the browser. This
@@ -156,8 +161,9 @@ const STRIP_HOST_HEAD_NODES = `(function(){var h=document.head;if(!h)return;var 
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: FOLLOW_DEVICE_THEME }} />
         <HeadContent />
         {/* Must stay inline, right after HeadContent, so it runs before React starts. */}
         <script dangerouslySetInnerHTML={{ __html: STRIP_HOST_HEAD_NODES }} />
@@ -176,7 +182,6 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthListener />
-      <ThemeToggle />
       <InstallPrompt />
 
       <Outlet />
