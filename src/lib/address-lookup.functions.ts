@@ -91,17 +91,19 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
           .select("id", { count: "exact", head: true })
           .eq("norm_address", normalized)
           .ilike("status", "Closed%")
-          .gte("opened_at", cutoff),
+          .gte("closed_at", cutoff),
         supabaseAdmin
           .from("hartford_code_violations")
           .select("description, status, opened_at")
           .eq("norm_address", normalized)
           .order("opened_at", { ascending: false, nullsFirst: false })
           .limit(5),
+        // Complaint count and top category cover the last 12 months only.
         supabaseAdmin
           .from("hartford_311_complaints")
           .select("type", { count: "exact" })
-          .eq("norm_address", normalized),
+          .eq("norm_address", normalized)
+          .gte("opened_at", cutoff),
         supabaseAdmin
           .from("hartford_311_complaints")
           .select("type, opened_at")
@@ -140,7 +142,8 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
           supabaseAdmin
             .from("hartford_311_complaints")
             .select("id", { count: "exact", head: true })
-            .in("norm_address", norms),
+            .in("norm_address", norms)
+            .gte("opened_at", cutoff),
         ]);
         portfolio = {
           propertiesInHartford: norms.length,
@@ -175,6 +178,32 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
       portfolio,
     };
   });
+
+// How current the city data copies are: the opening date of the newest code
+// violation and 311 complaint on file. The copies don't refresh on their own,
+// so the Your Home page shows these dates to residents.
+export const getCityDataDates = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ violationsThrough: string; complaintsThrough: string }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const newest = async (table: "hartford_code_violations" | "hartford_311_complaints") => {
+      const { data } = await supabaseAdmin
+        .from(table)
+        .select("opened_at")
+        .not("opened_at", "is", null)
+        .order("opened_at", { ascending: false })
+        .limit(1);
+      const d = data?.[0]?.opened_at;
+      if (!d) return "";
+      const dt = new Date(`${d}T12:00:00Z`);
+      return dt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+    };
+    const [violationsThrough, complaintsThrough] = await Promise.all([
+      newest("hartford_code_violations"),
+      newest("hartford_311_complaints"),
+    ]);
+    return { violationsThrough, complaintsThrough };
+  },
+);
 
 export const suggestHartfordAddresses = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ query: z.string() }).parse(input))

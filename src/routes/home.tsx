@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { siteUrl } from "@/lib/site";
 
-import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, Loader2, BarChart3 } from "lucide-react";
+import { AlertTriangle, FileWarning, Phone, ChevronLeft, ChevronDown, Search, MapPin, ArrowRight, Megaphone, Printer, Building2, Mail, Briefcase, Loader2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, SeverityPill } from "@/components/AppShell";
 import { ScriptWord } from "@/components/ScriptWord";
@@ -12,8 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BuildingStoryDialog } from "@/components/BuildingStoryDialog";
 import { useStoredAddress } from "@/lib/address-store";
-import { lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
-import { getCoverageSummary, refreshCensusTracts } from "@/lib/coverage.functions";
+import { getCityDataDates, lookupHartfordAddress, suggestHartfordAddresses, type LookupResult } from "@/lib/address-lookup.functions";
 import { trackEvent } from "@/lib/track-event";
 
 const PickAddressMap = lazy(() =>
@@ -30,9 +29,9 @@ export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
       { title: "Your Home — Wake Up Wednesday" },
-      { name: "description", content: "Look up any Hartford address. See live code violations and 311 complaints from city open data." },
+      { name: "description", content: "Look up any Hartford address. See code violations and 311 complaints from city records." },
       { property: "og:title", content: "Your Home — Wake Up Wednesday" },
-      { property: "og:description", content: "Look up any Hartford address and see live code violations and 311 complaints in plain language." },
+      { property: "og:description", content: "Look up any Hartford address and see code violations and 311 complaints in plain language." },
       { property: "og:url", content: siteUrl("/home") },
       { property: "og:image", content: siteUrl("/og-image.jpg") },
     ],
@@ -56,18 +55,12 @@ function HomePage() {
 
   const lookup = useServerFn(lookupHartfordAddress);
   const suggest = useServerFn(suggestHartfordAddresses);
-  const fetchCoverage = useServerFn(getCoverageSummary);
-  const runRefresh = useServerFn(refreshCensusTracts);
+  const fetchDataDates = useServerFn(getCityDataDates);
 
-  const { data: coverage, refetch: refetchCoverage } = useQuery({
-    queryKey: ["coverage-summary"],
-    queryFn: () => fetchCoverage(),
-    staleTime: 60_000,
-  });
-
-  const refreshMutation = useMutation({
-    mutationFn: () => runRefresh({ data: {} }),
-    onSuccess: () => refetchCoverage(),
+  const { data: dataDates } = useQuery({
+    queryKey: ["city-data-dates"],
+    queryFn: () => fetchDataDates(),
+    staleTime: 60 * 60_000,
   });
 
   useEffect(() => {
@@ -161,6 +154,13 @@ function HomePage() {
             <p className="mt-2 leading-relaxed text-foreground/90">
               We are actively working to connect more city datasets, so what you see here may be incomplete. If something looks missing, it might not be in our records yet.
             </p>
+            {dataDates && (dataDates.violationsThrough || dataDates.complaintsThrough) && (
+              <p className="mt-2 leading-relaxed text-foreground/90">
+                These are saved copies of city records, not a live feed.
+                {dataDates.violationsThrough && <> Code violations run through <strong>{dataDates.violationsThrough}</strong>.</>}
+                {dataDates.complaintsThrough && <> 311 complaints run through <strong>{dataDates.complaintsThrough}</strong>.</>}
+              </p>
+            )}
           </CollapsibleContent>
         </div>
       </Collapsible>
@@ -258,12 +258,6 @@ function HomePage() {
             </Tabs>
           </Card>
           <TakeAction />
-
-          <CoverageSummaryCard
-            coverage={coverage}
-            isRefreshing={refreshMutation.isPending}
-            onRefresh={() => refreshMutation.mutate()}
-          />
         </>
       )}
 
@@ -326,67 +320,6 @@ function HomePage() {
         </>
       )}
     </AppShell>
-  );
-}
-
-function CoverageSummaryCard({
-  coverage,
-  isRefreshing,
-  onRefresh,
-}: {
-  coverage?: { total: number; withNeighborhood: number; distinctNeighborhoods: number };
-  isRefreshing: boolean;
-  onRefresh: () => void;
-}) {
-  const pct =
-    coverage && coverage.total > 0
-      ? `${Math.round((coverage.withNeighborhood / coverage.total) * 100)}%`
-      : "—";
-  return (
-    <Card className="pop-purple mb-5 mt-5">
-      <div className="flex items-start gap-3">
-        <BarChart3 className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">COVERAGE SUMMARY (TEMP HERE FOR DEVELOPMENT)</p>
-          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div>
-              <p className="font-display text-2xl leading-none text-foreground">{coverage?.total ?? "—"}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">addresses</p>
-            </div>
-            <div>
-              <p className="font-display text-2xl leading-none text-foreground">{coverage?.distinctNeighborhoods ?? "—"}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">neighborhoods</p>
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <p className="font-display text-2xl leading-none text-foreground">{pct}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">neighborhood-mapped</p>
-            </div>
-          </div>
-          {coverage && coverage.withNeighborhood < coverage.total && (
-            <div className="mt-3 flex items-center gap-3">
-              <button
-                onClick={onRefresh}
-                disabled={isRefreshing}
-                className="pop-btn inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground transition disabled:opacity-50"
-              >
-                {isRefreshing ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Geocoding…
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="h-3.5 w-3.5" />
-                    Map {coverage.total - coverage.withNeighborhood} more
-                  </>
-                )}
-              </button>
-              <span className="text-[11px] text-muted-foreground">Uses OpenStreetMap Nominatim</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </Card>
   );
 }
 
@@ -505,14 +438,14 @@ function DetailedReport({ data }: { data: Found }) {
 
       <ExpandableIndicator
         value={c.complaints12mo}
-        label="311 complaints"
-        sub={c.topComplaintType ?? "No complaints on record"}
+        label="311 complaints, last 12 months"
+        sub={c.topComplaintType ?? "None in the last 12 months"}
         severity={c.complaints12mo > 0 ? "watch" : "good"}
       >
         <div className="mb-2 flex items-start gap-3">
           <Phone className="mt-0.5 h-5 w-5 text-primary" />
           <p className="text-sm text-muted-foreground">
-            {c.topComplaintType ? <>Most reported: {c.topComplaintType}</> : <>No 311 calls on record for this address.</>}
+            {c.topComplaintType ? <>Most reported in the last 12 months: {c.topComplaintType}</> : <>No 311 calls for this address in the last 12 months.</>}
           </p>
         </div>
         {data.recent311.length > 0 && (

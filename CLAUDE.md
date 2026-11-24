@@ -20,7 +20,8 @@ A civic housing-conditions app for NAACP Greater Hartford. Hartford residents us
 
 - Open Data Hartford: code enforcement records and 311 complaints.
 - CT Data Collaborative: ACS and eviction data.
-- All sources are matched to parcel IDs.
+- Your Home's city data (`hartford_addresses`, `hartford_code_violations`, `hartford_311_complaints`) is matched by normalized street address (`norm_address`), not parcel ID. Parcel IDs have been requested from CT Data Collaborative but aren't available yet.
+- These tables are saved copies, not a live feed. Nothing refreshes them automatically.
 
 ## Stack
 
