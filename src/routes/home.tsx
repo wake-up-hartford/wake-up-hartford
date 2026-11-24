@@ -145,22 +145,22 @@ function HomePage() {
           <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 text-left">
             <span className="inline-flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5 text-warning-foreground" />
-              <span className="font-semibold">Beta — partial data.</span>
-              <span className="text-foreground/70">Tap to learn more</span>
+              <span className="font-semibold">Beta.</span>
+              <span className="text-foreground/70">Tap to learn about this data</span>
             </span>
             <ChevronDown className="h-3.5 w-3.5 transition-transform group-data-[state=open]:rotate-180" />
           </CollapsibleTrigger>
           <CollapsibleContent>
             <p className="mt-2 leading-relaxed text-foreground/90">
-              We are actively working to connect more city datasets, so what you see here may be incomplete. If something looks missing, it might not be in our records yet.
+              These are the City of Hartford's code enforcement cases
+              {dataDates?.violationsFrom ? <> since {dataDates.violationsFrom}</> : null} and 311 requests
+              {dataDates?.complaintsFrom ? <> since {dataDates.complaintsFrom}</> : null}, copied each night from data.hartford.gov.
+              {dataDates?.violationsThrough && <> Code violations run through <strong>{dataDates.violationsThrough}</strong>.</>}
+              {dataDates?.complaintsThrough && <> 311 complaints run through <strong>{dataDates.complaintsThrough}</strong>.</>}
             </p>
-            {dataDates && (dataDates.violationsThrough || dataDates.complaintsThrough) && (
-              <p className="mt-2 leading-relaxed text-foreground/90">
-                These are saved copies of city records, not a live feed.
-                {dataDates.violationsThrough && <> Code violations run through <strong>{dataDates.violationsThrough}</strong>.</>}
-                {dataDates.complaintsThrough && <> 311 complaints run through <strong>{dataDates.complaintsThrough}</strong>.</>}
-              </p>
-            )}
+            <p className="mt-2 leading-relaxed text-foreground/90">
+              Some records can't be matched to a building, like 311 reports made at a street corner, so a home may have more than we show. Year built, number of units and the owner's mailing address aren't connected yet.
+            </p>
           </CollapsibleContent>
         </div>
       </Collapsible>
