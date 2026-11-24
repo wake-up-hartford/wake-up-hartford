@@ -64,7 +64,7 @@ export function GoToMenu() {
         id={panelId}
         aria-label="Main"
         hidden={!open}
-        className="pop-card absolute right-0 z-50 mt-2 w-60 rounded-2xl bg-card p-2 text-card-foreground"
+        className="pop-card absolute right-0 z-50 mt-2 w-72 rounded-2xl bg-card p-2 text-card-foreground"
       >
         <ul>
           {SECTIONS.map(({ to, label, icon: Icon }) => {
@@ -79,8 +79,8 @@ export function GoToMenu() {
                   }`}
                 >
                   <Icon className={`h-5 w-5 ${active ? "stroke-[2.4]" : ""}`} aria-hidden />
-                  <span>{label}</span>
-                  {active && <span className="ml-auto text-[11px] font-medium opacity-80">You are here</span>}
+                  <span className="whitespace-nowrap">{label}</span>
+                  {active && <span className="ml-auto whitespace-nowrap text-[11px] font-medium opacity-80">You are here</span>}
                 </Link>
               </li>
             );
