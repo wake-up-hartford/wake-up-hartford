@@ -5,8 +5,8 @@ import { lookupHartfordAddress } from "@/lib/address-lookup.functions";
 // The owner of a Hartford address, from the city's records, or "" if the
 // address isn't in them. Shares its cache with the Your Home report, so an
 // address someone just looked up there doesn't need a second lookup.
-// mailingAddress is filled in only for owners that are organizations
-// (companies, trusts, agencies), never for individuals.
+// mailingAddress comes from the city's property records; whether owners who
+// are people are included is set in src/lib/address-lookup.functions.ts.
 export function usePropertyOwner(address: string | null): {
   owner: string;
   mailingAddress: string;

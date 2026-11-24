@@ -5,6 +5,13 @@ import { normalizeAddress } from "@/lib/normalize-address";
 
 export { normalizeAddress };
 
+// Show the owner's mailing address (from the city's property records) when
+// the owner is a person, not only when it's a company or organization.
+// Whether to hide people's addresses is a decision for later; see
+// "Owner mailing addresses for individual landlords" in docs/MIGRATION.md.
+// Set to false to show company and organization addresses only.
+const SHOW_INDIVIDUAL_OWNER_MAILING_ADDRESSES = true;
+
 function fmtDate(d: string | null | undefined): string {
   if (!d) return "";
   const dt = new Date(d);
@@ -22,7 +29,8 @@ export type LookupResult =
         owner: string | null;
         // "assessor" (the city's property records) or "code_enforcement".
         ownerSource: "assessor" | "code_enforcement" | null;
-        // Only for owners that are organizations, never for individuals.
+        // From the city's property records. Owners that are people are
+        // included while SHOW_INDIVIDUAL_OWNER_MAILING_ADDRESSES is true.
         ownerMailingAddress: string | null;
       };
       // From the city's parcel records; null when the address isn't matched to one.
@@ -59,7 +67,7 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
 
     const { data: addr } = await supabaseAdmin
       .from("hartford_addresses")
-      .select("norm_address, display_address, owner_name, owner_source, owner_mailing_address, gis_pin, year_built, living_units, is_condo, owner_count")
+      .select("norm_address, display_address, owner_name, owner_source, owner_mailing_address, owner_is_organization, gis_pin, year_built, living_units, is_condo, owner_count")
       .eq("norm_address", normalized)
       .maybeSingle();
 
@@ -166,7 +174,10 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
           addr.owner_source === "assessor" || addr.owner_source === "code_enforcement"
             ? addr.owner_source
             : null,
-        ownerMailingAddress: addr.owner_mailing_address,
+        ownerMailingAddress:
+          addr.owner_is_organization || SHOW_INDIVIDUAL_OWNER_MAILING_ADDRESSES
+            ? addr.owner_mailing_address
+            : null,
       },
       building: addr.gis_pin
         ? {
