@@ -1,0 +1,48 @@
+# Nightly refresh of Your Home's city data from Hartford's open data.
+# The script is scripts/refresh-city-data.ts. If a run fails, the site keeps its
+# last good copy and GitHub emails a failure notice.
+#
+# Needs two repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL               the project URL
+#   SUPABASE_SERVICE_ROLE_KEY  the server-only key
+# Run it by hand from the Actions tab with "Run workflow".
+name: Refresh city data
+
+on:
+  schedule:
+    # 9:15 UTC = 4:15 a.m. Eastern in winter, 5:15 a.m. in summer.
+    - cron: "15 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: refresh-city-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.5
+
+      - name: Download, check and swap in the city's records
+        run: bun scripts/refresh-city-data.ts
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      # GitHub switches off scheduled jobs in a public repository after 60 days
+      # without a commit. Re-enabling it on each run keeps it from going quiet.
+      - name: Keep the nightly schedule switched on
+        if: always()
+        run: gh api --method PUT "repos/${{ github.repository }}/actions/workflows/refresh-city-data.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
