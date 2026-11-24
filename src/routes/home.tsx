@@ -159,7 +159,10 @@ function HomePage() {
               {dataDates?.complaintsThrough && <> 311 complaints run through <strong>{dataDates.complaintsThrough}</strong>.</>}
             </p>
             <p className="mt-2 leading-relaxed text-foreground/90">
-              Some records can't be matched to a building, like 311 reports made at a street corner, so a home may have more than we show. Year built, number of units and the owner's mailing address aren't connected yet.
+              Year built, number of units and the owner come from the city's property records. We show an owner's mailing address only when the owner is a company or organization, not a person.
+            </p>
+            <p className="mt-2 leading-relaxed text-foreground/90">
+              Some records can't be matched to a building, like 311 reports made at a street corner, so a home may have more than we show.
             </p>
           </CollapsibleContent>
         </div>
@@ -283,7 +286,7 @@ function HomePage() {
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] uppercase tracking-wider opacity-85">Showing</p>
                 <h1 className="truncate font-display text-lg">{found.address.display}</h1>
-                <p className="text-sm opacity-80">Hartford, CT · Year built and unit count not available</p>
+                <p className="text-sm opacity-80">Hartford, CT · {buildingFacts(found)}</p>
               </div>
             </div>
             <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -513,7 +516,7 @@ function PrintReport({ data }: { data: Found }) {
     <div class="titles">
       <p class="eyebrow">Wake Up Wednesday · Greater Hartford Branch NAACP</p>
       <h1>${escapeHtml(data.address.display)}</h1>
-      <p class="sub">Hartford, CT · Owner: ${escapeHtml(owner)} · Year built and unit count not available</p>
+      <p class="sub">Hartford, CT · Owner: ${escapeHtml(owner)} · ${escapeHtml(buildingFacts(data))}</p>
     </div>
     ${qrDataUrl ? `<div class="qr"><img src="${qrDataUrl}" alt="QR code to view this report online"><div>Scan to view<br>or share</div></div>` : ""}
   </div>
@@ -587,10 +590,22 @@ function PrintReport({ data }: { data: Found }) {
   );
 }
 
+// "Built 1983 · Condominium, 7 units, several owners", or a fallback when the
+// address isn't matched to the city's property records.
+function buildingFacts(data: Found): string {
+  const b = data.building;
+  if (!b || (!b.yearBuilt && !b.units)) return "Year built and unit count not available";
+  const units = b.units ? `${b.units} ${b.units === 1 ? "unit" : "units"}` : null;
+  const shape = b.isCondo
+    ? ["Condominium", units, b.ownerCount > 1 ? "several owners" : null].filter(Boolean).join(", ")
+    : units;
+  return [b.yearBuilt ? `Built ${b.yearBuilt}` : null, shape].filter(Boolean).join(" · ");
+}
+
 function LandlordCard({ data }: { data: Found }) {
-  const owner = data.address.owner;
+  const { owner, ownerSource, ownerMailingAddress } = data.address;
   const p = data.portfolio;
-  const NA = <span className="text-muted-foreground/70 italic">Not available</span>;
+  const severalOwners = (data.building?.ownerCount ?? 0) > 1;
   return (
     <Card className="pop-purple mb-5">
       <div className="flex items-start gap-3">
@@ -598,12 +613,28 @@ function LandlordCard({ data }: { data: Found }) {
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Owner / Landlord</p>
           <h2 className="font-display text-lg leading-tight">{owner ?? "Not on record"}</h2>
+          {owner && ownerSource && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {ownerSource === "assessor" ? "From the city's property records" : "From the city's code enforcement records"}
+            </p>
+          )}
+          {severalOwners && (
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              The homes in this building have different owners. Check your lease for your landlord's name.
+            </p>
+          )}
 
-          <div className="mt-3 space-y-1.5 text-sm">
-            <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
-            <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
-            <p className="flex items-start gap-2"><MapPin className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />{NA}</p>
-          </div>
+          {ownerMailingAddress && (
+            <div className="mt-3 text-sm">
+              <p className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <span>
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Owner's mailing address</span>
+                  {ownerMailingAddress}
+                </span>
+              </p>
+            </div>
+          )}
 
           {p && (
             <div className="mt-4 rounded-xl border border-pop-border/25 bg-step-surface p-3">
@@ -614,9 +645,9 @@ function LandlordCard({ data }: { data: Found }) {
                 <PortfolioStat value={p.propertiesInHartford} label="properties" />
                 <PortfolioStat value={p.totalOpenViolations} label="open code violations" />
                 <PortfolioStat value={p.totalComplaints12mo} label="311 complaints, last yr" />
-                <PortfolioStatNA label="total units" />
+                {p.totalUnits ? <PortfolioStat value={p.totalUnits} label="total units" /> : <PortfolioStatNA label="total units" />}
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">Rollup based on owner-name match across Hartford code enforcement records.</p>
+              <p className="mt-2 text-xs text-muted-foreground">Counts every Hartford address in our records with this exact owner name.</p>
             </div>
           )}
 

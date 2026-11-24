@@ -91,24 +91,51 @@ export type Database = {
       hartford_addresses: {
         Row: {
           census_tract: string | null
+          code_owner_name: string | null
           display_address: string
+          gis_pin: string | null
+          is_condo: boolean
+          living_units: number | null
           neighborhood: string | null
           norm_address: string
+          owner_count: number | null
+          owner_mailing_address: string | null
           owner_name: string | null
+          owner_source: string | null
+          parcel_match: string | null
+          year_built: number | null
         }
         Insert: {
           census_tract?: string | null
+          code_owner_name?: string | null
           display_address: string
+          gis_pin?: string | null
+          is_condo?: boolean
+          living_units?: number | null
           neighborhood?: string | null
           norm_address: string
+          owner_count?: number | null
+          owner_mailing_address?: string | null
           owner_name?: string | null
+          owner_source?: string | null
+          parcel_match?: string | null
+          year_built?: number | null
         }
         Update: {
           census_tract?: string | null
+          code_owner_name?: string | null
           display_address?: string
+          gis_pin?: string | null
+          is_condo?: boolean
+          living_units?: number | null
           neighborhood?: string | null
           norm_address?: string
+          owner_count?: number | null
+          owner_mailing_address?: string | null
           owner_name?: string | null
+          owner_source?: string | null
+          parcel_match?: string | null
+          year_built?: number | null
         }
         Relationships: []
       }

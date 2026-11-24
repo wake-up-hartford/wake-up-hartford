@@ -16,7 +16,22 @@ export type LookupResult =
   | { status: "not_found"; query: string; normalized: string }
   | {
       status: "found";
-      address: { display: string; normalized: string; owner: string | null };
+      address: {
+        display: string;
+        normalized: string;
+        owner: string | null;
+        // "assessor" (the city's property records) or "code_enforcement".
+        ownerSource: "assessor" | "code_enforcement" | null;
+        // Only for owners that are organizations, never for individuals.
+        ownerMailingAddress: string | null;
+      };
+      // From the city's parcel records; null when the address isn't matched to one.
+      building: {
+        yearBuilt: number | null;
+        units: number | null;
+        isCondo: boolean;
+        ownerCount: number;
+      } | null;
       counts: {
         violationsOpen: number;
         violationsClosed12mo: number;
@@ -29,6 +44,8 @@ export type LookupResult =
         propertiesInHartford: number;
         totalOpenViolations: number;
         totalComplaints12mo: number;
+        // Homes in buildings this owner solely owns, each building counted once; null if none are known.
+        totalUnits: number | null;
       } | null;
     };
 
@@ -42,7 +59,7 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
 
     const { data: addr } = await supabaseAdmin
       .from("hartford_addresses")
-      .select("norm_address, display_address, owner_name")
+      .select("norm_address, display_address, owner_name, owner_source, owner_mailing_address, gis_pin, year_built, living_units, is_condo, owner_count")
       .eq("norm_address", normalized)
       .maybeSingle();
 
@@ -97,14 +114,26 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
     for (const [t, n] of typeCounts) if (n > topN) { top = t; topN = n; }
 
     // Portfolio rollup
-    type Portfolio = { propertiesInHartford: number; totalOpenViolations: number; totalComplaints12mo: number };
+    type Portfolio = NonNullable<Extract<LookupResult, { status: "found" }>["portfolio"]>;
     let portfolio: Portfolio | null = null;
     if (addr.owner_name) {
       const { data: ownerAddrs } = await supabaseAdmin
         .from("hartford_addresses")
-        .select("norm_address")
+        .select("norm_address, gis_pin, living_units, owner_source")
         .eq("owner_name", addr.owner_name);
       const norms = (ownerAddrs ?? []).map((r) => r.norm_address);
+      // Units count only for buildings the city lists this owner as sole
+      // owner of (not a condo with several owners). Several addresses can
+      // share one building (178 and 180 Park St), so each counts once.
+      const unitsByBuilding = new Map<string, number>();
+      for (const r of ownerAddrs ?? []) {
+        if (r.gis_pin && r.living_units && r.owner_source === "assessor") {
+          unitsByBuilding.set(r.gis_pin, r.living_units);
+        }
+      }
+      const totalUnits = unitsByBuilding.size
+        ? [...unitsByBuilding.values()].reduce((a, b) => a + b, 0)
+        : null;
       if (norms.length) {
         const [openCt, compCt] = await Promise.all([
           supabaseAdmin
@@ -122,6 +151,7 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
           propertiesInHartford: norms.length,
           totalOpenViolations: openCt.count ?? 0,
           totalComplaints12mo: compCt.count ?? 0,
+          totalUnits,
         };
       }
     }
@@ -132,7 +162,20 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
         display: addr.display_address,
         normalized: addr.norm_address,
         owner: addr.owner_name,
+        ownerSource:
+          addr.owner_source === "assessor" || addr.owner_source === "code_enforcement"
+            ? addr.owner_source
+            : null,
+        ownerMailingAddress: addr.owner_mailing_address,
       },
+      building: addr.gis_pin
+        ? {
+            yearBuilt: addr.year_built,
+            units: addr.living_units,
+            isCondo: addr.is_condo,
+            ownerCount: addr.owner_count ?? 0,
+          }
+        : null,
       counts: {
         violationsOpen: openViolRes.count ?? 0,
         violationsClosed12mo: closedViolRes.count ?? 0,

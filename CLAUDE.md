@@ -20,8 +20,10 @@ A civic housing-conditions app for NAACP Greater Hartford. Hartford residents us
 
 - Open Data Hartford: code enforcement records and 311 complaints.
 - CT Data Collaborative: ACS and eviction data.
-- Your Home's city data (`hartford_addresses`, `hartford_code_violations`, `hartford_311_complaints`) is matched by normalized street address (`norm_address`), not parcel ID. Parcel IDs have been requested from CT Data Collaborative but aren't available yet.
-- These tables are saved copies, not a live feed. A nightly GitHub Actions job (`.github/workflows/refresh-city-data.yml`, running `scripts/refresh-city-data.ts`) refreshes them from data.hartford.gov: code enforcement cases are replaced in full, 311 requests are added and updated by request number, and new addresses are added. Address tidying lives in `src/lib/normalize-address.ts`, shared by the lookup and the refresh.
+- Your Home's city data (`hartford_addresses`, `hartford_code_violations`, `hartford_311_complaints`, `hartford_parcels`) is keyed by normalized street address (`norm_address`). Code violations and 311 requests are matched to an address by street address.
+- Each address is linked to a building (`gis_pin`) from the city's Parcels dataset: first by the parcel IDs on its own records, then by street address. Condo units and the condo association share a building's GIS_PIN. The link gives year built, units, and the assessor's owner, which replaces the code enforcement owner where the building has one owner.
+- Owner mailing addresses are shown only for organizations (`is_organization_owner()` in the database), never for individuals.
+- These tables are saved copies, not a live feed. A nightly GitHub Actions job (`.github/workflows/refresh-city-data.yml`, running `scripts/refresh-city-data.ts`) refreshes them from data.hartford.gov: code enforcement cases and parcels are replaced in full, 311 requests are added and updated by request number, new addresses are added, and every address is re-linked to its building. Address tidying lives in `src/lib/normalize-address.ts`, shared by the lookup and the refresh.
 
 ## Stack
 

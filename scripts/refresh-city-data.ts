@@ -6,8 +6,9 @@
 //
 // Needs SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (not for --dry-run).
 //
-// 1. Downloads the city's code enforcement cases (2020 to now) and its 311
-//    requests for the current and previous year.
+// 1. Downloads the city's code enforcement cases (2020 to now), its 311
+//    requests for the current and previous year, and every parcel with its
+//    owner, year built and number of units.
 // 2. Checks every page arrived, then loads the records into holding tables.
 // 3. Calls apply_city_refresh() in the database, which checks the counts and
 //    swaps everything in at once. If anything fails, nothing changes.
@@ -18,6 +19,8 @@ const CODE_ENFORCEMENT =
   "https://utility.arcgis.com/usrsvcs/servers/7cf59bd708a94395be61954d6f430e3f/rest/services/HartfordOpenDataTables/FeatureServer/1";
 const SERVICE_REQUESTS =
   "https://utility.arcgis.com/usrsvcs/servers/2185af186dda46caa1e59323407d1daf/rest/services/Service_Requests_2015_to_Current/FeatureServer";
+const PARCELS =
+  "https://utility.arcgis.com/usrsvcs/servers/8b4937b538f14e838c08ed86838c493b/rest/services/OpenData_Community/MapServer/42";
 const PAGE_SIZE = 2000;
 const INSERT_BATCH = 1000;
 const RETRY_WAITS_MS = [30_000, 120_000];
@@ -86,6 +89,21 @@ const isoDate = (v: unknown) => {
   const s = text(v);
   return s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
 };
+
+const whole = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v > 0 ? Math.round(v) : null);
+
+// "70 POINTE RD", "", "WORCESTER", "MA", "01604-" -> "70 POINTE RD, WORCESTER, MA 01604"
+// A "C/O" (care of) line goes first, as it would on an envelope.
+function mailingAddress(r: Attrs): string | null {
+  const street = [text(r.MailingAddress1), text(r.MailingAddress2), text(r.MailingStreet)]
+    .filter((v, i, all): v is string => !!v && all.indexOf(v) === i)
+    .sort((a, b) => Number(/^C\/O\b/i.test(b)) - Number(/^C\/O\b/i.test(a)));
+  const zip = (text(r.Zip10) ?? "").replace(/-$/, "");
+  const stateZip = [text(r.State), zip].filter(Boolean).join(" ");
+  const cityLine = [text(r.City), stateZip].filter(Boolean).join(", ");
+  if (!street.length || !cityLine) return null;
+  return [...street, cityLine].join(", ");
+}
 
 // The city keeps one 311 layer per year plus "Service Request Current Year".
 async function find311Layers(): Promise<{ url: string; name: string }[]> {
@@ -190,12 +208,40 @@ async function main() {
   }
   const complaints = [...requests.values()];
 
+  // Parcels: every lot, house, condo unit and condo association in Hartford.
+  const parcelRows = await downloadLayer(
+    PARCELS,
+    ["PARCELNUMBER", "GIS_PIN", "CondoNumber", "StreetNumberFrom", "StreetName", "LUCDescription",
+     "LivingUnits", "YearBuilt", "OwnerFullName", "MailingAddress1", "MailingAddress2", "MailingStreet",
+     "City", "State", "Zip10"],
+    "Parcels",
+  );
+  const parcels = new Map<string, object>();
+  for (const r of parcelRows) {
+    const number = text(r.PARCELNUMBER);
+    if (!number) continue;
+    const street = [text(r.StreetNumberFrom), text(r.StreetName)].filter(Boolean).join(" ");
+    parcels.set(number, {
+      parcel_number: number,
+      gis_pin: text(r.GIS_PIN),
+      norm_address: normalizeAddress(street) || null,
+      condo_number: text(r.CondoNumber),
+      land_use: text(r.LUCDescription),
+      living_units: whole(r.LivingUnits),
+      year_built: whole(r.YearBuilt),
+      owner_name: text(r.OwnerFullName),
+      mailing_address: mailingAddress(r),
+    });
+  }
+  const parcelList = [...parcels.values()];
+
   const newest = (dates: (string | null)[]) => dates.filter(Boolean).sort().at(-1) ?? "none";
   log(`Ready: ${violations.length} code violations (newest ${newest(violations.map((v) => v.opened_at))}), ` +
     `${complaints.length} 311 requests (newest ${newest(complaints.map((c: any) => c.opened_at))})`);
   log(`Skipped for having no usable address: ${caseRows.length - violations.length} code enforcement records, ` +
     `${requestsWithoutAddress} 311 requests`);
   log(`311 requests listed in both yearly files: ${requestsDownloaded - requestsWithoutAddress - complaints.length}`);
+  log(`Parcels: ${parcelList.length} (skipped ${parcelRows.length - parcelList.length} with no parcel number or listed twice)`);
 
   if (dryRun) {
     log("Dry run finished; nothing was written");
@@ -205,9 +251,10 @@ async function main() {
   await supabase("rpc/start_city_refresh", {});
   await insertInBatches("city_refresh_violations", violations);
   await insertInBatches("city_refresh_311", complaints);
+  await insertInBatches("city_refresh_parcels", parcelList);
   const result = await supabase(
     "rpc/apply_city_refresh",
-    { expected_violations: violations.length, expected_311: complaints.length },
+    { expected_violations: violations.length, expected_311: complaints.length, expected_parcels: parcelList.length },
     "return=representation",
   );
   log(`Applied: ${JSON.stringify(result)}`);

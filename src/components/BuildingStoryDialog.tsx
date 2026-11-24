@@ -33,6 +33,8 @@ export function BuildingStoryDialog({ data }: { data: Found }) {
         data: {
           address: data.address.display,
           landlord: data.address.owner,
+          yearBuilt: data.building?.yearBuilt ?? null,
+          units: data.building?.units ?? null,
           language,
           building: {
             openCodeViolations: data.counts.violationsOpen,

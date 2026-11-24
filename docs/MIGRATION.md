@@ -493,7 +493,8 @@ Cut-over copies the latest data across one final time and points the public at t
     1. After its pull request is merged, push its migrations (`city_data_refresh`, `city_refresh_delete_where` and `grant_city_table_sequences`) to Supabase the usual way: a dry run first, then the push.
     2. In GitHub, open the repository's **Settings → Secrets and variables → Actions** and add two repository secrets: `SUPABASE_URL` (the project URL) and `SUPABASE_SERVICE_ROLE_KEY` (the server-only key). Type them yourself; never paste them into a chat or a file.
     3. Open **Actions → Refresh city data → Run workflow** to run it once. It takes a few minutes, longer if the city's site is slow.
-    4. Open Your Home, tap "Beta — partial data", and check the "run through" dates are recent.
+- [ ] **Add building and owner details from the city's parcels.** The nightly refresh also downloads the city's Parcels with Property Owners dataset and links each address to its building. Your Home then shows year built, number of units and the assessor's owner. For owners that are companies or organizations (never people), it also shows the owner's mailing address and fills it into both letters. Condo buildings with several owners show as, for example, "Condominium, 7 units, several owners". To set it up: push the `city_parcels` migration to Supabase the usual way, run **Refresh city data** once, then merge the pull request before the next nightly run (09:15 UTC). Until it's merged, the nightly run fails safely and residents keep the last good copy.
+    4. Open Your Home, tap "Beta", and check the "run through" dates are recent.
 
     GitHub emails a failure to the person who last changed the workflow file. Make sure that's someone who will act on it, or have them forward these emails to the project Gmail.
 - [ ] **Clear out test data.** List the test accounts and test records in Supabase that need deleting.
@@ -580,7 +581,7 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 | Update data pipelines | Ask Claude Code to write or adjust the scripts and scheduled jobs in the repository. The nightly city data refresh is `scripts/refresh-city-data.ts`, run by `.github/workflows/refresh-city-data.yml`; if the city renames a field or moves a dataset, it fails until the script is updated. |
 | Undo a bad change | Revert the pull request on GitHub, or roll back to an earlier deploy in Netlify with one click. |
 | Add a volunteer developer | Invite them to the GitHub organization. No Lovable seat needed. |
-| Monthly check (30 minutes) | Ask Claude Code to update dependencies and fix anything they break. Review Supabase, Netlify, Google Cloud (Gemini and Maps) and ElevenLabs usage. Open Your Home, tap "Beta — partial data", and check the city data dates are recent; if not, look at the latest **Refresh city data** run under **Actions** in GitHub. If the Supabase server key is ever changed, update the `SUPABASE_SERVICE_ROLE_KEY` secret in GitHub too. |
+| Monthly check (30 minutes) | Ask Claude Code to update dependencies and fix anything they break. Review Supabase, Netlify, Google Cloud (Gemini and Maps) and ElevenLabs usage. Open Your Home, tap "Beta", and check the city data dates are recent; if not, look at the latest **Refresh city data** run under **Actions** in GitHub. If the Supabase server key is ever changed, update the `SUPABASE_SERVICE_ROLE_KEY` secret in GitHub too. |
 
 ### Hand-off basics
 
