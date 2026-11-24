@@ -44,7 +44,7 @@ export type LookupResult =
         propertiesInHartford: number;
         totalOpenViolations: number;
         totalComplaints12mo: number;
-        // Homes across the owner's buildings, each building counted once; null if none are known.
+        // Homes in buildings this owner solely owns, each building counted once; null if none are known.
         totalUnits: number | null;
       } | null;
     };
@@ -119,14 +119,17 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
     if (addr.owner_name) {
       const { data: ownerAddrs } = await supabaseAdmin
         .from("hartford_addresses")
-        .select("norm_address, gis_pin, living_units")
+        .select("norm_address, gis_pin, living_units, owner_source")
         .eq("owner_name", addr.owner_name);
       const norms = (ownerAddrs ?? []).map((r) => r.norm_address);
-      // Several addresses can share one building (178 and 180 Park St), so
-      // each building's units count once.
+      // Units count only for buildings the city lists this owner as sole
+      // owner of (not a condo with several owners). Several addresses can
+      // share one building (178 and 180 Park St), so each counts once.
       const unitsByBuilding = new Map<string, number>();
       for (const r of ownerAddrs ?? []) {
-        if (r.gis_pin && r.living_units) unitsByBuilding.set(r.gis_pin, r.living_units);
+        if (r.gis_pin && r.living_units && r.owner_source === "assessor") {
+          unitsByBuilding.set(r.gis_pin, r.living_units);
+        }
       }
       const totalUnits = unitsByBuilding.size
         ? [...unitsByBuilding.values()].reduce((a, b) => a + b, 0)
