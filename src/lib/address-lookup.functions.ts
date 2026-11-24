@@ -152,29 +152,52 @@ export const lookupHartfordAddress = createServerFn({ method: "POST" })
     };
   });
 
-// How current the city data copies are: the opening date of the newest code
-// violation and 311 complaint on file. The copies don't refresh on their own,
-// so the Your Home page shows these dates to residents.
+// What the city data covers: the year of the oldest record and the opening
+// date of the newest, for code violations and 311 complaints. The nightly
+// refresh moves these on, and the Your Home page shows them to residents.
+export type CityDataDates = {
+  violationsFrom: string;
+  violationsThrough: string;
+  complaintsFrom: string;
+  complaintsThrough: string;
+};
+
 export const getCityDataDates = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ violationsThrough: string; complaintsThrough: string }> => {
+  async (): Promise<CityDataDates> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const newest = async (table: "hartford_code_violations" | "hartford_311_complaints") => {
+    const edge = async (
+      table: "hartford_code_violations" | "hartford_311_complaints",
+      ascending: boolean,
+    ) => {
       const { data } = await supabaseAdmin
         .from(table)
         .select("opened_at")
         .not("opened_at", "is", null)
-        .order("opened_at", { ascending: false })
+        .order("opened_at", { ascending })
         .limit(1);
-      const d = data?.[0]?.opened_at;
-      if (!d) return "";
-      const dt = new Date(`${d}T12:00:00Z`);
-      return dt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+      return data?.[0]?.opened_at ?? "";
     };
-    const [violationsThrough, complaintsThrough] = await Promise.all([
-      newest("hartford_code_violations"),
-      newest("hartford_311_complaints"),
+    const longDate = (d: string) =>
+      d
+        ? new Date(`${d}T12:00:00Z`).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+            timeZone: "UTC",
+          })
+        : "";
+    const [vFirst, vLast, cFirst, cLast] = await Promise.all([
+      edge("hartford_code_violations", true),
+      edge("hartford_code_violations", false),
+      edge("hartford_311_complaints", true),
+      edge("hartford_311_complaints", false),
     ]);
-    return { violationsThrough, complaintsThrough };
+    return {
+      violationsFrom: vFirst.slice(0, 4),
+      violationsThrough: longDate(vLast),
+      complaintsFrom: cFirst.slice(0, 4),
+      complaintsThrough: longDate(cLast),
+    };
   },
 );
 
