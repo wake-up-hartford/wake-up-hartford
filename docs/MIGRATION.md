@@ -453,7 +453,7 @@ Open the Lovable site and the Netlify copy in two browser windows. Walk through 
 - [ ] **Admin:** an admin who signed up again and got the role back (4.5) can open the admin pages and reports.
 - [x] New users are sent to address onboarding, and the NAACP opt-in box is unchecked by default.
 - [x] Opening a deep link directly, then refreshing, doesn't show a 404.
-- [ ] Netlify's function logs and the browser console show no errors while you test.
+- [x] Netlify's function logs and the browser console show no errors while you test.
 
 ### Volunteer pass (about 1 hour each)
 
@@ -517,7 +517,7 @@ Cut-over copies the latest data across one final time and points the public at t
     6. Delete the Gmail app password in the project Google account (**Security → App passwords**), so it can't be used again.
 - [ ] **Raise the Supabase anonymous sign-in rate limit before any group event at a shared location.** Under **Authentication → Rate Limits**, anonymous sign-ins are limited to 30 per hour per IP address. At a library, school or community event, everyone shares one IP address, so the 31st guest in an hour can't start a plan. Raise it a day ahead, and lower it again afterward.
 - [ ] **Consider a daily cap on Google Maps loads.** Under **Google Maps Platform → Quotas**, set a per-day limit on map loads for the Maps JavaScript API, so a traffic spike or misuse of the key can't run up the bill. Set it comfortably above normal use, so maps don't stop loading on a busy day.
-- [ ] **Decide about the "Powered by Netlify" badge.** On Netlify's free plan, every visitor sees a "Powered by Netlify" badge at the bottom of the screen. Visitors can hide it for themselves, but only in their own browser. The app can't hide it, because the badge sits in its own frame. To remove it for everyone, an NAACP leader decides whether to upgrade the Netlify team to the Personal or Pro plan. Then turn it off under **Project configuration → General → Powered by Netlify badge**, with no redeploy needed. A paid plan would also let the GitHub repository go back to private (Phase 5, step 2).
+- [x] **Decide about the "Powered by Netlify" badge.** Done on November 24: the Netlify team moved to the Personal plan ($9 a month, 1,000 credits a month) and the badge is turned off. The free plan's 300 credits ran low because every production deploy costs 15 credits. On Netlify's free plan, every visitor sees a "Powered by Netlify" badge at the bottom of the screen. Visitors can hide it for themselves, but only in their own browser. The app can't hide it, because the badge sits in its own frame. To remove it for everyone, an NAACP leader decides whether to upgrade the Netlify team to the Personal or Pro plan. Then turn it off under **Project configuration → General → Powered by Netlify badge**, with no redeploy needed. Phase 5, step 2 says the Pro plan lets the GitHub repository go back to private; check whether Personal does before changing it.
 
 ### Cut-over window
 
