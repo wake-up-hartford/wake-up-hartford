@@ -342,7 +342,7 @@ In Claude Code:
 
 **Lovable-hosted images.** Images added through Lovable's editor live on Lovable's own hosting, not in the repository. The code points to them through `src/assets/*.png.asset.json` files with a `/__l5e/assets-v1/...` address that only lovable.app serves, so they break everywhere else. Do this first, while Lovable still serves them: download each image into `src/assets`, import it directly, and delete its `.asset.json` file. On November 20 this covered two images: the Wake Up Hartford logo (`wake-up-hartford.png`) and the Wake Up Movement image on the sign-in page (`wake-up-movement.png`).
 
-Then compare a few neighborhood stories, a building story, an advocacy letter and a 30-day plan against the Lovable site. It's the same model family, so they should read about the same.
+Then compare a few neighborhood stories, a building story and a 30-day plan against the Lovable site. It's the same model family, so they should read about the same.
 
 ### 4.10 Point your local copy at the new backend
 
@@ -445,7 +445,7 @@ Open the Lovable site and the Netlify copy in two browser windows. Walk through 
 - [x] Home page loads with the right fonts and colors, on desktop and phone.
 - [x] **Your Home:** an address search returns the right parcel, code violations, 311 complaints and Street View image.
 - [x] **My Neighborhood:** neighborhood data loads for several Hartford neighborhoods.
-- [ ] **AI text:** a neighborhood story, a building story and an advocacy letter all generate, and read in plain language.
+- [x] **AI text:** a neighborhood story, a building story and a 30-day plan all generate, and read in plain language. (An advocacy letter to a state representative was built in May but never linked from any page; its unused code was removed.)
 - [x] **Story Player:** audio plays in English and Spanish.
 - [x] **Guest 30-day plan:** take the Life survey without signing in, get a plan, then sign up. The plan should still be there.
 - [x] **Guest plan, existing account:** as a guest, make a plan, then sign in to an existing account with a password, and again with Google. The plan should move to that account each time. Then, as a new guest, make a plan and start a sign-in without finishing it. If someone else signs in on that browser more than 15 minutes later, they shouldn't receive the guest's plan (4.11).
