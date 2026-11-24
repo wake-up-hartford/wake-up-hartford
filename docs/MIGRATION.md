@@ -489,6 +489,13 @@ Cut-over copies the latest data across one final time and points the public at t
 - [ ] **Check where the Wake Up Wednesday link points.** Note whether the link on wakeupwednesday.org goes to the lovable.app address today, and who can edit that page.
 - [ ] **Check the export timing.** At least 24 hours must have passed since your last Lovable database export.
 - [ ] **Tell the team the window.** Ask partners not to send people to the site during that time.
+- [ ] **Turn on the nightly city data refresh.** Your Home's code violations and 311 complaints were a one-time copy. A nightly GitHub Actions job (`.github/workflows/refresh-city-data.yml`, running `scripts/refresh-city-data.ts`) now copies them straight from Hartford's open data at data.hartford.gov. It downloads the city's code enforcement cases (2020 to now) and its 311 requests for this year and last. It checks every page arrived and the totals haven't dropped sharply, then swaps the new copy in all at once. If anything fails, nothing changes, residents keep the last good copy, and GitHub emails a failure notice. To set it up:
+    1. After its pull request is merged, push its migration (`city_data_refresh`) to Supabase the usual way: a dry run first, then the push.
+    2. In GitHub, open the repository's **Settings → Secrets and variables → Actions** and add two repository secrets: `SUPABASE_URL` (the project URL) and `SUPABASE_SERVICE_ROLE_KEY` (the server-only key). Type them yourself; never paste them into a chat or a file.
+    3. Open **Actions → Refresh city data → Run workflow** to run it once. It takes about a minute.
+    4. Open Your Home, tap "Beta — partial data", and check the "run through" dates are recent.
+
+    GitHub emails a failure to the person who last changed the workflow file. Make sure that's someone who will act on it, or have them forward these emails to the project Gmail.
 - [ ] **Clear out test data.** List the test accounts and test records in Supabase that need deleting.
 - [ ] **Add a "This isn't my computer / Start over" button.** Residents often use shared computers, and a guest who walks away leaves their plan open in the browser for the next person (4.11). The button signs the visitor out, clears the guest session and anything the app saved in the browser, and returns to the start. Build it with Claude Code on its own branch, then test it on the pull request's Netlify preview before cut-over.
 - [ ] **Create a privacy policy page**, for example at `/privacy`, and link to it from the footer and the sign-up form. Google sign-in needs its address (next item). The app has no privacy page yet. The About page has a short "Privacy & Data Use" section to borrow the tone from, but it can't be reused as written:
@@ -523,9 +530,7 @@ Cut-over copies the latest data across one final time and points the public at t
 
 1. **Stop new writes on the old site.** Turn off any scheduled jobs on Lovable Cloud. During the window, avoid promoting the site.
 2. **Take the final export** in Lovable (**More → Database → Manage → Settings → Export data**) and download it.
-3. **Reload the new database.** In Claude Code:
-
-   > Empty hartford\_311\_complaints, hartford\_code\_violations and hartford\_addresses in the new Supabase project, in that order, then restore those three tables from the final Lovable export at \<file path>, the same way as the practice restore in 4.4. Leave every other table alone, so accounts and plans made on the new site stay. Reset the two id sequences, then compare row counts against the export.
+3. **Refresh the city data.** The three Hartford tables no longer come from Lovable's export: the nightly refresh copies them from the city (see "A few days before"). Run it once more by hand (**Actions → Refresh city data → Run workflow**), and check Your Home's "run through" dates. Keep the final export as an archive (Phase 8).
 4. **Copy any files** added to storage since your practice copy.
 5. **Turn on scheduled jobs** in Supabase.
 6. **Point the repository at the new backend.** In Claude Code:
@@ -572,10 +577,10 @@ Keep Lovable as a safety net until the new site has run cleanly for a few weeks.
 | Task | How |
 | --- | --- |
 | Change text, layout or features | Describe it in Claude Code → review the diff → pull request → check the Netlify preview → merge. Live in a few minutes. |
-| Update data pipelines | Ask Claude Code to write or adjust the scripts and scheduled jobs in the repository. |
+| Update data pipelines | Ask Claude Code to write or adjust the scripts and scheduled jobs in the repository. The nightly city data refresh is `scripts/refresh-city-data.ts`, run by `.github/workflows/refresh-city-data.yml`; if the city renames a field or moves a dataset, it fails until the script is updated. |
 | Undo a bad change | Revert the pull request on GitHub, or roll back to an earlier deploy in Netlify with one click. |
 | Add a volunteer developer | Invite them to the GitHub organization. No Lovable seat needed. |
-| Monthly check (30 minutes) | Ask Claude Code to update dependencies and fix anything they break. Review Supabase, Netlify, Google Cloud (Gemini and Maps) and ElevenLabs usage. |
+| Monthly check (30 minutes) | Ask Claude Code to update dependencies and fix anything they break. Review Supabase, Netlify, Google Cloud (Gemini and Maps) and ElevenLabs usage. Open Your Home, tap "Beta — partial data", and check the city data dates are recent; if not, look at the latest **Refresh city data** run under **Actions** in GitHub. If the Supabase server key is ever changed, update the `SUPABASE_SERVICE_ROLE_KEY` secret in GitHub too. |
 
 ### Hand-off basics
 
