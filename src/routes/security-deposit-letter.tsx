@@ -29,7 +29,7 @@ export const Route = createFileRoute("/security-deposit-letter")({
 
 function SecurityDepositLetterPage() {
   const { address } = useStoredAddress();
-  const { owner } = usePropertyOwner(address);
+  const { owner, mailingAddress: ownerMailingAddress } = usePropertyOwner(address);
 
   const [tenantName, setTenantName] = useState("");
   const [rentalAddress, setRentalAddress] = useState(address ?? "");
@@ -38,15 +38,16 @@ function SecurityDepositLetterPage() {
   const [depositAmount, setDepositAmount] = useState("");
   const [mailingAddress, setMailingAddress] = useState("");
   const [landlordName, setLandlordName] = useState("");
-  // The city's records have no owner mailing address, so the resident fills this in.
+  // Pre-filled only when the owner is an organization; otherwise the resident fills it in.
   const [landlordAddress, setLandlordAddress] = useState("");
 
-  // Autofill the rental address and the owner's name once they load.
+  // Autofill the rental address and the owner's name and mailing address once they load.
   useEffect(() => {
     if (address && !rentalAddress) setRentalAddress(address);
     if (owner && !landlordName) setLandlordName(owner);
+    if (ownerMailingAddress && !landlordAddress) setLandlordAddress(ownerMailingAddress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, owner]);
+  }, [address, owner, ownerMailingAddress]);
 
   const today = useMemo(
     () =>
@@ -189,7 +190,7 @@ ${today}
         </Field>
         <Field
           label="Landlord mailing address"
-          note="We fill in the owner from city records. That's often a company (LLC), which may not be who you dealt with. If you paid rent to a property manager, use their name and address instead."
+          note="We fill in the owner from city records, and the mailing address when the owner is a company. That's often an LLC, which may not be who you dealt with. If you paid rent to a property manager, use their name and address instead."
         >
           <textarea
             value={landlordAddress}

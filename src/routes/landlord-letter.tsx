@@ -42,7 +42,7 @@ const ISSUE_OPTIONS = [
 
 function LandlordLetterPage() {
   const { address } = useStoredAddress();
-  const { owner } = usePropertyOwner(address);
+  const { owner, mailingAddress } = usePropertyOwner(address);
 
   const [tenantName, setTenantName] = useState("");
   const [unit, setUnit] = useState("");
@@ -50,15 +50,16 @@ function LandlordLetterPage() {
   const [tenantPhone, setTenantPhone] = useState("");
   const [tenantEmail, setTenantEmail] = useState("");
   const [landlordName, setLandlordName] = useState("");
-  // The city's records have no owner mailing address, so the resident fills this in.
+  // Pre-filled only when the owner is an organization; otherwise the resident fills it in.
   const [landlordAddress, setLandlordAddress] = useState("");
 
-  // Autofill the tenant address and the owner's name once they load.
+  // Autofill the tenant address and the owner's name and mailing address once they load.
   useEffect(() => {
     if (address && !tenantAddress) setTenantAddress(address);
     if (owner && !landlordName) setLandlordName(owner);
+    if (mailingAddress && !landlordAddress) setLandlordAddress(mailingAddress);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, owner]);
+  }, [address, owner, mailingAddress]);
   const [issues, setIssues] = useState<Set<string>>(new Set());
   const [details, setDetails] = useState("");
   const [firstNoticedDate, setFirstNoticedDate] = useState("");
@@ -232,7 +233,7 @@ ${tenantName || "[Your name]"}
         </Field>
         <Field
           label="Landlord mailing address"
-          note="We fill in the owner from city records. That's often a company (LLC), which may not be who handles repairs. If you pay rent to a property manager, use their name and address instead."
+          note="We fill in the owner from city records, and the mailing address when the owner is a company. That's often an LLC, which may not be who handles repairs. If you pay rent to a property manager, use their name and address instead."
         >
           <textarea
             value={landlordAddress}
