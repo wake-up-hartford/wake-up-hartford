@@ -35,7 +35,14 @@ async function fetchJson(url: string, init?: RequestInit): Promise<any> {
     try {
       const res = await fetch(url, { ...init, signal: AbortSignal.timeout(120_000) });
       const text = await res.text();
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text.slice(0, 300)}`);
+      if (!res.ok) {
+        const error = new Error(`HTTP ${res.status}: ${text.slice(0, 300)}`);
+        // A 4xx (other than 429, too many requests) won't fix itself, so don't wait and retry.
+        if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+          (error as Error & { permanent?: boolean }).permanent = true;
+        }
+        throw error;
+      }
       const json = text ? JSON.parse(text) : null;
       // ArcGIS reports some failures as HTTP 200 with an "error" object.
       if (json && typeof json === "object" && "error" in json && json.error) {
@@ -43,7 +50,7 @@ async function fetchJson(url: string, init?: RequestInit): Promise<any> {
       }
       return json;
     } catch (err) {
-      if (attempt >= RETRY_WAITS_MS.length) throw err;
+      if ((err as Error & { permanent?: boolean }).permanent || attempt >= RETRY_WAITS_MS.length) throw err;
       log(`Request failed (${(err as Error).message}); retrying in ${RETRY_WAITS_MS[attempt] / 1000}s`);
       await new Promise((r) => setTimeout(r, RETRY_WAITS_MS[attempt]));
     }
