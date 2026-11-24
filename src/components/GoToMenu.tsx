@@ -4,15 +4,15 @@ import { useEffect, useId, useRef, useState } from "react";
 
 const SECTIONS = [
   { to: "/dashboard", label: "Start", icon: Home },
-  { to: "/life", label: "Life", icon: HeartHandshake },
-  { to: "/home", label: "Home", icon: Building2 },
-  { to: "/neighborhood", label: "Block", icon: Trees },
+  { to: "/life", label: "Your Life", icon: HeartHandshake },
+  { to: "/home", label: "Your Home", icon: Building2 },
+  { to: "/neighborhood", label: "Your Block", icon: Trees },
   { to: "/profile", label: "You", icon: User },
 ] as const;
 
-// The site's main navigation: a "Go to" button in the header that opens a list
-// of the five sections. It replaced the bottom tab bar, which Netlify's
-// free-plan badge covered. The button shows the current section's name.
+// The site's main navigation: a button in the header that opens a list of the
+// five sections. It replaced the bottom tab bar, which Netlify's free-plan
+// badge covered. The button shows the current section's name, or "Menu".
 export function GoToMenu() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
@@ -55,7 +55,7 @@ export function GoToMenu() {
         onClick={() => setOpen((o) => !o)}
         className="pop-btn inline-flex items-center gap-2 rounded-full bg-pink px-4 py-2.5 font-display text-[14px] font-bold uppercase tracking-wide text-primary-foreground"
       >
-        <span className="text-[11px] font-semibold normal-case opacity-80">Go to</span>
+        {current && <span className="sr-only">Menu, </span>}
         <span>{current?.label ?? "Menu"}</span>
         <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
