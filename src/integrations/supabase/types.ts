@@ -99,6 +99,7 @@ export type Database = {
           neighborhood: string | null
           norm_address: string
           owner_count: number | null
+          owner_is_organization: boolean | null
           owner_mailing_address: string | null
           owner_name: string | null
           owner_source: string | null
@@ -115,6 +116,7 @@ export type Database = {
           neighborhood?: string | null
           norm_address: string
           owner_count?: number | null
+          owner_is_organization?: boolean | null
           owner_mailing_address?: string | null
           owner_name?: string | null
           owner_source?: string | null
@@ -131,6 +133,7 @@ export type Database = {
           neighborhood?: string | null
           norm_address?: string
           owner_count?: number | null
+          owner_is_organization?: boolean | null
           owner_mailing_address?: string | null
           owner_name?: string | null
           owner_source?: string | null

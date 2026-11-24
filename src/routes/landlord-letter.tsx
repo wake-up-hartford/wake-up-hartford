@@ -50,7 +50,7 @@ function LandlordLetterPage() {
   const [tenantPhone, setTenantPhone] = useState("");
   const [tenantEmail, setTenantEmail] = useState("");
   const [landlordName, setLandlordName] = useState("");
-  // Pre-filled only when the owner is an organization; otherwise the resident fills it in.
+  // Pre-filled from the city's property records when they have it; otherwise the resident fills it in.
   const [landlordAddress, setLandlordAddress] = useState("");
 
   // Autofill the tenant address and the owner's name and mailing address once they load.
@@ -233,7 +233,7 @@ ${tenantName || "[Your name]"}
         </Field>
         <Field
           label="Landlord mailing address"
-          note="We fill in the owner from city records, and the mailing address when the owner is a company. That's often an LLC, which may not be who handles repairs. If you pay rent to a property manager, use their name and address instead."
+          note="We fill in the owner and their mailing address from city records. The owner is often an LLC, which may not be who handles repairs. If you pay rent to a property manager, use their name and address instead."
         >
           <textarea
             value={landlordAddress}

@@ -159,7 +159,7 @@ function HomePage() {
               {dataDates?.complaintsThrough && <> 311 complaints run through <strong>{dataDates.complaintsThrough}</strong>.</>}
             </p>
             <p className="mt-2 leading-relaxed text-foreground/90">
-              Year built, number of units and the owner come from the city's property records. We show an owner's mailing address only when the owner is a company or organization, not a person.
+              Year built, number of units, the owner and the owner's mailing address come from the city's property records.
             </p>
             <p className="mt-2 leading-relaxed text-foreground/90">
               Some records can't be matched to a building, like 311 reports made at a street corner, so a home may have more than we show.
